@@ -1,0 +1,837 @@
+---
+title: "PERSUADE OUTPUT"
+author: "Authors"
+output:
+  pdf_document:
+    toc: yes
+  html_document:
+    number_sections: yes
+    theme: united
+    toc: yes
+    toc_float: yes
+---
+
+`r Sys.Date()`
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=TRUE, fig.align="left")
+```
+
+```{r preparation, echo=FALSE, warning = FALSE, message = FALSE, results = "hide"}
+rm(list = setdiff(ls(), lsf.str()))                              #remove all objects except functions
+options(scipen=100)                                              #suppress scientific notation
+options(width=95)                                                #to improve lay-out of prediction Tables
+
+#LOAD AND INSTALL PACKAGES AND FUNCTIONS
+packages <- c("rms", "survival", "flexsurv", "muhaz", "survminer", "ggplot2", "data.table", "printr")
+suppressPackageStartupMessages(lapply(packages, require, character.only = TRUE))
+
+source("20.06.22 - PERSUADE function.R")
+
+#COLOUR PALETTE
+n <- 8 #number of different colors (to be used for palette)
+palette(rainbow(n=n, s = 1, v = 1, start = 0, end = max(1, n - 1)/n, alpha = 1))
+
+#INPUT DATA
+years <- bc$recyrs                                #time in years
+status <- bc$censrec                              #status / event variable
+group <- bc$group                                 #grouping variable, please amend the names of the groups here if you wish
+
+years <- as.numeric(years)	                      #time variable should be numeric
+status <- as.numeric(status)                      #status / event variable should be numeric
+group <- as.factor(group)	                      	#group variable should be a factor, please amend the names of the groups here if you wish
+
+#INPUT TIME POINTS FOR PREDICTED SURVIVAL TABLE
+time_pred_surv_table <- c(0, 1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 35) #time points (in years) for predicted survival
+time_unit <- 6/12                                                   #time unit (in years) for predicted survival
+time_horizon <- 40                                                  #time horizon (in years) for predicted survival
+
+PERSUADE(years = years, status = status, group = group,  
+                    strata = TRUE, time_unit= time_unit, time_horizon = time_horizon,
+                    time_pred_surv_table = time_pred_surv_table, spline_mod = TRUE, csv_semicolon=FALSE,
+                    csv_comma=TRUE, clipboard=FALSE)
+
+```
+
+#Kaplan Meier
+```{r plot_KM, echo=FALSE}
+if (ngroups>1) {
+  ggsurvplot(surv_fit(form, data = data.frame(years, status, group)), linetype=c("strata"), 
+           legend.labs = group_names, risk.table = TRUE, conf.int = TRUE, 
+           conf.int.style = "ribbon", surv.median.line = "hv",  ncensor.plot = FALSE, 
+           censor = TRUE, ggtheme = theme_light())} else {
+  ggsurvplot(surv_fit(form, data = data.frame(years, status)), linetype=c("strata"), 
+           legend.labs = group_names, risk.table = TRUE, conf.int = TRUE, 
+           conf.int.style = "ribbon", surv.median.line = "hv",  ncensor.plot = FALSE, 
+           censor = TRUE, ggtheme = theme_light())}
+```
+
+#Stratified models?
+Should stratified parametric survival models be used?
+```{r PH_assumption, echo=FALSE, eval=if (ngroups>1) {TRUE} else {FALSE}}
+plot(cbind(log(km$time), log(-log(km$surv))), main ="A: LN(cumulative hazard)",
+     col="black", cex = 0.6, xlab = "LN(time)", ylab = "LN(cumulative hazard)")
+
+plot(cox.zph(cox_reg, terms = FALSE)[1], col="5", lwd=2, xlab = "time", 
+     main ="B: Scaled Schoenfeld residuals", ylab = "Beta(t) for group 2 vs group 1") 
+  abline(0, 0, lty=3) 
+  abline(lm(cox.zph(cox_reg, terms = FALSE)$y[,1] ~ cox.zph(cox_reg)$x)$coefficients, col="7", lty=1, lwd=2)
+  legend(0,-2, col=c("5", "7"), lty=1, cex=0.8, 
+         legend=c("smoothed line (natural spline with df = 4)", 
+                                "regression line")) 
+if (ngroups>2) {
+plot(cox.zph(cox_reg, terms = FALSE)[2], col="5", lwd=2, xlab = "time",
+     main ="C: Scaled Schoenfeld residuals", ylab = "Beta(t) for group 3 vs group 1")
+  abline(0, 0, lty=3)
+  abline(lm(cox.zph(cox_reg, terms = FALSE)$y[,2] ~ cox.zph(cox_reg)$x)$coefficients, col="7", lty=1, lwd=2)
+  legend(0,-2, col=c("5", "7"), lty=1, cex=0.8,
+         legend=c("smoothed line (natural spline with df = 4)",
+                                "regression line"))}
+```
+
+#Monotonic hazard models?
+Should parametric survival models assuming a monotonic hazard rate (i.e. exponential, Weibull, Gompertz) be used?
+```{r plot_hr, echo=FALSE}
+plot(cbind(hr_smooth1$est.grid, hr_smooth1$haz.est), type="l", col="red", lty=1, lwd=2, 
+     xlab = "time", ylab = "smoothed hazard rate",  
+     xlim=c(0, max(hr_smooth1$est.grid, if (ngroups>1) {hr_smooth2$est.grid} else {NA}, 
+                  if (ngroups>2) {hr_smooth3$est.grid} else {NA}, na.rm = TRUE)),
+     ylim=c(0, max(hr_smooth1$haz.est, if (ngroups>1) {hr_smooth2$haz.est} else {NA}, 
+                  if (ngroups>2) {hr_smooth3$haz.est} else {NA}, na.rm = TRUE)))
+     if (ngroups>1) {
+       lines(cbind(hr_smooth2$est.grid, hr_smooth2$haz.est), col="green", lty=3, lwd=2)}
+     if (ngroups>2) {
+       lines(cbind(hr_smooth3$est.grid, hr_smooth3$haz.est), col="blue", lty=2, lwd=2)}
+     legend("topleft", legend= group_names, col=c("red", "green", "blue"), 
+            lty=as.integer(c(1, 3, 2)), cex=0.8)
+```
+
+#Standard parametric models?
+Do standard parametric models provide an appropriate fit to the data?
+```{r plot_parametric, echo=FALSE}
+pie(rep(1, n), labels =lbls, col = rainbow(n=n, s = 1, v = 1, start = 0, end = max(1, n - 1)/n, 
+                                           alpha = 1)) 
+IC[order(IC$AIC),]
+```
+
+##Exponential
+```{r expo, echo=FALSE}
+#constant hazard
+plot(km, lwd=2, col="black", main ="A: Kaplan-Meier (Exponential)", xlab = "time", 
+     ylab = "survival")  
+    lines(cbind(time_pred, expo_pred[,2]), col="1", lty=1, lwd=2)
+    if (ngroups>1) {lines(cbind(time_pred, expo_pred[,3]), col="1", lty=3, lwd=2)}
+    if (ngroups>2) {lines(cbind(time_pred, expo_pred[,4]), col="1", lty=2, lwd=2)}
+    legend("bottomleft", legend= group_names, col="1",  
+           lty=as.integer(c(1, 3, 2)), cex=0.8)
+
+#annual transition probabilities
+plot(cbind(time_pred[-1], tp_gr_1[,2]), main ="B: Annual transition probability (Exponential)", 
+     xlab = "time", ylab = "annual transition probability", ylim=c(0,1), col="1", type="l", 
+     lty=1, lwd=2)
+    if (ngroups>1) {lines(cbind(time_pred[-1], tp_gr_2[,2]), col="1", lty=3, lwd=2)}
+    if (ngroups>2) {lines(cbind(time_pred[-1], tp_gr_3[,2]), col="1", lty=2, lwd=2)}
+    legend("topleft", legend= group_names, col="1",  
+           lty=as.integer(c(1, 3, 2)), cex=0.8)
+        
+#diagnostics
+plot(cbind(km$time, -log(km$surv)), col="black", cex = 0.6, 
+     main ="C: Diagnostic plot (Exponential)", 
+     xlab = "time", ylab = "cumulative hazard")
+    lines(cbind(time_pred, -log(expo_pred[,2])), col="1", lty=1, lwd=2) 
+    if (ngroups>1) {lines(cbind(time_pred, -log(expo_pred[,3])), col="1", lty=3, lwd=2)}
+    if (ngroups>2) {lines(cbind(time_pred, -log(expo_pred[,4])), col="1", lty=2, lwd=2)}
+    legend("topleft", legend= group_names, col="1",  
+           lty=as.integer(c(1, 3, 2)), cex=0.8)
+```
+
+##Weibull
+```{r weib, echo=FALSE}
+#monotonically increasing or decreasing hazard 
+plot(km, lwd=2, col="black", main ="A: Kaplan-Meier (Weibull)", xlab = "time", 
+     ylab = "survival")  
+    lines(cbind(time_pred, weib_pred[,2]), col="2", lty=1, lwd=2)
+    if (ngroups>1) {lines(cbind(time_pred, weib_pred[,3]), col="2", lty=3, lwd=2)}
+    if (ngroups>2) {lines(cbind(time_pred, weib_pred[,4]), col="2", lty=2, lwd=2)}
+    legend("bottomleft", legend= group_names, col="2",  
+           lty=as.integer(c(1, 3, 2)), cex=0.8) 
+    
+#annual transition probabilities
+plot(cbind(time_pred[-1], tp_gr_1[,3]), main ="B: Annual transition probability (Weibull)", 
+     xlab = "time", ylab = "annual transition probability", ylim=c(0,1), col="2", type="l", 
+     lty=1, lwd=2)
+    if (ngroups>1) {lines(cbind(time_pred[-1], tp_gr_2[,3]), col="2", lty=3, lwd=2)}
+    if (ngroups>2) {lines(cbind(time_pred[-1], tp_gr_3[,3]), col="2", lty=2, lwd=2)}
+    legend("topleft", legend= group_names, col="2",  
+           lty=as.integer(c(1, 3, 2)), cex=0.8)     
+#diagnostics 
+plot(cbind(log(km$time), log(-log(km$surv))), col="black", cex = 0.6, 
+     main ="C: Diagnostic plot (Weibull)", xlab = "LN(time)", ylab = "LN(cumulative hazard)")
+    lines(cbind(log(time_pred), log(-log(weib_pred[,2]))), col="2", lty=1, lwd=2) 
+    if (ngroups>1) {lines(cbind(log(time_pred), log(-log(weib_pred[,3]))), col="2", 
+                           lty=3, lwd=2)} 
+    if (ngroups>2) {lines(cbind(log(time_pred), log(-log(weib_pred[,4]))), col="2", 
+                           lty=2, lwd=2)}
+    legend("topleft", legend= group_names, col="2",  
+           lty=as.integer(c(1, 3, 2)), cex=0.8) 
+```
+
+##Gompertz
+```{r gom, echo=FALSE}
+#monotonically increasing or decreasing hazard 
+plot(km, lwd=2, col="black", main ="A: Kaplan-Meier (Gompertz)", xlab = "time", 
+     ylab = "survival")  
+    lines(cbind(time_pred, gom_pred[,2]), col="3", lty=1, lwd=2)
+    if (ngroups>1) {lines(cbind(time_pred, gom_pred[,3]), col="3", lty=3, lwd=2)}
+    if (ngroups>2) {lines(cbind(time_pred, gom_pred[,4]), col="3", lty=2, lwd=2)}
+    legend("bottomleft", legend= group_names, col="3",  
+           lty=as.integer(c(1, 3, 2)), cex=0.8) 
+    
+#annual transition probabilities
+plot(cbind(time_pred[-1], tp_gr_1[,4]), main ="B: Annual transition probability (Gompertz)", 
+     xlab = "time", ylab = "annual transition probability", ylim=c(0,1), col="3", 
+     type="l", lty=1, lwd=2)
+    if (ngroups>1) {lines(cbind(time_pred[-1], tp_gr_2[,4]), col="3", lty=3, lwd=2)}
+    if (ngroups>2) {lines(cbind(time_pred[-1], tp_gr_3[,4]), col="3", lty=2, lwd=2)}
+    legend("topleft", legend= group_names, col="3",  
+           lty=as.integer(c(1, 3, 2)), cex=0.8) 
+  
+#diagnostics
+plot(cbind(c(hr_smooth1$est.grid, if (ngroups>1) {hr_smooth2$est.grid} else {NA},
+             if (ngroups>2) {hr_smooth3$est.grid} else {NA}),
+           c(log(hr_smooth1$haz.est), if (ngroups>1) {log(hr_smooth2$haz.est)} else {NA},
+             if (ngroups>2) {log(hr_smooth3$haz.est)} else {NA})),
+     col="black", cex = 0.6, main ="C: Diagnostic plot (Gompertz)", xlab = "time", 
+     ylab = "LN(smoothed hazard)")
+     lines(cbind(gom_est_h[[1]]$time, log(gom_est_h[[1]]$est)), col="3", lty=1, lwd=2)
+     if (ngroups>1) {lines(cbind(gom_est_h[[2]]$time, log(gom_est_h[[2]]$est)), col="3", 
+                            lty=3, lwd=2)}
+     if (ngroups>2) {lines(cbind(gom_est_h[[3]]$time, log(gom_est_h[[3]]$est)), col="3", 
+                            lty=2, lwd=2)}
+     legend("topleft", legend= group_names, col="3",  
+           lty=as.integer(c(1, 3, 2)), cex=0.8)
+```
+
+##Lognormal
+```{r lnorm, echo=FALSE}
+#hazard can be non-monotonic with respect to time; initially an increasing hazard, followed by a decreasing hazard
+plot(km, lwd=2, col="black", main ="A: Kaplan-Meier (Log-normal)", xlab = "time", 
+     ylab = "survival")  
+    lines(cbind(time_pred, lnorm_pred[,2]), col="4", lty=1, lwd=2)
+    if (ngroups>1) {lines(cbind(time_pred, lnorm_pred[,3]), col="4", lty=3, lwd=2)}
+    if (ngroups>2) {lines(cbind(time_pred, lnorm_pred[,4]), col="4", lty=2, lwd=2)}
+    legend("bottomleft", legend= group_names, col="4",  
+           lty=as.integer(c(1, 3, 2)), cex=0.8) 
+    
+#annual transition probabilities
+plot(cbind(time_pred[-1], tp_gr_1[,5]), main ="B: Annual transition probability (Log-normal)", 
+     xlab = "time", ylab = "annual transition probability", ylim=c(0,1), col="4", type="l", 
+     lty=1, lwd=2)
+    if (ngroups>1) {lines(cbind(time_pred[-1], tp_gr_2[,5]), col="4", lty=3, lwd=2)}
+    if (ngroups>2) {lines(cbind(time_pred[-1], tp_gr_3[,5]), col="4", lty=2, lwd=2)}
+    legend("topleft", legend= group_names, col="4",  
+           lty=as.integer(c(1, 3, 2)), cex=0.8) 
+    
+#diagnostics
+plot(cbind(log(km$time), -qnorm(km$surv, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)),
+     col="black", cex = 0.6, main ="C: Diagnostic plot (Log-normal)", xlab = "LN(time)", 
+     ylab = "- standard normal quartiles")
+    lines(cbind(log(time_pred), -qnorm(lnorm_pred[,2], mean = 0, sd = 1, lower.tail = TRUE, 
+                                  log.p = FALSE)), col="4", lty=1, lwd=2)   
+    if (ngroups>1) {
+      lines(cbind(log(time_pred),
+                  -qnorm(lnorm_pred[,3], mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)),
+            col="4", lty=3, lwd=2)}
+    if (ngroups>2) {
+      lines(cbind(log(time_pred),
+                  -qnorm(lnorm_pred[,4], mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)),
+            col="4", lty=2, lwd=2)}   
+    legend("topleft", legend= group_names, col="4",  
+           lty=as.integer(c(1, 3, 2)), cex=0.8) 
+```
+
+##Loglogistic
+```{r llog, echo=FALSE}
+#hazard can be non-monotonic with respect to time; initially an increasing hazard, followed by a decreasing hazard
+plot(km, lwd=2, col="black", main ="A: Kaplan-Meier (Log-logistic)", xlab = "time", 
+     ylab = "survival")  
+    lines(cbind(time_pred, llog_pred[,2]), col="5", lty=1, lwd=2)
+    if (ngroups>1) {lines(cbind(time_pred, llog_pred[,3]), col="5", lty=3, lwd=2)}
+    if (ngroups>2) {lines(cbind(time_pred, llog_pred[,4]), col="5", lty=2, lwd=2)}
+    legend("bottomleft", legend= group_names, col="5",  
+           lty=as.integer(c(1, 3, 2)), cex=0.8) 
+    
+#annual transition probabilities
+plot(cbind(time_pred[-1], tp_gr_1[,6]), 
+     main ="B: Annual transition probability (Log-logistic)", xlab = "time", 
+     ylab = "annual transition probability", ylim=c(0,1), col="5",
+     type="l", lty=1, lwd=2)
+    if (ngroups>1) {lines(cbind(time_pred[-1], tp_gr_2[,6]), col="5", lty=3, lwd=2)}
+    if (ngroups>2) {lines(cbind(time_pred[-1], tp_gr_3[,6]), col="5", lty=2, lwd=2)}
+    legend("topleft", legend= group_names, col="5",  
+           lty=as.integer(c(1, 3, 2)), cex=0.8) 
+    
+#diagnostics
+plot(cbind(log(km$time), -log(km$surv/(1-km$surv))), col="black", cex = 0.6, 
+     main ="C: Diagnostic plot (Log-logistic)", xlab = "LN(time)", ylab = "-LN(survival odds)")
+    lines(cbind(log(time_pred), -log(llog_pred[,2]/(1-llog_pred[,2]))), col="5", lty=1, lwd=2) 
+    if (ngroups>1) {lines(cbind(log(time_pred), -log(llog_pred[,3]/(1-llog_pred[,3]))), 
+                           col="5", lty=3, lwd=2)}
+    if (ngroups>2) {lines(cbind(log(time_pred), -log(llog_pred[,4]/(1-llog_pred[,4]))), 
+                           col="5", lty=2, lwd=2)}
+    legend("topleft", legend= group_names, col="5",  
+           lty=as.integer(c(1, 3, 2)), cex=0.8) 
+```
+
+##Gamma
+```{r gam, echo=FALSE}
+#hazard rate has (inverted) 'U' shape over time
+plot(km, lwd=2, col="black", main ="A: Kaplan-Meier (Gamma)", xlab = "time", 
+     ylab = "survival")  
+    lines(cbind(time_pred, gam_pred[,2]), col="6", lty=1, lwd=2)
+    if (ngroups>1) {lines(cbind(time_pred, gam_pred[,3]), col="6", lty=3, lwd=2)}
+    if (ngroups>2) {lines(cbind(time_pred, gam_pred[,4]), col="6", lty=2, lwd=2)}
+    legend("bottomleft", legend= group_names, col="6",  
+           lty=as.integer(c(1, 3, 2)), cex=0.8) 
+    
+#annual transition probabilities
+plot(cbind(time_pred[-1], tp_gr_1[,7]), main ="B: Annual transition probability (Gamma)", 
+     xlab = "time", 
+     ylab = "annual transition probability", ylim=c(0,1), col="6", type="l", lty=1, lwd=2)
+    if (ngroups>1) {lines(cbind(time_pred[-1], tp_gr_2[,7]), col="6", lty=3, lwd=2)}
+    if (ngroups>2) {lines(cbind(time_pred[-1], tp_gr_3[,7]), col="6", lty=2, lwd=2)}
+    legend("topleft", legend= group_names, col="6",  
+           lty=as.integer(c(1, 3, 2)), cex=0.8) 
+    
+#diagnostics --> not linear!
+plot(cbind(log(km$time), log(-log(km$surv))), col="black", cex = 0.6, 
+     main ="C: Diagnostic plot (Gamma)", xlab = "LN(time)", ylab = "LN(cumulative hazard)")
+    lines(cbind(log(time_pred), log(-log(gam_pred[,2]))), col="6", lty=1, lwd=2) 
+    if (ngroups>1) {lines(cbind(log(time_pred), log(-log(gam_pred[,3]))), col="6", 
+                           lty=3, lwd=2)}
+    if (ngroups>2) {lines(cbind(log(time_pred), log(-log(gam_pred[,4]))), col="6", 
+                           lty=2, lwd=2)}
+    legend("topleft", legend= group_names, col="6",  
+           lty=as.integer(c(1, 3, 2)), cex=0.8) 
+```
+
+##Generalised Gamma 
+```{r ggam, echo=FALSE}
+#flexible: can take form of Exponential, Weibull, Gamma or Log-normal
+plot(km, lwd=2, col="black", main ="A: Kaplan-Meier (Generalised gamma)", xlab = "time", 
+     ylab = "survival")  
+    lines(cbind(time_pred, ggam_pred[,2]), col="7", lty=1, lwd=2)
+    if (ngroups>1) {lines(cbind(time_pred, ggam_pred[,3]), col="7", lty=3, lwd=2)}
+    if (ngroups>2) {lines(cbind(time_pred, ggam_pred[,4]), col="7", lty=2, lwd=2)}
+    legend("bottomleft", legend= group_names, col="7",  
+           lty=as.integer(c(1, 3, 2)), cex=0.8) 
+    
+#annual transition probabilities
+plot(cbind(time_pred[-1], tp_gr_1[,8]), 
+     main ="B: Annual transition probability (Generalised gamma)", xlab = "time", 
+     ylab = "annual transition probability", ylim=c(0,1), col="7", type="l", 
+     lty=1, lwd=2)
+    if (ngroups>1) {lines(cbind(time_pred[-1], tp_gr_2[,8]), col="7", lty=3, lwd=2)}
+    if (ngroups>2) {lines(cbind(time_pred[-1], tp_gr_3[,8]), col="7", lty=2, lwd=2)}
+    legend("topleft", legend= group_names, col="7",  
+           lty=as.integer(c(1, 3, 2)), cex=0.8) 
+    
+#diagnostics --> not linear!
+plot(cbind(log(km$time), log(-log(km$surv))), col="black", cex = 0.6, 
+     main ="C: Diagnostic plot (Generalised gamma)", xlab = "LN(time)", 
+     ylab = "LN(cumulative hazard)")
+    lines(cbind(log(time_pred), log(-log(ggam_pred[,2]))), col="7", lty=1, lwd=2) 
+    if (ngroups>1) {lines(cbind(log(time_pred), log(-log(ggam_pred[,3]))), col="7", 
+                           lty=3, lwd=2)}
+    if (ngroups>2) {lines(cbind(log(time_pred), log(-log(ggam_pred[,4]))), col="7", 
+                           lty=2, lwd=2)}
+    legend("topleft", legend= group_names, col="7",  
+           lty=as.integer(c(1, 3, 2)), cex=0.8) 
+```
+
+#Parametric spline models?
+If standard parametric models are not appropriate, are spline models a more appropriate fit to the data?
+
+```{r spline, echo=FALSE, eval = show_spline}
+#k=0 gives a Weibull, log-logistic or lognormal model, if "scale" is "hazard", "odds" or "normal" respectively. The knots are then chosen as equally-spaced quantiles of the log uncensored survival times, for example, at the median with one knot, or at the 33% and 67% quantiles of log time (or time, see "timescale") with two knots.
+
+pie(rep(1, n), labels =lbls_spline, col = rainbow(n=n, s = 1, v = 1, start = 0, 
+                                                  end = max(1, n - 1)/n, alpha = 1)) 
+
+IC[order(IC$AIC),]
+IC_spl[order(IC_spl$AIC),]
+```
+
+##Spline hazard 1 knot
+```{r spline_hazard1, echo=FALSE, eval = show_spline}
+#1 knot
+plot(km, lwd=2, col="black", main ="A: Kaplan-Meier (Spline, 1 knot, hazard scale)", 
+     xlab = "time", ylab = "survival")  
+  lines(cbind(time_pred, spl_hazard1_pred[,2]), col="1", lty=1, lwd=2)
+  if (ngroups>1) {lines(cbind(time_pred, spl_hazard1_pred[,3]), col="1", lty=3, lwd=2)}
+  if (ngroups>2) {lines(cbind(time_pred, spl_hazard1_pred[,4]), col="1", lty=2, lwd=2)}
+  abline(v=exp(spl_hazard1$knots[2]), lty=2, lwd=1.5)
+  abline(v=exp(spl_hazard1$knots[1]), lty=2, lwd=0.5)
+  abline(v=exp(spl_hazard1$knots[3]), lty=2, lwd=0.5)
+  legend("bottomleft", legend= group_names, col="1",  
+           lty=as.integer(c(1, 3, 2)), cex=0.8) 
+    
+#annual transition probabilities
+plot(cbind(time_pred[-1], tp_gr_1[,9]), 
+     main ="B: Annual transition probability (Spline, 1 knot, hazard scale)", xlab = "time", 
+     ylab = "annual transition probability", ylim=c(0,1), col="1", type="l", lty=1, lwd=2)
+    if (ngroups>1) {lines(cbind(time_pred[-1], tp_gr_2[,9]), col="1", lty=3, lwd=2)}
+    if (ngroups>2) {lines(cbind(time_pred[-1], tp_gr_3[,9]), col="1", lty=2, lwd=2)}
+    abline(v=exp(spl_hazard1$knots[2]), lty=2, lwd=1.5)
+    abline(v=exp(spl_hazard1$knots[1]), lty=2, lwd=0.5)
+    abline(v=exp(spl_hazard1$knots[3]), lty=2, lwd=0.5)
+    legend("topleft", legend= group_names, col="1",  
+           lty=as.integer(c(1, 3, 2)), cex=0.8) 
+    
+#diagnostics
+plot(cbind(log(km$time), log(-log(km$surv))), col="black", cex = 0.6, 
+     main ="C: Diagnostic plot (Spline, 1 knot, hazard scale)", xlab = "LN(time)", 
+     ylab = "LN(cumulative hazard)")
+  lines(cbind(log(time_pred), log(-log(spl_hazard1_pred[,2]))), col="1", lty=1, lwd=2) 
+  if (ngroups>1) {lines(cbind(log(time_pred), log(-log(spl_hazard1_pred[,3]))), col="1", 
+                         lty=3, lwd=2)}
+  if (ngroups>2) {lines(cbind(log(time_pred), log(-log(spl_hazard1_pred[,4]))), col="1", 
+                         lty=2, lwd=2)}
+  abline(v=spl_hazard1$knots[2], lty=2, lwd=1.5)
+  abline(v=spl_hazard1$knots[1], lty=2, lwd=0.5)
+  abline(v=spl_hazard1$knots[3], lty=2, lwd=0.5)
+  legend("topleft", legend= group_names, col="1",  
+           lty=as.integer(c(1, 3, 2)), cex=0.8) 
+```
+
+##Spline hazard 2 knots
+```{r spline_hazard2, echo=FALSE, eval = show_spline}
+#2 knots
+plot(km, lwd=2, col="black", main ="A: Kaplan-Meier (Spline, 2 knots, hazard scale)", 
+     xlab = "time", ylab = "survival")  
+  lines(cbind(time_pred, spl_hazard2_pred[,2]), col="2", lty=1, lwd=2)
+  if (ngroups>1) {lines(cbind(time_pred, spl_hazard2_pred[,3]), col="2", lty=3, lwd=2)}
+  if (ngroups>2) {lines(cbind(time_pred, spl_hazard2_pred[,4]), col="2", lty=2, lwd=2)}
+  abline(v=exp(spl_hazard2$knots[2]), lty=2, lwd=1.5)
+  abline(v=exp(spl_hazard2$knots[3]), lty=2, lwd=1.5)
+  abline(v=exp(spl_hazard2$knots[1]), lty=2, lwd=0.5)
+  abline(v=exp(spl_hazard2$knots[4]), lty=2, lwd=0.5)
+  legend("bottomleft", legend= group_names, col="2",  
+           lty=as.integer(c(1, 3, 2)), cex=0.8) 
+    
+#annual transition probabilities
+plot(cbind(time_pred[-1], tp_gr_1[,10]), 
+     main ="B: Annual transition probability (Spline, 2 knots, hazard scale)", xlab = "time", 
+     ylab = "annual transition probability", ylim=c(0,1), col="2", type="l", lty=1, lwd=2)
+    if (ngroups>1) {lines(cbind(time_pred[-1], tp_gr_2[,10]), col="2", lty=3, lwd=2)}
+    if (ngroups>2) {lines(cbind(time_pred[-1], tp_gr_3[,10]), col="2", lty=2, lwd=2)}
+    abline(v=exp(spl_hazard2$knots[2]), lty=2, lwd=1.5)
+    abline(v=exp(spl_hazard2$knots[3]), lty=2, lwd=1.5)
+    abline(v=exp(spl_hazard2$knots[1]), lty=2, lwd=0.5)
+    abline(v=exp(spl_hazard2$knots[4]), lty=2, lwd=0.5)
+    legend("topleft", legend= group_names, col="2",  
+           lty=as.integer(c(1, 3, 2)), cex=0.8) 
+    
+#diagnostics
+plot(cbind(log(km$time), log(-log(km$surv))), col="black", cex = 0.6, 
+     main ="C: Diagnostic plot (Spline, 2 knots, hazard scale)", xlab = "LN(time)", 
+     ylab = "LN(cumulative hazard)")
+  lines(cbind(log(time_pred), log(-log(spl_hazard2_pred[,2]))), col="2", lty=1, lwd=2) 
+  if (ngroups>1) {lines(cbind(log(time_pred), log(-log(spl_hazard2_pred[,3]))), col="2", 
+                         lty=3, lwd=2)}
+  if (ngroups>2) {lines(cbind(log(time_pred), log(-log(spl_hazard2_pred[,4]))), col="2", 
+                         lty=2, lwd=2)}
+  abline(v=spl_hazard2$knots[2], lty=2, lwd=1.5)
+  abline(v=spl_hazard2$knots[3], lty=2, lwd=1.5)  
+  abline(v=spl_hazard2$knots[1], lty=2, lwd=0.5)  
+  abline(v=spl_hazard2$knots[4], lty=2, lwd=0.5)
+  legend("topleft", legend= group_names, col="2",  
+           lty=as.integer(c(1, 3, 2)), cex=0.8) 
+```
+
+##Spline odds 1 knot
+```{r spline_odds1, echo=FALSE, eval = show_spline}
+#1 knot
+plot(km, lwd=2, col="black", main ="A: Kaplan-Meier (Spline, 1 knot, odds scale)", 
+     xlab = "time", ylab = "survival")  
+  lines(cbind(time_pred, spl_odds1_pred[,2]), col="3", lty=1, lwd=2)
+  if (ngroups>1) {lines(cbind(time_pred, spl_odds1_pred[,3]), col="3", lty=3, lwd=2)}
+  if (ngroups>2) {lines(cbind(time_pred, spl_odds1_pred[,4]), col="3", lty=2, lwd=2)}
+  abline(v=exp(spl_odds1$knots[2]), lty=2, lwd=1.5)
+  abline(v=exp(spl_odds1$knots[1]), lty=2, lwd=0.5)
+  abline(v=exp(spl_odds1$knots[3]), lty=2, lwd=0.5)
+  legend("bottomleft", legend= group_names, col="3",  
+           lty=as.integer(c(1, 3, 2)), cex=0.8) 
+#annual transition probabilities
+plot(cbind(time_pred[-1], tp_gr_1[,11]), 
+     main ="B: Annual transition probability (Spline, 1 knot, odds scale)", xlab = "time", 
+     ylab = "annual transition probability", ylim=c(0,1), col="3", type="l", lty=1, lwd=2)
+    if (ngroups>1) {lines(cbind(time_pred[-1], tp_gr_2[,11]), col="3", lty=3, lwd=2)}
+    if (ngroups>2) {lines(cbind(time_pred[-1], tp_gr_3[,11]), col="3", lty=2, lwd=2)}
+    abline(v=exp(spl_odds1$knots[2]), lty=2, lwd=1.5)
+    abline(v=exp(spl_odds1$knots[1]), lty=2, lwd=0.5)
+    abline(v=exp(spl_odds1$knots[3]), lty=2, lwd=0.5)
+    legend("topleft", legend= group_names, col="3",  
+           lty=as.integer(c(1, 3, 2)), cex=0.8) 
+      
+#diagnostics
+plot(cbind(log(km$time), -log(km$surv/(1-km$surv))), col="black", cex = 0.6, 
+     main ="C: Diagnostic plot (Spline, 1 knot, odds scale)", xlab = "LN(time)", 
+     ylab = "-LN(survival odds)")
+  lines(cbind(log(time_pred), -log(spl_odds1_pred[,2]/(1-spl_odds1_pred[,2]))), col="3", 
+        lty=1, lwd=2) 
+  if (ngroups>1) {
+    lines(cbind(log(time_pred), -log(spl_odds1_pred[,3]/(1-spl_odds1_pred[,3]))),
+          col="3", lty=3, lwd=2) }
+  if (ngroups>2) {
+    lines(cbind(log(time_pred), -log(spl_odds1_pred[,4]/(1-spl_odds1_pred[,4]))),
+          col="3", lty=2, lwd=2)}
+  abline(v=spl_odds1$knots[2], lty=2, lwd=1.5)
+  abline(v=spl_odds1$knots[1], lty=2, lwd=0.5)
+  abline(v=spl_odds1$knots[3], lty=2, lwd=0.5)
+  legend("topleft", legend= group_names, col="3",  
+           lty=as.integer(c(1, 3, 2)), cex=0.8) 
+```
+
+##Spline odds 2 knots
+```{r spline_odds2, echo=FALSE, eval = show_spline}
+#2 knots
+plot(km, lwd=2, col="black", main ="A: Kaplan-Meier (Spline, 2 knots, odds scale)", 
+     xlab = "time", ylab = "survival")  
+  lines(cbind(time_pred, spl_odds2_pred[,2]), col="4", lty=1, lwd=2)
+  if (ngroups>1) {lines(cbind(time_pred, spl_odds2_pred[,3]), col="4", lty=3, lwd=2)}
+  if (ngroups>2) {lines(cbind(time_pred, spl_odds2_pred[,4]), col="4", lty=2, lwd=2)}
+  abline(v=exp(spl_odds2$knots[2]), lty=2, lwd=1.5)
+  abline(v=exp(spl_odds2$knots[3]), lty=2, lwd=1.5)
+  abline(v=exp(spl_odds2$knots[1]), lty=2, lwd=0.5)
+  abline(v=exp(spl_odds2$knots[4]), lty=2, lwd=0.5)
+  legend("bottomleft", legend= group_names, col="4",  
+           lty=as.integer(c(1, 3, 2)), cex=0.8) 
+  
+#annual transition probabilities
+plot(cbind(time_pred[-1], tp_gr_1[,12]), 
+     main ="B: Annual transition probability (Spline, 2 knots, odds scale)", xlab = "time", 
+     ylab = "annual transition probability", ylim=c(0,1), col="4", type="l", lty=1, lwd=2)
+    if (ngroups>1) {lines(cbind(time_pred[-1], tp_gr_2[,12]), col="4", lty=3, lwd=2)}
+    if (ngroups>2) {lines(cbind(time_pred[-1], tp_gr_3[,12]), col="4", lty=2, lwd=2)}
+    abline(v=exp(spl_odds2$knots[2]), lty=2, lwd=1.5)
+    abline(v=exp(spl_odds2$knots[3]), lty=2, lwd=1.5)
+    abline(v=exp(spl_odds2$knots[1]), lty=2, lwd=0.5)
+    abline(v=exp(spl_odds2$knots[4]), lty=2, lwd=0.5)
+    legend("topleft", legend= group_names, col="4",  
+           lty=as.integer(c(1, 3, 2)), cex=0.8) 
+  
+#diagnostics
+plot(cbind(log(km$time), -log(km$surv/(1-km$surv))), col="black", cex = 0.6, 
+     main ="C: Diagnostic plot (Spline, 2 knots, odds scale)", xlab = "LN(time)", 
+     ylab = "-LN(survival odds)")
+  lines(cbind(log(time_pred), -log(spl_odds2_pred[,2]/(1-spl_odds2_pred[,2]))), 
+        col="4", lty=1, lwd=2) 
+  if (ngroups>1) {
+    lines(cbind(log(time_pred), -log(spl_odds2_pred[,3]/(1-spl_odds2_pred[,3]))),
+          col="4", lty=3, lwd=2)}
+  if (ngroups>2) {
+    lines(cbind(log(time_pred), -log(spl_odds2_pred[,4]/(1-spl_odds2_pred[,4]))),
+          col="4", lty=2, lwd=2)}
+  abline(v=spl_odds2$knots[2], lty=2, lwd=1.5)
+  abline(v=spl_odds2$knots[3], lty=2, lwd=1.5)
+  abline(v=spl_odds2$knots[1], lty=2, lwd=0.5)
+  abline(v=spl_odds2$knots[4], lty=2, lwd=0.5)
+  legend("topleft", legend= group_names, col="4",  
+           lty=as.integer(c(1, 3, 2)), cex=0.8) 
+```
+
+##Spline normal 1 knot
+```{r spline_norm1, echo=FALSE, eval = show_spline}
+#1 knot
+plot(km, lwd=2, col="black", main ="A: Kaplan-Meier (Spline, 1 knot, normal scale)", 
+     xlab = "time", ylab = "survival")  
+  lines(cbind(time_pred, spl_normal1_pred[,2]), col="5", lty=1, lwd=2)
+  if (ngroups>1) {lines(cbind(time_pred, spl_normal1_pred[,3]), col="5", lty=3, lwd=2)}
+  if (ngroups>2) {lines(cbind(time_pred, spl_normal1_pred[,4]), col="5", lty=2, lwd=2)}
+  abline(v=exp(spl_normal1$knots[2]), lty=2, lwd=1.5)
+  abline(v=exp(spl_normal1$knots[1]), lty=2, lwd=0.5)
+  abline(v=exp(spl_normal1$knots[3]), lty=2, lwd=0.5)
+  legend("bottomleft", legend= group_names, col="5",  
+           lty=as.integer(c(1, 3, 2)), cex=0.8) 
+  
+#annual transition probabilities
+plot(cbind(time_pred[-1], tp_gr_1[,13]), 
+     main ="B: Annual transition probability (Spline, 1 knot, normal scale)", xlab = "time", 
+     ylab = "annual transition probability", ylim=c(0,1), col="5", type="l", lty=1, lwd=2)
+    if (ngroups>1) {lines(cbind(time_pred[-1], tp_gr_2[,13]), col="5", lty=3, lwd=2)}
+    if (ngroups>2) {lines(cbind(time_pred[-1], tp_gr_3[,13]), col="5", lty=2, lwd=2)}
+    abline(v=exp(spl_normal1$knots[2]), lty=2, lwd=1.5)
+    abline(v=exp(spl_normal1$knots[1]), lty=2, lwd=0.5)
+    abline(v=exp(spl_normal1$knots[3]), lty=2, lwd=0.5)
+    legend("topleft", legend= group_names, col="5",  
+           lty=as.integer(c(1, 3, 2)), cex=0.8) 
+  
+#diagnostics
+plot(cbind(log(km$time), -qnorm(km$surv, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)),
+     col="black", cex = 0.6, main ="C: Diagnostic plot (Spline, 1 knot, normal scale)", 
+     xlab = "LN(time)", ylab = "- standard normal quartiles")
+  lines(cbind(log(time_pred), -qnorm(spl_normal1_pred[,2], mean = 0, sd = 1, lower.tail = TRUE, 
+                                log.p = FALSE)), col="5", lty=1, lwd=2)   
+  if (ngroups>1) {
+    lines(cbind(log(time_pred), 
+                -qnorm(spl_normal1_pred[,3], mean = 0, sd = 1, lower.tail = TRUE, 
+                       log.p = FALSE)), col="5", lty=3, lwd=2)}
+  if (ngroups>2) {
+    lines(cbind(log(time_pred), 
+                -qnorm(spl_normal1_pred[,4], mean = 0, sd = 1, lower.tail = TRUE, 
+                       log.p = FALSE)), col="5", lty=2, lwd=2)}   
+  abline(v=spl_normal1$knots[2], lty=2, lwd=1.5)
+  abline(v=spl_normal1$knots[1], lty=2, lwd=0.5)
+  abline(v=spl_normal1$knots[3], lty=2, lwd=0.5)
+  legend("topleft", legend= group_names, col="5",  
+           lty=as.integer(c(1, 3, 2)), cex=0.8) 
+```
+
+##Spline normal 2 knots
+```{r spline_norm2, echo=FALSE, eval = show_spline}
+#2 knots
+plot(km, lwd=2, col="black", main ="A: Kaplan-Meier (Spline, 2 knots, normal scale)", 
+     xlab = "time", ylab = "survival")  
+  lines(cbind(time_pred, spl_normal2_pred[,2]), col="6", lty=1, lwd=2)
+  if (ngroups>1) {lines(cbind(time_pred, spl_normal2_pred[,3]), col="6", lty=3, lwd=2)}
+  if (ngroups>2) {lines(cbind(time_pred, spl_normal2_pred[,4]), col="6", lty=2, lwd=2)}
+  abline(v=exp(spl_normal2$knots[2]), lty=2, lwd=1.5)
+  abline(v=exp(spl_normal2$knots[3]), lty=2, lwd=1.5)
+  abline(v=exp(spl_normal2$knots[1]), lty=2, lwd=0.5)
+  abline(v=exp(spl_normal2$knots[4]), lty=2, lwd=0.5)
+  legend("bottomleft", legend= group_names, col="6",  
+           lty=as.integer(c(1, 3, 2)), cex=0.8) 
+  
+#annual transition probabilities
+plot(cbind(time_pred[-1], tp_gr_1[,14]), 
+     main ="B: Annual transition probability (Spline, 2 knots, normal scale)", xlab = "time", 
+     ylab = "annual transition probability", ylim=c(0,1), col="6", type="l", lty=1, lwd=2)
+    if (ngroups>1) {lines(cbind(time_pred[-1], tp_gr_2[,14]), col="6", lty=3, lwd=2)}
+    if (ngroups>2) {lines(cbind(time_pred[-1], tp_gr_3[,14]), col="6", lty=2, lwd=2)}
+    abline(v=exp(spl_normal2$knots[2]), lty=2, lwd=1.5)
+    abline(v=exp(spl_normal2$knots[3]), lty=2, lwd=1.5)
+    abline(v=exp(spl_normal2$knots[1]), lty=2, lwd=0.5)
+    abline(v=exp(spl_normal2$knots[4]), lty=2, lwd=0.5)
+    legend("topleft", legend= group_names, col="6",  
+           lty=as.integer(c(1, 3, 2)), cex=0.8) 
+    
+#diagnostics
+plot(cbind(log(km$time), -qnorm(km$surv, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)),
+     col="black", cex = 0.6, main ="C: Diagnostic plot (Spline, 2 knots, normal scale)", 
+     xlab = "LN(time)", ylab = "- standard normal quartiles")
+  lines(cbind(log(time_pred), -qnorm(spl_normal2_pred[,2], mean = 0, sd = 1, lower.tail = TRUE, 
+                                log.p = FALSE)), col="6", lty=1, lwd=2)   
+  if (ngroups>1) {
+    lines(cbind(log(time_pred),
+                -qnorm(spl_normal2_pred[,3], mean = 0, sd = 1, lower.tail = TRUE, 
+                       log.p = FALSE)), col="6", lty=3, lwd=2)}
+  if (ngroups>2) {
+    lines(cbind(log(time_pred),
+                -qnorm(spl_normal2_pred[,4], mean = 0, sd = 1, lower.tail = TRUE, 
+                                log.p = FALSE)), col="6", lty=2, lwd=2)}   
+  abline(v=spl_normal2$knots[2], lty=2, lwd=1.5)
+  abline(v=spl_normal2$knots[3], lty=2, lwd=1.5)  
+  abline(v=spl_normal2$knots[1], lty=2, lwd=0.5)  
+  abline(v=spl_normal2$knots[4], lty=2, lwd=0.5)
+  legend("topleft", legend= group_names, col="6",  
+           lty=as.integer(c(1, 3, 2)), cex=0.8) 
+```
+
+
+#Validity of long-term extrapolation?
+What model(s) is/are more appropriate for long-term extrapolation?
+Are/is the selected model(s) plausible in comparison with general population mortality?
+
+##`r paste("Group", group_names[1])`
+```{r validate_extrapolation1, echo=FALSE, comment=NA}
+#survival over time (years)
+round(extrapolation_gr_1[1 + time_pred_surv_table,], 3)[,1:8]
+if (show_spline == TRUE){
+round(extrapolation_gr_1[1 + time_pred_surv_table,], 3)[,c(1,9:12)]
+round(extrapolation_gr_1[1 + time_pred_surv_table,], 3)[,c(1,13:14)]
+}
+#annual transition probabilities
+print(summary(round(tp_gr_1[,2:cols_extr], 4)))
+
+#parametric curves
+plot(km[1], lwd=2, col="black", main ="A: Kaplan-Meier (parametric curves)", xlab = "time", 
+     ylab = "survival", xlim=c(0,time_horizon))
+    lines(cbind(time_pred, expo_pred[,2]), col="1", lty=1, lwd=1)
+    lines(cbind(time_pred, weib_pred[,2]), col="2", lty=1, lwd=1)
+    lines(cbind(time_pred, gom_pred[,2]), col="3", lty=1, lwd=1)
+    lines(cbind(time_pred, lnorm_pred[,2]), col="4", lty=1, lwd=1)
+    lines(cbind(time_pred, llog_pred[,2]), col="5", lty=1, lwd=1)
+    lines(cbind(time_pred, gam_pred[,2]), col="6", lty=1, lwd=1)
+    lines(cbind(time_pred, ggam_pred[,2]), col="7", lty=1, lwd=1)
+    legend("topright", legend= lbls, col=1:7, lty=1, cex=0.8) 
+
+#spline curves
+if (show_spline == TRUE){
+plot(km[1], lwd=2, col="black", main ="B: Kaplan-Meier (spline curves)", xlab = "time", 
+     ylab = "survival", xlim=c(0,time_horizon))
+     lines(cbind(time_pred, spl_hazard1_pred[,2]), col="1", lty=1, lwd=1)
+     lines(cbind(time_pred, spl_hazard2_pred[,2]), col="2", lty=1, lwd=1)
+     lines(cbind(time_pred, spl_odds1_pred[,2]), col="3", lty=1, lwd=1)
+     lines(cbind(time_pred, spl_odds2_pred[,2]), col="4", lty=1, lwd=1)
+     lines(cbind(time_pred, spl_normal1_pred[,2]), col="5", lty=1, lwd=1)
+     lines(cbind(time_pred, spl_normal2_pred[,2]), col="6", lty=1, lwd=1)
+     legend("topright", legend= lbls_spline, col=1:6, lty=1, cex=0.8)
+}
+
+#parametric curves
+plot(cbind(time_pred[-1], tp_gr_1[,2]), 
+     main ="C: Annual transition probability (parametric curves)", xlab = "time", 
+     ylab = "annual transition probability", ylim=c(0,1), col="1", type="l", 
+     lty=1, lwd=1)
+    lines(cbind(time_pred[-1], tp_gr_1[,3]), col="2", lty=1, lwd=1)
+    lines(cbind(time_pred[-1], tp_gr_1[,4]), col="3", lty=1, lwd=1)
+    lines(cbind(time_pred[-1], tp_gr_1[,5]), col="4", lty=1, lwd=1)
+    lines(cbind(time_pred[-1], tp_gr_1[,6]), col="5", lty=1, lwd=1)
+    lines(cbind(time_pred[-1], tp_gr_1[,7]), col="6", lty=1, lwd=1)
+    lines(cbind(time_pred[-1], tp_gr_1[,8]), col="7", lty=1, lwd=1)
+    legend("topleft", legend= lbls, col=1:7, lty=1, cex=0.8) 
+    
+#spline curves
+if (show_spline == TRUE){
+  plot(cbind(time_pred[-1], tp_gr_1[,9]), 
+     main ="D: Annual transition probability (spline curves)", xlab = "time", 
+     ylab = "annual transition probability", ylim=c(0,1), col="1", type="l",
+     lty=1, lwd=1)
+    lines(cbind(time_pred[-1], tp_gr_1[,10]), col="2", lty=1, lwd=1)
+    lines(cbind(time_pred[-1], tp_gr_1[,11]), col="3", lty=1, lwd=1)
+    lines(cbind(time_pred[-1], tp_gr_1[,12]), col="4", lty=1, lwd=1)
+    lines(cbind(time_pred[-1], tp_gr_1[,13]), col="5", lty=1, lwd=1)
+    lines(cbind(time_pred[-1], tp_gr_1[,14]), col="6", lty=1, lwd=1)
+    legend("topleft", legend= lbls_spline, col=1:6, lty=1, cex=0.8)
+}
+```
+
+##`r paste("Group", group_names[2])`
+```{r validate_extrapolation2, echo=FALSE, eval=if (ngroups>1) {TRUE} else {FALSE}, comment=NA}
+#survival over time (years)
+round(extrapolation_gr_2[1 + time_pred_surv_table,], 3)[,1:8]
+if (show_spline == TRUE){
+round(extrapolation_gr_2[1 + time_pred_surv_table,], 3)[,c(1,9:12)]
+round(extrapolation_gr_2[1 + time_pred_surv_table,], 3)[,c(1,13:14)]
+}
+#annual transition probabilities
+print(summary(round(tp_gr_2[,2:cols_extr], 4)))
+
+#parametric curves
+plot(km[2], lwd=2, col="black", main ="A: Kaplan-Meier (parametric curves)", xlab = "time", 
+         ylab = "survival", xlim=c(0,time_horizon))
+    lines(cbind(time_pred, expo_pred[,3]), col="1", lty=3, lwd=1) 
+    lines(cbind(time_pred, weib_pred[,3]), col="2", lty=3, lwd=1)
+    lines(cbind(time_pred, gom_pred[,3]), col="3", lty=3, lwd=1)
+    lines(cbind(time_pred, lnorm_pred[,3]), col="4", lty=3, lwd=1)
+    lines(cbind(time_pred, llog_pred[,3]), col="5", lty=3, lwd=1)
+    lines(cbind(time_pred, gam_pred[,3]), col="6", lty=3, lwd=1)
+    lines(cbind(time_pred, ggam_pred[,3]), col="7", lty=3, lwd=1)
+    legend("topright", legend= lbls, col=1:7, lty=3, cex=0.8)  
+
+
+#spline curves
+if (show_spline == TRUE){
+  plot(km[2], lwd=2, col="black", main ="B: Kaplan-Meier (spline curves)", xlab = "time", 
+     ylab = "survival", xlim=c(0,time_horizon))
+     lines(cbind(time_pred, spl_hazard1_pred[,3]), col="1", lty=3, lwd=1)
+     lines(cbind(time_pred, spl_hazard2_pred[,3]), col="2", lty=3, lwd=1)
+     lines(cbind(time_pred, spl_odds1_pred[,3]), col="3", lty=3, lwd=1)
+     lines(cbind(time_pred, spl_odds2_pred[,3]), col="4", lty=3, lwd=1)
+     lines(cbind(time_pred, spl_normal1_pred[,3]), col="5", lty=3, lwd=1)
+     lines(cbind(time_pred, spl_normal2_pred[,3]), col="6", lty=3, lwd=1)
+     legend("topright", legend= lbls_spline, col=1:6, lty=3, cex=0.8)    
+}
+    
+#parametric curves
+plot(cbind(time_pred[-1], tp_gr_2[,2]), 
+     main ="C: Annual transition probability (parametric curves)", xlab = "time", 
+     ylab = "annual transition probability", ylim=c(0,1), col="1", type="l", 
+     lty=3, lwd=1)
+    lines(cbind(time_pred[-1], tp_gr_2[,3]), col="2", lty=3, lwd=1)
+    lines(cbind(time_pred[-1], tp_gr_2[,4]), col="3", lty=3, lwd=1)
+    lines(cbind(time_pred[-1], tp_gr_2[,5]), col="4", lty=3, lwd=1)
+    lines(cbind(time_pred[-1], tp_gr_2[,6]), col="5", lty=3, lwd=1)
+    lines(cbind(time_pred[-1], tp_gr_2[,7]), col="6", lty=3, lwd=1)
+    lines(cbind(time_pred[-1], tp_gr_2[,8]), col="7", lty=3, lwd=1)
+    legend("topleft", legend= lbls, col=1:7, lty=3, cex=0.8) 
+    
+#spline curves
+if (show_spline == TRUE){
+  plot(cbind(time_pred[-1], tp_gr_2[,9]), 
+     main ="D: Annual transition probability (spline curves)", xlab = "time", 
+     ylab = "annual transition probability", ylim=c(0,1), col="1", type="l",
+     lty=3, lwd=1)
+    lines(cbind(time_pred[-1], tp_gr_2[,10]), col="2", lty=3, lwd=1)
+    lines(cbind(time_pred[-1], tp_gr_2[,11]), col="3", lty=3, lwd=1)
+    lines(cbind(time_pred[-1], tp_gr_2[,12]), col="4", lty=3, lwd=1)
+    lines(cbind(time_pred[-1], tp_gr_2[,13]), col="5", lty=3, lwd=1)
+    lines(cbind(time_pred[-1], tp_gr_2[,14]), col="6", lty=3, lwd=1)
+    legend("topleft", legend= lbls_spline, col=1:6, lty=3, cex=0.8)
+}
+```
+
+##`r paste("Group", group_names[3])`
+```{r validate_extrapolation3, echo=FALSE, eval=if (ngroups>2) {TRUE} else {FALSE}, comment=NA}
+#survival over time (years)
+round(extrapolation_gr_3[1 + time_pred_surv_table,], 3)[,1:8]
+if (show_spline == TRUE){
+round(extrapolation_gr_3[1 + time_pred_surv_table,], 3)[,c(1,9:12)]
+round(extrapolation_gr_3[1 + time_pred_surv_table,], 3)[,c(1,13:14)]
+}
+#annual transition probabilities
+print(summary(round(tp_gr_3[,2:cols_extr], 4)))
+
+#parametric curves
+plot(km[3], lwd=2, col="black", main ="A: Kaplan-Meier (parametric curves)", xlab = "time", 
+         ylab = "survival", xlim=c(0,time_horizon))
+    lines(cbind(time_pred, expo_pred[,4]), col="1", lty=2, lwd=1)
+    lines(cbind(time_pred, weib_pred[,4]), col="2", lty=2, lwd=1)
+    lines(cbind(time_pred, gom_pred[,4]), col="3", lty=2, lwd=1)
+    lines(cbind(time_pred, lnorm_pred[,4]), col="4", lty=2, lwd=1)
+    lines(cbind(time_pred, llog_pred[,4]), col="5", lty=2, lwd=1)
+    lines(cbind(time_pred, gam_pred[,4]), col="6", lty=2, lwd=1)
+    lines(cbind(time_pred, ggam_pred[,4]), col="7", lty=2, lwd=1)
+    legend("topright", legend= lbls, col=1:7, lty=2, cex=0.8)   
+
+#spline curves
+if (show_spline == TRUE){
+  plot(km[3], lwd=2, col="black", main ="B: Kaplan-Meier (spline curves)", xlab = "time", 
+     ylab = "survival", xlim=c(0,time_horizon))
+     lines(cbind(time_pred, spl_hazard1_pred[,4]), col="1", lty=2, lwd=1)
+     lines(cbind(time_pred, spl_hazard2_pred[,4]), col="2", lty=2, lwd=1)
+     lines(cbind(time_pred, spl_odds1_pred[,4]), col="3", lty=2, lwd=1)
+     lines(cbind(time_pred, spl_odds2_pred[,4]), col="4", lty=2, lwd=1)
+     lines(cbind(time_pred, spl_normal1_pred[,4]), col="5", lty=2, lwd=1)
+     lines(cbind(time_pred, spl_normal2_pred[,4]), col="6", lty=2, lwd=1)
+     legend("topright", legend= lbls_spline, col=1:6, lty=2, cex=0.8)
+}
+
+#parametric curves
+plot(cbind(time_pred[-1], tp_gr_3[,2]), 
+     main ="C: Annual transition probability (parametric curves)", xlab = "time", 
+     ylab = "annual transition probability", ylim=c(0,1), col="1", type="l", 
+     lty=2, lwd=1)
+    lines(cbind(time_pred[-1], tp_gr_3[,3]), col="2", lty=2, lwd=1)
+    lines(cbind(time_pred[-1], tp_gr_3[,4]), col="3", lty=2, lwd=1)
+    lines(cbind(time_pred[-1], tp_gr_3[,5]), col="4", lty=2, lwd=1)
+    lines(cbind(time_pred[-1], tp_gr_3[,6]), col="5", lty=2, lwd=1)
+    lines(cbind(time_pred[-1], tp_gr_3[,7]), col="6", lty=2, lwd=1)
+    lines(cbind(time_pred[-1], tp_gr_3[,8]), col="7", lty=2, lwd=1)
+    legend("topleft", legend= lbls, col=1:7, lty=2, cex=0.8) 
+    
+#spline curves
+if (show_spline == TRUE){
+plot(cbind(time_pred[-1], tp_gr_3[,9]), 
+     main ="D: Annual transition probability (spline curves)", xlab = "time", 
+     ylab = "annual transition probability", ylim=c(0,1), col="1", type="l",
+     lty=2, lwd=1)
+    lines(cbind(time_pred[-1], tp_gr_3[,10]), col="2", lty=2, lwd=1)
+    lines(cbind(time_pred[-1], tp_gr_3[,11]), col="3", lty=2, lwd=1)
+    lines(cbind(time_pred[-1], tp_gr_3[,12]), col="4", lty=2, lwd=1)
+    lines(cbind(time_pred[-1], tp_gr_3[,13]), col="5", lty=2, lwd=1)
+    lines(cbind(time_pred[-1], tp_gr_3[,14]), col="6", lty=2, lwd=1)
+    legend("topleft", legend= lbls_spline, col=1:6, lty=2, cex=0.8)
+}
+```
