@@ -2,13 +2,13 @@
 title: "PERSUADE OUTPUT"
 author: "Authors"
 output:
-  pdf_document:
-    toc: yes
   html_document:
     number_sections: yes
     theme: united
     toc: yes
     toc_float: yes
+  pdf_document:
+    toc: yes
 ---
 
 `r Sys.Date()`
@@ -23,7 +23,7 @@ options(scipen=100)                                              #suppress scien
 options(width=95)                                                #to improve lay-out of prediction Tables
 
 #LOAD AND INSTALL PACKAGES AND FUNCTIONS
-packages <- c("rms", "survival", "flexsurv", "muhaz", "survminer", "ggplot2", "data.table", "printr")
+packages <- c("rms", "survival", "flexsurv", "muhaz", "survminer", "ggplot2", "data.table", "printr", "summarytools", "knitr")
 suppressPackageStartupMessages(lapply(packages, require, character.only = TRUE))
 
 source("20.06.22 - PERSUADE function.R")
@@ -645,15 +645,6 @@ Are/is the selected model(s) plausible in comparison with general population mor
 
 ##`r paste("Group", group_names[1])`
 ```{r validate_extrapolation1, echo=FALSE, comment=NA}
-#survival over time (years)
-round(extrapolation_gr_1[1 + time_pred_surv_table,], 3)[,1:8]
-if (show_spline == TRUE){
-round(extrapolation_gr_1[1 + time_pred_surv_table,], 3)[,c(1,9:12)]
-round(extrapolation_gr_1[1 + time_pred_surv_table,], 3)[,c(1,13:14)]
-}
-#annual transition probabilities
-print(summary(round(tp_gr_1[,2:cols_extr], 4)))
-
 #parametric curves
 plot(km[1], lwd=2, col="black", main ="A: Kaplan-Meier (parametric curves)", xlab = "time", 
      ylab = "survival", xlim=c(0,time_horizon))
@@ -679,6 +670,9 @@ plot(km[1], lwd=2, col="black", main ="B: Kaplan-Meier (spline curves)", xlab = 
      legend("topright", legend= lbls_spline, col=1:6, lty=1, cex=0.8)
 }
 
+kable(t(round(extrapolation_gr_1[1 + time_pred_surv_table,], 3))[-1,],
+      col.names=paste("T=",extrapolation_gr_1[1 + time_pred_surv_table,][,1]))    
+    
 #parametric curves
 plot(cbind(time_pred[-1], tp_gr_1[,2]), 
      main ="C: Annual transition probability (parametric curves)", xlab = "time", 
@@ -705,19 +699,14 @@ if (show_spline == TRUE){
     lines(cbind(time_pred[-1], tp_gr_1[,14]), col="6", lty=1, lwd=1)
     legend("topleft", legend= lbls_spline, col=1:6, lty=1, cex=0.8)
 }
+
+suppressWarnings(kable(descr(round(tp_gr_1[,2:cols_extr], 4), 
+                             stats = "fivenum", transpose = TRUE)))        
+    
 ```
 
 ##`r paste("Group", group_names[2])`
 ```{r validate_extrapolation2, echo=FALSE, eval=if (ngroups>1) {TRUE} else {FALSE}, comment=NA}
-#survival over time (years)
-round(extrapolation_gr_2[1 + time_pred_surv_table,], 3)[,1:8]
-if (show_spline == TRUE){
-round(extrapolation_gr_2[1 + time_pred_surv_table,], 3)[,c(1,9:12)]
-round(extrapolation_gr_2[1 + time_pred_surv_table,], 3)[,c(1,13:14)]
-}
-#annual transition probabilities
-print(summary(round(tp_gr_2[,2:cols_extr], 4)))
-
 #parametric curves
 plot(km[2], lwd=2, col="black", main ="A: Kaplan-Meier (parametric curves)", xlab = "time", 
          ylab = "survival", xlim=c(0,time_horizon))
@@ -743,7 +732,10 @@ if (show_spline == TRUE){
      lines(cbind(time_pred, spl_normal2_pred[,3]), col="6", lty=3, lwd=1)
      legend("topright", legend= lbls_spline, col=1:6, lty=3, cex=0.8)    
 }
-    
+
+kable(t(round(extrapolation_gr_2[1 + time_pred_surv_table,], 3))[-1,],
+      col.names=paste("T=",extrapolation_gr_2[1 + time_pred_surv_table,][,1]))    
+        
 #parametric curves
 plot(cbind(time_pred[-1], tp_gr_2[,2]), 
      main ="C: Annual transition probability (parametric curves)", xlab = "time", 
@@ -770,19 +762,14 @@ if (show_spline == TRUE){
     lines(cbind(time_pred[-1], tp_gr_2[,14]), col="6", lty=3, lwd=1)
     legend("topleft", legend= lbls_spline, col=1:6, lty=3, cex=0.8)
 }
+    
+suppressWarnings(kable(descr(round(tp_gr_2[,2:cols_extr], 4), 
+                             stats = "fivenum", transpose = TRUE)))      
+    
 ```
 
 ##`r paste("Group", group_names[3])`
 ```{r validate_extrapolation3, echo=FALSE, eval=if (ngroups>2) {TRUE} else {FALSE}, comment=NA}
-#survival over time (years)
-round(extrapolation_gr_3[1 + time_pred_surv_table,], 3)[,1:8]
-if (show_spline == TRUE){
-round(extrapolation_gr_3[1 + time_pred_surv_table,], 3)[,c(1,9:12)]
-round(extrapolation_gr_3[1 + time_pred_surv_table,], 3)[,c(1,13:14)]
-}
-#annual transition probabilities
-print(summary(round(tp_gr_3[,2:cols_extr], 4)))
-
 #parametric curves
 plot(km[3], lwd=2, col="black", main ="A: Kaplan-Meier (parametric curves)", xlab = "time", 
          ylab = "survival", xlim=c(0,time_horizon))
@@ -808,6 +795,9 @@ if (show_spline == TRUE){
      legend("topright", legend= lbls_spline, col=1:6, lty=2, cex=0.8)
 }
 
+kable(t(round(extrapolation_gr_3[1 + time_pred_surv_table,], 3))[-1,],
+      col.names=paste("T=",extrapolation_gr_3[1 + time_pred_surv_table,][,1]))    
+    
 #parametric curves
 plot(cbind(time_pred[-1], tp_gr_3[,2]), 
      main ="C: Annual transition probability (parametric curves)", xlab = "time", 
@@ -834,4 +824,8 @@ plot(cbind(time_pred[-1], tp_gr_3[,9]),
     lines(cbind(time_pred[-1], tp_gr_3[,14]), col="6", lty=2, lwd=1)
     legend("topleft", legend= lbls_spline, col=1:6, lty=2, cex=0.8)
 }
+    
+suppressWarnings(kable(descr(round(tp_gr_3[,2:cols_extr], 4), 
+                             stats = "fivenum", transpose = TRUE)))      
+    
 ```
