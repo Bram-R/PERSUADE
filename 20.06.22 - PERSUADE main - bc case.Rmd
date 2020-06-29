@@ -702,7 +702,7 @@ if (show_spline == TRUE){
     legend("topleft", legend= lbls_spline, col=1:6, lty=1, cex=0.8)
 }
 
-suppressWarnings(kable(descr(round(tp_gr_1[,2:cols_extr], 4), 
+suppressWarnings(kable(descr(tp_gr_1[,2:cols_extr], 
                              stats = "fivenum", transpose = TRUE)))        
     
 ```
@@ -765,7 +765,7 @@ if (show_spline == TRUE){
     legend("topleft", legend= lbls_spline, col=1:6, lty=3, cex=0.8)
 }
     
-suppressWarnings(kable(descr(round(tp_gr_2[,2:cols_extr], 4), 
+suppressWarnings(kable(descr(tp_gr_2[,2:cols_extr], 
                              stats = "fivenum", transpose = TRUE)))      
     
 ```
@@ -827,7 +827,7 @@ plot(cbind(time_pred[-1], tp_gr_3[,9]),
     legend("topleft", legend= lbls_spline, col=1:6, lty=2, cex=0.8)
 }
     
-suppressWarnings(kable(descr(round(tp_gr_3[,2:cols_extr], 4), 
+suppressWarnings(kable(descr(tp_gr_3[,2:cols_extr],
                              stats = "fivenum", transpose = TRUE)))      
     
 ```
