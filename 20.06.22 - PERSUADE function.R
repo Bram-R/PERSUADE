@@ -185,12 +185,12 @@ PERSUADE <- function(years, status, group, strata = FALSE, time_unit,
                                                                 gam_pred[,4], ggam_pred[,4])}
   }
   
-  lbls_all <- if (spline_mod == TRUE){c("Time", "Exponential", "Weibull", "Gompertz", "Lognormal", "Loglogistic", 
-                                        "Gamma", "Generalised Gamma", "Spline 1 knot hazard", "Spline 2 knots hazard",
-                                        "Spline 1 knot odds", "Spline 2 knots odds", "Spline 1 knot normal",
-                                        "Spline 2 knots normal")} else {
-                                          c("Time", "Exponential", "Weibull", "Gompertz", "Lognormal", "Loglogistic", 
-                                            "Gamma", "Generalised Gamma")
+  lbls_all <- if (spline_mod == TRUE){c("Time", " 1. Exponential", " 2. Weibull", " 3. Gompertz", " 4. Lognormal", " 5. Loglogistic", 
+                                        " 6. Gamma", " 7. Generalised Gamma", " 8. Spline 1 knot hazard", " 9. Spline 2 knots hazard",
+                                        "10. Spline 1 knot odds", "11. Spline 2 knots odds", "12. Spline 1 knot normal",
+                                        "13. Spline 2 knots normal")} else {
+                                          c("Time", "1. Exponential", "2. Weibull", "3. Gompertz", "4. Lognormal", "5. Loglogistic", 
+                                            "6. Gamma", "7. Generalised Gamma")
                                         }
   
   colnames(extrapolation_gr_1) <- lbls_all
@@ -221,19 +221,19 @@ PERSUADE <- function(years, status, group, strata = FALSE, time_unit,
   #create output dataframe containing each distributions' name, the parameters' name, the parameters, the covariance matrix and the knots (if applicable)
   
   #distributions names
-  distnames <- if (spline_mod == TRUE) {c(rep("Exponential", nrow(expo$res.t)), rep("Weibull",nrow(weib$res.t)), 
-                                          rep("Gompertz",nrow(gom$res.t)), rep("Lognormal",nrow(lnorm$res.t)),
-                                          rep("Loglogistic",nrow(llog$res.t)), rep("Gamma",nrow(gam$res.t)),
-                                          rep("Generalisedgamma",nrow(ggam$res.t)), rep("1-knot spline hazard", nrow(spl_hazard1$res.t)),
-                                          rep("1-knot spline odds", nrow(spl_odds1$res.t)), 
-                                          rep("1-knot spline normal", nrow(spl_normal1$res.t)),
-                                          rep("2-knot spline hazard", nrow(spl_hazard2$res.t)), 
-                                          rep("2-knot spline odds", nrow(spl_odds2$res.t)),
-                                          rep("2-knot spline normal", nrow(spl_normal2$res.t)))} else {
-                                            c(rep("Exponential", nrow(expo$res.t)), rep("Weibull",nrow(weib$res.t)), 
-                                              rep("Gompertz",nrow(gom$res.t)), rep("Lognormal",nrow(lnorm$res.t)),
-                                              rep("Loglogistic",nrow(llog$res.t)), rep("Gamma",nrow(gam$res.t)),
-                                              rep("Generalisedgamma",nrow(ggam$res.t)))
+  distnames <- if (spline_mod == TRUE) {c(rep("1. Exponential", nrow(expo$res.t)), rep("2. Weibull",nrow(weib$res.t)), 
+                                          rep("3. Gompertz",nrow(gom$res.t)), rep("4. Lognormal",nrow(lnorm$res.t)),
+                                          rep("5. Loglogistic",nrow(llog$res.t)), rep("6. Gamma",nrow(gam$res.t)),
+                                          rep("7. Generalisedgamma",nrow(ggam$res.t)), rep("8. 1-knot spline hazard", nrow(spl_hazard1$res.t)),
+                                          rep("9. 1-knot spline odds", nrow(spl_odds1$res.t)), 
+                                          rep("10. 1-knot spline normal", nrow(spl_normal1$res.t)),
+                                          rep("11. 2-knot spline hazard", nrow(spl_hazard2$res.t)), 
+                                          rep("12. 2-knot spline odds", nrow(spl_odds2$res.t)),
+                                          rep("13. 2-knot spline normal", nrow(spl_normal2$res.t)))} else {
+                                            c(rep("1. Exponential", nrow(expo$res.t)), rep("2. Weibull",nrow(weib$res.t)), 
+                                              rep("3. Gompertz",nrow(gom$res.t)), rep("4. Lognormal",nrow(lnorm$res.t)),
+                                              rep("5. Loglogistic",nrow(llog$res.t)), rep("6. Gamma",nrow(gam$res.t)),
+                                              rep("7. Generalisedgamma",nrow(ggam$res.t)))
                                           }
   
   #parameters' names

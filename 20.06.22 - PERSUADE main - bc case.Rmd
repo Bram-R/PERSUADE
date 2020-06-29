@@ -55,7 +55,8 @@ PERSUADE(years = years, status = status, group = group,
 
 #Kaplan Meier
 ```{r plot_KM, echo=FALSE}
-if (ngroups>1) {
+suppressWarnings(
+  if (ngroups>1) {
   ggsurvplot(surv_fit(form, data = data.frame(years, status, group)), linetype=c("strata"), 
            legend.labs = group_names, risk.table = TRUE, conf.int = TRUE, 
            conf.int.style = "ribbon", surv.median.line = "hv",  ncensor.plot = FALSE, 
@@ -64,6 +65,7 @@ if (ngroups>1) {
            legend.labs = group_names, risk.table = TRUE, conf.int = TRUE, 
            conf.int.style = "ribbon", surv.median.line = "hv",  ncensor.plot = FALSE, 
            censor = TRUE, ggtheme = theme_light())}
+)
 ```
 
 #Stratified models?
