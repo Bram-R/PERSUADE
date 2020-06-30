@@ -1,6 +1,6 @@
 PERSUADE <- function(years, status, group, strata = FALSE, time_unit, 
-                                time_horizon, time_pred_surv_table, spline_mod = FALSE, csv_semicolon=FALSE,
-                                csv_comma=FALSE, clipboard=FALSE) {
+                     time_horizon, time_pred_surv_table, spline_mod = FALSE, csv_semicolon=FALSE,
+                     csv_comma=FALSE, clipboard=FALSE) {
   
   #number of groups
   group <<- droplevels(group)                #drop unused levels
@@ -33,27 +33,21 @@ PERSUADE <- function(years, status, group, strata = FALSE, time_unit,
   
   #fit parameteric models
   expo  <<- flexsurvreg(form, dist="exp")
-  
   weib  <<- if (strata == FALSE) flexsurvreg(form, dist="weibull") else {
     flexsurvreg(form, anc= list(shape= ~ group), dist="weibull")}
-  
   gom  <<- if (strata == FALSE) flexsurvreg(form, dist="gompertz") else {
     flexsurvreg(form, anc= list(shape= ~ group), dist="gompertz")}
-  
   lnorm  <<- if (strata == FALSE) flexsurvreg(form, dist="lnorm") else {
     flexsurvreg(form, anc= list(sdlog= ~ group),dist="lnorm")}
-  
   llog  <<- if (strata == FALSE) flexsurvreg(form, dist="llogis") else {
     flexsurvreg(form, anc= list(shape= ~ group), dist="llogis")}
-  
   gam  <<- if (strata == FALSE) flexsurvreg(form, dist="gamma") else {
     flexsurvreg(form, anc= list(shape= ~ group), dist="gamma")}
-  
   ggam  <<- if (strata == FALSE) flexsurvreg(form, dist="gengamma") else {
     flexsurvreg(form, anc= list(sigma= ~ group, Q= ~ group ), dist="gengamma")}
   
-  lbls  <<- c("Exponential", "Weibull", "Gompertz", "Lognormal", "Loglogistic", "Gamma", 
-              "Generalised Gamma")
+  lbls  <<- c("1. Exponential", "2. Weibull", "3. Gompertz", "4. Lognormal", "5. Loglogistic", "6. Gamma", 
+              "7. Generalised Gamma")
   
   #calculate AIC and BIC
   AIC <- c(expo$AIC, weib$AIC, gom$AIC, lnorm$AIC, llog$AIC, gam$AIC, ggam$AIC)
@@ -68,25 +62,21 @@ PERSUADE <- function(years, status, group, strata = FALSE, time_unit,
     k <- 1 #number of splines
     spl_hazard1  <<- if (strata == FALSE) {flexsurvspline(form, k=k, scale="hazard")} else { 
       flexsurvspline(form, k=k, scale="hazard", anc= list(gamma1 = ~ group, gamma2 = ~ group))}
-    
     spl_odds1  <<- if (strata == FALSE) {flexsurvspline(form, k=k, scale="odds")} else { 
       flexsurvspline(form, k=k, scale="odds", anc= list(gamma1 = ~ group, gamma2 = ~ group))}
-    
     spl_normal1  <<- if (strata == FALSE) {flexsurvspline(form, k=k, scale="normal")} else { 
       flexsurvspline(form, k=k, scale="normal", anc= list(gamma1 = ~ group, gamma2 = ~ group))}     
     
     k <- 2 #number of splines
     spl_hazard2  <<- if (strata == FALSE) {flexsurvspline(form, k=k, scale="hazard")} else { 
       flexsurvspline(form, k=k, scale="hazard", anc= list(gamma1 = ~ group, gamma2 = ~ group, gamma3 = ~ group))}
-    
     spl_odds2  <<- if (strata == FALSE) {flexsurvspline(form, k=k, scale="odds")} else { 
       flexsurvspline(form, k=k, scale="odds", anc= list(gamma1 = ~ group, gamma2 = ~ group, gamma3 = ~ group))}
-    
     spl_normal2  <<- if (strata == FALSE) {flexsurvspline(form, k=k, scale="normal")} else { 
       flexsurvspline(form, k=k, scale="normal", anc= list(gamma1 = ~ group, gamma2 = ~ group, gamma3 = ~ group))} 
     
-    lbls_spline  <<- c("Spline 1 knot hazard", "Spline 2 knots hazard", "Spline 1 knot odds", 
-                       "Spline 2 knots odds", "Spline 1 knot normal", "Spline 2 knots normal")
+    lbls_spline  <<- c("8. Spline 1 knot hazard", "9. Spline 2 knots hazard", "10. Spline 1 knot odds", 
+                       "11. Spline 2 knots odds", "12. Spline 1 knot normal", "13. Spline 2 knots normal")
     
     #calculate AIC and BIC
     AIC_spl <- c(spl_hazard1$AIC, spl_odds1$AIC, spl_normal1$AIC, spl_hazard2$AIC, spl_odds2$AIC, spl_normal2$AIC)
@@ -98,7 +88,7 @@ PERSUADE <- function(years, status, group, strata = FALSE, time_unit,
   }
   #predicted values parametric models
   column_names <- c("Time", group_names)
-
+  
   expo_est  <<- summary(expo, t=time_pred)
   weib_est  <<- summary(weib, t=time_pred)
   gom_est  <<- summary(gom, t=time_pred)
@@ -107,7 +97,7 @@ PERSUADE <- function(years, status, group, strata = FALSE, time_unit,
   llog_est  <<- summary(llog, t=time_pred)
   gam_est  <<- summary(gam, t=time_pred)
   ggam_est  <<- summary(ggam, t=time_pred)
-
+  
   if (ngroups==1) {
     expo_pred <<- cbind(time_pred, sapply(c(1:ngroups), function (x) expo_est[[1]]$est))
     weib_pred <<- cbind(time_pred, sapply(c(1:ngroups), function (x) weib_est[[1]]$est))
@@ -127,10 +117,10 @@ PERSUADE <- function(years, status, group, strata = FALSE, time_unit,
     gam_pred <<- cbind(time_pred, sapply(c(1:ngroups), function (x) gam_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
     ggam_pred <<- cbind(time_pred, sapply(c(1:ngroups), function (x) ggam_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
   }
-
+  
   colnames(expo_pred) <- colnames(weib_pred) <- colnames(gom_pred) <- colnames(lnorm_pred) <- colnames(llog_pred) <-
     colnames(gam_pred) <- colnames(ggam_pred) <- column_names
-
+  
   if (spline_mod == TRUE) {
     spl_hazard1_est <<- summary(spl_hazard1, t=time_pred)
     spl_hazard2_est <<- summary(spl_hazard2, t=time_pred)
@@ -268,7 +258,7 @@ PERSUADE <- function(years, status, group, strata = FALSE, time_unit,
                                         cbind(spl_hazard1$cov,  matrix(0, nrow = ngroups + 2 * addrows, ncol = 1* addcols)), 
                                         cbind(spl_odds1$cov,  matrix(0, nrow = ngroups + 2 * addrows, ncol = 1* addcols)), 
                                         cbind(spl_normal1$cov,  matrix(0, nrow = ngroups + 2 * addrows, ncol = 1* addcols)), 
-                                        spl_hazard2$cov, spl_odds2$cov, spl_normal2$cov)} else { # THIS ONE NEEDS TO BE CHECKED BECAUSE I THINK THIS IS NOT GOING TO GO WELL
+                                        spl_hazard2$cov, spl_odds2$cov, spl_normal2$cov)} else { 
                                           rbind(cbind(expo$cov, matrix(0, nrow = ngroups, ncol = if (strata == FALSE) {3} else {ifelse(ngroups == 2, 6, 9)})), 
                                                 cbind(weib$cov, matrix(0, nrow = ngroups + 1 * addrows, ncol = 2 * addcols)), 
                                                 cbind(gom$cov,  matrix(0, nrow = ngroups + 1 * addrows, ncol = 2 * addcols)),  
@@ -276,7 +266,6 @@ PERSUADE <- function(years, status, group, strata = FALSE, time_unit,
                                                 cbind(llog$cov,  matrix(0, nrow = ngroups + 1 * addrows, ncol = 2 * addcols)), 
                                                 cbind(gam$cov,  matrix(0, nrow = ngroups + 1 * addrows, ncol = 2 * addcols)), 
                                                 cbind(ggam$cov,  matrix(0, nrow = ngroups + 2 * addrows, ncol = 1* addcols)))
-                                          
                                         }
   
   Survmod <- cbind(distnames, parnames, res, empty, empty, empty, cov)
