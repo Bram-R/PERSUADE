@@ -2,19 +2,19 @@
 title: "PERSUADE OUTPUT"
 author: "Authors"
 output:
+  pdf_document:
+    toc: yes
   html_document:
     number_sections: yes
     theme: united
     toc: yes
     toc_float: yes
-  pdf_document:
-    toc: yes
 ---
 
 `r Sys.Date()`
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo=TRUE, fig.align="left")
+knitr::opts_chunk$set(echo=TRUE, fig.align="left", fig.width=4, fig.height=3)
 ```
 
 ```{r preparation, echo=FALSE, warning = FALSE, message = FALSE, results = "hide"}
