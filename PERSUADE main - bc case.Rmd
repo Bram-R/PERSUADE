@@ -26,7 +26,7 @@ options(width=95)                                                #to improve lay
 packages <- c("rms", "survival", "flexsurv", "muhaz", "survminer", "ggplot2", "data.table", "printr", "summarytools", "knitr")
 suppressPackageStartupMessages(lapply(packages, require, character.only = TRUE))
 
-source("20.06.22 - PERSUADE function.R")
+source("PERSUADE function.R")
 
 #COLOUR PALETTE
 n <- 8 #number of different colors (to be used for palette)
