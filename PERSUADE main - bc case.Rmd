@@ -2,28 +2,30 @@
 title: "PERSUADE OUTPUT"
 author: "Authors"
 output:
-  pdf_document:
-    toc: yes
-  html_document:
-    number_sections: yes
-    theme: united
-    toc: yes
-    toc_float: yes
+    pdf_document:
+      toc: yes    
+    html_document:
+      number_sections: yes
+      theme: united
+      toc: yes
+      toc_float: yes
+
 ---
 
 `r Sys.Date()`
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo=TRUE, fig.align="left", fig.width=4, fig.height=3)
+knitr::opts_chunk$set(echo=TRUE, fig.align="left")
 ```
+
 
 ```{r preparation, echo=FALSE, warning = FALSE, message = FALSE, results = "hide"}
 rm(list = setdiff(ls(), lsf.str()))                              #remove all objects except functions
 options(scipen=100)                                              #suppress scientific notation
-options(width=95)                                                #to improve lay-out of prediction Tables
 
 #LOAD AND INSTALL PACKAGES AND FUNCTIONS
-packages <- c("rms", "survival", "flexsurv", "muhaz", "survminer", "ggplot2", "data.table", "printr", "summarytools", "knitr")
+packages <- c("rms", "survival", "flexsurv", "muhaz", "survminer", "ggplot2", "data.table", 
+              "summarytools", "knitr", "kableExtra")
 suppressPackageStartupMessages(lapply(packages, require, character.only = TRUE))
 
 source("PERSUADE function.R")
@@ -32,6 +34,10 @@ source("PERSUADE function.R")
 n <- 8 #number of different colors (to be used for palette)
 palette(rainbow(n=n, s = 1, v = 1, start = 0, end = max(1, n - 1)/n, alpha = 1))
 
+```
+
+
+```{r input, echo=FALSE, warning = FALSE, message = FALSE, results = "hide"}
 #INPUT DATA
 years <- bc$recyrs                                #time in years
 status <- bc$censrec                              #status / event variable
@@ -39,13 +45,14 @@ group <- bc$group                                 #grouping variable, please ame
 
 years <- as.numeric(years)	                      #time variable should be numeric
 status <- as.numeric(status)                      #status / event variable should be numeric
-group <- as.factor(group)	                      	#group variable should be a factor, please amend the names of the groups here if you wish
+group <- as.factor(group)	                      	#group variable should be a factor
 
 #INPUT TIME POINTS FOR PREDICTED SURVIVAL TABLE
 time_pred_surv_table <- c(0, 1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 35) #time points (in years) for predicted survival
 time_unit <- 6/12                                                   #time unit (in years) for predicted survival
 time_horizon <- 40                                                  #time horizon (in years) for predicted survival
 
+#PERSUADE FUNCTION (please adjust TRUE/ FALSE if necessary)
 PERSUADE(years = years, status = status, group = group,  
                     strata = TRUE, time_unit= time_unit, time_horizon = time_horizon,
                     time_pred_surv_table = time_pred_surv_table, spline_mod = TRUE, csv_semicolon=FALSE,
@@ -53,7 +60,7 @@ PERSUADE(years = years, status = status, group = group,
 
 ```
 
-#Kaplan Meier
+#Kaplan-Meier
 ```{r plot_KM, echo=FALSE}
 suppressWarnings(
   if (ngroups>1) {
@@ -68,9 +75,12 @@ suppressWarnings(
 )
 ```
 
+\newpage
+
 #Stratified models?
 Should stratified parametric survival models be used?
-```{r PH_assumption, echo=FALSE, eval=if (ngroups>1) {TRUE} else {FALSE}}
+```{r PH_assumption, echo=FALSE, eval=if (ngroups>1) {TRUE} else {FALSE}, out.height = "30%"}
+
 plot(cbind(log(km$time), log(-log(km$surv))), main ="A: LN(cumulative hazard)",
      col="black", cex = 0.6, xlab = "LN(time)", ylab = "LN(cumulative hazard)")
 
@@ -91,6 +101,8 @@ plot(cox.zph(cox_reg, terms = FALSE)[2], col="5", lwd=2, xlab = "time",
                                 "regression line"))}
 ```
 
+\newpage
+
 #Monotonic hazard models?
 Should parametric survival models assuming a monotonic hazard rate (i.e. exponential, Weibull, Gompertz) be used?
 ```{r plot_hr, echo=FALSE}
@@ -108,16 +120,18 @@ plot(cbind(hr_smooth1$est.grid, hr_smooth1$haz.est), type="l", col="red", lty=1,
             lty=as.integer(c(1, 3, 2)), cex=0.8)
 ```
 
+\newpage
+
 #Standard parametric models?
 Do standard parametric models provide an appropriate fit to the data?
 ```{r plot_parametric, echo=FALSE}
 pie(rep(1, n), labels =lbls, col = rainbow(n=n, s = 1, v = 1, start = 0, end = max(1, n - 1)/n, 
                                            alpha = 1)) 
-IC[order(IC$AIC),]
+kable_styling(kable(IC[order(IC$AIC),]))
 ```
 
 ##Exponential
-```{r expo, echo=FALSE}
+```{r expo, echo=FALSE, out.height = "30%"}
 #constant hazard
 plot(km, lwd=2, col="black", main ="A: Kaplan-Meier (Exponential)", xlab = "time", 
      ylab = "survival")  
@@ -148,7 +162,7 @@ plot(cbind(km$time, -log(km$surv)), col="black", cex = 0.6,
 ```
 
 ##Weibull
-```{r weib, echo=FALSE}
+```{r weib, echo=FALSE, out.height = "30%"}
 #monotonically increasing or decreasing hazard 
 plot(km, lwd=2, col="black", main ="A: Kaplan-Meier (Weibull)", xlab = "time", 
      ylab = "survival")  
@@ -179,7 +193,7 @@ plot(cbind(log(km$time), log(-log(km$surv))), col="black", cex = 0.6,
 ```
 
 ##Gompertz
-```{r gom, echo=FALSE}
+```{r gom, echo=FALSE, out.height = "30%"}
 #monotonically increasing or decreasing hazard 
 plot(km, lwd=2, col="black", main ="A: Kaplan-Meier (Gompertz)", xlab = "time", 
      ylab = "survival")  
@@ -215,7 +229,7 @@ plot(cbind(c(hr_smooth1$est.grid, if (ngroups>1) {hr_smooth2$est.grid} else {NA}
 ```
 
 ##Lognormal
-```{r lnorm, echo=FALSE}
+```{r lnorm, echo=FALSE, out.height = "30%"}
 #hazard can be non-monotonic with respect to time; initially an increasing hazard, followed by a decreasing hazard
 plot(km, lwd=2, col="black", main ="A: Kaplan-Meier (Log-normal)", xlab = "time", 
      ylab = "survival")  
@@ -253,7 +267,7 @@ plot(cbind(log(km$time), -qnorm(km$surv, mean = 0, sd = 1, lower.tail = TRUE, lo
 ```
 
 ##Loglogistic
-```{r llog, echo=FALSE}
+```{r llog, echo=FALSE, out.height = "30%"}
 #hazard can be non-monotonic with respect to time; initially an increasing hazard, followed by a decreasing hazard
 plot(km, lwd=2, col="black", main ="A: Kaplan-Meier (Log-logistic)", xlab = "time", 
      ylab = "survival")  
@@ -286,7 +300,7 @@ plot(cbind(log(km$time), -log(km$surv/(1-km$surv))), col="black", cex = 0.6,
 ```
 
 ##Gamma
-```{r gam, echo=FALSE}
+```{r gam, echo=FALSE, out.height = "30%"}
 #hazard rate has (inverted) 'U' shape over time
 plot(km, lwd=2, col="black", main ="A: Kaplan-Meier (Gamma)", xlab = "time", 
      ylab = "survival")  
@@ -318,7 +332,7 @@ plot(cbind(log(km$time), log(-log(km$surv))), col="black", cex = 0.6,
 ```
 
 ##Generalised Gamma 
-```{r ggam, echo=FALSE}
+```{r ggam, echo=FALSE, out.height = "30%"}
 #flexible: can take form of Exponential, Weibull, Gamma or Log-normal
 plot(km, lwd=2, col="black", main ="A: Kaplan-Meier (Generalised gamma)", xlab = "time", 
      ylab = "survival")  
@@ -351,6 +365,8 @@ plot(cbind(log(km$time), log(-log(km$surv))), col="black", cex = 0.6,
            lty=as.integer(c(1, 3, 2)), cex=0.8) 
 ```
 
+\newpage
+
 #Parametric spline models?
 If standard parametric models are not appropriate, are spline models a more appropriate fit to the data?
 
@@ -360,12 +376,12 @@ If standard parametric models are not appropriate, are spline models a more appr
 pie(rep(1, n), labels =lbls_spline, col = rainbow(n=n, s = 1, v = 1, start = 0, 
                                                   end = max(1, n - 1)/n, alpha = 1)) 
 
-IC[order(IC$AIC),]
-IC_spl[order(IC_spl$AIC),]
+kable_styling(kable(IC[order(IC$AIC),]))
+kable_styling(kable(IC_spl[order(IC_spl$AIC),]))
 ```
 
 ##Spline hazard 1 knot
-```{r spline_hazard1, echo=FALSE, eval = show_spline}
+```{r spline_hazard1, echo=FALSE, out.height = "30%", eval = show_spline}
 #1 knot
 plot(km, lwd=2, col="black", main ="A: Kaplan-Meier (Spline, 1 knot, hazard scale)", 
      xlab = "time", ylab = "survival")  
@@ -407,7 +423,7 @@ plot(cbind(log(km$time), log(-log(km$surv))), col="black", cex = 0.6,
 ```
 
 ##Spline hazard 2 knots
-```{r spline_hazard2, echo=FALSE, eval = show_spline}
+```{r spline_hazard2, echo=FALSE, out.height = "30%", eval = show_spline}
 #2 knots
 plot(km, lwd=2, col="black", main ="A: Kaplan-Meier (Spline, 2 knots, hazard scale)", 
      xlab = "time", ylab = "survival")  
@@ -452,7 +468,7 @@ plot(cbind(log(km$time), log(-log(km$surv))), col="black", cex = 0.6,
 ```
 
 ##Spline odds 1 knot
-```{r spline_odds1, echo=FALSE, eval = show_spline}
+```{r spline_odds1, echo=FALSE, out.height = "30%", eval = show_spline}
 #1 knot
 plot(km, lwd=2, col="black", main ="A: Kaplan-Meier (Spline, 1 knot, odds scale)", 
      xlab = "time", ylab = "survival")  
@@ -496,7 +512,7 @@ plot(cbind(log(km$time), -log(km$surv/(1-km$surv))), col="black", cex = 0.6,
 ```
 
 ##Spline odds 2 knots
-```{r spline_odds2, echo=FALSE, eval = show_spline}
+```{r spline_odds2, echo=FALSE, out.height = "30%", eval = show_spline}
 #2 knots
 plot(km, lwd=2, col="black", main ="A: Kaplan-Meier (Spline, 2 knots, odds scale)", 
      xlab = "time", ylab = "survival")  
@@ -544,7 +560,7 @@ plot(cbind(log(km$time), -log(km$surv/(1-km$surv))), col="black", cex = 0.6,
 ```
 
 ##Spline normal 1 knot
-```{r spline_norm1, echo=FALSE, eval = show_spline}
+```{r spline_norm1, echo=FALSE, out.height = "30%", eval = show_spline}
 #1 knot
 plot(km, lwd=2, col="black", main ="A: Kaplan-Meier (Spline, 1 knot, normal scale)", 
      xlab = "time", ylab = "survival")  
@@ -591,7 +607,7 @@ plot(cbind(log(km$time), -qnorm(km$surv, mean = 0, sd = 1, lower.tail = TRUE, lo
 ```
 
 ##Spline normal 2 knots
-```{r spline_norm2, echo=FALSE, eval = show_spline}
+```{r spline_norm2, echo=FALSE, out.height = "30%", eval = show_spline}
 #2 knots
 plot(km, lwd=2, col="black", main ="A: Kaplan-Meier (Spline, 2 knots, normal scale)", 
      xlab = "time", ylab = "survival")  
@@ -640,13 +656,14 @@ plot(cbind(log(km$time), -qnorm(km$surv, mean = 0, sd = 1, lower.tail = TRUE, lo
            lty=as.integer(c(1, 3, 2)), cex=0.8) 
 ```
 
+\newpage
 
 #Validity of long-term extrapolation?
 What model(s) is/are more appropriate for long-term extrapolation?
 Are/is the selected model(s) plausible in comparison with general population mortality?
 
 ##`r paste("Group", group_names[1])`
-```{r validate_extrapolation1, echo=FALSE, comment=NA}
+```{r validate_extrapolation1, echo=FALSE, out.height = "30%", comment=NA}
 #parametric curves
 plot(km[1], lwd=2, col="black", main ="A: Kaplan-Meier (parametric curves)", xlab = "time", 
      ylab = "survival", xlim=c(0,time_horizon))
@@ -672,8 +689,9 @@ plot(km[1], lwd=2, col="black", main ="B: Kaplan-Meier (spline curves)", xlab = 
      legend("topright", legend= lbls_spline, col=1:6, lty=1, cex=0.8)
 }
 
-kable(t(round(extrapolation_gr_1[1 + time_pred_surv_table,], 3))[-1,],
-      col.names=paste("T=",extrapolation_gr_1[1 + time_pred_surv_table,][,1]))    
+kable_styling(kable(t(round(extrapolation_gr_1[1 + time_pred_surv_table,], 3))[-1,],
+      col.names=paste("T=",extrapolation_gr_1[1 + time_pred_surv_table,][,1])),
+      latex_options = "scale_down")
     
 #parametric curves
 plot(cbind(time_pred[-1], tp_gr_1[,2]), 
@@ -702,13 +720,13 @@ if (show_spline == TRUE){
     legend("topleft", legend= lbls_spline, col=1:6, lty=1, cex=0.8)
 }
 
-suppressWarnings(kable(descr(tp_gr_1[,2:cols_extr], 
-                             stats = "fivenum", transpose = TRUE)))        
+suppressWarnings(kable_styling(kable(descr(tp_gr_1[,2:cols_extr], 
+                             stats = "fivenum", transpose = TRUE))))        
     
 ```
 
 ##`r paste("Group", group_names[2])`
-```{r validate_extrapolation2, echo=FALSE, eval=if (ngroups>1) {TRUE} else {FALSE}, comment=NA}
+```{r validate_extrapolation2, echo=FALSE, out.height = "30%", eval=if (ngroups>1) {TRUE} else {FALSE}, comment=NA}
 #parametric curves
 plot(km[2], lwd=2, col="black", main ="A: Kaplan-Meier (parametric curves)", xlab = "time", 
          ylab = "survival", xlim=c(0,time_horizon))
@@ -735,8 +753,9 @@ if (show_spline == TRUE){
      legend("topright", legend= lbls_spline, col=1:6, lty=3, cex=0.8)    
 }
 
-kable(t(round(extrapolation_gr_2[1 + time_pred_surv_table,], 3))[-1,],
-      col.names=paste("T=",extrapolation_gr_2[1 + time_pred_surv_table,][,1]))    
+kable_styling(kable(t(round(extrapolation_gr_2[1 + time_pred_surv_table,], 3))[-1,],
+      col.names=paste("T=",extrapolation_gr_2[1 + time_pred_surv_table,][,1])), 
+      latex_options = "scale_down")
         
 #parametric curves
 plot(cbind(time_pred[-1], tp_gr_2[,2]), 
@@ -765,13 +784,13 @@ if (show_spline == TRUE){
     legend("topleft", legend= lbls_spline, col=1:6, lty=3, cex=0.8)
 }
     
-suppressWarnings(kable(descr(tp_gr_2[,2:cols_extr], 
-                             stats = "fivenum", transpose = TRUE)))      
+suppressWarnings(kable_styling(kable(descr(tp_gr_2[,2:cols_extr], 
+                             stats = "fivenum", transpose = TRUE))))      
     
 ```
 
 ##`r paste("Group", group_names[3])`
-```{r validate_extrapolation3, echo=FALSE, eval=if (ngroups>2) {TRUE} else {FALSE}, comment=NA}
+```{r validate_extrapolation3, echo=FALSE, out.height = "30%", eval=if (ngroups>2) {TRUE} else {FALSE}, comment=NA}
 #parametric curves
 plot(km[3], lwd=2, col="black", main ="A: Kaplan-Meier (parametric curves)", xlab = "time", 
          ylab = "survival", xlim=c(0,time_horizon))
@@ -797,8 +816,9 @@ if (show_spline == TRUE){
      legend("topright", legend= lbls_spline, col=1:6, lty=2, cex=0.8)
 }
 
-kable(t(round(extrapolation_gr_3[1 + time_pred_surv_table,], 3))[-1,],
-      col.names=paste("T=",extrapolation_gr_3[1 + time_pred_surv_table,][,1]))    
+kable_styling(kable(t(round(extrapolation_gr_3[1 + time_pred_surv_table,], 3))[-1,],
+      col.names=paste("T=",extrapolation_gr_3[1 + time_pred_surv_table,][,1])),
+      latex_options = "scale_down")
     
 #parametric curves
 plot(cbind(time_pred[-1], tp_gr_3[,2]), 
@@ -827,7 +847,7 @@ plot(cbind(time_pred[-1], tp_gr_3[,9]),
     legend("topleft", legend= lbls_spline, col=1:6, lty=2, cex=0.8)
 }
     
-suppressWarnings(kable(descr(tp_gr_3[,2:cols_extr],
-                             stats = "fivenum", transpose = TRUE)))      
+suppressWarnings(kable_styling(kable(descr(tp_gr_3[,2:cols_extr],
+                             stats = "fivenum", transpose = TRUE))))      
     
 ```
