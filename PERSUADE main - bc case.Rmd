@@ -26,7 +26,9 @@ options(scipen=100)                                              #suppress scien
 #LOAD AND INSTALL PACKAGES AND FUNCTIONS
 packages <- c("rms", "survival", "flexsurv", "muhaz", "survminer", "ggplot2", "data.table", 
               "summarytools", "knitr", "kableExtra")
-suppressPackageStartupMessages(lapply(packages, require, character.only = TRUE))
+new.packages <- packages[!(packages %in% installed.packages()[,"Package"])]       #check for new packages
+if(length(new.packages)) install.packages(new.packages)                           #install new packages
+suppressPackageStartupMessages(lapply(packages, require, character.only = TRUE))  #load packages
 
 source("PERSUADE function.R")
 
