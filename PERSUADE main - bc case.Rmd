@@ -129,7 +129,9 @@ Do standard parametric models provide an appropriate fit to the data?
 ```{r plot_parametric, echo=FALSE}
 pie(rep(1, n), labels =lbls, col = rainbow(n=n, s = 1, v = 1, start = 0, end = max(1, n - 1)/n, 
                                            alpha = 1)) 
-kable_styling(kable(IC[order(IC$AIC),]))
+kable_styling(kable(IC[order(IC$AIC),], 
+                    format = "latex", row.names = FALSE, booktabs = TRUE, linesep = ""), 
+              latex_options = "striped")
 ```
 
 ##Exponential
@@ -378,8 +380,13 @@ If standard parametric models are not appropriate, are spline models a more appr
 pie(rep(1, n), labels =lbls_spline, col = rainbow(n=n, s = 1, v = 1, start = 0, 
                                                   end = max(1, n - 1)/n, alpha = 1)) 
 
-kable_styling(kable(IC[order(IC$AIC),]))
-kable_styling(kable(IC_spl[order(IC_spl$AIC),]))
+kable_styling(kable(IC[order(IC$AIC),], 
+                    format = "latex", row.names = FALSE, booktabs = TRUE, linesep = ""), 
+              latex_options = "striped")
+
+kable_styling(kable(IC_spl[order(IC_spl$AIC),], 
+                    format = "latex", row.names = FALSE, booktabs = TRUE, linesep = ""), 
+              latex_options = "striped")
 ```
 
 ##Spline hazard 1 knot
@@ -665,7 +672,7 @@ What model(s) is/are more appropriate for long-term extrapolation?
 Are/is the selected model(s) plausible in comparison with general population mortality?
 
 ##`r paste("Group", group_names[1])`
-```{r validate_extrapolation1, echo=FALSE, out.height = "30%", comment=NA}
+```{r validate_extrapolation1, echo=FALSE, out.height = "29%", comment=NA}
 #parametric curves
 plot(km[1], lwd=2, col="black", main ="A: Kaplan-Meier (parametric curves)", xlab = "time", 
      ylab = "survival", xlim=c(0,time_horizon))
@@ -692,8 +699,10 @@ plot(km[1], lwd=2, col="black", main ="B: Kaplan-Meier (spline curves)", xlab = 
 }
 
 kable_styling(kable(t(round(extrapolation_gr_1[1 + time_pred_surv_table,], 3))[-1,],
-      col.names=paste("T=",extrapolation_gr_1[1 + time_pred_surv_table,][,1])),
-      latex_options = "scale_down")
+      col.names=paste("T=",extrapolation_gr_1[1 + time_pred_surv_table,][,1]), 
+                    format = "latex", booktabs = TRUE, linesep = ""), 
+              latex_options = c("scale_down","striped"))
+
     
 #parametric curves
 plot(cbind(time_pred[-1], tp_gr_1[,2]), 
@@ -723,12 +732,17 @@ if (show_spline == TRUE){
 }
 
 suppressWarnings(kable_styling(kable(descr(tp_gr_1[,2:cols_extr], 
-                             stats = "fivenum", transpose = TRUE))))        
-    
+                             stats = "fivenum", transpose = TRUE), 
+                    format = "latex", booktabs = TRUE, linesep = ""), 
+              latex_options = "striped")
+                 )
+
 ```
 
+\newpage
+
 ##`r paste("Group", group_names[2])`
-```{r validate_extrapolation2, echo=FALSE, out.height = "30%", eval=if (ngroups>1) {TRUE} else {FALSE}, comment=NA}
+```{r validate_extrapolation2, echo=FALSE, out.height = "28%", eval=if (ngroups>1) {TRUE} else {FALSE}, comment=NA}
 #parametric curves
 plot(km[2], lwd=2, col="black", main ="A: Kaplan-Meier (parametric curves)", xlab = "time", 
          ylab = "survival", xlim=c(0,time_horizon))
@@ -756,8 +770,9 @@ if (show_spline == TRUE){
 }
 
 kable_styling(kable(t(round(extrapolation_gr_2[1 + time_pred_surv_table,], 3))[-1,],
-      col.names=paste("T=",extrapolation_gr_2[1 + time_pred_surv_table,][,1])), 
-      latex_options = "scale_down")
+      col.names=paste("T=",extrapolation_gr_2[1 + time_pred_surv_table,][,1]), 
+                    format = "latex", booktabs = TRUE, linesep = ""), 
+              latex_options = c("scale_down","striped"))
         
 #parametric curves
 plot(cbind(time_pred[-1], tp_gr_2[,2]), 
@@ -787,12 +802,17 @@ if (show_spline == TRUE){
 }
     
 suppressWarnings(kable_styling(kable(descr(tp_gr_2[,2:cols_extr], 
-                             stats = "fivenum", transpose = TRUE))))      
+                             stats = "fivenum", transpose = TRUE), 
+                    format = "latex", booktabs = TRUE, linesep = ""), 
+              latex_options = "striped")
+                 )    
     
 ```
 
+\newpage
+
 ##`r paste("Group", group_names[3])`
-```{r validate_extrapolation3, echo=FALSE, out.height = "30%", eval=if (ngroups>2) {TRUE} else {FALSE}, comment=NA}
+```{r validate_extrapolation3, echo=FALSE, out.height = "27%", eval=if (ngroups>2) {TRUE} else {FALSE}, comment=NA}
 #parametric curves
 plot(km[3], lwd=2, col="black", main ="A: Kaplan-Meier (parametric curves)", xlab = "time", 
          ylab = "survival", xlim=c(0,time_horizon))
@@ -819,8 +839,9 @@ if (show_spline == TRUE){
 }
 
 kable_styling(kable(t(round(extrapolation_gr_3[1 + time_pred_surv_table,], 3))[-1,],
-      col.names=paste("T=",extrapolation_gr_3[1 + time_pred_surv_table,][,1])),
-      latex_options = "scale_down")
+      col.names=paste("T=",extrapolation_gr_3[1 + time_pred_surv_table,][,1]), 
+                    format = "latex", booktabs = TRUE, linesep = ""), 
+              latex_options = c("scale_down","striped"))
     
 #parametric curves
 plot(cbind(time_pred[-1], tp_gr_3[,2]), 
@@ -850,6 +871,9 @@ plot(cbind(time_pred[-1], tp_gr_3[,9]),
 }
     
 suppressWarnings(kable_styling(kable(descr(tp_gr_3[,2:cols_extr],
-                             stats = "fivenum", transpose = TRUE))))      
+                             stats = "fivenum", transpose = TRUE), 
+                    format = "latex", booktabs = TRUE, linesep = ""), 
+              latex_options = "striped")
+                 ) 
     
 ```

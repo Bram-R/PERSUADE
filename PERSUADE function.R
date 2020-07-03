@@ -4,7 +4,6 @@ PERSUADE <- function(years, status, group, strata = FALSE, time_unit,
   
   #number of groups
   group <<- droplevels(group)                #drop unused levels
-  group <- droplevels(group)                 #drop unused levels
   ngroups <<- length(levels(group))          #number of groups
   group_names <<- levels(group)              #name groups
   
@@ -46,15 +45,15 @@ PERSUADE <- function(years, status, group, strata = FALSE, time_unit,
   ggam  <<- if (strata == FALSE) flexsurvreg(form, dist="gengamma") else {
     flexsurvreg(form, anc= list(sigma= ~ group, Q= ~ group ), dist="gengamma")}
   
-  lbls  <<- c("1. Exponential", "2. Weibull", "3. Gompertz", "4. Lognormal", "5. Loglogistic", "6. Gamma", 
-              "7. Generalised Gamma")
+  lbls  <<- c(" 1. Exponential", " 2. Weibull", " 3. Gompertz", " 4. Lognormal", " 5. Loglogistic", " 6. Gamma", 
+              " 7. Generalised Gamma")
   
   #calculate AIC and BIC
   AIC <- c(expo$AIC, weib$AIC, gom$AIC, lnorm$AIC, llog$AIC, gam$AIC, ggam$AIC)
   BIC <- BIC(expo, weib, gom, lnorm, llog, gam, ggam)[2]
-  IC <- data.frame(c("exp", "weib", "gom", "lnorm", "llog", "gam", "ggam"), AIC, BIC,
+  IC <- data.frame(lbls, AIC, BIC,
                    row.names=NULL)
-  colnames(IC) <- c("Distribution", "AIC", "BIC")
+  colnames(IC) <- c("Model", "AIC", "BIC")
   IC <<- IC
   
   #fit spline models
@@ -75,15 +74,14 @@ PERSUADE <- function(years, status, group, strata = FALSE, time_unit,
     spl_normal2  <<- if (strata == FALSE) {flexsurvspline(form, k=k, scale="normal")} else { 
       flexsurvspline(form, k=k, scale="normal", anc= list(gamma1 = ~ group, gamma2 = ~ group, gamma3 = ~ group))} 
     
-    lbls_spline  <<- c("8. Spline 1 knot hazard", "9. Spline 2 knots hazard", "10. Spline 1 knot odds", 
+    lbls_spline  <<- c(" 8. Spline 1 knot hazard", " 9. Spline 2 knots hazard", "10. Spline 1 knot odds", 
                        "11. Spline 2 knots odds", "12. Spline 1 knot normal", "13. Spline 2 knots normal")
     
     #calculate AIC and BIC
-    AIC_spl <- c(spl_hazard1$AIC, spl_odds1$AIC, spl_normal1$AIC, spl_hazard2$AIC, spl_odds2$AIC, spl_normal2$AIC)
-    BIC_spl <- BIC(spl_hazard1, spl_odds1, spl_normal1, spl_hazard2, spl_odds2, spl_normal2)[2]
-    IC_spl <- data.frame(rep(c("hazard", "odds", "normal"),2), c(rep(1,3),rep(2,3)), AIC_spl, BIC_spl,
-                         row.names=NULL)
-    colnames(IC_spl) <- c("Scale", "knots", "AIC", "BIC")
+    AIC_spl <- c(spl_hazard1$AIC, spl_hazard2$AIC, spl_odds1$AIC, spl_odds2$AIC, spl_normal1$AIC, spl_normal2$AIC)
+    BIC_spl <- BIC(spl_hazard1,  spl_hazard2, spl_odds1, spl_odds2, spl_normal1, spl_normal2)[2]
+    IC_spl <- data.frame(lbls_spline, AIC_spl, BIC_spl)
+    colnames(IC_spl) <- c("Model", "AIC", "BIC")
     IC_spl <<- IC_spl
   }
   #predicted values parametric models
@@ -149,8 +147,8 @@ PERSUADE <- function(years, status, group, strata = FALSE, time_unit,
     
     colnames(spl_hazard1_pred) <- colnames(spl_hazard2_pred) <- colnames(spl_odds1_pred) <- colnames(spl_odds2_pred) <-
       colnames(spl_normal1_pred) <- colnames(spl_normal2_pred) <- column_names
-    
   }
+  
   #predicted survival
   extrapolation_gr_1 <- if (spline_mod == TRUE){cbind(time_pred, expo_pred[,2], weib_pred[,2], gom_pred[,2], lnorm_pred[,2], llog_pred[,2],
                                                       gam_pred[,2], ggam_pred[,2], spl_hazard1_pred[,2], spl_hazard2_pred[,2], 
@@ -327,6 +325,7 @@ PERSUADE <- function(years, status, group, strata = FALSE, time_unit,
                     Survmod[which(rownames(Survmod)=="Parnames"),]=="gamma3")] <- c(spl_hazard2$knots[4], 
                                                                                     spl_odds2$knots[4],spl_normal2$knots[4])
   }
+  
   #remove column names
   colnames(Survmod) <- c("Time-to-event models parameters",rep("", abs(ncol(Survmod))-1))
   
