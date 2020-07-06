@@ -3,10 +3,13 @@ PERSUADE <- function(years, status, group, strata = FALSE, time_unit,
                      csv_comma=FALSE, clipboard=FALSE) {
   
   #number of groups
-  group <<- droplevels(group)                #drop unused levels
-  ngroups <<- length(levels(group))          #number of groups
-  group_names <<- levels(group)              #name groups
-  
+  group <<- droplevels(group)               #drop unused levels
+  group <- droplevels(group)                #drop unused levels
+  ngroups <<- length(levels(group))         #number of groups
+  ngroups <- length(levels(group))          #number of groups
+  group_names <<- levels(group)             #name groups
+  group_names <- levels(group)              #name groups
+    
   if (ngroups==1) {strata <- FALSE}
   if (spline_mod == TRUE) {show_spline <<- TRUE} else {show_spline <<- FALSE}
   
@@ -21,11 +24,16 @@ PERSUADE <- function(years, status, group, strata = FALSE, time_unit,
   
   #km
   km  <<- npsurv(form)
+  if (ngroups==1) {km_names <<- as.numeric(rep(1, length(km$surv)))} else {
+    km_names <<- as.numeric(as.factor(do.call(c,(lapply(1:ngroups, function (x) c(rep(names(km$strata[x]), km$strata[x])))))))} 
   
   #hr
   hr_smooth1  <<- muhaz(years, status, group==levels(group)[1])
   if (ngroups>1) {hr_smooth2  <<- muhaz(years, status, group==levels(group)[2])} 
   if (ngroups>2) {hr_smooth3  <<- muhaz(years, status, group==levels(group)[3])} 
+  
+  hr_names <<- c(rep(1, length(hr_smooth1$est.grid)), if (ngroups>1) {rep(2, length(hr_smooth2$est.grid))} else {NA},
+    if (ngroups>2) {rep(3, length(hr_smooth3$est.grid))} else {NA})
   
   #cox (for Scaled Schoenfeld residuals)
   cox_reg  <<- coxph(form)
