@@ -380,13 +380,10 @@ If standard parametric models are not appropriate, are spline models a more appr
 pie(rep(1, n), labels =lbls_spline, col = rainbow(n=n, s = 1, v = 1, start = 0, 
                                                   end = max(1, n - 1)/n, alpha = 1)) 
 
-kable_styling(kable(IC[order(IC$AIC),], 
+kable_styling(kable(rbind(IC, IC_spl)[order(rbind(IC, IC_spl)$AIC),], 
                     format = "latex", row.names = FALSE, booktabs = TRUE, linesep = ""), 
               latex_options = "striped")
 
-kable_styling(kable(IC_spl[order(IC_spl$AIC),], 
-                    format = "latex", row.names = FALSE, booktabs = TRUE, linesep = ""), 
-              latex_options = "striped")
 ```
 
 ##Spline hazard 1 knot
