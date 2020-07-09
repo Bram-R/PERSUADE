@@ -54,10 +54,12 @@ time_unit <- 6/12                                                   #time unit (
 time_horizon <- 40                                                  #time horizon (in years) for predicted survival
 
 #PERSUADE FUNCTION (please adjust TRUE/ FALSE if necessary)
-PERSUADE(years = years, status = status, group = group,
-         strata = TRUE, time_unit= time_unit, time_horizon = time_horizon,
-         time_pred_surv_table = time_pred_surv_table, spline_mod = TRUE, 
-         csv_semicolon = FALSE, csv_comma = TRUE, clipboard = FALSE)
+PERSUADE <- PERSUADE(years = years, status = status, group = group,
+                     strata = TRUE, time_unit= time_unit, time_horizon = time_horizon,
+                     time_pred_surv_table = time_pred_surv_table, spline_mod = TRUE,
+                     csv_semicolon = FALSE, csv_comma = TRUE, clipboard = FALSE)
+rm(group, time_horizon, time_pred_surv_table)#SHOULD BE ADJUSTED
+attach(PERSUADE)#SHOULD BE ADJUSTED
 ```
 
 #Kaplan-Meier
