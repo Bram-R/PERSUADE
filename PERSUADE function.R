@@ -273,34 +273,30 @@ PERSUADE <- function(years, status, group, strata = FALSE, time_unit, time_horiz
   }
   
   # calculate annual transition probability km
-  
   km_tp <- summary(km, times = seq(from = 0, to = time_horizon, by = time_unit))  #by month
   km_tp_gr_1 <- data.frame(time = km_tp$time[km_tp$strata == levels(km_tp$strata)[1]], surv = km_tp$surv[km_tp$strata == 
                                                                                                            levels(km_tp$strata)[1]], group = rep(1, length(km_tp[km_tp$strata == levels(km_tp$strata)[1]])))
-  
-  km_tp_gr_2 <- data.frame(time = km_tp$time[km_tp$strata == levels(km_tp$strata)[2]], surv = km_tp$surv[km_tp$strata == 
-                                                                                                           levels(km_tp$strata)[2]], group = rep(2, length(km_tp[km_tp$strata == levels(km_tp$strata)[2]])))
-  
-  km_tp_gr_3 <- data.frame(time = km_tp$time[km_tp$strata == levels(km_tp$strata)[3]], surv = km_tp$surv[km_tp$strata == 
-                                                                                                           levels(km_tp$strata)[3]], group = rep(3, length(km_tp[km_tp$strata == levels(km_tp$strata)[3]])))
-  
-  
   km_tp_gr_1$tp <- 1 - (1 - ((shift(km_tp_gr_1$surv, 1L, type = "lag") - km_tp_gr_1$surv)/shift(km_tp_gr_1$surv, 
                                                                                                 1L, type = "lag")))^(1/time_unit)
-  km_tp_gr_2$tp <- 1 - (1 - ((shift(km_tp_gr_2$surv, 1L, type = "lag") - km_tp_gr_2$surv)/shift(km_tp_gr_2$surv, 
-                                                                                                1L, type = "lag")))^(1/time_unit)
-  km_tp_gr_3$tp <- 1 - (1 - ((shift(km_tp_gr_3$surv, 1L, type = "lag") - km_tp_gr_3$surv)/shift(km_tp_gr_3$surv, 
-                                                                                                1L, type = "lag")))^(1/time_unit)
-  
   km_tp_gr_1 <- km_tp_gr_1[-1, ]  #remove NA
-  km_tp_gr_2 <- km_tp_gr_2[-1, ]  #remove NA
-  km_tp_gr_3 <- km_tp_gr_3[-1, ]  #remove NA
-  
   km_tp_gr_1$tp_smooth <- pmax(0, pmin(1, loess(km_tp_gr_1$tp ~ km_tp_gr_1$time)$fitted))
-  km_tp_gr_2$tp_smooth <- pmax(0, pmin(1, loess(km_tp_gr_2$tp ~ km_tp_gr_2$time)$fitted))
-  km_tp_gr_3$tp_smooth <- pmax(0, pmin(1, loess(km_tp_gr_3$tp ~ km_tp_gr_3$time)$fitted))
   
-  km_tp <- rbind.data.frame(km_tp_gr_1, km_tp_gr_2, km_tp_gr_3)
+  if (ngroups > 1) {
+    km_tp_gr_2 <- data.frame(time = km_tp$time[km_tp$strata == levels(km_tp$strata)[2]], surv = km_tp$surv[km_tp$strata == 
+                                                                                                             levels(km_tp$strata)[2]], group = rep(2, length(km_tp[km_tp$strata == levels(km_tp$strata)[2]])))
+    km_tp_gr_2$tp <- 1 - (1 - ((shift(km_tp_gr_2$surv, 1L, type = "lag") - km_tp_gr_2$surv)/shift(km_tp_gr_2$surv, 
+                                                                                                  1L, type = "lag")))^(1/time_unit)
+    km_tp_gr_2 <- km_tp_gr_2[-1, ]  #remove NA
+    km_tp_gr_2$tp_smooth <- pmax(0, pmin(1, loess(km_tp_gr_2$tp ~ km_tp_gr_2$time)$fitted))
+  }
+  if (ngroups > 2) {
+    km_tp_gr_3 <- data.frame(time = km_tp$time[km_tp$strata == levels(km_tp$strata)[3]], surv = km_tp$surv[km_tp$strata == 
+                                                                                                             levels(km_tp$strata)[3]], group = rep(3, length(km_tp[km_tp$strata == levels(km_tp$strata)[3]])))
+    km_tp_gr_3$tp <- 1 - (1 - ((shift(km_tp_gr_3$surv, 1L, type = "lag") - km_tp_gr_3$surv)/shift(km_tp_gr_3$surv, 
+                                                                                                  1L, type = "lag")))^(1/time_unit)
+    km_tp_gr_3 <- km_tp_gr_3[-1, ]  #remove NA
+    km_tp_gr_3$tp_smooth <- pmax(0, pmin(1, loess(km_tp_gr_3$tp ~ km_tp_gr_3$time)$fitted))
+  }
   
   # parametric survival models
   cols_extr <- ifelse(spline_mod == TRUE, 14, 8)  # define data frame width for the annual TP calculations, based on whether spline models are asked
@@ -458,12 +454,14 @@ PERSUADE <- function(years, status, group, strata = FALSE, time_unit, time_horiz
              gam_pred = gam_pred, ggam_pred = ggam_pred, lbls = lbls, IC = IC, extrapolation_gr_1 = extrapolation_gr_1, 
              km_tp_gr_1 = km_tp_gr_1, tp_gr_1 = tp_gr_1, cols_extr = cols_extr)
   if (ngroups > 1) {
-    l2 <- list(hr_smooth2 = hr_smooth2, extrapolation_gr_2 = extrapolation_gr_2, km_tp_gr_2 = km_tp_gr_2, tp_gr_2 = tp_gr_2)
+    l2 <- list(hr_smooth2 = hr_smooth2, extrapolation_gr_2 = extrapolation_gr_2, km_tp_gr_2 = km_tp_gr_2, 
+               tp_gr_2 = tp_gr_2)
   } else {
     l2 <- NA
   }
   if (ngroups > 2) {
-    l3 <- list(hr_smooth3 = hr_smooth3, extrapolation_gr_3 = extrapolation_gr_3, km_tp_gr_3 = km_tp_gr_3, tp_gr_3 = tp_gr_3)
+    l3 <- list(hr_smooth3 = hr_smooth3, extrapolation_gr_3 = extrapolation_gr_3, km_tp_gr_3 = km_tp_gr_3, 
+               tp_gr_3 = tp_gr_3)
   } else {
     l3 <- NA
   }
