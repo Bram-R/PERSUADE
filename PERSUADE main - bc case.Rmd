@@ -63,13 +63,13 @@ PERSUADE <- PERSUADE(years = years, status = status, group = group, strata = TRU
 ```{r plot_KM, echo=FALSE, fig.height=8, fig.width=7}
 evalq({
     suppressWarnings(if (ngroups > 1) {
-        ggsurvplot(surv_fit(form, data = data.frame(years, status, group)), linetype = c("strata"), 
+        ggsurvplot(surv_fit(form, data = data.frame(years, status, group)), linetype = as.integer(c(1, "1234", "9212")), 
             legend.labs = group_names, risk.table = TRUE, conf.int = TRUE, surv.median.line = "hv", 
-            ncensor.plot = TRUE, censor = FALSE, ggtheme = theme_light())
+            ncensor.plot = TRUE, censor = FALSE, ggtheme = theme_light(), color = "strata", size = 0.5)
     } else {
         ggsurvplot(surv_fit(form, data = data.frame(years, status)), legend.labs = group_names, 
             risk.table = TRUE, conf.int = TRUE, surv.median.line = "hv", ncensor.plot = FALSE, 
-            censor = TRUE, ggtheme = theme_light())
+            censor = TRUE, ggtheme = theme_light(), color = "black", size = 0.5)
     })
 }, envir = PERSUADE)
 ```
