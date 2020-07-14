@@ -4,6 +4,7 @@ author: "Authors"
 output:
   pdf_document:
     toc: yes
+    keep_tex: TRUE
     highlight: zenburn    
   html_document:
     number_sections: yes
@@ -16,7 +17,7 @@ output:
 
 ```{r setup, include=FALSE}
 #code is formatted using formatR::tidy_source(width.cutoff = 80)
-knitr::opts_chunk$set(echo = TRUE, fig.align = "left")
+knitr::opts_chunk$set(echo = TRUE, fig.align = "left", fig.path = "images/", dev = c('pdf', 'png'))
 ```
 
 
