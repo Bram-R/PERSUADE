@@ -1,4 +1,4 @@
-# code is formatted using tidy_source(width.cutoff = 100)
+# code is formatted using formatR::tidy_source(width.cutoff = 100)
 PERSUADE <- function(years, status, group, strata = FALSE, time_unit, time_horizon, time_pred_surv_table, 
                      spline_mod = FALSE, csv_semicolon = FALSE, csv_comma = FALSE, clipboard = FALSE) {
   
@@ -186,6 +186,8 @@ PERSUADE <- function(years, status, group, strata = FALSE, time_unit, time_horiz
     ggam_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) ggam_est[[which(names(expo_est) == 
                                                                                      paste("group=", group_names[x], sep = ""))]]$est))
   }
+  
+  gom_pred[, -1][gom_pred[, -1] < 0.000000000000001] <- 0 #prevent rounding errors for predicted transition probabilities
   
   colnames(expo_pred) <- colnames(weib_pred) <- colnames(gom_pred) <- colnames(lnorm_pred) <- colnames(llog_pred) <- colnames(gam_pred) <- colnames(ggam_pred) <- column_names
   
@@ -452,7 +454,7 @@ PERSUADE <- function(years, status, group, strata = FALSE, time_unit, time_horiz
              expo = expo, weib = weib, gom = gom, lnorm = lnorm, llog = llog, gam = gam, ggam = ggam, expo_pred = expo_pred, 
              weib_pred = weib_pred, gom_pred = gom_pred, gom_est_h = gom_est_h, lnorm_pred = lnorm_pred, llog_pred = llog_pred, 
              gam_pred = gam_pred, ggam_pred = ggam_pred, lbls = lbls, IC = IC, extrapolation_gr_1 = extrapolation_gr_1, 
-             km_tp_gr_1 = km_tp_gr_1, tp_gr_1 = tp_gr_1, cols_extr = cols_extr)
+             km_tp = km_tp, km_tp_gr_1 = km_tp_gr_1, tp_gr_1 = tp_gr_1, cols_extr = cols_extr)
   if (ngroups > 1) {
     l2 <- list(hr_smooth2 = hr_smooth2, extrapolation_gr_2 = extrapolation_gr_2, km_tp_gr_2 = km_tp_gr_2, 
                tp_gr_2 = tp_gr_2)

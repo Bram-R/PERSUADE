@@ -3,7 +3,8 @@ title: "PERSUADE OUTPUT"
 author: "Authors"
 output:
   pdf_document:
-    toc: yes    
+    toc: yes
+    highlight: zenburn    
   html_document:
     number_sections: yes
     theme: united
@@ -14,7 +15,7 @@ output:
 `r Sys.Date()`
 
 ```{r setup, include=FALSE}
-#code is formatted using tidy_source(width.cutoff = 80)
+#code is formatted using formatR::tidy_source(width.cutoff = 80)
 knitr::opts_chunk$set(echo = TRUE, fig.align = "left")
 ```
 
@@ -50,7 +51,7 @@ group <- as.factor(group)  #group variable should be a factor
 
 # INPUT TIME POINTS FOR PREDICTED SURVIVAL TABLE
 time_pred_surv_table <- c(0, 1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 35)  #time points (in years) for predicted survival
-time_unit <- 6/12  #time unit (in years) for predicted survival
+time_unit <- 1/12  #time unit (in years) for predicted survival
 time_horizon <- 40  #time horizon (in years) for predicted survival
 
 # PERSUADE FUNCTION (please adjust TRUE/ FALSE if necessary)
@@ -174,7 +175,8 @@ evalq({
     # annual transition probabilities
     plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), lwd = 1, lty = 1, type = "b", 
          cex = 0.6, pch = 1, col = "black", main = "B: Annual transition probability (Exponential)", 
-         xlab = "time", ylab = "annual transition probability", ylim = c(0, 1))
+         xlab = "time", ylab = "annual transition probability (smoothed)", 
+         ylim = c(0, 1), xlim = c(0, ceiling(km_tp$maxtime*10)/10))
     lines(cbind(time_pred[-1], tp_gr_1[, 2]), col = "1", lty = 1, lwd = 2)
     if (ngroups > 1) {
       lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), col = "lightgrey", type = "b", 
@@ -222,17 +224,24 @@ evalq({
         "9212")), cex = 0.8)
     
     # annual transition probabilities
-    plot(cbind(time_pred[-1], tp_gr_1[, 3]), main = "B: Annual transition probability (Weibull)", 
-        xlab = "time", ylab = "annual transition probability", ylim = c(0, 1), col = "2", 
-        type = "l", lty = 1, lwd = 2)
+    plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), lwd = 1, lty = 1, type = "b", 
+        cex = 0.6, pch = 1, col = "black", main = "B: Annual transition probability (Weibull)", 
+        xlab = "time", ylab = "annual transition probability (smoothed)", 
+        ylim = c(0, 1), xlim = c(0, ceiling(km_tp$maxtime*10)/10))
+    lines(cbind(time_pred[-1], tp_gr_1[, 3]), col = "2", lty = 1, lwd = 2)
     if (ngroups > 1) {
+        lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), col = "lightgrey", type = "b", 
+            lwd = 1, cex = 0.6, pch = 8)
         lines(cbind(time_pred[-1], tp_gr_2[, 3]), col = "2", lty = "1234", lwd = 2)
     }
     if (ngroups > 2) {
+        lines(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth), col = "darkgrey", type = "b", 
+            lwd = 1, cex = 0.6, pch = 9)
         lines(cbind(time_pred[-1], tp_gr_3[, 3]), col = "2", lty = "9212", lwd = 2)
     }
     legend("topleft", legend = group_names, col = "2", lty = as.integer(c(1, "1234", 
         "9212")), cex = 0.8)
+    
     # diagnostics
     plot(cbind(log(km$time), log(-log(km$surv))), cex = 0.6, pch = c(1, 8, 9)[km_names], 
         col = c("black", "lightgrey", "darkgrey")[km_names], main = "C: Diagnostic plot (Weibull)", 
@@ -268,17 +277,23 @@ evalq({
         "9212")), cex = 0.8)
     
     # annual transition probabilities
-    plot(cbind(time_pred[-1], tp_gr_1[, 4]), main = "B: Annual transition probability (Gompertz)", 
-        xlab = "time", ylab = "annual transition probability", ylim = c(0, 1), col = "3", 
-        type = "l", lty = 1, lwd = 2)
+    plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), lwd = 1, lty = 1, type = "b", 
+         cex = 0.6, pch = 1, col = "black", main = "B: Annual transition probability (Gompertz)", 
+         xlab = "time", ylab = "annual transition probability (smoothed)",
+         ylim = c(0, 1), xlim = c(0, ceiling(km_tp$maxtime*10)/10))
+    lines(cbind(time_pred[-1], tp_gr_1[, 4]), col = "3", lty = 1, lwd = 2)
     if (ngroups > 1) {
-        lines(cbind(time_pred[-1], tp_gr_2[, 4]), col = "3", lty = "1234", lwd = 2)
+      lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), col = "lightgrey", type = "b", 
+            lwd = 1, cex = 0.6, pch = 8)
+      lines(cbind(time_pred[-1], tp_gr_2[, 4]), col = "3", lty = "1234", lwd = 2)
     }
     if (ngroups > 2) {
-        lines(cbind(time_pred[-1], tp_gr_3[, 4]), col = "3", lty = "9212", lwd = 2)
+      lines(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth), col = "darkgrey", type = "b", 
+            lwd = 1, cex = 0.6, pch = 9)
+      lines(cbind(time_pred[-1], tp_gr_3[, 4]), col = "3", lty = "9212", lwd = 2)
     }
     legend("topleft", legend = group_names, col = "3", lty = as.integer(c(1, "1234", 
-        "9212")), cex = 0.8)
+                                                                          "9212")), cex = 0.8)
     
     # diagnostics
     plot(cbind(c(hr_smooth1$est.grid, if (ngroups > 1) {
@@ -332,17 +347,23 @@ evalq({
         "9212")), cex = 0.8)
     
     # annual transition probabilities
-    plot(cbind(time_pred[-1], tp_gr_1[, 5]), main = "B: Annual transition probability (Log-normal)", 
-        xlab = "time", ylab = "annual transition probability", ylim = c(0, 1), col = "4", 
-        type = "l", lty = 1, lwd = 2)
+    plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), lwd = 1, lty = 1, type = "b", 
+         cex = 0.6, pch = 1, col = "black", main = "B: Annual transition probability (Lognormal)", 
+         xlab = "time", ylab = "annual transition probability (smoothed)", 
+         ylim = c(0, 1), xlim = c(0, ceiling(km_tp$maxtime*10)/10))
+    lines(cbind(time_pred[-1], tp_gr_1[, 5]), col = "4", lty = 1, lwd = 2)
     if (ngroups > 1) {
-        lines(cbind(time_pred[-1], tp_gr_2[, 5]), col = "4", lty = "1234", lwd = 2)
+      lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), col = "lightgrey", type = "b", 
+            lwd = 1, cex = 0.6, pch = 8)
+      lines(cbind(time_pred[-1], tp_gr_2[, 5]), col = "4", lty = "1234", lwd = 2)
     }
     if (ngroups > 2) {
-        lines(cbind(time_pred[-1], tp_gr_3[, 5]), col = "4", lty = "9212", lwd = 2)
+      lines(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth), col = "darkgrey", type = "b", 
+            lwd = 1, cex = 0.6, pch = 9)
+      lines(cbind(time_pred[-1], tp_gr_3[, 5]), col = "4", lty = "9212", lwd = 2)
     }
     legend("topleft", legend = group_names, col = "4", lty = as.integer(c(1, "1234", 
-        "9212")), cex = 0.8)
+                                                                          "9212")), cex = 0.8)
     
     # diagnostics
     plot(cbind(log(km$time), -qnorm(km$surv, mean = 0, sd = 1, lower.tail = TRUE, 
@@ -382,17 +403,23 @@ evalq({
         "9212")), cex = 0.8)
     
     # annual transition probabilities
-    plot(cbind(time_pred[-1], tp_gr_1[, 6]), main = "B: Annual transition probability (Log-logistic)", 
-        xlab = "time", ylab = "annual transition probability", ylim = c(0, 1), col = "5", 
-        type = "l", lty = 1, lwd = 2)
+    plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), lwd = 1, lty = 1, type = "b", 
+         cex = 0.6, pch = 1, col = "black", main = "B: Annual transition probability (Loglogistic)", 
+         xlab = "time", ylab = "annual transition probability (smoothed)", 
+         ylim = c(0, 1), xlim = c(0, ceiling(km_tp$maxtime*10)/10))
+    lines(cbind(time_pred[-1], tp_gr_1[, 6]), col = "5", lty = 1, lwd = 2)
     if (ngroups > 1) {
-        lines(cbind(time_pred[-1], tp_gr_2[, 6]), col = "5", lty = "1234", lwd = 2)
+      lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), col = "lightgrey", type = "b", 
+            lwd = 1, cex = 0.6, pch = 8)
+      lines(cbind(time_pred[-1], tp_gr_2[, 6]), col = "5", lty = "1234", lwd = 2)
     }
     if (ngroups > 2) {
-        lines(cbind(time_pred[-1], tp_gr_3[, 6]), col = "5", lty = "9212", lwd = 2)
+      lines(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth), col = "darkgrey", type = "b", 
+            lwd = 1, cex = 0.6, pch = 9)
+      lines(cbind(time_pred[-1], tp_gr_3[, 6]), col = "5", lty = "9212", lwd = 2)
     }
     legend("topleft", legend = group_names, col = "5", lty = as.integer(c(1, "1234", 
-        "9212")), cex = 0.8)
+                                                                          "9212")), cex = 0.8)
     
     # diagnostics
     plot(cbind(log(km$time), -log(km$surv/(1 - km$surv))), cex = 0.6, pch = c(1, 
@@ -430,17 +457,23 @@ evalq({
         "9212")), cex = 0.8)
     
     # annual transition probabilities
-    plot(cbind(time_pred[-1], tp_gr_1[, 7]), main = "B: Annual transition probability (Gamma)", 
-        xlab = "time", ylab = "annual transition probability", ylim = c(0, 1), col = "6", 
-        type = "l", lty = 1, lwd = 2)
+    plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), lwd = 1, lty = 1, type = "b", 
+         cex = 0.6, pch = 1, col = "black", main = "B: Annual transition probability (Gamma)", 
+         xlab = "time", ylab = "annual transition probability (smoothed)", 
+         ylim = c(0, 1), xlim = c(0, ceiling(km_tp$maxtime*10)/10))
+    lines(cbind(time_pred[-1], tp_gr_1[, 7]), col = "6", lty = 1, lwd = 2)
     if (ngroups > 1) {
-        lines(cbind(time_pred[-1], tp_gr_2[, 7]), col = "6", lty = "1234", lwd = 2)
+      lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), col = "lightgrey", type = "b", 
+            lwd = 1, cex = 0.6, pch = 8)
+      lines(cbind(time_pred[-1], tp_gr_2[, 7]), col = "6", lty = "1234", lwd = 2)
     }
     if (ngroups > 2) {
-        lines(cbind(time_pred[-1], tp_gr_3[, 7]), col = "6", lty = "9212", lwd = 2)
+      lines(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth), col = "darkgrey", type = "b", 
+            lwd = 1, cex = 0.6, pch = 9)
+      lines(cbind(time_pred[-1], tp_gr_3[, 7]), col = "6", lty = "9212", lwd = 2)
     }
     legend("topleft", legend = group_names, col = "6", lty = as.integer(c(1, "1234", 
-        "9212")), cex = 0.8)
+                                                                          "9212")), cex = 0.8)
     
     # diagnostics --> not linear!
     plot(cbind(log(km$time), log(-log(km$surv))), cex = 0.6, pch = c(1, 8, 9)[km_names], 
@@ -477,17 +510,23 @@ evalq({
         "9212")), cex = 0.8)
     
     # annual transition probabilities
-    plot(cbind(time_pred[-1], tp_gr_1[, 8]), main = "B: Annual transition probability (Generalised gamma)", 
-        xlab = "time", ylab = "annual transition probability", ylim = c(0, 1), col = "7", 
-        type = "l", lty = 1, lwd = 2)
+    plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), lwd = 1, lty = 1, type = "b", 
+         cex = 0.6, pch = 1, col = "black", main = "B: Annual transition probability (Generalised Gamma)", 
+         xlab = "time", ylab = "annual transition probability (smoothed)", 
+         ylim = c(0, 1), xlim = c(0, ceiling(km_tp$maxtime*10)/10))
+    lines(cbind(time_pred[-1], tp_gr_1[, 8]), col = "7", lty = 1, lwd = 2)
     if (ngroups > 1) {
-        lines(cbind(time_pred[-1], tp_gr_2[, 8]), col = "7", lty = "1234", lwd = 2)
+      lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), col = "lightgrey", type = "b", 
+            lwd = 1, cex = 0.6, pch = 8)
+      lines(cbind(time_pred[-1], tp_gr_2[, 8]), col = "7", lty = "1234", lwd = 2)
     }
     if (ngroups > 2) {
-        lines(cbind(time_pred[-1], tp_gr_3[, 8]), col = "7", lty = "9212", lwd = 2)
+      lines(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth), col = "darkgrey", type = "b", 
+            lwd = 1, cex = 0.6, pch = 9)
+      lines(cbind(time_pred[-1], tp_gr_3[, 8]), col = "7", lty = "9212", lwd = 2)
     }
     legend("topleft", legend = group_names, col = "7", lty = as.integer(c(1, "1234", 
-        "9212")), cex = 0.8)
+                                                                          "9212")), cex = 0.8)
     
     # diagnostics --> not linear!
     plot(cbind(log(km$time), log(-log(km$surv))), cex = 0.6, pch = c(1, 8, 9)[km_names], 
@@ -541,28 +580,34 @@ evalq({
     if (ngroups > 2) {
         lines(cbind(time_pred, spl_hazard1_pred[, 4]), col = "1", lty = "9212", lwd = 2)
     }
-    abline(v = exp(spl_hazard1$knots[2]), lty = "9212", lwd = 1.5)
-    abline(v = exp(spl_hazard1$knots[1]), lty = "9212", lwd = 0.5)
-    abline(v = exp(spl_hazard1$knots[3]), lty = "9212", lwd = 0.5)
+    abline(v = exp(spl_hazard1$knots[2]), lty = 2, lwd = 1.5)
+    abline(v = exp(spl_hazard1$knots[1]), lty = 3, lwd = 1)
+    abline(v = exp(spl_hazard1$knots[3]), lty = 3, lwd = 1)
     legend("bottomleft", legend = group_names, col = "1", lty = as.integer(c(1, "1234", 
         "9212")), cex = 0.8)
     
     # annual transition probabilities
-    plot(cbind(time_pred[-1], tp_gr_1[, 9]), main = "B: Annual transition probability (Spline, 1 knot, hazard scale)", 
-        xlab = "time", ylab = "annual transition probability", ylim = c(0, 1), col = "1", 
-        type = "l", lty = 1, lwd = 2)
+    plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), lwd = 1, lty = 1, type = "b", 
+         cex = 0.6, pch = 1, col = "black", main = "B: Annual transition probability (Spline, 1 knot, hazard scale)", 
+         xlab = "time", ylab = "annual transition probability (smoothed)", 
+         ylim = c(0, 1), xlim = c(0, ceiling(km_tp$maxtime*10)/10))
+    lines(cbind(time_pred[-1], tp_gr_1[, 9]), col = "1", lty = 1, lwd = 2)
     if (ngroups > 1) {
-        lines(cbind(time_pred[-1], tp_gr_2[, 9]), col = "1", lty = "1234", lwd = 2)
+      lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), col = "lightgrey", type = "b", 
+            lwd = 1, cex = 0.6, pch = 8)
+      lines(cbind(time_pred[-1], tp_gr_2[, 9]), col = "1", lty = "1234", lwd = 2)
     }
     if (ngroups > 2) {
-        lines(cbind(time_pred[-1], tp_gr_3[, 9]), col = "1", lty = "9212", lwd = 2)
+      lines(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth), col = "darkgrey", type = "b", 
+            lwd = 1, cex = 0.6, pch = 9)
+      lines(cbind(time_pred[-1], tp_gr_3[, 9]), col = "1", lty = "9212", lwd = 2)
     }
-    abline(v = exp(spl_hazard1$knots[2]), lty = "9212", lwd = 1.5)
-    abline(v = exp(spl_hazard1$knots[1]), lty = "9212", lwd = 0.5)
-    abline(v = exp(spl_hazard1$knots[3]), lty = "9212", lwd = 0.5)
     legend("topleft", legend = group_names, col = "1", lty = as.integer(c(1, "1234", 
-        "9212")), cex = 0.8)
-    
+                                                                          "9212")), cex = 0.8)
+    abline(v = exp(spl_hazard1$knots[2]), lty = 2, lwd = 1.5)
+    abline(v = exp(spl_hazard1$knots[1]), lty = 3, lwd = 1)
+    abline(v = exp(spl_hazard1$knots[3]), lty = 3, lwd = 1)
+
     # diagnostics
     plot(cbind(log(km$time), log(-log(km$surv))), cex = 0.6, pch = c(1, 8, 9)[km_names], 
         col = c("black", "lightgrey", "darkgrey")[km_names], main = "C: Diagnostic plot (Spline, 1 knot, hazard scale)", 
@@ -577,9 +622,9 @@ evalq({
         lines(cbind(log(time_pred), log(-log(spl_hazard1_pred[, 4]))), col = "1", 
             lty = "9212", lwd = 2)
     }
-    abline(v = spl_hazard1$knots[2], lty = "9212", lwd = 1.5)
-    abline(v = spl_hazard1$knots[1], lty = "9212", lwd = 0.5)
-    abline(v = spl_hazard1$knots[3], lty = "9212", lwd = 0.5)
+    abline(v = spl_hazard1$knots[2], lty = 2, lwd = 1.5)
+    abline(v = spl_hazard1$knots[1], lty = 3, lwd = 1)
+    abline(v = spl_hazard1$knots[3], lty = 3, lwd = 1)
     legend("topleft", legend = group_names, col = "1", lty = as.integer(c(1, "1234", 
         "9212")), cex = 0.8)
 }, envir = PERSUADE)
@@ -598,30 +643,36 @@ evalq({
     if (ngroups > 2) {
         lines(cbind(time_pred, spl_hazard2_pred[, 4]), col = "2", lty = "9212", lwd = 2)
     }
-    abline(v = exp(spl_hazard2$knots[2]), lty = "9212", lwd = 1.5)
-    abline(v = exp(spl_hazard2$knots[3]), lty = "9212", lwd = 1.5)
-    abline(v = exp(spl_hazard2$knots[1]), lty = "9212", lwd = 0.5)
-    abline(v = exp(spl_hazard2$knots[4]), lty = "9212", lwd = 0.5)
+    abline(v = exp(spl_hazard2$knots[2]), lty = 2, lwd = 1.5)
+    abline(v = exp(spl_hazard2$knots[3]), lty = 2, lwd = 1.5)
+    abline(v = exp(spl_hazard2$knots[1]), lty = 3, lwd = 1)
+    abline(v = exp(spl_hazard2$knots[4]), lty = 3, lwd = 1)
     legend("bottomleft", legend = group_names, col = "2", lty = as.integer(c(1, "1234", 
         "9212")), cex = 0.8)
     
     # annual transition probabilities
-    plot(cbind(time_pred[-1], tp_gr_1[, 10]), main = "B: Annual transition probability (Spline, 2 knots, hazard scale)", 
-        xlab = "time", ylab = "annual transition probability", ylim = c(0, 1), col = "2", 
-        type = "l", lty = 1, lwd = 2)
+    plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), lwd = 1, lty = 1, type = "b", 
+         cex = 0.6, pch = 1, col = "black", main = "B: Annual transition probability (Spline, 2 knots, hazard scale)", 
+         xlab = "time", ylab = "annual transition probability (smoothed)", 
+         ylim = c(0, 1), xlim = c(0, ceiling(km_tp$maxtime*10)/10))
+    lines(cbind(time_pred[-1], tp_gr_1[, 10]), col = "2", lty = 1, lwd = 2)
     if (ngroups > 1) {
-        lines(cbind(time_pred[-1], tp_gr_2[, 10]), col = "2", lty = "1234", lwd = 2)
+      lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), col = "lightgrey", type = "b", 
+            lwd = 1, cex = 0.6, pch = 8)
+      lines(cbind(time_pred[-1], tp_gr_2[, 10]), col = "2", lty = "1234", lwd = 2)
     }
     if (ngroups > 2) {
-        lines(cbind(time_pred[-1], tp_gr_3[, 10]), col = "2", lty = "9212", lwd = 2)
+      lines(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth), col = "darkgrey", type = "b", 
+            lwd = 1, cex = 0.6, pch = 9)
+      lines(cbind(time_pred[-1], tp_gr_3[, 10]), col = "2", lty = "9212", lwd = 2)
     }
-    abline(v = exp(spl_hazard2$knots[2]), lty = "9212", lwd = 1.5)
-    abline(v = exp(spl_hazard2$knots[3]), lty = "9212", lwd = 1.5)
-    abline(v = exp(spl_hazard2$knots[1]), lty = "9212", lwd = 0.5)
-    abline(v = exp(spl_hazard2$knots[4]), lty = "9212", lwd = 0.5)
     legend("topleft", legend = group_names, col = "2", lty = as.integer(c(1, "1234", 
-        "9212")), cex = 0.8)
-    
+                                                                          "9212")), cex = 0.8)
+    abline(v = exp(spl_hazard2$knots[2]), lty = 2, lwd = 1.5)
+    abline(v = exp(spl_hazard2$knots[3]), lty = 2, lwd = 1.5)
+    abline(v = exp(spl_hazard2$knots[1]), lty = 3, lwd = 1)
+    abline(v = exp(spl_hazard2$knots[4]), lty = 3, lwd = 1)
+
     # diagnostics
     plot(cbind(log(km$time), log(-log(km$surv))), cex = 0.6, pch = c(1, 8, 9)[km_names], 
         col = c("black", "lightgrey", "darkgrey")[km_names], main = "C: Diagnostic plot (Spline, 2 knots, hazard scale)", 
@@ -636,10 +687,10 @@ evalq({
         lines(cbind(log(time_pred), log(-log(spl_hazard2_pred[, 4]))), col = "2", 
             lty = "9212", lwd = 2)
     }
-    abline(v = spl_hazard2$knots[2], lty = "9212", lwd = 1.5)
-    abline(v = spl_hazard2$knots[3], lty = "9212", lwd = 1.5)
-    abline(v = spl_hazard2$knots[1], lty = "9212", lwd = 0.5)
-    abline(v = spl_hazard2$knots[4], lty = "9212", lwd = 0.5)
+    abline(v = spl_hazard2$knots[2], lty = 2, lwd = 1.5)
+    abline(v = spl_hazard2$knots[3], lty = 2, lwd = 1.5)
+    abline(v = spl_hazard2$knots[1], lty = 3, lwd = 1)
+    abline(v = spl_hazard2$knots[4], lty = 3, lwd = 1)
     legend("topleft", legend = group_names, col = "2", lty = as.integer(c(1, "1234", 
         "9212")), cex = 0.8)
 }, envir = PERSUADE)
@@ -658,28 +709,34 @@ evalq({
     if (ngroups > 2) {
         lines(cbind(time_pred, spl_odds1_pred[, 4]), col = "3", lty = "9212", lwd = 2)
     }
-    abline(v = exp(spl_odds1$knots[2]), lty = "9212", lwd = 1.5)
-    abline(v = exp(spl_odds1$knots[1]), lty = "9212", lwd = 0.5)
-    abline(v = exp(spl_odds1$knots[3]), lty = "9212", lwd = 0.5)
+    abline(v = exp(spl_odds1$knots[2]), lty = 2, lwd = 1.5)
+    abline(v = exp(spl_odds1$knots[1]), lty = 3, lwd = 1)
+    abline(v = exp(spl_odds1$knots[3]), lty = 3, lwd = 1)
     legend("bottomleft", legend = group_names, col = "3", lty = as.integer(c(1, "1234", 
         "9212")), cex = 0.8)
     
     # annual transition probabilities
-    plot(cbind(time_pred[-1], tp_gr_1[, 11]), main = "B: Annual transition probability (Spline, 1 knot, odds scale)", 
-        xlab = "time", ylab = "annual transition probability", ylim = c(0, 1), col = "3", 
-        type = "l", lty = 1, lwd = 2)
+    plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), lwd = 1, lty = 1, type = "b", 
+         cex = 0.6, pch = 1, col = "black", main = "B: Annual transition probability (Spline, 1 knot, odds scale)", 
+         xlab = "time", ylab = "annual transition probability (smoothed)", 
+         ylim = c(0, 1), xlim = c(0, ceiling(km_tp$maxtime*10)/10))
+    lines(cbind(time_pred[-1], tp_gr_1[, 11]), col = "3", lty = 1, lwd = 2)
     if (ngroups > 1) {
-        lines(cbind(time_pred[-1], tp_gr_2[, 11]), col = "3", lty = "1234", lwd = 2)
+      lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), col = "lightgrey", type = "b", 
+            lwd = 1, cex = 0.6, pch = 8)
+      lines(cbind(time_pred[-1], tp_gr_2[, 11]), col = "3", lty = "1234", lwd = 2)
     }
     if (ngroups > 2) {
-        lines(cbind(time_pred[-1], tp_gr_3[, 11]), col = "3", lty = "9212", lwd = 2)
+      lines(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth), col = "darkgrey", type = "b", 
+            lwd = 1, cex = 0.6, pch = 9)
+      lines(cbind(time_pred[-1], tp_gr_3[, 11]), col = "3", lty = "9212", lwd = 2)
     }
-    abline(v = exp(spl_odds1$knots[2]), lty = "9212", lwd = 1.5)
-    abline(v = exp(spl_odds1$knots[1]), lty = "9212", lwd = 0.5)
-    abline(v = exp(spl_odds1$knots[3]), lty = "9212", lwd = 0.5)
     legend("topleft", legend = group_names, col = "3", lty = as.integer(c(1, "1234", 
-        "9212")), cex = 0.8)
-    
+                                                                          "9212")), cex = 0.8)
+    abline(v = exp(spl_odds1$knots[2]), lty = 2, lwd = 1.5)
+    abline(v = exp(spl_odds1$knots[1]), lty = 3, lwd = 1)
+    abline(v = exp(spl_odds1$knots[3]), lty = 3, lwd = 1)
+
     # diagnostics
     plot(cbind(log(km$time), -log(km$surv/(1 - km$surv))), cex = 0.6, pch = c(1, 
         8, 9)[km_names], col = c("black", "lightgrey", "darkgrey")[km_names], main = "C: Diagnostic plot (Spline, 1 knot, odds scale)", 
@@ -694,9 +751,9 @@ evalq({
         lines(cbind(log(time_pred), -log(spl_odds1_pred[, 4]/(1 - spl_odds1_pred[, 
             4]))), col = "3", lty = "9212", lwd = 2)
     }
-    abline(v = spl_odds1$knots[2], lty = "9212", lwd = 1.5)
-    abline(v = spl_odds1$knots[1], lty = "9212", lwd = 0.5)
-    abline(v = spl_odds1$knots[3], lty = "9212", lwd = 0.5)
+    abline(v = spl_odds1$knots[2], lty = 2, lwd = 1.5)
+    abline(v = spl_odds1$knots[1], lty = 3, lwd = 1)
+    abline(v = spl_odds1$knots[3], lty = 3, lwd = 1)
     legend("topleft", legend = group_names, col = "3", lty = as.integer(c(1, "1234", 
         "9212")), cex = 0.8)
 }, envir = PERSUADE)
@@ -715,30 +772,36 @@ evalq({
     if (ngroups > 2) {
         lines(cbind(time_pred, spl_odds2_pred[, 4]), col = "4", lty = "9212", lwd = 2)
     }
-    abline(v = exp(spl_odds2$knots[2]), lty = "9212", lwd = 1.5)
-    abline(v = exp(spl_odds2$knots[3]), lty = "9212", lwd = 1.5)
-    abline(v = exp(spl_odds2$knots[1]), lty = "9212", lwd = 0.5)
-    abline(v = exp(spl_odds2$knots[4]), lty = "9212", lwd = 0.5)
+    abline(v = exp(spl_odds2$knots[2]), lty = 2, lwd = 1.5)
+    abline(v = exp(spl_odds2$knots[3]), lty = 2, lwd = 1.5)
+    abline(v = exp(spl_odds2$knots[1]), lty = 3, lwd = 1)
+    abline(v = exp(spl_odds2$knots[4]), lty = 3, lwd = 1)
     legend("bottomleft", legend = group_names, col = "4", lty = as.integer(c(1, "1234", 
         "9212")), cex = 0.8)
     
     # annual transition probabilities
-    plot(cbind(time_pred[-1], tp_gr_1[, 12]), main = "B: Annual transition probability (Spline, 2 knots, odds scale)", 
-        xlab = "time", ylab = "annual transition probability", ylim = c(0, 1), col = "4", 
-        type = "l", lty = 1, lwd = 2)
+    plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), lwd = 1, lty = 1, type = "b", 
+         cex = 0.6, pch = 1, col = "black", main = "B: Annual transition probability (Spline, 2 knots, odds scale)", 
+         xlab = "time", ylab = "annual transition probability (smoothed)", 
+         ylim = c(0, 1), xlim = c(0, ceiling(km_tp$maxtime*10)/10))
+    lines(cbind(time_pred[-1], tp_gr_1[, 12]), col = "4", lty = 1, lwd = 2)
     if (ngroups > 1) {
-        lines(cbind(time_pred[-1], tp_gr_2[, 12]), col = "4", lty = "1234", lwd = 2)
+      lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), col = "lightgrey", type = "b", 
+            lwd = 1, cex = 0.6, pch = 8)
+      lines(cbind(time_pred[-1], tp_gr_2[, 12]), col = "4", lty = "1234", lwd = 2)
     }
     if (ngroups > 2) {
-        lines(cbind(time_pred[-1], tp_gr_3[, 12]), col = "4", lty = "9212", lwd = 2)
+      lines(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth), col = "darkgrey", type = "b", 
+            lwd = 1, cex = 0.6, pch = 9)
+      lines(cbind(time_pred[-1], tp_gr_3[, 12]), col = "4", lty = "9212", lwd = 2)
     }
-    abline(v = exp(spl_odds2$knots[2]), lty = "9212", lwd = 1.5)
-    abline(v = exp(spl_odds2$knots[3]), lty = "9212", lwd = 1.5)
-    abline(v = exp(spl_odds2$knots[1]), lty = "9212", lwd = 0.5)
-    abline(v = exp(spl_odds2$knots[4]), lty = "9212", lwd = 0.5)
     legend("topleft", legend = group_names, col = "4", lty = as.integer(c(1, "1234", 
-        "9212")), cex = 0.8)
-    
+                                                                          "9212")), cex = 0.8)
+    abline(v = exp(spl_odds2$knots[2]), lty = 2, lwd = 1.5)
+    abline(v = exp(spl_odds2$knots[3]), lty = 2, lwd = 1.5)
+    abline(v = exp(spl_odds2$knots[1]), lty = 3, lwd = 1)
+    abline(v = exp(spl_odds2$knots[4]), lty = 3, lwd = 1)
+
     # diagnostics
     plot(cbind(log(km$time), -log(km$surv/(1 - km$surv))), cex = 0.6, pch = c(1, 
         8, 9)[km_names], col = c("black", "lightgrey", "darkgrey")[km_names], main = "C: Diagnostic plot (Spline, 2 knots, odds scale)", 
@@ -753,10 +816,10 @@ evalq({
         lines(cbind(log(time_pred), -log(spl_odds2_pred[, 4]/(1 - spl_odds2_pred[, 
             4]))), col = "4", lty = "9212", lwd = 2)
     }
-    abline(v = spl_odds2$knots[2], lty = "9212", lwd = 1.5)
-    abline(v = spl_odds2$knots[3], lty = "9212", lwd = 1.5)
-    abline(v = spl_odds2$knots[1], lty = "9212", lwd = 0.5)
-    abline(v = spl_odds2$knots[4], lty = "9212", lwd = 0.5)
+    abline(v = spl_odds2$knots[2], lty = 2, lwd = 1.5)
+    abline(v = spl_odds2$knots[3], lty = 2, lwd = 1.5)
+    abline(v = spl_odds2$knots[1], lty = 3, lwd = 1)
+    abline(v = spl_odds2$knots[4], lty = 3, lwd = 1)
     legend("topleft", legend = group_names, col = "4", lty = as.integer(c(1, "1234", 
         "9212")), cex = 0.8)
 }, envir = PERSUADE)
@@ -775,28 +838,34 @@ evalq({
     if (ngroups > 2) {
         lines(cbind(time_pred, spl_normal1_pred[, 4]), col = "5", lty = "9212", lwd = 2)
     }
-    abline(v = exp(spl_normal1$knots[2]), lty = "9212", lwd = 1.5)
-    abline(v = exp(spl_normal1$knots[1]), lty = "9212", lwd = 0.5)
-    abline(v = exp(spl_normal1$knots[3]), lty = "9212", lwd = 0.5)
+    abline(v = exp(spl_normal1$knots[2]), lty = 2, lwd = 1.5)
+    abline(v = exp(spl_normal1$knots[1]), lty = 3, lwd = 1)
+    abline(v = exp(spl_normal1$knots[3]), lty = 3, lwd = 1)
     legend("bottomleft", legend = group_names, col = "5", lty = as.integer(c(1, "1234", 
         "9212")), cex = 0.8)
     
     # annual transition probabilities
-    plot(cbind(time_pred[-1], tp_gr_1[, 13]), main = "B: Annual transition probability (Spline, 1 knot, normal scale)", 
-        xlab = "time", ylab = "annual transition probability", ylim = c(0, 1), col = "5", 
-        type = "l", lty = 1, lwd = 2)
+    plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), lwd = 1, lty = 1, type = "b", 
+         cex = 0.6, pch = 1, col = "black", main = "B: Annual transition probability (Spline, 1 knot, normal scale)", 
+         xlab = "time", ylab = "annual transition probability (smoothed)", 
+         ylim = c(0, 1), xlim = c(0, ceiling(km_tp$maxtime*10)/10))
+    lines(cbind(time_pred[-1], tp_gr_1[, 13]), col = "5", lty = 1, lwd = 2)
     if (ngroups > 1) {
-        lines(cbind(time_pred[-1], tp_gr_2[, 13]), col = "5", lty = "1234", lwd = 2)
+      lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), col = "lightgrey", type = "b", 
+            lwd = 1, cex = 0.6, pch = 8)
+      lines(cbind(time_pred[-1], tp_gr_2[, 13]), col = "5", lty = "1234", lwd = 2)
     }
     if (ngroups > 2) {
-        lines(cbind(time_pred[-1], tp_gr_3[, 13]), col = "5", lty = "9212", lwd = 2)
+      lines(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth), col = "darkgrey", type = "b", 
+            lwd = 1, cex = 0.6, pch = 9)
+      lines(cbind(time_pred[-1], tp_gr_3[, 13]), col = "5", lty = "9212", lwd = 2)
     }
-    abline(v = exp(spl_normal1$knots[2]), lty = "9212", lwd = 1.5)
-    abline(v = exp(spl_normal1$knots[1]), lty = "9212", lwd = 0.5)
-    abline(v = exp(spl_normal1$knots[3]), lty = "9212", lwd = 0.5)
     legend("topleft", legend = group_names, col = "5", lty = as.integer(c(1, "1234", 
-        "9212")), cex = 0.8)
-    
+                                                                          "9212")), cex = 0.8)
+    abline(v = exp(spl_normal1$knots[2]), lty = 2, lwd = 1.5)
+    abline(v = exp(spl_normal1$knots[1]), lty = 3, lwd = 1)
+    abline(v = exp(spl_normal1$knots[3]), lty = 3, lwd = 1)
+
     # diagnostics
     plot(cbind(log(km$time), -qnorm(km$surv, mean = 0, sd = 1, lower.tail = TRUE, 
         log.p = FALSE)), pch = c(1, 8, 9)[km_names], col = c("black", "lightgrey", 
@@ -812,9 +881,9 @@ evalq({
         lines(cbind(log(time_pred), -qnorm(spl_normal1_pred[, 4], mean = 0, sd = 1, 
             lower.tail = TRUE, log.p = FALSE)), col = "5", lty = "9212", lwd = 2)
     }
-    abline(v = spl_normal1$knots[2], lty = "9212", lwd = 1.5)
-    abline(v = spl_normal1$knots[1], lty = "9212", lwd = 0.5)
-    abline(v = spl_normal1$knots[3], lty = "9212", lwd = 0.5)
+    abline(v = spl_normal1$knots[2], lty = 2, lwd = 1.5)
+    abline(v = spl_normal1$knots[1], lty = 3, lwd = 1)
+    abline(v = spl_normal1$knots[3], lty = 3, lwd = 1)
     legend("topleft", legend = group_names, col = "5", lty = as.integer(c(1, "1234", 
         "9212")), cex = 0.8)
 }, envir = PERSUADE)
@@ -833,30 +902,36 @@ evalq({
     if (ngroups > 2) {
         lines(cbind(time_pred, spl_normal2_pred[, 4]), col = "6", lty = "9212", lwd = 2)
     }
-    abline(v = exp(spl_normal2$knots[2]), lty = "9212", lwd = 1.5)
-    abline(v = exp(spl_normal2$knots[3]), lty = "9212", lwd = 1.5)
-    abline(v = exp(spl_normal2$knots[1]), lty = "9212", lwd = 0.5)
-    abline(v = exp(spl_normal2$knots[4]), lty = "9212", lwd = 0.5)
+    abline(v = exp(spl_normal2$knots[2]), lty = 2, lwd = 1.5)
+    abline(v = exp(spl_normal2$knots[3]), lty = 2, lwd = 1.5)
+    abline(v = exp(spl_normal2$knots[1]), lty = 3, lwd = 1)
+    abline(v = exp(spl_normal2$knots[4]), lty = 3, lwd = 1)
     legend("bottomleft", legend = group_names, col = "6", lty = as.integer(c(1, "1234", 
         "9212")), cex = 0.8)
     
     # annual transition probabilities
-    plot(cbind(time_pred[-1], tp_gr_1[, 14]), main = "B: Annual transition probability (Spline, 2 knots, normal scale)", 
-        xlab = "time", ylab = "annual transition probability", ylim = c(0, 1), col = "6", 
-        type = "l", lty = 1, lwd = 2)
+    plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), lwd = 1, lty = 1, type = "b", 
+         cex = 0.6, pch = 1, col = "black", main = "B: Annual transition probability (Spline, 2 knots, normal scale)", 
+         xlab = "time", ylab = "annual transition probability (smoothed)", 
+         ylim = c(0, 1), xlim = c(0, ceiling(km_tp$maxtime*10)/10))
+    lines(cbind(time_pred[-1], tp_gr_1[, 14]), col = "6", lty = 1, lwd = 2)
     if (ngroups > 1) {
-        lines(cbind(time_pred[-1], tp_gr_2[, 14]), col = "6", lty = "1234", lwd = 2)
+      lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), col = "lightgrey", type = "b", 
+            lwd = 1, cex = 0.6, pch = 8)
+      lines(cbind(time_pred[-1], tp_gr_2[, 14]), col = "6", lty = "1234", lwd = 2)
     }
     if (ngroups > 2) {
-        lines(cbind(time_pred[-1], tp_gr_3[, 14]), col = "6", lty = "9212", lwd = 2)
+      lines(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth), col = "darkgrey", type = "b", 
+            lwd = 1, cex = 0.6, pch = 9)
+      lines(cbind(time_pred[-1], tp_gr_3[, 14]), col = "6", lty = "9212", lwd = 2)
     }
-    abline(v = exp(spl_normal2$knots[2]), lty = "9212", lwd = 1.5)
-    abline(v = exp(spl_normal2$knots[3]), lty = "9212", lwd = 1.5)
-    abline(v = exp(spl_normal2$knots[1]), lty = "9212", lwd = 0.5)
-    abline(v = exp(spl_normal2$knots[4]), lty = "9212", lwd = 0.5)
     legend("topleft", legend = group_names, col = "6", lty = as.integer(c(1, "1234", 
-        "9212")), cex = 0.8)
-    
+                                                                          "9212")), cex = 0.8)
+    abline(v = exp(spl_normal2$knots[2]), lty = 2, lwd = 1.5)
+    abline(v = exp(spl_normal2$knots[3]), lty = 2, lwd = 1.5)
+    abline(v = exp(spl_normal2$knots[1]), lty = 3, lwd = 1)
+    abline(v = exp(spl_normal2$knots[4]), lty = 3, lwd = 1)
+
     # diagnostics
     plot(cbind(log(km$time), -qnorm(km$surv, mean = 0, sd = 1, lower.tail = TRUE, 
         log.p = FALSE)), pch = c(1, 8, 9)[km_names], col = c("black", "lightgrey", 
@@ -872,10 +947,10 @@ evalq({
         lines(cbind(log(time_pred), -qnorm(spl_normal2_pred[, 4], mean = 0, sd = 1, 
             lower.tail = TRUE, log.p = FALSE)), col = "6", lty = "9212", lwd = 2)
     }
-    abline(v = spl_normal2$knots[2], lty = "9212", lwd = 1.5)
-    abline(v = spl_normal2$knots[3], lty = "9212", lwd = 1.5)
-    abline(v = spl_normal2$knots[1], lty = "9212", lwd = 0.5)
-    abline(v = spl_normal2$knots[4], lty = "9212", lwd = 0.5)
+    abline(v = spl_normal2$knots[2], lty = 2, lwd = 1.5)
+    abline(v = spl_normal2$knots[3], lty = 2, lwd = 1.5)
+    abline(v = spl_normal2$knots[1], lty = 3, lwd = 1)
+    abline(v = spl_normal2$knots[4], lty = 3, lwd = 1)
     legend("topleft", legend = group_names, col = "6", lty = as.integer(c(1, "1234", 
         "9212")), cex = 0.8)
 }, envir = PERSUADE)
@@ -921,9 +996,10 @@ kable_styling(kable(t(round(PERSUADE$extrapolation_gr_1[1 + PERSUADE$time_pred_s
 
 evalq({
     # parametric curves
-    plot(cbind(time_pred[-1], tp_gr_1[, 2]), main = "C: Annual transition probability (parametric curves)", 
-        xlab = "time", ylab = "annual transition probability", ylim = c(0, 1), col = "1", 
-        type = "l", lty = 1, lwd = 1)
+    plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), main = "C: Annual transition probability (parametric curves)", 
+        xlab = "time", ylab = "annual transition probability", ylim = c(0, 1), xlim = c(0, time_horizon),
+        col = "black", type = "l", lwd = 2)
+    lines(cbind(time_pred[-1], tp_gr_1[, 2]), col = "1", lty = 1, lwd = 1)
     lines(cbind(time_pred[-1], tp_gr_1[, 3]), col = "2", lty = 1, lwd = 1)
     lines(cbind(time_pred[-1], tp_gr_1[, 4]), col = "3", lty = 1, lwd = 1)
     lines(cbind(time_pred[-1], tp_gr_1[, 5]), col = "4", lty = 1, lwd = 1)
@@ -933,9 +1009,10 @@ evalq({
     legend("topleft", legend = lbls, col = 1:7, lty = 1, cex = 0.8)
     # spline curves
     if (show_spline == TRUE) {
-        plot(cbind(time_pred[-1], tp_gr_1[, 9]), main = "D: Annual transition probability (spline curves)", 
-            xlab = "time", ylab = "annual transition probability", ylim = c(0, 1), 
-            col = "1", type = "l", lty = 1, lwd = 1)
+        plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), main = "C: Annual transition probability (parametric curves)", 
+             xlab = "time", ylab = "annual transition probability", ylim = c(0, 1), xlim = c(0, time_horizon),
+             col = "black", type = "l", lwd = 2)
+        lines(cbind(time_pred[-1], tp_gr_1[, 9]), col = "1", lty = 1, lwd = 1)  
         lines(cbind(time_pred[-1], tp_gr_1[, 10]), col = "2", lty = 1, lwd = 1)
         lines(cbind(time_pred[-1], tp_gr_1[, 11]), col = "3", lty = 1, lwd = 1)
         lines(cbind(time_pred[-1], tp_gr_1[, 12]), col = "4", lty = 1, lwd = 1)
@@ -985,9 +1062,10 @@ kable_styling(kable(t(round(PERSUADE$extrapolation_gr_2[1 + PERSUADE$time_pred_s
 
 evalq({
     # parametric curves
-    plot(cbind(time_pred[-1], tp_gr_2[, 2]), main = "C: Annual transition probability (parametric curves)", 
-        xlab = "time", ylab = "annual transition probability", ylim = c(0, 1), col = "1", 
-        type = "l", lty = "1234", lwd = 1)
+    plot(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), main = "C: Annual transition probability (parametric curves)", 
+        xlab = "time", ylab = "annual transition probability", ylim = c(0, 1), xlim = c(0, time_horizon),
+        col = "black", type = "l", lwd = 2)
+    lines(cbind(time_pred[-1], tp_gr_2[, 2]), col = "1", lty = "1234", lwd = 1)
     lines(cbind(time_pred[-1], tp_gr_2[, 3]), col = "2", lty = "1234", lwd = 1)
     lines(cbind(time_pred[-1], tp_gr_2[, 4]), col = "3", lty = "1234", lwd = 1)
     lines(cbind(time_pred[-1], tp_gr_2[, 5]), col = "4", lty = "1234", lwd = 1)
@@ -997,9 +1075,10 @@ evalq({
     legend("topleft", legend = lbls, col = 1:7, lty = "1234", cex = 0.8)
     # spline curves
     if (show_spline == TRUE) {
-        plot(cbind(time_pred[-1], tp_gr_2[, 9]), main = "D: Annual transition probability (spline curves)", 
-            xlab = "time", ylab = "annual transition probability", ylim = c(0, 1), 
-            col = "1", type = "l", lty = "1234", lwd = 1)
+        plot(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), main = "C: Annual transition probability (parametric curves)", 
+             xlab = "time", ylab = "annual transition probability", ylim = c(0, 1), xlim = c(0, time_horizon),
+             col = "black", type = "l", lwd = 2)
+        lines(cbind(time_pred[-1], tp_gr_2[, 9]), col = "1", lty = "1234", lwd = 1)  
         lines(cbind(time_pred[-1], tp_gr_2[, 10]), col = "2", lty = "1234", lwd = 1)
         lines(cbind(time_pred[-1], tp_gr_2[, 11]), col = "3", lty = "1234", lwd = 1)
         lines(cbind(time_pred[-1], tp_gr_2[, 12]), col = "4", lty = "1234", lwd = 1)
@@ -1049,9 +1128,10 @@ kable_styling(kable(t(round(PERSUADE$extrapolation_gr_3[1 + PERSUADE$time_pred_s
 
 evalq({
     # parametric curves
-    plot(cbind(time_pred[-1], tp_gr_3[, 2]), main = "C: Annual transition probability (parametric curves)", 
-        xlab = "time", ylab = "annual transition probability", ylim = c(0, 1), col = "1", 
-        type = "l", lty = "9212", lwd = 1)
+    plot(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth), main = "C: Annual transition probability (parametric curves)", 
+        xlab = "time", ylab = "annual transition probability", ylim = c(0, 1), xlim = c(0, time_horizon),
+        col = "black", type = "l", lwd = 2)
+    lines(cbind(time_pred[-1], tp_gr_3[, 2]), col = "1", lty = "9212", lwd = 1)  
     lines(cbind(time_pred[-1], tp_gr_3[, 3]), col = "2", lty = "9212", lwd = 1)
     lines(cbind(time_pred[-1], tp_gr_3[, 4]), col = "3", lty = "9212", lwd = 1)
     lines(cbind(time_pred[-1], tp_gr_3[, 5]), col = "4", lty = "9212", lwd = 1)
@@ -1061,9 +1141,10 @@ evalq({
     legend("topleft", legend = lbls, col = 1:7, lty = "9212", cex = 0.8)
     # spline curves
     if (show_spline == TRUE) {
-        plot(cbind(time_pred[-1], tp_gr_3[, 9]), main = "D: Annual transition probability (spline curves)", 
-            xlab = "time", ylab = "annual transition probability", ylim = c(0, 1), 
-            col = "1", type = "l", lty = "9212", lwd = 1)
+        plot(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth), main = "C: Annual transition probability (parametric curves)", 
+             xlab = "time", ylab = "annual transition probability", ylim = c(0, 1), xlim = c(0, time_horizon),
+             col = "black", type = "l", lwd = 2)
+        lines(cbind(time_pred[-1], tp_gr_3[, 9]), col = "1", lty = "9212", lwd = 1)  
         lines(cbind(time_pred[-1], tp_gr_3[, 10]), col = "2", lty = "9212", lwd = 1)
         lines(cbind(time_pred[-1], tp_gr_3[, 11]), col = "3", lty = "9212", lwd = 1)
         lines(cbind(time_pred[-1], tp_gr_3[, 12]), col = "4", lty = "9212", lwd = 1)
