@@ -17,7 +17,7 @@ output:
 
 ```{r setup, include=FALSE}
 #code is formatted using formatR::tidy_source(width.cutoff = 80)
-knitr::opts_chunk$set(echo = TRUE, fig.align = "left", fig.path = "images/", dev = c('pdf', 'png'))
+knitr::opts_chunk$set(echo = TRUE, fig.align = "left", fig.path = "images/", dev = c('pdf', 'png'), dpi=300)
 ```
 
 
