@@ -20,10 +20,8 @@ output:
 knitr::opts_chunk$set(echo = TRUE, fig.align = "left", fig.path = "images/", dev = c('pdf', 'png'), dpi=300)
 ```
 
-
 ```{r preparation, echo=FALSE, warning = FALSE, message = FALSE, results = "hide"}
 rm(list = setdiff(ls(), lsf.str()))  #remove all objects except functions
-options(scipen = 100)  #suppress scientific notation
 
 # LOAD AND INSTALL PACKAGES AND FUNCTIONS
 packages <- c("rms", "survival", "flexsurv", "muhaz", "survminer", "ggplot2", "data.table", 
@@ -38,7 +36,6 @@ source("PERSUADE function.R")
 n <- 8  #number of different colors (to be used for palette)
 palette(rainbow(n = n, s = 1, v = 1, start = 0, end = max(1, n - 1)/n, alpha = 1))
 ```
-
 
 ```{r input, echo=FALSE, warning = FALSE, message = FALSE, results = "hide"}
 # INPUT DATA
@@ -1010,7 +1007,7 @@ evalq({
     legend("topleft", legend = lbls, col = 1:7, lty = 1, cex = 0.8)
     # spline curves
     if (show_spline == TRUE) {
-        plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), main = "C: Annual transition probability (parametric curves)", 
+        plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), main = "D: Annual transition probability (spline curves)", 
              xlab = "time", ylab = "annual transition probability", ylim = c(0, 1), xlim = c(0, time_horizon),
              col = "black", type = "l", lwd = 2)
         lines(cbind(time_pred[-1], tp_gr_1[, 9]), col = "1", lty = 1, lwd = 1)  
@@ -1076,7 +1073,7 @@ evalq({
     legend("topleft", legend = lbls, col = 1:7, lty = "1234", cex = 0.8)
     # spline curves
     if (show_spline == TRUE) {
-        plot(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), main = "C: Annual transition probability (parametric curves)", 
+        plot(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), main = "D: Annual transition probability (spline curves)", 
              xlab = "time", ylab = "annual transition probability", ylim = c(0, 1), xlim = c(0, time_horizon),
              col = "black", type = "l", lwd = 2)
         lines(cbind(time_pred[-1], tp_gr_2[, 9]), col = "1", lty = "1234", lwd = 1)  
@@ -1142,7 +1139,7 @@ evalq({
     legend("topleft", legend = lbls, col = 1:7, lty = "9212", cex = 0.8)
     # spline curves
     if (show_spline == TRUE) {
-        plot(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth), main = "C: Annual transition probability (parametric curves)", 
+        plot(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth), main = "D: Annual transition probability (spline curves)", 
              xlab = "time", ylab = "annual transition probability", ylim = c(0, 1), xlim = c(0, time_horizon),
              col = "black", type = "l", lwd = 2)
         lines(cbind(time_pred[-1], tp_gr_3[, 9]), col = "1", lty = "9212", lwd = 1)  
