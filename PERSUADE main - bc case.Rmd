@@ -80,6 +80,7 @@ Should stratified parametric survival models be used?
 ```{r PH_assumption, echo=FALSE, eval=if (PERSUADE$ngroups>1) {TRUE} else {FALSE}, out.height = "29%", fig.width=11}
 evalq({
     plot(cbind(log(km$time), log(-log(km$surv))), main = "A: LN(cumulative hazard)", 
+        xlim = c(floor(min(log(km$time)[km$surv!=1])), ceiling(max(log(km$time)))),
         cex = 0.6, xlab = "LN(time)", ylab = "LN(cumulative hazard)", pch = c(1, 
             8, 9)[km_names], col = c("black", "lightgrey", "darkgrey")[km_names])
     
@@ -242,6 +243,7 @@ evalq({
     
     # diagnostics
     plot(cbind(log(km$time), log(-log(km$surv))), cex = 0.6, pch = c(1, 8, 9)[km_names], 
+        xlim = c(floor(min(log(km$time)[km$surv!=1])), ceiling(max(log(km$time)))),
         col = c("black", "lightgrey", "darkgrey")[km_names], main = "C: Diagnostic plot (Weibull)", 
         xlab = "LN(time)", ylab = "LN(cumulative hazard)")
     lines(cbind(log(time_pred), log(-log(weib_pred[, 2]))), col = "2", lty = 1, lwd = 2)
@@ -327,7 +329,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-##Lognormal
+##Log-normal
 ```{r lnorm, echo=FALSE, out.height = "30%", fig.width=11}
 evalq({
     # hazard can be non-monotonic with respect to time; initially an increasing
@@ -346,7 +348,7 @@ evalq({
     
     # annual transition probabilities
     plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), lwd = 1, lty = 1, type = "b", 
-         cex = 0.6, pch = 1, col = "black", main = "B: Annual transition probability (Lognormal)", 
+         cex = 0.6, pch = 1, col = "black", main = "B: Annual transition probability (Log-normal)", 
          xlab = "time", ylab = "annual transition probability (smoothed)", 
          ylim = c(0, 1), xlim = c(0, ceiling(km_tp$maxtime*10)/10))
     lines(cbind(time_pred[-1], tp_gr_1[, 5]), col = "4", lty = 1, lwd = 2)
@@ -365,7 +367,8 @@ evalq({
     
     # diagnostics
     plot(cbind(log(km$time), -qnorm(km$surv, mean = 0, sd = 1, lower.tail = TRUE, 
-        log.p = FALSE)), cex = 0.6, main = "C: Diagnostic plot (Log-normal)", xlab = "LN(time)", 
+        log.p = FALSE)), cex = 0.6, main = "C: Diagnostic plot (Log-normal)", xlab = "LN(time)",
+        xlim = c(floor(min(log(km$time)[km$surv!=1])), ceiling(max(log(km$time)))),
         pch = c(1, 8, 9)[km_names], col = c("black", "lightgrey", "darkgrey")[km_names], 
         ylab = "- standard normal quartiles")
     lines(cbind(log(time_pred), -qnorm(lnorm_pred[, 2], mean = 0, sd = 1, lower.tail = TRUE, 
@@ -383,7 +386,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-##Loglogistic
+##Log-logistic
 ```{r llog, echo=FALSE, out.height = "30%", fig.width=11}
 evalq({
     # hazard can be non-monotonic with respect to time; initially an increasing
@@ -402,7 +405,7 @@ evalq({
     
     # annual transition probabilities
     plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), lwd = 1, lty = 1, type = "b", 
-         cex = 0.6, pch = 1, col = "black", main = "B: Annual transition probability (Loglogistic)", 
+         cex = 0.6, pch = 1, col = "black", main = "B: Annual transition probability (Log-logistic)", 
          xlab = "time", ylab = "annual transition probability (smoothed)", 
          ylim = c(0, 1), xlim = c(0, ceiling(km_tp$maxtime*10)/10))
     lines(cbind(time_pred[-1], tp_gr_1[, 6]), col = "5", lty = 1, lwd = 2)
@@ -421,8 +424,9 @@ evalq({
     
     # diagnostics
     plot(cbind(log(km$time), -log(km$surv/(1 - km$surv))), cex = 0.6, pch = c(1, 
-        8, 9)[km_names], col = c("black", "lightgrey", "darkgrey")[km_names], main = "C: Diagnostic plot (Log-logistic)", 
-        xlab = "LN(time)", ylab = "-LN(survival odds)")
+        8, 9)[km_names], col = c("black", "lightgrey", "darkgrey")[km_names], 
+        xlim = c(floor(min(log(km$time)[km$surv!=1])), ceiling(max(log(km$time)))),
+        main = "C: Diagnostic plot (Log-logistic)", xlab = "LN(time)", ylab = "-LN(survival odds)")
     lines(cbind(log(time_pred), -log(llog_pred[, 2]/(1 - llog_pred[, 2]))), col = "5", 
         lty = 1, lwd = 2)
     if (ngroups > 1) {
@@ -474,7 +478,8 @@ evalq({
                                                                           "9212")), cex = 0.8)
     
     # diagnostics --> not linear!
-    plot(cbind(log(km$time), log(-log(km$surv))), cex = 0.6, pch = c(1, 8, 9)[km_names], 
+    plot(cbind(log(km$time), log(-log(km$surv))), cex = 0.6, pch = c(1, 8, 9)[km_names],
+        xlim = c(floor(min(log(km$time)[km$surv!=1])), ceiling(max(log(km$time)))),
         col = c("black", "lightgrey", "darkgrey")[km_names], main = "C: Diagnostic plot (Gamma)", 
         xlab = "LN(time)", ylab = "LN(cumulative hazard)")
     lines(cbind(log(time_pred), log(-log(gam_pred[, 2]))), col = "6", lty = 1, lwd = 2)
@@ -527,7 +532,8 @@ evalq({
                                                                           "9212")), cex = 0.8)
     
     # diagnostics --> not linear!
-    plot(cbind(log(km$time), log(-log(km$surv))), cex = 0.6, pch = c(1, 8, 9)[km_names], 
+    plot(cbind(log(km$time), log(-log(km$surv))), cex = 0.6, pch = c(1, 8, 9)[km_names],
+        xlim = c(floor(min(log(km$time)[km$surv!=1])), ceiling(max(log(km$time)))),
         col = c("black", "lightgrey", "darkgrey")[km_names], main = "C: Diagnostic plot (Generalised gamma)", 
         xlab = "LN(time)", ylab = "LN(cumulative hazard)")
     lines(cbind(log(time_pred), log(-log(ggam_pred[, 2]))), col = "7", lty = 1, lwd = 2)
@@ -551,7 +557,7 @@ If standard parametric models are not appropriate, are spline models a more appr
   
 ```{r spline, echo=FALSE, eval = PERSUADE$show_spline}
 evalq({
-    # k=0 gives a Weibull, log-logistic or lognormal model, if 'scale' is 'hazard',
+    # k=0 gives a Weibull, log-logistic or log-normal model, if 'scale' is 'hazard',
     # 'odds' or 'normal' respectively. The knots are then chosen as equally-spaced
     # quantiles of the log uncensored survival times, for example, at the median with
     # one knot, or at the 33% and 67% quantiles of log time (or time, see
@@ -607,7 +613,8 @@ evalq({
     abline(v = exp(spl_hazard1$knots[3]), lty = 3, lwd = 1)
 
     # diagnostics
-    plot(cbind(log(km$time), log(-log(km$surv))), cex = 0.6, pch = c(1, 8, 9)[km_names], 
+    plot(cbind(log(km$time), log(-log(km$surv))), cex = 0.6, pch = c(1, 8, 9)[km_names],
+        xlim = c(floor(min(log(km$time)[km$surv!=1])), ceiling(max(log(km$time)))),
         col = c("black", "lightgrey", "darkgrey")[km_names], main = "C: Diagnostic plot (Spline, 1 knot, hazard scale)", 
         xlab = "LN(time)", ylab = "LN(cumulative hazard)")
     lines(cbind(log(time_pred), log(-log(spl_hazard1_pred[, 2]))), col = "1", lty = 1, 
@@ -672,7 +679,8 @@ evalq({
     abline(v = exp(spl_hazard2$knots[4]), lty = 3, lwd = 1)
 
     # diagnostics
-    plot(cbind(log(km$time), log(-log(km$surv))), cex = 0.6, pch = c(1, 8, 9)[km_names], 
+    plot(cbind(log(km$time), log(-log(km$surv))), cex = 0.6, pch = c(1, 8, 9)[km_names],
+        xlim = c(floor(min(log(km$time)[km$surv!=1])), ceiling(max(log(km$time)))),
         col = c("black", "lightgrey", "darkgrey")[km_names], main = "C: Diagnostic plot (Spline, 2 knots, hazard scale)", 
         xlab = "LN(time)", ylab = "LN(cumulative hazard)")
     lines(cbind(log(time_pred), log(-log(spl_hazard2_pred[, 2]))), col = "2", lty = 1, 
@@ -737,7 +745,9 @@ evalq({
 
     # diagnostics
     plot(cbind(log(km$time), -log(km$surv/(1 - km$surv))), cex = 0.6, pch = c(1, 
-        8, 9)[km_names], col = c("black", "lightgrey", "darkgrey")[km_names], main = "C: Diagnostic plot (Spline, 1 knot, odds scale)", 
+        8, 9)[km_names], col = c("black", "lightgrey", "darkgrey")[km_names], 
+        main = "C: Diagnostic plot (Spline, 1 knot, odds scale)", 
+        xlim = c(floor(min(log(km$time)[km$surv!=1])), ceiling(max(log(km$time)))),
         xlab = "LN(time)", ylab = "-LN(survival odds)")
     lines(cbind(log(time_pred), -log(spl_odds1_pred[, 2]/(1 - spl_odds1_pred[, 2]))), 
         col = "3", lty = 1, lwd = 2)
@@ -802,7 +812,9 @@ evalq({
 
     # diagnostics
     plot(cbind(log(km$time), -log(km$surv/(1 - km$surv))), cex = 0.6, pch = c(1, 
-        8, 9)[km_names], col = c("black", "lightgrey", "darkgrey")[km_names], main = "C: Diagnostic plot (Spline, 2 knots, odds scale)", 
+        8, 9)[km_names], col = c("black", "lightgrey", "darkgrey")[km_names], 
+        main = "C: Diagnostic plot (Spline, 2 knots, odds scale)", 
+        xlim = c(floor(min(log(km$time)[km$surv!=1])), ceiling(max(log(km$time)))),
         xlab = "LN(time)", ylab = "-LN(survival odds)")
     lines(cbind(log(time_pred), -log(spl_odds2_pred[, 2]/(1 - spl_odds2_pred[, 2]))), 
         col = "4", lty = 1, lwd = 2)
@@ -868,6 +880,7 @@ evalq({
     plot(cbind(log(km$time), -qnorm(km$surv, mean = 0, sd = 1, lower.tail = TRUE, 
         log.p = FALSE)), pch = c(1, 8, 9)[km_names], col = c("black", "lightgrey", 
         "darkgrey")[km_names], cex = 0.6, main = "C: Diagnostic plot (Spline, 1 knot, normal scale)", 
+        xlim = c(floor(min(log(km$time)[km$surv!=1])), ceiling(max(log(km$time)))),
         xlab = "LN(time)", ylab = "- standard normal quartiles")
     lines(cbind(log(time_pred), -qnorm(spl_normal1_pred[, 2], mean = 0, sd = 1, lower.tail = TRUE, 
         log.p = FALSE)), col = "5", lty = 1, lwd = 2)
@@ -933,7 +946,8 @@ evalq({
     # diagnostics
     plot(cbind(log(km$time), -qnorm(km$surv, mean = 0, sd = 1, lower.tail = TRUE, 
         log.p = FALSE)), pch = c(1, 8, 9)[km_names], col = c("black", "lightgrey", 
-        "darkgrey")[km_names], cex = 0.6, main = "C: Diagnostic plot (Spline, 2 knots, normal scale)", 
+        "darkgrey")[km_names], cex = 0.6, main = "C: Diagnostic plot (Spline, 2 knots, normal scale)",
+        xlim = c(floor(min(log(km$time)[km$surv!=1])), ceiling(max(log(km$time)))),
         xlab = "LN(time)", ylab = "- standard normal quartiles")
     lines(cbind(log(time_pred), -qnorm(spl_normal2_pred[, 2], mean = 0, sd = 1, lower.tail = TRUE, 
         log.p = FALSE)), col = "6", lty = 1, lwd = 2)
