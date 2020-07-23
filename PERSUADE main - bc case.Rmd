@@ -119,8 +119,7 @@ evalq({
                 hr_smooth3$est.grid
             } else {
                 NA
-            }, na.rm = TRUE)), ylim = c(0, max(hr_smooth1$haz.est, if (ngroups > 
-            1) {
+            }, na.rm = TRUE)), ylim = c(0, max(hr_smooth1$haz.est, if (ngroups > 1) {
             hr_smooth2$haz.est
         } else {
             NA
@@ -175,7 +174,7 @@ evalq({
     plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), lwd = 1, lty = 1, type = "b", 
          cex = 0.6, pch = 1, col = "black", main = "B: Annual transition probability (Exponential)", 
          xlab = "time", ylab = "annual transition probability (smoothed)", 
-         ylim = c(0, 1), xlim = c(0, ceiling(km_tp$maxtime*10)/10))
+         ylim = c(0, ceiling(km_tp$maxtp_smooth*10)/10), xlim = c(0, ceiling(km_tp$maxtime*10)/10))
     lines(cbind(time_pred[-1], tp_gr_1[, 2]), col = "1", lty = 1, lwd = 2)
     if (ngroups > 1) {
       lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), col = "lightgrey", type = "b", 
@@ -186,6 +185,20 @@ evalq({
       lines(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth), col = "darkgrey", type = "b", 
             lwd = 1, cex = 0.6, pch = 9)
       lines(cbind(time_pred[-1], tp_gr_3[, 2]), col = "1", lty = "9212", lwd = 2)
+    }
+    # add shading confidence intervals
+    polygon(c(km_tp_gr_1$time, rev(km_tp_gr_1$time)), 
+            c(km_tp_gr_1$tp_smooth_lower, rev(km_tp_gr_1$tp_smooth_upper)), 
+            col = adjustcolor("black", alpha.f = 0.3), border = NA)
+    if (ngroups > 1) {
+      polygon(c(km_tp_gr_2$time, rev(km_tp_gr_2$time)), 
+              c(km_tp_gr_2$tp_smooth_lower, rev(km_tp_gr_2$tp_smooth_upper)), 
+              col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
+    }
+    if (ngroups > 2) {
+      polygon(c(km_tp_gr_3$time, rev(km_tp_gr_3$time)), 
+              c(km_tp_gr_3$tp_smooth_lower, rev(km_tp_gr_3$tp_smooth_upper)), 
+              col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
     }
     legend("topleft", legend = group_names, col = "1", lty = as.integer(c(1, "1234", 
                                                                           "9212")), cex = 0.8)
@@ -226,7 +239,7 @@ evalq({
     plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), lwd = 1, lty = 1, type = "b", 
         cex = 0.6, pch = 1, col = "black", main = "B: Annual transition probability (Weibull)", 
         xlab = "time", ylab = "annual transition probability (smoothed)", 
-        ylim = c(0, 1), xlim = c(0, ceiling(km_tp$maxtime*10)/10))
+        ylim = c(0, ceiling(km_tp$maxtp_smooth*10)/10), xlim = c(0, ceiling(km_tp$maxtime*10)/10))
     lines(cbind(time_pred[-1], tp_gr_1[, 3]), col = "2", lty = 1, lwd = 2)
     if (ngroups > 1) {
         lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), col = "lightgrey", type = "b", 
@@ -238,6 +251,20 @@ evalq({
             lwd = 1, cex = 0.6, pch = 9)
         lines(cbind(time_pred[-1], tp_gr_3[, 3]), col = "2", lty = "9212", lwd = 2)
     }
+    # add shading confidence intervals
+    polygon(c(km_tp_gr_1$time, rev(km_tp_gr_1$time)), 
+            c(km_tp_gr_1$tp_smooth_lower, rev(km_tp_gr_1$tp_smooth_upper)), 
+            col = adjustcolor("black", alpha.f = 0.3), border = NA)
+    if (ngroups > 1) {
+      polygon(c(km_tp_gr_2$time, rev(km_tp_gr_2$time)), 
+              c(km_tp_gr_2$tp_smooth_lower, rev(km_tp_gr_2$tp_smooth_upper)), 
+              col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
+    }
+    if (ngroups > 2) {
+      polygon(c(km_tp_gr_3$time, rev(km_tp_gr_3$time)), 
+              c(km_tp_gr_3$tp_smooth_lower, rev(km_tp_gr_3$tp_smooth_upper)), 
+              col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
+    }
     legend("topleft", legend = group_names, col = "2", lty = as.integer(c(1, "1234", 
         "9212")), cex = 0.8)
     
@@ -248,12 +275,10 @@ evalq({
         xlab = "LN(time)", ylab = "LN(cumulative hazard)")
     lines(cbind(log(time_pred), log(-log(weib_pred[, 2]))), col = "2", lty = 1, lwd = 2)
     if (ngroups > 1) {
-        lines(cbind(log(time_pred), log(-log(weib_pred[, 3]))), col = "2", lty = "1234", 
-            lwd = 2)
+        lines(cbind(log(time_pred), log(-log(weib_pred[, 3]))), col = "2", lty = "1234", lwd = 2)
     }
     if (ngroups > 2) {
-        lines(cbind(log(time_pred), log(-log(weib_pred[, 4]))), col = "2", lty = "9212", 
-            lwd = 2)
+        lines(cbind(log(time_pred), log(-log(weib_pred[, 4]))), col = "2", lty = "9212", lwd = 2)
     }
     legend("topleft", legend = group_names, col = "2", lty = as.integer(c(1, "1234", 
         "9212")), cex = 0.8)
@@ -280,7 +305,7 @@ evalq({
     plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), lwd = 1, lty = 1, type = "b", 
          cex = 0.6, pch = 1, col = "black", main = "B: Annual transition probability (Gompertz)", 
          xlab = "time", ylab = "annual transition probability (smoothed)",
-         ylim = c(0, 1), xlim = c(0, ceiling(km_tp$maxtime*10)/10))
+         ylim = c(0, ceiling(km_tp$maxtp_smooth*10)/10), xlim = c(0, ceiling(km_tp$maxtime*10)/10))
     lines(cbind(time_pred[-1], tp_gr_1[, 4]), col = "3", lty = 1, lwd = 2)
     if (ngroups > 1) {
       lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), col = "lightgrey", type = "b", 
@@ -291,6 +316,20 @@ evalq({
       lines(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth), col = "darkgrey", type = "b", 
             lwd = 1, cex = 0.6, pch = 9)
       lines(cbind(time_pred[-1], tp_gr_3[, 4]), col = "3", lty = "9212", lwd = 2)
+    }
+    # add shading confidence intervals
+    polygon(c(km_tp_gr_1$time, rev(km_tp_gr_1$time)), 
+            c(km_tp_gr_1$tp_smooth_lower, rev(km_tp_gr_1$tp_smooth_upper)), 
+            col = adjustcolor("black", alpha.f = 0.3), border = NA)
+    if (ngroups > 1) {
+      polygon(c(km_tp_gr_2$time, rev(km_tp_gr_2$time)), 
+              c(km_tp_gr_2$tp_smooth_lower, rev(km_tp_gr_2$tp_smooth_upper)), 
+              col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
+    }
+    if (ngroups > 2) {
+      polygon(c(km_tp_gr_3$time, rev(km_tp_gr_3$time)), 
+              c(km_tp_gr_3$tp_smooth_lower, rev(km_tp_gr_3$tp_smooth_upper)), 
+              col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
     }
     legend("topleft", legend = group_names, col = "3", lty = as.integer(c(1, "1234", 
                                                                           "9212")), cex = 0.8)
@@ -314,15 +353,12 @@ evalq({
         NA
     })), cex = 0.6, main = "C: Diagnostic plot (Gompertz)", xlab = "time", ylab = "LN(smoothed hazard)", 
         pch = c(1, 8, 9)[hr_names], col = c("black", "lightgrey", "darkgrey")[hr_names])
-    lines(cbind(gom_est_h[[1]]$time, log(gom_est_h[[1]]$est)), col = "3", lty = 1, 
-        lwd = 2)
+    lines(cbind(gom_est_h[[1]]$time, log(gom_est_h[[1]]$est)), col = "3", lty = 1, lwd = 2)
     if (ngroups > 1) {
-        lines(cbind(gom_est_h[[2]]$time, log(gom_est_h[[2]]$est)), col = "3", lty = "1234", 
-            lwd = 2)
+        lines(cbind(gom_est_h[[2]]$time, log(gom_est_h[[2]]$est)), col = "3", lty = "1234", lwd = 2)
     }
     if (ngroups > 2) {
-        lines(cbind(gom_est_h[[3]]$time, log(gom_est_h[[3]]$est)), col = "3", lty = "9212", 
-            lwd = 2)
+        lines(cbind(gom_est_h[[3]]$time, log(gom_est_h[[3]]$est)), col = "3", lty = "9212", lwd = 2)
     }
     legend("topleft", legend = group_names, col = "3", lty = as.integer(c(1, "1234", 
         "9212")), cex = 0.8)
@@ -350,7 +386,7 @@ evalq({
     plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), lwd = 1, lty = 1, type = "b", 
          cex = 0.6, pch = 1, col = "black", main = "B: Annual transition probability (Log-normal)", 
          xlab = "time", ylab = "annual transition probability (smoothed)", 
-         ylim = c(0, 1), xlim = c(0, ceiling(km_tp$maxtime*10)/10))
+         ylim = c(0, ceiling(km_tp$maxtp_smooth*10)/10), xlim = c(0, ceiling(km_tp$maxtime*10)/10))
     lines(cbind(time_pred[-1], tp_gr_1[, 5]), col = "4", lty = 1, lwd = 2)
     if (ngroups > 1) {
       lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), col = "lightgrey", type = "b", 
@@ -361,6 +397,20 @@ evalq({
       lines(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth), col = "darkgrey", type = "b", 
             lwd = 1, cex = 0.6, pch = 9)
       lines(cbind(time_pred[-1], tp_gr_3[, 5]), col = "4", lty = "9212", lwd = 2)
+    }
+    # add shading confidence intervals
+    polygon(c(km_tp_gr_1$time, rev(km_tp_gr_1$time)), 
+            c(km_tp_gr_1$tp_smooth_lower, rev(km_tp_gr_1$tp_smooth_upper)), 
+            col = adjustcolor("black", alpha.f = 0.3), border = NA)
+    if (ngroups > 1) {
+      polygon(c(km_tp_gr_2$time, rev(km_tp_gr_2$time)), 
+              c(km_tp_gr_2$tp_smooth_lower, rev(km_tp_gr_2$tp_smooth_upper)), 
+              col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
+    }
+    if (ngroups > 2) {
+      polygon(c(km_tp_gr_3$time, rev(km_tp_gr_3$time)), 
+              c(km_tp_gr_3$tp_smooth_lower, rev(km_tp_gr_3$tp_smooth_upper)), 
+              col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
     }
     legend("topleft", legend = group_names, col = "4", lty = as.integer(c(1, "1234", 
                                                                           "9212")), cex = 0.8)
@@ -407,7 +457,7 @@ evalq({
     plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), lwd = 1, lty = 1, type = "b", 
          cex = 0.6, pch = 1, col = "black", main = "B: Annual transition probability (Log-logistic)", 
          xlab = "time", ylab = "annual transition probability (smoothed)", 
-         ylim = c(0, 1), xlim = c(0, ceiling(km_tp$maxtime*10)/10))
+         ylim = c(0, ceiling(km_tp$maxtp_smooth*10)/10), xlim = c(0, ceiling(km_tp$maxtime*10)/10))
     lines(cbind(time_pred[-1], tp_gr_1[, 6]), col = "5", lty = 1, lwd = 2)
     if (ngroups > 1) {
       lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), col = "lightgrey", type = "b", 
@@ -418,6 +468,20 @@ evalq({
       lines(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth), col = "darkgrey", type = "b", 
             lwd = 1, cex = 0.6, pch = 9)
       lines(cbind(time_pred[-1], tp_gr_3[, 6]), col = "5", lty = "9212", lwd = 2)
+    }
+    # add shading confidence intervals
+    polygon(c(km_tp_gr_1$time, rev(km_tp_gr_1$time)), 
+            c(km_tp_gr_1$tp_smooth_lower, rev(km_tp_gr_1$tp_smooth_upper)), 
+            col = adjustcolor("black", alpha.f = 0.3), border = NA)
+    if (ngroups > 1) {
+      polygon(c(km_tp_gr_2$time, rev(km_tp_gr_2$time)), 
+              c(km_tp_gr_2$tp_smooth_lower, rev(km_tp_gr_2$tp_smooth_upper)), 
+              col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
+    }
+    if (ngroups > 2) {
+      polygon(c(km_tp_gr_3$time, rev(km_tp_gr_3$time)), 
+              c(km_tp_gr_3$tp_smooth_lower, rev(km_tp_gr_3$tp_smooth_upper)), 
+              col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
     }
     legend("topleft", legend = group_names, col = "5", lty = as.integer(c(1, "1234", 
                                                                           "9212")), cex = 0.8)
@@ -462,7 +526,7 @@ evalq({
     plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), lwd = 1, lty = 1, type = "b", 
          cex = 0.6, pch = 1, col = "black", main = "B: Annual transition probability (Gamma)", 
          xlab = "time", ylab = "annual transition probability (smoothed)", 
-         ylim = c(0, 1), xlim = c(0, ceiling(km_tp$maxtime*10)/10))
+         ylim = c(0, ceiling(km_tp$maxtp_smooth*10)/10), xlim = c(0, ceiling(km_tp$maxtime*10)/10))
     lines(cbind(time_pred[-1], tp_gr_1[, 7]), col = "6", lty = 1, lwd = 2)
     if (ngroups > 1) {
       lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), col = "lightgrey", type = "b", 
@@ -474,6 +538,20 @@ evalq({
             lwd = 1, cex = 0.6, pch = 9)
       lines(cbind(time_pred[-1], tp_gr_3[, 7]), col = "6", lty = "9212", lwd = 2)
     }
+    # add shading confidence intervals
+    polygon(c(km_tp_gr_1$time, rev(km_tp_gr_1$time)), 
+            c(km_tp_gr_1$tp_smooth_lower, rev(km_tp_gr_1$tp_smooth_upper)), 
+            col = adjustcolor("black", alpha.f = 0.3), border = NA)
+    if (ngroups > 1) {
+      polygon(c(km_tp_gr_2$time, rev(km_tp_gr_2$time)), 
+              c(km_tp_gr_2$tp_smooth_lower, rev(km_tp_gr_2$tp_smooth_upper)), 
+              col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
+    }
+    if (ngroups > 2) {
+      polygon(c(km_tp_gr_3$time, rev(km_tp_gr_3$time)), 
+              c(km_tp_gr_3$tp_smooth_lower, rev(km_tp_gr_3$tp_smooth_upper)), 
+              col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
+    }
     legend("topleft", legend = group_names, col = "6", lty = as.integer(c(1, "1234", 
                                                                           "9212")), cex = 0.8)
     
@@ -484,12 +562,10 @@ evalq({
         xlab = "LN(time)", ylab = "LN(cumulative hazard)")
     lines(cbind(log(time_pred), log(-log(gam_pred[, 2]))), col = "6", lty = 1, lwd = 2)
     if (ngroups > 1) {
-        lines(cbind(log(time_pred), log(-log(gam_pred[, 3]))), col = "6", lty = "1234", 
-            lwd = 2)
+        lines(cbind(log(time_pred), log(-log(gam_pred[, 3]))), col = "6", lty = "1234", lwd = 2)
     }
     if (ngroups > 2) {
-        lines(cbind(log(time_pred), log(-log(gam_pred[, 4]))), col = "6", lty = "9212", 
-            lwd = 2)
+        lines(cbind(log(time_pred), log(-log(gam_pred[, 4]))), col = "6", lty = "9212", lwd = 2)
     }
     legend("topleft", legend = group_names, col = "6", lty = as.integer(c(1, "1234", 
         "9212")), cex = 0.8)
@@ -516,7 +592,7 @@ evalq({
     plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), lwd = 1, lty = 1, type = "b", 
          cex = 0.6, pch = 1, col = "black", main = "B: Annual transition probability (Generalised Gamma)", 
          xlab = "time", ylab = "annual transition probability (smoothed)", 
-         ylim = c(0, 1), xlim = c(0, ceiling(km_tp$maxtime*10)/10))
+         ylim = c(0, ceiling(km_tp$maxtp_smooth*10)/10), xlim = c(0, ceiling(km_tp$maxtime*10)/10))
     lines(cbind(time_pred[-1], tp_gr_1[, 8]), col = "7", lty = 1, lwd = 2)
     if (ngroups > 1) {
       lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), col = "lightgrey", type = "b", 
@@ -528,6 +604,20 @@ evalq({
             lwd = 1, cex = 0.6, pch = 9)
       lines(cbind(time_pred[-1], tp_gr_3[, 8]), col = "7", lty = "9212", lwd = 2)
     }
+    # add shading confidence intervals
+    polygon(c(km_tp_gr_1$time, rev(km_tp_gr_1$time)), 
+            c(km_tp_gr_1$tp_smooth_lower, rev(km_tp_gr_1$tp_smooth_upper)), 
+            col = adjustcolor("black", alpha.f = 0.3), border = NA)
+    if (ngroups > 1) {
+      polygon(c(km_tp_gr_2$time, rev(km_tp_gr_2$time)), 
+              c(km_tp_gr_2$tp_smooth_lower, rev(km_tp_gr_2$tp_smooth_upper)), 
+              col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
+    }
+    if (ngroups > 2) {
+      polygon(c(km_tp_gr_3$time, rev(km_tp_gr_3$time)), 
+              c(km_tp_gr_3$tp_smooth_lower, rev(km_tp_gr_3$tp_smooth_upper)), 
+              col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
+    }
     legend("topleft", legend = group_names, col = "7", lty = as.integer(c(1, "1234", 
                                                                           "9212")), cex = 0.8)
     
@@ -538,12 +628,10 @@ evalq({
         xlab = "LN(time)", ylab = "LN(cumulative hazard)")
     lines(cbind(log(time_pred), log(-log(ggam_pred[, 2]))), col = "7", lty = 1, lwd = 2)
     if (ngroups > 1) {
-        lines(cbind(log(time_pred), log(-log(ggam_pred[, 3]))), col = "7", lty = "1234", 
-            lwd = 2)
+        lines(cbind(log(time_pred), log(-log(ggam_pred[, 3]))), col = "7", lty = "1234", lwd = 2)
     }
     if (ngroups > 2) {
-        lines(cbind(log(time_pred), log(-log(ggam_pred[, 4]))), col = "7", lty = "9212", 
-            lwd = 2)
+        lines(cbind(log(time_pred), log(-log(ggam_pred[, 4]))), col = "7", lty = "9212", lwd = 2)
     }
     legend("topleft", legend = group_names, col = "7", lty = as.integer(c(1, "1234", 
         "9212")), cex = 0.8)
@@ -594,7 +682,7 @@ evalq({
     plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), lwd = 1, lty = 1, type = "b", 
          cex = 0.6, pch = 1, col = "black", main = "B: Annual transition probability (Spline, 1 knot, hazard scale)", 
          xlab = "time", ylab = "annual transition probability (smoothed)", 
-         ylim = c(0, 1), xlim = c(0, ceiling(km_tp$maxtime*10)/10))
+         ylim = c(0, ceiling(km_tp$maxtp_smooth*10)/10), xlim = c(0, ceiling(km_tp$maxtime*10)/10))
     lines(cbind(time_pred[-1], tp_gr_1[, 9]), col = "1", lty = 1, lwd = 2)
     if (ngroups > 1) {
       lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), col = "lightgrey", type = "b", 
@@ -605,6 +693,20 @@ evalq({
       lines(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth), col = "darkgrey", type = "b", 
             lwd = 1, cex = 0.6, pch = 9)
       lines(cbind(time_pred[-1], tp_gr_3[, 9]), col = "1", lty = "9212", lwd = 2)
+    }
+    # add shading confidence intervals
+    polygon(c(km_tp_gr_1$time, rev(km_tp_gr_1$time)), 
+            c(km_tp_gr_1$tp_smooth_lower, rev(km_tp_gr_1$tp_smooth_upper)), 
+            col = adjustcolor("black", alpha.f = 0.3), border = NA)
+    if (ngroups > 1) {
+      polygon(c(km_tp_gr_2$time, rev(km_tp_gr_2$time)), 
+              c(km_tp_gr_2$tp_smooth_lower, rev(km_tp_gr_2$tp_smooth_upper)), 
+              col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
+    }
+    if (ngroups > 2) {
+      polygon(c(km_tp_gr_3$time, rev(km_tp_gr_3$time)), 
+              c(km_tp_gr_3$tp_smooth_lower, rev(km_tp_gr_3$tp_smooth_upper)), 
+              col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
     }
     legend("topleft", legend = group_names, col = "1", lty = as.integer(c(1, "1234", 
                                                                           "9212")), cex = 0.8)
@@ -617,8 +719,7 @@ evalq({
         xlim = c(floor(min(log(km$time)[km$surv!=1])), ceiling(max(log(km$time)))),
         col = c("black", "lightgrey", "darkgrey")[km_names], main = "C: Diagnostic plot (Spline, 1 knot, hazard scale)", 
         xlab = "LN(time)", ylab = "LN(cumulative hazard)")
-    lines(cbind(log(time_pred), log(-log(spl_hazard1_pred[, 2]))), col = "1", lty = 1, 
-        lwd = 2)
+    lines(cbind(log(time_pred), log(-log(spl_hazard1_pred[, 2]))), col = "1", lty = 1, lwd = 2)
     if (ngroups > 1) {
         lines(cbind(log(time_pred), log(-log(spl_hazard1_pred[, 3]))), col = "1", 
             lty = "1234", lwd = 2)
@@ -659,7 +760,7 @@ evalq({
     plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), lwd = 1, lty = 1, type = "b", 
          cex = 0.6, pch = 1, col = "black", main = "B: Annual transition probability (Spline, 2 knots, hazard scale)", 
          xlab = "time", ylab = "annual transition probability (smoothed)", 
-         ylim = c(0, 1), xlim = c(0, ceiling(km_tp$maxtime*10)/10))
+         ylim = c(0, ceiling(km_tp$maxtp_smooth*10)/10), xlim = c(0, ceiling(km_tp$maxtime*10)/10))
     lines(cbind(time_pred[-1], tp_gr_1[, 10]), col = "2", lty = 1, lwd = 2)
     if (ngroups > 1) {
       lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), col = "lightgrey", type = "b", 
@@ -670,6 +771,20 @@ evalq({
       lines(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth), col = "darkgrey", type = "b", 
             lwd = 1, cex = 0.6, pch = 9)
       lines(cbind(time_pred[-1], tp_gr_3[, 10]), col = "2", lty = "9212", lwd = 2)
+    }
+    # add shading confidence intervals
+    polygon(c(km_tp_gr_1$time, rev(km_tp_gr_1$time)), 
+            c(km_tp_gr_1$tp_smooth_lower, rev(km_tp_gr_1$tp_smooth_upper)), 
+            col = adjustcolor("black", alpha.f = 0.3), border = NA)
+    if (ngroups > 1) {
+      polygon(c(km_tp_gr_2$time, rev(km_tp_gr_2$time)), 
+              c(km_tp_gr_2$tp_smooth_lower, rev(km_tp_gr_2$tp_smooth_upper)), 
+              col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
+    }
+    if (ngroups > 2) {
+      polygon(c(km_tp_gr_3$time, rev(km_tp_gr_3$time)), 
+              c(km_tp_gr_3$tp_smooth_lower, rev(km_tp_gr_3$tp_smooth_upper)), 
+              col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
     }
     legend("topleft", legend = group_names, col = "2", lty = as.integer(c(1, "1234", 
                                                                           "9212")), cex = 0.8)
@@ -683,8 +798,7 @@ evalq({
         xlim = c(floor(min(log(km$time)[km$surv!=1])), ceiling(max(log(km$time)))),
         col = c("black", "lightgrey", "darkgrey")[km_names], main = "C: Diagnostic plot (Spline, 2 knots, hazard scale)", 
         xlab = "LN(time)", ylab = "LN(cumulative hazard)")
-    lines(cbind(log(time_pred), log(-log(spl_hazard2_pred[, 2]))), col = "2", lty = 1, 
-        lwd = 2)
+    lines(cbind(log(time_pred), log(-log(spl_hazard2_pred[, 2]))), col = "2", lty = 1, lwd = 2)
     if (ngroups > 1) {
         lines(cbind(log(time_pred), log(-log(spl_hazard2_pred[, 3]))), col = "2", 
             lty = "1234", lwd = 2)
@@ -725,7 +839,7 @@ evalq({
     plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), lwd = 1, lty = 1, type = "b", 
          cex = 0.6, pch = 1, col = "black", main = "B: Annual transition probability (Spline, 1 knot, odds scale)", 
          xlab = "time", ylab = "annual transition probability (smoothed)", 
-         ylim = c(0, 1), xlim = c(0, ceiling(km_tp$maxtime*10)/10))
+         ylim = c(0, ceiling(km_tp$maxtp_smooth*10)/10), xlim = c(0, ceiling(km_tp$maxtime*10)/10))
     lines(cbind(time_pred[-1], tp_gr_1[, 11]), col = "3", lty = 1, lwd = 2)
     if (ngroups > 1) {
       lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), col = "lightgrey", type = "b", 
@@ -736,6 +850,20 @@ evalq({
       lines(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth), col = "darkgrey", type = "b", 
             lwd = 1, cex = 0.6, pch = 9)
       lines(cbind(time_pred[-1], tp_gr_3[, 11]), col = "3", lty = "9212", lwd = 2)
+    }
+    # add shading confidence intervals
+    polygon(c(km_tp_gr_1$time, rev(km_tp_gr_1$time)), 
+            c(km_tp_gr_1$tp_smooth_lower, rev(km_tp_gr_1$tp_smooth_upper)), 
+            col = adjustcolor("black", alpha.f = 0.3), border = NA)
+    if (ngroups > 1) {
+      polygon(c(km_tp_gr_2$time, rev(km_tp_gr_2$time)), 
+              c(km_tp_gr_2$tp_smooth_lower, rev(km_tp_gr_2$tp_smooth_upper)), 
+              col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
+    }
+    if (ngroups > 2) {
+      polygon(c(km_tp_gr_3$time, rev(km_tp_gr_3$time)), 
+              c(km_tp_gr_3$tp_smooth_lower, rev(km_tp_gr_3$tp_smooth_upper)), 
+              col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
     }
     legend("topleft", legend = group_names, col = "3", lty = as.integer(c(1, "1234", 
                                                                           "9212")), cex = 0.8)
@@ -791,7 +919,7 @@ evalq({
     plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), lwd = 1, lty = 1, type = "b", 
          cex = 0.6, pch = 1, col = "black", main = "B: Annual transition probability (Spline, 2 knots, odds scale)", 
          xlab = "time", ylab = "annual transition probability (smoothed)", 
-         ylim = c(0, 1), xlim = c(0, ceiling(km_tp$maxtime*10)/10))
+         ylim = c(0, ceiling(km_tp$maxtp_smooth*10)/10), xlim = c(0, ceiling(km_tp$maxtime*10)/10))
     lines(cbind(time_pred[-1], tp_gr_1[, 12]), col = "4", lty = 1, lwd = 2)
     if (ngroups > 1) {
       lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), col = "lightgrey", type = "b", 
@@ -802,6 +930,20 @@ evalq({
       lines(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth), col = "darkgrey", type = "b", 
             lwd = 1, cex = 0.6, pch = 9)
       lines(cbind(time_pred[-1], tp_gr_3[, 12]), col = "4", lty = "9212", lwd = 2)
+    }
+    # add shading confidence intervals
+    polygon(c(km_tp_gr_1$time, rev(km_tp_gr_1$time)), 
+            c(km_tp_gr_1$tp_smooth_lower, rev(km_tp_gr_1$tp_smooth_upper)), 
+            col = adjustcolor("black", alpha.f = 0.3), border = NA)
+    if (ngroups > 1) {
+      polygon(c(km_tp_gr_2$time, rev(km_tp_gr_2$time)), 
+              c(km_tp_gr_2$tp_smooth_lower, rev(km_tp_gr_2$tp_smooth_upper)), 
+              col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
+    }
+    if (ngroups > 2) {
+      polygon(c(km_tp_gr_3$time, rev(km_tp_gr_3$time)), 
+              c(km_tp_gr_3$tp_smooth_lower, rev(km_tp_gr_3$tp_smooth_upper)), 
+              col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
     }
     legend("topleft", legend = group_names, col = "4", lty = as.integer(c(1, "1234", 
                                                                           "9212")), cex = 0.8)
@@ -858,7 +1000,7 @@ evalq({
     plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), lwd = 1, lty = 1, type = "b", 
          cex = 0.6, pch = 1, col = "black", main = "B: Annual transition probability (Spline, 1 knot, normal scale)", 
          xlab = "time", ylab = "annual transition probability (smoothed)", 
-         ylim = c(0, 1), xlim = c(0, ceiling(km_tp$maxtime*10)/10))
+         ylim = c(0, ceiling(km_tp$maxtp_smooth*10)/10), xlim = c(0, ceiling(km_tp$maxtime*10)/10))
     lines(cbind(time_pred[-1], tp_gr_1[, 13]), col = "5", lty = 1, lwd = 2)
     if (ngroups > 1) {
       lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), col = "lightgrey", type = "b", 
@@ -869,6 +1011,20 @@ evalq({
       lines(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth), col = "darkgrey", type = "b", 
             lwd = 1, cex = 0.6, pch = 9)
       lines(cbind(time_pred[-1], tp_gr_3[, 13]), col = "5", lty = "9212", lwd = 2)
+    }
+    # add shading confidence intervals
+    polygon(c(km_tp_gr_1$time, rev(km_tp_gr_1$time)), 
+            c(km_tp_gr_1$tp_smooth_lower, rev(km_tp_gr_1$tp_smooth_upper)), 
+            col = adjustcolor("black", alpha.f = 0.3), border = NA)
+    if (ngroups > 1) {
+      polygon(c(km_tp_gr_2$time, rev(km_tp_gr_2$time)), 
+              c(km_tp_gr_2$tp_smooth_lower, rev(km_tp_gr_2$tp_smooth_upper)), 
+              col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
+    }
+    if (ngroups > 2) {
+      polygon(c(km_tp_gr_3$time, rev(km_tp_gr_3$time)), 
+              c(km_tp_gr_3$tp_smooth_lower, rev(km_tp_gr_3$tp_smooth_upper)), 
+              col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
     }
     legend("topleft", legend = group_names, col = "5", lty = as.integer(c(1, "1234", 
                                                                           "9212")), cex = 0.8)
@@ -924,7 +1080,7 @@ evalq({
     plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), lwd = 1, lty = 1, type = "b", 
          cex = 0.6, pch = 1, col = "black", main = "B: Annual transition probability (Spline, 2 knots, normal scale)", 
          xlab = "time", ylab = "annual transition probability (smoothed)", 
-         ylim = c(0, 1), xlim = c(0, ceiling(km_tp$maxtime*10)/10))
+         ylim = c(0, ceiling(km_tp$maxtp_smooth*10)/10), xlim = c(0, ceiling(km_tp$maxtime*10)/10))
     lines(cbind(time_pred[-1], tp_gr_1[, 14]), col = "6", lty = 1, lwd = 2)
     if (ngroups > 1) {
       lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), col = "lightgrey", type = "b", 
@@ -935,6 +1091,20 @@ evalq({
       lines(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth), col = "darkgrey", type = "b", 
             lwd = 1, cex = 0.6, pch = 9)
       lines(cbind(time_pred[-1], tp_gr_3[, 14]), col = "6", lty = "9212", lwd = 2)
+    }
+    # add shading confidence intervals
+    polygon(c(km_tp_gr_1$time, rev(km_tp_gr_1$time)), 
+            c(km_tp_gr_1$tp_smooth_lower, rev(km_tp_gr_1$tp_smooth_upper)), 
+            col = adjustcolor("black", alpha.f = 0.3), border = NA)
+    if (ngroups > 1) {
+      polygon(c(km_tp_gr_2$time, rev(km_tp_gr_2$time)), 
+              c(km_tp_gr_2$tp_smooth_lower, rev(km_tp_gr_2$tp_smooth_upper)), 
+              col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
+    }
+    if (ngroups > 2) {
+      polygon(c(km_tp_gr_3$time, rev(km_tp_gr_3$time)), 
+              c(km_tp_gr_3$tp_smooth_lower, rev(km_tp_gr_3$tp_smooth_upper)), 
+              col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
     }
     legend("topleft", legend = group_names, col = "6", lty = as.integer(c(1, "1234", 
                                                                           "9212")), cex = 0.8)
@@ -1011,6 +1181,10 @@ evalq({
     plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), main = "C: Annual transition probability (parametric curves)", 
         xlab = "time", ylab = "annual transition probability", ylim = c(0, 1), xlim = c(0, time_horizon),
         col = "black", type = "l", lwd = 2)
+    lines(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth_lower), col = "black", type = "l", 
+        lwd = 2, lty = 2)
+    lines(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth_upper), col = "black", type = "l", 
+        lwd = 2, lty = 2)
     lines(cbind(time_pred[-1], tp_gr_1[, 2]), col = "1", lty = 1, lwd = 1)
     lines(cbind(time_pred[-1], tp_gr_1[, 3]), col = "2", lty = 1, lwd = 1)
     lines(cbind(time_pred[-1], tp_gr_1[, 4]), col = "3", lty = 1, lwd = 1)
@@ -1024,6 +1198,10 @@ evalq({
         plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), main = "D: Annual transition probability (spline curves)", 
              xlab = "time", ylab = "annual transition probability", ylim = c(0, 1), xlim = c(0, time_horizon),
              col = "black", type = "l", lwd = 2)
+        lines(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth_lower), col = "black", type = "l", 
+            lwd = 2, lty = 2)
+        lines(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth_upper), col = "black", type = "l", 
+            lwd = 2, lty = 2)
         lines(cbind(time_pred[-1], tp_gr_1[, 9]), col = "1", lty = 1, lwd = 1)  
         lines(cbind(time_pred[-1], tp_gr_1[, 10]), col = "2", lty = 1, lwd = 1)
         lines(cbind(time_pred[-1], tp_gr_1[, 11]), col = "3", lty = 1, lwd = 1)
@@ -1077,6 +1255,10 @@ evalq({
     plot(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), main = "C: Annual transition probability (parametric curves)", 
         xlab = "time", ylab = "annual transition probability", ylim = c(0, 1), xlim = c(0, time_horizon),
         col = "black", type = "l", lwd = 2)
+    lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth_lower), col = "black", type = "l", 
+        lwd = 2, lty = 2)
+    lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth_upper), col = "black", type = "l", 
+        lwd = 2, lty = 2)
     lines(cbind(time_pred[-1], tp_gr_2[, 2]), col = "1", lty = "1234", lwd = 1)
     lines(cbind(time_pred[-1], tp_gr_2[, 3]), col = "2", lty = "1234", lwd = 1)
     lines(cbind(time_pred[-1], tp_gr_2[, 4]), col = "3", lty = "1234", lwd = 1)
@@ -1090,6 +1272,10 @@ evalq({
         plot(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), main = "D: Annual transition probability (spline curves)", 
              xlab = "time", ylab = "annual transition probability", ylim = c(0, 1), xlim = c(0, time_horizon),
              col = "black", type = "l", lwd = 2)
+        lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth_lower), col = "black", type = "l", 
+            lwd = 2, lty = 2)
+        lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth_upper), col = "black", type = "l", 
+            lwd = 2, lty = 2)
         lines(cbind(time_pred[-1], tp_gr_2[, 9]), col = "1", lty = "1234", lwd = 1)  
         lines(cbind(time_pred[-1], tp_gr_2[, 10]), col = "2", lty = "1234", lwd = 1)
         lines(cbind(time_pred[-1], tp_gr_2[, 11]), col = "3", lty = "1234", lwd = 1)
@@ -1143,6 +1329,10 @@ evalq({
     plot(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth), main = "C: Annual transition probability (parametric curves)", 
         xlab = "time", ylab = "annual transition probability", ylim = c(0, 1), xlim = c(0, time_horizon),
         col = "black", type = "l", lwd = 2)
+    lines(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth_lower), col = "black", type = "l", 
+        lwd = 2, lty = 2)
+    lines(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth_upper), col = "black", type = "l", 
+        lwd = 2, lty = 2)
     lines(cbind(time_pred[-1], tp_gr_3[, 2]), col = "1", lty = "9212", lwd = 1)  
     lines(cbind(time_pred[-1], tp_gr_3[, 3]), col = "2", lty = "9212", lwd = 1)
     lines(cbind(time_pred[-1], tp_gr_3[, 4]), col = "3", lty = "9212", lwd = 1)
@@ -1156,6 +1346,10 @@ evalq({
         plot(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth), main = "D: Annual transition probability (spline curves)", 
              xlab = "time", ylab = "annual transition probability", ylim = c(0, 1), xlim = c(0, time_horizon),
              col = "black", type = "l", lwd = 2)
+        lines(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth_lower), col = "black", type = "l", 
+            lwd = 2, lty = 2)
+        lines(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth_upper), col = "black", type = "l", 
+            lwd = 2, lty = 2)
         lines(cbind(time_pred[-1], tp_gr_3[, 9]), col = "1", lty = "9212", lwd = 1)  
         lines(cbind(time_pred[-1], tp_gr_3[, 10]), col = "2", lty = "9212", lwd = 1)
         lines(cbind(time_pred[-1], tp_gr_3[, 11]), col = "3", lty = "9212", lwd = 1)

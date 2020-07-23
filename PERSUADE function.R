@@ -189,7 +189,8 @@ PERSUADE <- function(years, status, group, strata = FALSE, time_unit, time_horiz
   
   gom_pred[, -1][gom_pred[, -1] < 1e-15] <- 0  #prevent rounding errors for predicted transition probabilities
   
-  colnames(expo_pred) <- colnames(weib_pred) <- colnames(gom_pred) <- colnames(lnorm_pred) <- colnames(llog_pred) <- colnames(gam_pred) <- colnames(ggam_pred) <- column_names
+  colnames(expo_pred) <- colnames(weib_pred) <- colnames(gom_pred) <- colnames(lnorm_pred) <- colnames(llog_pred) <- colnames(gam_pred) <- 
+    colnames(ggam_pred) <- column_names
   
   if (spline_mod == TRUE) {
     spl_hazard1_est <- summary(spl_hazard1, t = time_pred)
@@ -209,51 +210,52 @@ PERSUADE <- function(years, status, group, strata = FALSE, time_unit, time_horiz
     }
     
     if (ngroups > 1) {
-      spl_hazard1_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) spl_hazard1_est[[which(names(expo_est) == 
-                                                                                                     paste("group=", group_names[x], sep = ""))]]$est))
-      spl_hazard2_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) spl_hazard2_est[[which(names(expo_est) == 
-                                                                                                     paste("group=", group_names[x], sep = ""))]]$est))
-      spl_odds1_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) spl_odds1_est[[which(names(expo_est) == 
-                                                                                                 paste("group=", group_names[x], sep = ""))]]$est))
-      spl_odds2_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) spl_odds2_est[[which(names(expo_est) == 
-                                                                                                 paste("group=", group_names[x], sep = ""))]]$est))
-      spl_normal1_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) spl_normal1_est[[which(names(expo_est) == 
-                                                                                                     paste("group=", group_names[x], sep = ""))]]$est))
-      spl_normal2_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) spl_normal2_est[[which(names(expo_est) == 
-                                                                                                     paste("group=", group_names[x], sep = ""))]]$est))
+      spl_hazard1_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
+        spl_hazard1_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
+      spl_hazard2_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
+        spl_hazard2_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
+      spl_odds1_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
+        spl_odds1_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
+      spl_odds2_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
+        spl_odds2_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
+      spl_normal1_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
+        spl_normal1_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
+      spl_normal2_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
+        spl_normal2_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
     }
     
-    colnames(spl_hazard1_pred) <- colnames(spl_hazard2_pred) <- colnames(spl_odds1_pred) <- colnames(spl_odds2_pred) <- colnames(spl_normal1_pred) <- colnames(spl_normal2_pred) <- column_names
+    colnames(spl_hazard1_pred) <- colnames(spl_hazard2_pred) <- colnames(spl_odds1_pred) <- colnames(spl_odds2_pred) <- 
+      colnames(spl_normal1_pred) <- colnames(spl_normal2_pred) <- column_names
   }
   
   # predicted survival
   extrapolation_gr_1 <- if (spline_mod == TRUE) {
-    cbind(time_pred, expo_pred[, 2], weib_pred[, 2], gom_pred[, 2], lnorm_pred[, 2], llog_pred[, 
-                                                                                               2], gam_pred[, 2], ggam_pred[, 2], spl_hazard1_pred[, 2], spl_hazard2_pred[, 2], spl_odds1_pred[, 
-                                                                                                                                                                                               2], spl_odds2_pred[, 2], spl_normal1_pred[, 2], spl_normal2_pred[, 2])
+    cbind(time_pred, expo_pred[, 2], weib_pred[, 2], gom_pred[, 2], lnorm_pred[, 2], llog_pred[, 2], 
+          gam_pred[, 2], ggam_pred[, 2], spl_hazard1_pred[, 2], spl_hazard2_pred[, 2], spl_odds1_pred[, 2], 
+          spl_odds2_pred[, 2], spl_normal1_pred[, 2], spl_normal2_pred[, 2])
   } else {
-    cbind(time_pred, expo_pred[, 2], weib_pred[, 2], gom_pred[, 2], lnorm_pred[, 2], llog_pred[, 
-                                                                                               2], gam_pred[, 2], ggam_pred[, 2])
+    cbind(time_pred, expo_pred[, 2], weib_pred[, 2], gom_pred[, 2], lnorm_pred[, 2], llog_pred[, 2],
+          gam_pred[, 2], ggam_pred[, 2])
   }
   if (ngroups > 1) {
     extrapolation_gr_2 <- if (spline_mod == TRUE) {
-      cbind(time_pred, expo_pred[, 3], weib_pred[, 3], gom_pred[, 3], lnorm_pred[, 3], llog_pred[, 
-                                                                                                 3], gam_pred[, 3], ggam_pred[, 3], spl_hazard1_pred[, 3], spl_hazard2_pred[, 3], spl_odds1_pred[, 
-                                                                                                                                                                                                 3], spl_odds2_pred[, 3], spl_normal1_pred[, 3], spl_normal2_pred[, 3])
+      cbind(time_pred, expo_pred[, 3], weib_pred[, 3], gom_pred[, 3], lnorm_pred[, 3], llog_pred[, 3],
+            gam_pred[, 3], ggam_pred[, 3], spl_hazard1_pred[, 3], spl_hazard2_pred[, 3], spl_odds1_pred[, 3], 
+            spl_odds2_pred[, 3], spl_normal1_pred[, 3], spl_normal2_pred[, 3])
     } else {
-      cbind(time_pred, expo_pred[, 3], weib_pred[, 3], gom_pred[, 3], lnorm_pred[, 3], llog_pred[, 
-                                                                                                 3], gam_pred[, 3], ggam_pred[, 3])
+      cbind(time_pred, expo_pred[, 3], weib_pred[, 3], gom_pred[, 3], lnorm_pred[, 3], llog_pred[, 3],
+            gam_pred[, 3], ggam_pred[, 3])
     }
   }
   
   if (ngroups > 2) {
     extrapolation_gr_3 <- if (spline_mod == TRUE) {
-      cbind(time_pred, expo_pred[, 4], weib_pred[, 4], gom_pred[, 4], lnorm_pred[, 4], llog_pred[, 
-                                                                                                 4], gam_pred[, 4], ggam_pred[, 4], spl_hazard1_pred[, 4], spl_hazard2_pred[, 4], spl_odds1_pred[, 
-                                                                                                                                                                                                 4], spl_odds2_pred[, 4], spl_normal1_pred[, 4], spl_normal2_pred[, 4])
+      cbind(time_pred, expo_pred[, 4], weib_pred[, 4], gom_pred[, 4], lnorm_pred[, 4], llog_pred[, 4],
+            gam_pred[, 4], ggam_pred[, 4], spl_hazard1_pred[, 4], spl_hazard2_pred[, 4], spl_odds1_pred[, 4],
+            spl_odds2_pred[, 4], spl_normal1_pred[, 4], spl_normal2_pred[, 4])
     } else {
-      cbind(time_pred, expo_pred[, 4], weib_pred[, 4], gom_pred[, 4], lnorm_pred[, 4], llog_pred[, 
-                                                                                                 4], gam_pred[, 4], ggam_pred[, 4])
+      cbind(time_pred, expo_pred[, 4], weib_pred[, 4], gom_pred[, 4], lnorm_pred[, 4], llog_pred[,4],
+            gam_pred[, 4], ggam_pred[, 4])
     }
   }
   
@@ -277,50 +279,78 @@ PERSUADE <- function(years, status, group, strata = FALSE, time_unit, time_horiz
   # calculate annual transition probability km
   km_tp <- summary(km, times = seq(from = 0, to = time_horizon, by = time_unit))
   if (ngroups == 1) {
-    km_tp_gr_1 <- data.frame(time = km_tp$time, surv = km_tp$surv, group = rep(1, length(km_tp$time)))
+    km_tp_gr_1 <- data.frame(time = km_tp$time, surv = km_tp$surv, group = rep(1, length(km_tp$time)),
+                             lower = km_tp$lower, upper = km_tp$upper)
   } else {
-    km_tp_gr_1 <- data.frame(time = km_tp$time[km_tp$strata == levels(km_tp$strata)[1]], surv = km_tp$surv[km_tp$strata == 
-                                                                                                             levels(km_tp$strata)[1]], group = rep(1, length(km_tp[km_tp$strata == levels(km_tp$strata)[1]])))
+    km_tp_gr_1 <- data.frame(time = km_tp$time[km_tp$strata == levels(km_tp$strata)[1]], 
+                             surv = km_tp$surv[km_tp$strata ==  levels(km_tp$strata)[1]], 
+                             group = rep(1, length(km_tp[km_tp$strata == levels(km_tp$strata)[1]])),
+                             lower = km_tp$lower[km_tp$strata == levels(km_tp$strata)[1]], 
+                             upper = km_tp$upper[km_tp$strata == levels(km_tp$strata)[1]])
   }
-  km_tp_gr_1$tp <- 1 - (1 - ((shift(km_tp_gr_1$surv, 1L, type = "lag") - km_tp_gr_1$surv)/shift(km_tp_gr_1$surv, 
-                                                                                                1L, type = "lag")))^(1/time_unit)
+  km_tp_gr_1$tp <- 1 - (1 - ((shift(km_tp_gr_1$surv, 1L, type = "lag") - km_tp_gr_1$surv)/
+                               shift(km_tp_gr_1$surv, 1L, type = "lag")))^(1/time_unit)
+  km_tp_gr_1$tp_lower <- 1 - (1 - ((shift(km_tp_gr_1$upper, 1L, type = "lag") - km_tp_gr_1$upper)/
+                                     shift(km_tp_gr_1$upper, 1L, type = "lag")))^(1/time_unit)
+  km_tp_gr_1$tp_upper <- 1 - (1 - ((shift(km_tp_gr_1$lower, 1L, type = "lag") - km_tp_gr_1$lower)/
+                                     shift(km_tp_gr_1$lower, 1L, type = "lag")))^(1/time_unit)
   km_tp_gr_1 <- km_tp_gr_1[-1, ]  #remove NA
   km_tp_gr_1$tp_smooth <- pmax(0, pmin(1, loess(km_tp_gr_1$tp ~ km_tp_gr_1$time)$fitted))
+  km_tp_gr_1$tp_smooth_lower <- pmax(0, pmin(1, km_tp_gr_1$tp_smooth, loess(km_tp_gr_1$tp_lower ~ km_tp_gr_1$time)$fitted))
+  km_tp_gr_1$tp_smooth_upper <- pmax(0, km_tp_gr_1$tp_smooth, pmin(1, loess(km_tp_gr_1$tp_upper ~ km_tp_gr_1$time)$fitted))
+  km_tp$maxtp_smooth <- max(km_tp_gr_1$tp_smooth_upper)
   
   if (ngroups > 1) {
-    km_tp_gr_2 <- data.frame(time = km_tp$time[km_tp$strata == levels(km_tp$strata)[2]], surv = km_tp$surv[km_tp$strata == 
-                                                                                                             levels(km_tp$strata)[2]], group = rep(2, length(km_tp[km_tp$strata == levels(km_tp$strata)[2]])))
-    km_tp_gr_2$tp <- 1 - (1 - ((shift(km_tp_gr_2$surv, 1L, type = "lag") - km_tp_gr_2$surv)/shift(km_tp_gr_2$surv, 
-                                                                                                  1L, type = "lag")))^(1/time_unit)
+    km_tp_gr_2 <- data.frame(time = km_tp$time[km_tp$strata == levels(km_tp$strata)[2]], 
+                             surv = km_tp$surv[km_tp$strata == levels(km_tp$strata)[2]], 
+                             group = rep(2, length(km_tp[km_tp$strata == levels(km_tp$strata)[2]])),
+                             lower = km_tp$lower[km_tp$strata == levels(km_tp$strata)[2]], 
+                             upper = km_tp$upper[km_tp$strata == levels(km_tp$strata)[2]])
+    km_tp_gr_2$tp <- 1 - (1 - ((shift(km_tp_gr_2$surv, 1L, type = "lag") - km_tp_gr_2$surv)/
+                                 shift(km_tp_gr_2$surv, 1L, type = "lag")))^(1/time_unit)
+    km_tp_gr_2$tp_lower <- 1 - (1 - ((shift(km_tp_gr_2$upper, 1L, type = "lag") - km_tp_gr_2$upper)/
+                                       shift(km_tp_gr_2$upper, 1L, type = "lag")))^(1/time_unit)
+    km_tp_gr_2$tp_upper <- 1 - (1 - ((shift(km_tp_gr_2$lower, 1L, type = "lag") - km_tp_gr_2$lower)/
+                                       shift(km_tp_gr_2$lower, 1L, type = "lag")))^(1/time_unit)
     km_tp_gr_2 <- km_tp_gr_2[-1, ]  #remove NA
     km_tp_gr_2$tp_smooth <- pmax(0, pmin(1, loess(km_tp_gr_2$tp ~ km_tp_gr_2$time)$fitted))
+    km_tp_gr_2$tp_smooth_lower <- pmax(0, pmin(1, km_tp_gr_2$tp_smooth, loess(km_tp_gr_2$tp_lower ~ km_tp_gr_2$time)$fitted))
+    km_tp_gr_2$tp_smooth_upper <- pmax(0, km_tp_gr_2$tp_smooth, pmin(1, loess(km_tp_gr_2$tp_upper ~ km_tp_gr_2$time)$fitted))
+    km_tp$maxtp_smooth <- max(c(km_tp_gr_1$tp_smooth_upper, km_tp_gr_2$tp_smooth_upper))
   }
   if (ngroups > 2) {
-    km_tp_gr_3 <- data.frame(time = km_tp$time[km_tp$strata == levels(km_tp$strata)[3]], surv = km_tp$surv[km_tp$strata == 
-                                                                                                             levels(km_tp$strata)[3]], group = rep(3, length(km_tp[km_tp$strata == levels(km_tp$strata)[3]])))
-    km_tp_gr_3$tp <- 1 - (1 - ((shift(km_tp_gr_3$surv, 1L, type = "lag") - km_tp_gr_3$surv)/shift(km_tp_gr_3$surv, 
-                                                                                                  1L, type = "lag")))^(1/time_unit)
+    km_tp_gr_3 <- data.frame(time = km_tp$time[km_tp$strata == levels(km_tp$strata)[3]], 
+                             surv = km_tp$surv[km_tp$strata == levels(km_tp$strata)[3]], 
+                             group = rep(3, length(km_tp[km_tp$strata == levels(km_tp$strata)[3]])),
+                             lower = km_tp$lower[km_tp$strata == levels(km_tp$strata)[3]], 
+                             upper = km_tp$upper[km_tp$strata == levels(km_tp$strata)[3]])
+    km_tp_gr_3$tp <- 1 - (1 - ((shift(km_tp_gr_3$surv, 1L, type = "lag") - km_tp_gr_3$surv)/
+                                 shift(km_tp_gr_3$surv, 1L, type = "lag")))^(1/time_unit)
+    km_tp_gr_3$tp_lower <- 1 - (1 - ((shift(km_tp_gr_3$upper, 1L, type = "lag") - km_tp_gr_3$upper)/
+                                       shift(km_tp_gr_3$upper, 1L, type = "lag")))^(1/time_unit)
+    km_tp_gr_3$tp_upper <- 1 - (1 - ((shift(km_tp_gr_3$lower, 1L, type = "lag") - km_tp_gr_3$lower)/
+                                       shift(km_tp_gr_3$lower, 1L, type = "lag")))^(1/time_unit)
     km_tp_gr_3 <- km_tp_gr_3[-1, ]  #remove NA
     km_tp_gr_3$tp_smooth <- pmax(0, pmin(1, loess(km_tp_gr_3$tp ~ km_tp_gr_3$time)$fitted))
+    km_tp_gr_3$tp_smooth_lower <- pmax(0, pmin(1, km_tp_gr_3$tp_smooth, loess(km_tp_gr_3$tp_lower ~ km_tp_gr_3$time)$fitted))
+    km_tp_gr_3$tp_smooth_upper <- pmax(0, km_tp_gr_3$tp_smooth, pmin(1, loess(km_tp_gr_3$tp_upper ~ km_tp_gr_3$time)$fitted))
+    km_tp$maxtp_smooth <- max(c(km_tp_gr_1$tp_smooth_upper, km_tp_gr_2$tp_smooth_upper, km_tp_gr_3$tp_smooth_upper))
   }
   
   # parametric survival models
-  cols_extr <- ifelse(spline_mod == TRUE, 14, 8)  # define data frame width for the annual TP calculations, based on whether spline models are asked
+  cols_extr <- ifelse(spline_mod == TRUE, 14, 8)  # define data frame width for the annual TP calculations
   
-  tp_gr_1 <- cbind(time_pred, 1 - (1 - (shift(extrapolation_gr_1[, 2:cols_extr], 1L, type = "lag") - 
-                                          extrapolation_gr_1[, 2:cols_extr])/shift(extrapolation_gr_1[, 2:cols_extr], 1L, type = "lag"))^(1/time_unit))[-1, 
-                                                                                                                                                        ]
+  tp_gr_1 <- cbind(time_pred, 1 - (1 - (shift(extrapolation_gr_1[, 2:cols_extr], 1L, type = "lag") - extrapolation_gr_1[, 2:cols_extr])/
+                                     shift(extrapolation_gr_1[, 2:cols_extr], 1L, type = "lag"))^(1/time_unit))[-1, ]
   
   if (ngroups > 1) {
-    tp_gr_2 <- cbind(time_pred, 1 - (1 - (shift(extrapolation_gr_2[, 2:cols_extr], 1L, type = "lag") - 
-                                            extrapolation_gr_2[, 2:cols_extr])/shift(extrapolation_gr_2[, 2:cols_extr], 1L, type = "lag"))^(1/time_unit))[-1, 
-                                                                                                                                                          ]
+    tp_gr_2 <- cbind(time_pred, 1 - (1 - (shift(extrapolation_gr_2[, 2:cols_extr], 1L, type = "lag") - extrapolation_gr_2[, 2:cols_extr])/
+                                       shift(extrapolation_gr_2[, 2:cols_extr], 1L, type = "lag"))^(1/time_unit))[-1, ]
   }
   
   if (ngroups > 2) {
-    tp_gr_3 <- cbind(time_pred, 1 - (1 - (shift(extrapolation_gr_3[, 2:cols_extr], 1L, type = "lag") - 
-                                            extrapolation_gr_3[, 2:cols_extr])/shift(extrapolation_gr_3[, 2:cols_extr], 1L, type = "lag"))^(1/time_unit))[-1, 
-                                                                                                                                                          ]
+    tp_gr_3 <- cbind(time_pred, 1 - (1 - (shift(extrapolation_gr_3[, 2:cols_extr], 1L, type = "lag") - extrapolation_gr_3[, 2:cols_extr])/
+                                       shift(extrapolation_gr_3[, 2:cols_extr], 1L, type = "lag"))^(1/time_unit))[-1, ]
   }
   
   # create output dataframe containing each distributions' name, the parameters' name, the parameters,
@@ -328,16 +358,16 @@ PERSUADE <- function(years, status, group, strata = FALSE, time_unit, time_horiz
   
   # distributions names
   distnames <- if (spline_mod == TRUE) {
-    c(rep("1. Exponential", nrow(expo$res.t)), rep("2. Weibull", nrow(weib$res.t)), rep("3. Gompertz", 
-                                                                                        nrow(gom$res.t)), rep("4. Log-normal", nrow(lnorm$res.t)), rep("5. Log-logistic", nrow(llog$res.t)), 
-      rep("6. Gamma", nrow(gam$res.t)), rep("7. Generalisedgamma", nrow(ggam$res.t)), rep("8. 1-knot spline hazard", 
-                                                                                          nrow(spl_hazard1$res.t)), rep("9. 1-knot spline odds", nrow(spl_odds1$res.t)), rep("10. 1-knot spline normal", 
-                                                                                                                                                                             nrow(spl_normal1$res.t)), rep("11. 2-knot spline hazard", nrow(spl_hazard2$res.t)), rep("12. 2-knot spline odds", 
-                                                                                                                                                                                                                                                                     nrow(spl_odds2$res.t)), rep("13. 2-knot spline normal", nrow(spl_normal2$res.t)))
+    c(rep("1. Exponential", nrow(expo$res.t)), rep("2. Weibull", nrow(weib$res.t)), rep("3. Gompertz", nrow(gom$res.t)), 
+      rep("4. Log-normal", nrow(lnorm$res.t)), rep("5. Log-logistic", nrow(llog$res.t)), rep("6. Gamma", nrow(gam$res.t)), 
+      rep("7. Generalisedgamma", nrow(ggam$res.t)), rep("8. 1-knot spline hazard", nrow(spl_hazard1$res.t)), 
+      rep("9. 1-knot spline odds", nrow(spl_odds1$res.t)), rep("10. 1-knot spline normal", nrow(spl_normal1$res.t)), 
+      rep("11. 2-knot spline hazard", nrow(spl_hazard2$res.t)), rep("12. 2-knot spline odds", nrow(spl_odds2$res.t)), 
+      rep("13. 2-knot spline normal", nrow(spl_normal2$res.t)))
   } else {
-    c(rep("1. Exponential", nrow(expo$res.t)), rep("2. Weibull", nrow(weib$res.t)), rep("3. Gompertz", 
-                                                                                        nrow(gom$res.t)), rep("4. Log-normal", nrow(lnorm$res.t)), rep("5. Log-logistic", nrow(llog$res.t)), 
-      rep("6. Gamma", nrow(gam$res.t)), rep("7. Generalisedgamma", nrow(ggam$res.t)))
+    c(rep("1. Exponential", nrow(expo$res.t)), rep("2. Weibull", nrow(weib$res.t)), rep("3. Gompertz", nrow(gom$res.t)), 
+      rep("4. Log-normal", nrow(lnorm$res.t)), rep("5. Log-logistic", nrow(llog$res.t)), rep("6. Gamma", nrow(gam$res.t)), 
+      rep("7. Generalisedgamma", nrow(ggam$res.t)))
   }
   
   # parameters' names
@@ -378,26 +408,27 @@ PERSUADE <- function(years, status, group, strata = FALSE, time_unit, time_horiz
       3
     } else {
       ifelse(ngroups == 2, 6, 9)
-    })), cbind(weib$cov, matrix(0, nrow = ngroups + 1 * addrows, ncol = 2 * addcols)), cbind(gom$cov, 
-                                                                                             matrix(0, nrow = ngroups + 1 * addrows, ncol = 2 * addcols)), cbind(lnorm$cov, matrix(0, 
-                                                                                                                                                                                   nrow = ngroups + 1 * addrows, ncol = 2 * addcols)), cbind(llog$cov, matrix(0, nrow = ngroups + 
-                                                                                                                                                                                                                                                                1 * addrows, ncol = 2 * addcols)), cbind(gam$cov, matrix(0, nrow = ngroups + 1 * addrows, 
-                                                                                                                                                                                                                                                                                                                         ncol = 2 * addcols)), cbind(ggam$cov, matrix(0, nrow = ngroups + 2 * addrows, ncol = 1 * 
-                                                                                                                                                                                                                                                                                                                                                                        addcols)), cbind(spl_hazard1$cov, matrix(0, nrow = ngroups + 2 * addrows, ncol = 1 * addcols)), 
-    cbind(spl_odds1$cov, matrix(0, nrow = ngroups + 2 * addrows, ncol = 1 * addcols)), cbind(spl_normal1$cov, 
-                                                                                             matrix(0, nrow = ngroups + 2 * addrows, ncol = 1 * addcols)), spl_hazard2$cov, spl_odds2$cov, 
-    spl_normal2$cov)
+    })), cbind(weib$cov, matrix(0, nrow = ngroups + 1 * addrows, ncol = 2 * addcols)), 
+    cbind(gom$cov, matrix(0, nrow = ngroups + 1 * addrows, ncol = 2 * addcols)), 
+    cbind(lnorm$cov, matrix(0, nrow = ngroups + 1 * addrows, ncol = 2 * addcols)), 
+    cbind(llog$cov, matrix(0, nrow = ngroups + 1 * addrows, ncol = 2 * addcols)), 
+    cbind(gam$cov, matrix(0, nrow = ngroups + 1 * addrows, ncol = 2 * addcols)), 
+    cbind(ggam$cov, matrix(0, nrow = ngroups + 2 * addrows, ncol = 1 * addcols)), 
+    cbind(spl_hazard1$cov, matrix(0, nrow = ngroups + 2 * addrows, ncol = 1 * addcols)), 
+    cbind(spl_odds1$cov, matrix(0, nrow = ngroups + 2 * addrows, ncol = 1 * addcols)), 
+    cbind(spl_normal1$cov, matrix(0, nrow = ngroups + 2 * addrows, ncol = 1 * addcols)), 
+    spl_hazard2$cov, spl_odds2$cov, spl_normal2$cov)
   } else {
     rbind(cbind(expo$cov, matrix(0, nrow = ngroups, ncol = if (strata == FALSE) {
       3
     } else {
       ifelse(ngroups == 2, 6, 9)
-    })), cbind(weib$cov, matrix(0, nrow = ngroups + 1 * addrows, ncol = 2 * addcols)), cbind(gom$cov, 
-                                                                                             matrix(0, nrow = ngroups + 1 * addrows, ncol = 2 * addcols)), cbind(lnorm$cov, matrix(0, 
-                                                                                                                                                                                   nrow = ngroups + 1 * addrows, ncol = 2 * addcols)), cbind(llog$cov, matrix(0, nrow = ngroups + 
-                                                                                                                                                                                                                                                                1 * addrows, ncol = 2 * addcols)), cbind(gam$cov, matrix(0, nrow = ngroups + 1 * addrows, 
-                                                                                                                                                                                                                                                                                                                         ncol = 2 * addcols)), cbind(ggam$cov, matrix(0, nrow = ngroups + 2 * addrows, ncol = 1 * 
-                                                                                                                                                                                                                                                                                                                                                                        addcols)))
+    })), cbind(weib$cov, matrix(0, nrow = ngroups + 1 * addrows, ncol = 2 * addcols)), 
+    cbind(gom$cov, matrix(0, nrow = ngroups + 1 * addrows, ncol = 2 * addcols)), 
+    cbind(lnorm$cov, matrix(0, nrow = ngroups + 1 * addrows, ncol = 2 * addcols)), 
+    cbind(llog$cov, matrix(0, nrow = ngroups + 1 * addrows, ncol = 2 * addcols)), 
+    cbind(gam$cov, matrix(0, nrow = ngroups + 1 * addrows, ncol = 2 * addcols)), 
+    cbind(ggam$cov, matrix(0, nrow = ngroups + 2 * addrows, ncol = 1 * addcols)))
   }
   
   Survmod <- cbind(distnames, parnames, res, empty, empty, empty, cov)
@@ -416,36 +447,50 @@ PERSUADE <- function(years, status, group, strata = FALSE, time_unit, time_horiz
   # add the knots
   if (spline_mod == TRUE) {
     # 1-knot splines
-    Survmod[which(rownames(Survmod) == "Knots"), which((Survmod[which(rownames(Survmod) == "Distnames"), 
-                                                                ] == "1-knot spline hazard" | Survmod[which(rownames(Survmod) == "Distnames"), ] == "1-knot spline odds" | 
-                                                          Survmod[which(rownames(Survmod) == "Distnames"), ] == "1-knot spline normal") & Survmod[which(rownames(Survmod) == 
-                                                                                                                                                          "Parnames"), ] == "gamma0")] <- c(spl_hazard1$knots[1], spl_odds1$knots[1], spl_normal1$knots[1])
-    Survmod[which(rownames(Survmod) == "Knots"), which((Survmod[which(rownames(Survmod) == "Distnames"), 
-                                                                ] == "1-knot spline hazard" | Survmod[which(rownames(Survmod) == "Distnames"), ] == "1-knot spline odds" | 
-                                                          Survmod[which(rownames(Survmod) == "Distnames"), ] == "1-knot spline normal") & Survmod[which(rownames(Survmod) == 
-                                                                                                                                                          "Parnames"), ] == "gamma1")] <- c(spl_hazard1$knots[2], spl_odds1$knots[2], spl_normal1$knots[2])
+    Survmod[which(rownames(Survmod) == "Knots"), 
+            which((Survmod[which(rownames(Survmod) == "Distnames"), ] == "1-knot spline hazard" | 
+                     Survmod[which(rownames(Survmod) == "Distnames"), ] == "1-knot spline odds" | 
+                     Survmod[which(rownames(Survmod) == "Distnames"), ] == "1-knot spline normal") & 
+                    Survmod[which(rownames(Survmod) == "Parnames"), ] == "gamma0")] <- c(spl_hazard1$knots[1], spl_odds1$knots[1], 
+                                                                                         spl_normal1$knots[1])
+    Survmod[which(rownames(Survmod) == "Knots"), 
+            which((Survmod[which(rownames(Survmod) == "Distnames"), ] == "1-knot spline hazard" | 
+                     Survmod[which(rownames(Survmod) == "Distnames"), ] == "1-knot spline odds" |
+                     Survmod[which(rownames(Survmod) == "Distnames"), ] == "1-knot spline normal") & 
+                    Survmod[which(rownames(Survmod) == "Parnames"), ] == "gamma1")] <- c(spl_hazard1$knots[2], spl_odds1$knots[2], 
+                                                                                         spl_normal1$knots[2])
     
-    Survmod[which(rownames(Survmod) == "Knots"), which((Survmod[which(rownames(Survmod) == "Distnames"), 
-                                                                ] == "1-knot spline hazard" | Survmod[which(rownames(Survmod) == "Distnames"), ] == "1-knot spline odds" | 
-                                                          Survmod[which(rownames(Survmod) == "Distnames"), ] == "1-knot spline normal") & Survmod[which(rownames(Survmod) == 
-                                                                                                                                                          "Parnames"), ] == "gamma2")] <- c(spl_hazard1$knots[3], spl_odds1$knots[3], spl_normal1$knots[3])
+    Survmod[which(rownames(Survmod) == "Knots"), 
+            which((Survmod[which(rownames(Survmod) == "Distnames"), ] == "1-knot spline hazard" |
+                     Survmod[which(rownames(Survmod) == "Distnames"), ] == "1-knot spline odds" | 
+                     Survmod[which(rownames(Survmod) == "Distnames"), ] == "1-knot spline normal") &
+                    Survmod[which(rownames(Survmod) == "Parnames"), ] == "gamma2")] <- c(spl_hazard1$knots[3], spl_odds1$knots[3], 
+                                                                                         spl_normal1$knots[3])
     # 2-knot splines
-    Survmod[which(rownames(Survmod) == "Knots"), which((Survmod[which(rownames(Survmod) == "Distnames"), 
-                                                                ] == "2-knot spline hazard" | Survmod[which(rownames(Survmod) == "Distnames"), ] == "2-knot spline odds" | 
-                                                          Survmod[which(rownames(Survmod) == "Distnames"), ] == "2-knot spline normal") & Survmod[which(rownames(Survmod) == 
-                                                                                                                                                          "Parnames"), ] == "gamma0")] <- c(spl_hazard2$knots[1], spl_odds2$knots[1], spl_normal2$knots[1])
-    Survmod[which(rownames(Survmod) == "Knots"), which((Survmod[which(rownames(Survmod) == "Distnames"), 
-                                                                ] == "2-knot spline hazard" | Survmod[which(rownames(Survmod) == "Distnames"), ] == "2-knot spline odds" | 
-                                                          Survmod[which(rownames(Survmod) == "Distnames"), ] == "2-knot spline normal") & Survmod[which(rownames(Survmod) == 
-                                                                                                                                                          "Parnames"), ] == "gamma1")] <- c(spl_hazard2$knots[2], spl_odds2$knots[2], spl_normal2$knots[2])
-    Survmod[which(rownames(Survmod) == "Knots"), which((Survmod[which(rownames(Survmod) == "Distnames"), 
-                                                                ] == "2-knot spline hazard" | Survmod[which(rownames(Survmod) == "Distnames"), ] == "2-knot spline odds" | 
-                                                          Survmod[which(rownames(Survmod) == "Distnames"), ] == "2-knot spline normal") & Survmod[which(rownames(Survmod) == 
-                                                                                                                                                          "Parnames"), ] == "gamma2")] <- c(spl_hazard2$knots[3], spl_odds2$knots[3], spl_normal2$knots[3])
-    Survmod[which(rownames(Survmod) == "Knots"), which((Survmod[which(rownames(Survmod) == "Distnames"), 
-                                                                ] == "2-knot spline hazard" | Survmod[which(rownames(Survmod) == "Distnames"), ] == "2-knot spline odds" | 
-                                                          Survmod[which(rownames(Survmod) == "Distnames"), ] == "2-knot spline normal") & Survmod[which(rownames(Survmod) == 
-                                                                                                                                                          "Parnames"), ] == "gamma3")] <- c(spl_hazard2$knots[4], spl_odds2$knots[4], spl_normal2$knots[4])
+    Survmod[which(rownames(Survmod) == "Knots"), 
+            which((Survmod[which(rownames(Survmod) == "Distnames"), ] == "2-knot spline hazard" | 
+                     Survmod[which(rownames(Survmod) == "Distnames"), ] == "2-knot spline odds" | 
+                     Survmod[which(rownames(Survmod) == "Distnames"), ] == "2-knot spline normal") & 
+                    Survmod[which(rownames(Survmod) == "Parnames"), ] == "gamma0")] <- c(spl_hazard2$knots[1], spl_odds2$knots[1], 
+                                                                                         spl_normal2$knots[1])
+    Survmod[which(rownames(Survmod) == "Knots"), 
+            which((Survmod[which(rownames(Survmod) == "Distnames"), ] == "2-knot spline hazard" |
+                     Survmod[which(rownames(Survmod) == "Distnames"), ] == "2-knot spline odds" | 
+                     Survmod[which(rownames(Survmod) == "Distnames"), ] == "2-knot spline normal") & 
+                    Survmod[which(rownames(Survmod) == "Parnames"), ] == "gamma1")] <- c(spl_hazard2$knots[2], spl_odds2$knots[2], 
+                                                                                         spl_normal2$knots[2])
+    Survmod[which(rownames(Survmod) == "Knots"), 
+            which((Survmod[which(rownames(Survmod) == "Distnames"), ] == "2-knot spline hazard" | 
+                     Survmod[which(rownames(Survmod) == "Distnames"), ] == "2-knot spline odds" | 
+                     Survmod[which(rownames(Survmod) == "Distnames"), ] == "2-knot spline normal") & 
+                    Survmod[which(rownames(Survmod) == "Parnames"), ] == "gamma2")] <- c(spl_hazard2$knots[3], spl_odds2$knots[3], 
+                                                                                         spl_normal2$knots[3])
+    Survmod[which(rownames(Survmod) == "Knots"), 
+            which((Survmod[which(rownames(Survmod) == "Distnames"), ] == "2-knot spline hazard" | 
+                     Survmod[which(rownames(Survmod) == "Distnames"), ] == "2-knot spline odds" | 
+                     Survmod[which(rownames(Survmod) == "Distnames"), ] == "2-knot spline normal") &
+                    Survmod[which(rownames(Survmod) == "Parnames"), ] == "gamma3")] <- c(spl_hazard2$knots[4], spl_odds2$knots[4], 
+                                                                                         spl_normal2$knots[4])
   }
   
   # remove column names
