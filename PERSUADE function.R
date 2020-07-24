@@ -57,7 +57,23 @@ PERSUADE <- function(years, status, group, strata = FALSE, time_unit, time_horiz
   } else {
     NA
   })
-  
+  hr_max <- data.frame(time = ceiling(max(hr_smooth1$est.grid, if (ngroups > 1) {
+    hr_smooth2$est.grid
+  } else {
+    NA
+  }, if (ngroups > 2) {
+    hr_smooth3$est.grid
+  } else {
+    NA
+  }, na.rm = TRUE)), hr_smooth = ceiling(max(hr_smooth1$haz.est, if (ngroups > 1) {
+    hr_smooth2$haz.est
+  } else {
+    NA
+  }, if (ngroups > 2) {
+    hr_smooth3$haz.est
+  } else {
+    NA
+  }, na.rm = TRUE)))
   # cox (for Scaled Schoenfeld residuals)
   cox_reg <- coxph(form)
   
@@ -497,9 +513,9 @@ PERSUADE <- function(years, status, group, strata = FALSE, time_unit, time_horiz
   colnames(Survmod) <- c("Time-to-event models parameters", rep("", abs(ncol(Survmod)) - 1))
   
   # Export to global environment
-  l1 <- list(group = group, ngroups = ngroups, group_names = group_names, show_spline = show_spline, 
-             time_horizon = time_horizon, time_pred_surv_table = time_pred_surv_table, time_pred = time_pred, 
-             form = form, km = km, km_names = km_names, hr_smooth1 = hr_smooth1, hr_names = hr_names, cox_reg = cox_reg, 
+  l1 <- list(years = years, status = status, group = group, ngroups = ngroups, group_names = group_names, show_spline = show_spline, 
+             time_horizon = time_horizon, time_pred_surv_table = time_pred_surv_table, time_pred = time_pred, form = form, 
+             km = km, km_names = km_names, hr_smooth1 = hr_smooth1, hr_names = hr_names, hr_max = hr_max, cox_reg = cox_reg, 
              expo = expo, weib = weib, gom = gom, lnorm = lnorm, llog = llog, gam = gam, ggam = ggam, expo_pred = expo_pred, 
              weib_pred = weib_pred, gom_pred = gom_pred, gom_est_h = gom_est_h, lnorm_pred = lnorm_pred, llog_pred = llog_pred, 
              gam_pred = gam_pred, ggam_pred = ggam_pred, lbls = lbls, IC = IC, extrapolation_gr_1 = extrapolation_gr_1, 

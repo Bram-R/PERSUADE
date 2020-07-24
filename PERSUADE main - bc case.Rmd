@@ -5,7 +5,6 @@ output:
   pdf_document:
     toc: yes
     keep_tex: TRUE
-    highlight: zenburn    
   html_document:
     number_sections: yes
     theme: united
@@ -62,7 +61,7 @@ PERSUADE <- PERSUADE(years = years, status = status, group = group, strata = TRU
 ```{r plot_KM, echo=FALSE, fig.height=8, fig.width=7}
 evalq({
     suppressWarnings(if (ngroups > 1) {
-        ggsurvplot(surv_fit(form, data = data.frame(years, status, group)), linetype = as.integer(c(1, "1234", "9212")), 
+        ggsurvplot(surv_fit(form, data = data.frame(years, status, group)), linetype = as.integer(c(1, "2222", "5212")), 
             legend.labs = group_names, risk.table = TRUE, conf.int = TRUE, surv.median.line = "hv", 
             ncensor.plot = TRUE, censor = FALSE, ggtheme = theme_light(), color = "strata", size = 0.5)
     } else {
@@ -110,34 +109,18 @@ Should parametric survival models assuming a monotonic hazard rate (i.e. exponen
 ```{r plot_hr, echo=FALSE}
 evalq({
     plot(cbind(hr_smooth1$est.grid, hr_smooth1$haz.est), type = "l", col = "red", 
-        lty = 1, lwd = 2, xlab = "time", ylab = "smoothed hazard rate", xlim = c(0, 
-            max(hr_smooth1$est.grid, if (ngroups > 1) {
-                hr_smooth2$est.grid
-            } else {
-                NA
-            }, if (ngroups > 2) {
-                hr_smooth3$est.grid
-            } else {
-                NA
-            }, na.rm = TRUE)), ylim = c(0, max(hr_smooth1$haz.est, if (ngroups > 1) {
-            hr_smooth2$haz.est
-        } else {
-            NA
-        }, if (ngroups > 2) {
-            hr_smooth3$haz.est
-        } else {
-            NA
-        }, na.rm = TRUE)))
+        lty = 1, lwd = 2, xlab = "time", ylab = "smoothed hazard rate", xlim = c(0, hr_max$time), 
+        ylim = c(0, hr_max$hr_smooth))
     if (ngroups > 1) {
-        lines(cbind(hr_smooth2$est.grid, hr_smooth2$haz.est), col = "green", lty = "1234", 
+        lines(cbind(hr_smooth2$est.grid, hr_smooth2$haz.est), col = "green", lty = "2222", 
             lwd = 2)
     }
     if (ngroups > 2) {
-        lines(cbind(hr_smooth3$est.grid, hr_smooth3$haz.est), col = "blue", lty = "9212", 
+        lines(cbind(hr_smooth3$est.grid, hr_smooth3$haz.est), col = "blue", lty = "5212", 
             lwd = 2)
     }
     legend("topleft", legend = group_names, col = c("red", "green", "blue"), lty = as.integer(c(1, 
-        "1234", "9212")), cex = 0.8)
+        "2222", "5212")), cex = 0.8)
 }, envir = PERSUADE)
 ```
 
@@ -162,13 +145,27 @@ evalq({
         col = c("black", "lightgrey", "darkgrey"))
     lines(cbind(time_pred, expo_pred[, 2]), col = "1", lty = 1, lwd = 2)
     if (ngroups > 1) {
-        lines(cbind(time_pred, expo_pred[, 3]), col = "1", lty = "1234", lwd = 2)
+        lines(cbind(time_pred, expo_pred[, 3]), col = "1", lty = "2222", lwd = 2)
     }
     if (ngroups > 2) {
-        lines(cbind(time_pred, expo_pred[, 4]), col = "1", lty = "9212", lwd = 2)
+        lines(cbind(time_pred, expo_pred[, 4]), col = "1", lty = "5212", lwd = 2)
     }
-    legend("bottomleft", legend = group_names, col = "1", lty = as.integer(c(1, "1234", 
-        "9212")), cex = 0.8)
+    # add shading confidence intervals
+    polygon(c(km$time[km_names==1], rev(km$time[km_names==1])), 
+            c(km$lower[km_names==1], rev(km$upper[km_names==1])), 
+            col = adjustcolor("black", alpha.f = 0.3), border = NA)
+    if (ngroups > 1) {
+      polygon(c(km$time[km_names==2], rev(km$time[km_names==2])), 
+              c(km$lower[km_names==2], rev(km$upper[km_names==2])), 
+              col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
+    }
+    if (ngroups > 2) {
+      polygon(c(km$time[km_names==3], rev(km$time[km_names==3])), 
+              c(km$lower[km_names==3], rev(km$upper[km_names==3])), 
+              col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
+    }
+    legend("bottomleft", legend = group_names, col = "1", lty = as.integer(c(1, "2222", 
+        "5212")), cex = 0.8)
     
     # annual transition probabilities
     plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), lwd = 1, lty = 1, type = "b", 
@@ -179,12 +176,12 @@ evalq({
     if (ngroups > 1) {
       lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), col = "lightgrey", type = "b", 
             lwd = 1, cex = 0.6, pch = 8)
-      lines(cbind(time_pred[-1], tp_gr_2[, 2]), col = "1", lty = "1234", lwd = 2)
+      lines(cbind(time_pred[-1], tp_gr_2[, 2]), col = "1", lty = "2222", lwd = 2)
     }
     if (ngroups > 2) {
       lines(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth), col = "darkgrey", type = "b", 
             lwd = 1, cex = 0.6, pch = 9)
-      lines(cbind(time_pred[-1], tp_gr_3[, 2]), col = "1", lty = "9212", lwd = 2)
+      lines(cbind(time_pred[-1], tp_gr_3[, 2]), col = "1", lty = "5212", lwd = 2)
     }
     # add shading confidence intervals
     polygon(c(km_tp_gr_1$time, rev(km_tp_gr_1$time)), 
@@ -200,8 +197,8 @@ evalq({
               c(km_tp_gr_3$tp_smooth_lower, rev(km_tp_gr_3$tp_smooth_upper)), 
               col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
     }
-    legend("topleft", legend = group_names, col = "1", lty = as.integer(c(1, "1234", 
-                                                                          "9212")), cex = 0.8)
+    legend("topleft", legend = group_names, col = "1", lty = as.integer(c(1, "2222", 
+                                                                          "5212")), cex = 0.8)
     
     # diagnostics
     plot(cbind(km$time, -log(km$surv)), cex = 0.6, pch = c(1, 8, 9)[km_names], col = c("black", 
@@ -209,13 +206,13 @@ evalq({
         xlab = "time", ylab = "cumulative hazard")
     lines(cbind(time_pred, -log(expo_pred[, 2])), col = "1", lty = 1, lwd = 2)
     if (ngroups > 1) {
-        lines(cbind(time_pred, -log(expo_pred[, 3])), col = "1", lty = "1234", lwd = 2)
+        lines(cbind(time_pred, -log(expo_pred[, 3])), col = "1", lty = "2222", lwd = 2)
     }
     if (ngroups > 2) {
-        lines(cbind(time_pred, -log(expo_pred[, 4])), col = "1", lty = "9212", lwd = 2)
+        lines(cbind(time_pred, -log(expo_pred[, 4])), col = "1", lty = "5212", lwd = 2)
     }
-    legend("topleft", legend = group_names, col = "1", lty = as.integer(c(1, "1234", 
-        "9212")), cex = 0.8)
+    legend("topleft", legend = group_names, col = "1", lty = as.integer(c(1, "2222", 
+        "5212")), cex = 0.8)
 }, envir = PERSUADE)
 ```
 
@@ -227,13 +224,27 @@ evalq({
         col = c("black", "lightgrey", "darkgrey"))
     lines(cbind(time_pred, weib_pred[, 2]), col = "2", lty = 1, lwd = 2)
     if (ngroups > 1) {
-        lines(cbind(time_pred, weib_pred[, 3]), col = "2", lty = "1234", lwd = 2)
+        lines(cbind(time_pred, weib_pred[, 3]), col = "2", lty = "2222", lwd = 2)
     }
     if (ngroups > 2) {
-        lines(cbind(time_pred, weib_pred[, 4]), col = "2", lty = "9212", lwd = 2)
+        lines(cbind(time_pred, weib_pred[, 4]), col = "2", lty = "5212", lwd = 2)
     }
-    legend("bottomleft", legend = group_names, col = "2", lty = as.integer(c(1, "1234", 
-        "9212")), cex = 0.8)
+    # add shading confidence intervals
+    polygon(c(km$time[km_names==1], rev(km$time[km_names==1])), 
+            c(km$lower[km_names==1], rev(km$upper[km_names==1])), 
+            col = adjustcolor("black", alpha.f = 0.3), border = NA)
+    if (ngroups > 1) {
+      polygon(c(km$time[km_names==2], rev(km$time[km_names==2])), 
+              c(km$lower[km_names==2], rev(km$upper[km_names==2])), 
+              col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
+    }
+    if (ngroups > 2) {
+      polygon(c(km$time[km_names==3], rev(km$time[km_names==3])), 
+              c(km$lower[km_names==3], rev(km$upper[km_names==3])), 
+              col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
+    }
+    legend("bottomleft", legend = group_names, col = "2", lty = as.integer(c(1, "2222", 
+        "5212")), cex = 0.8)
     
     # annual transition probabilities
     plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), lwd = 1, lty = 1, type = "b", 
@@ -244,12 +255,12 @@ evalq({
     if (ngroups > 1) {
         lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), col = "lightgrey", type = "b", 
             lwd = 1, cex = 0.6, pch = 8)
-        lines(cbind(time_pred[-1], tp_gr_2[, 3]), col = "2", lty = "1234", lwd = 2)
+        lines(cbind(time_pred[-1], tp_gr_2[, 3]), col = "2", lty = "2222", lwd = 2)
     }
     if (ngroups > 2) {
         lines(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth), col = "darkgrey", type = "b", 
             lwd = 1, cex = 0.6, pch = 9)
-        lines(cbind(time_pred[-1], tp_gr_3[, 3]), col = "2", lty = "9212", lwd = 2)
+        lines(cbind(time_pred[-1], tp_gr_3[, 3]), col = "2", lty = "5212", lwd = 2)
     }
     # add shading confidence intervals
     polygon(c(km_tp_gr_1$time, rev(km_tp_gr_1$time)), 
@@ -265,8 +276,8 @@ evalq({
               c(km_tp_gr_3$tp_smooth_lower, rev(km_tp_gr_3$tp_smooth_upper)), 
               col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
     }
-    legend("topleft", legend = group_names, col = "2", lty = as.integer(c(1, "1234", 
-        "9212")), cex = 0.8)
+    legend("topleft", legend = group_names, col = "2", lty = as.integer(c(1, "2222", 
+        "5212")), cex = 0.8)
     
     # diagnostics
     plot(cbind(log(km$time), log(-log(km$surv))), cex = 0.6, pch = c(1, 8, 9)[km_names], 
@@ -275,13 +286,13 @@ evalq({
         xlab = "LN(time)", ylab = "LN(cumulative hazard)")
     lines(cbind(log(time_pred), log(-log(weib_pred[, 2]))), col = "2", lty = 1, lwd = 2)
     if (ngroups > 1) {
-        lines(cbind(log(time_pred), log(-log(weib_pred[, 3]))), col = "2", lty = "1234", lwd = 2)
+        lines(cbind(log(time_pred), log(-log(weib_pred[, 3]))), col = "2", lty = "2222", lwd = 2)
     }
     if (ngroups > 2) {
-        lines(cbind(log(time_pred), log(-log(weib_pred[, 4]))), col = "2", lty = "9212", lwd = 2)
+        lines(cbind(log(time_pred), log(-log(weib_pred[, 4]))), col = "2", lty = "5212", lwd = 2)
     }
-    legend("topleft", legend = group_names, col = "2", lty = as.integer(c(1, "1234", 
-        "9212")), cex = 0.8)
+    legend("topleft", legend = group_names, col = "2", lty = as.integer(c(1, "2222", 
+        "5212")), cex = 0.8)
 }, envir = PERSUADE)
 ```
 
@@ -293,13 +304,27 @@ evalq({
         col = c("black", "lightgrey", "darkgrey"))
     lines(cbind(time_pred, gom_pred[, 2]), col = "3", lty = 1, lwd = 2)
     if (ngroups > 1) {
-        lines(cbind(time_pred, gom_pred[, 3]), col = "3", lty = "1234", lwd = 2)
+        lines(cbind(time_pred, gom_pred[, 3]), col = "3", lty = "2222", lwd = 2)
     }
     if (ngroups > 2) {
-        lines(cbind(time_pred, gom_pred[, 4]), col = "3", lty = "9212", lwd = 2)
+        lines(cbind(time_pred, gom_pred[, 4]), col = "3", lty = "5212", lwd = 2)
     }
-    legend("bottomleft", legend = group_names, col = "3", lty = as.integer(c(1, "1234", 
-        "9212")), cex = 0.8)
+    # add shading confidence intervals
+    polygon(c(km$time[km_names==1], rev(km$time[km_names==1])), 
+            c(km$lower[km_names==1], rev(km$upper[km_names==1])), 
+            col = adjustcolor("black", alpha.f = 0.3), border = NA)
+    if (ngroups > 1) {
+      polygon(c(km$time[km_names==2], rev(km$time[km_names==2])), 
+              c(km$lower[km_names==2], rev(km$upper[km_names==2])), 
+              col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
+    }
+    if (ngroups > 2) {
+      polygon(c(km$time[km_names==3], rev(km$time[km_names==3])), 
+              c(km$lower[km_names==3], rev(km$upper[km_names==3])), 
+              col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
+    }
+    legend("bottomleft", legend = group_names, col = "3", lty = as.integer(c(1, "2222", 
+        "5212")), cex = 0.8)
     
     # annual transition probabilities
     plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), lwd = 1, lty = 1, type = "b", 
@@ -310,12 +335,12 @@ evalq({
     if (ngroups > 1) {
       lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), col = "lightgrey", type = "b", 
             lwd = 1, cex = 0.6, pch = 8)
-      lines(cbind(time_pred[-1], tp_gr_2[, 4]), col = "3", lty = "1234", lwd = 2)
+      lines(cbind(time_pred[-1], tp_gr_2[, 4]), col = "3", lty = "2222", lwd = 2)
     }
     if (ngroups > 2) {
       lines(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth), col = "darkgrey", type = "b", 
             lwd = 1, cex = 0.6, pch = 9)
-      lines(cbind(time_pred[-1], tp_gr_3[, 4]), col = "3", lty = "9212", lwd = 2)
+      lines(cbind(time_pred[-1], tp_gr_3[, 4]), col = "3", lty = "5212", lwd = 2)
     }
     # add shading confidence intervals
     polygon(c(km_tp_gr_1$time, rev(km_tp_gr_1$time)), 
@@ -331,8 +356,8 @@ evalq({
               c(km_tp_gr_3$tp_smooth_lower, rev(km_tp_gr_3$tp_smooth_upper)), 
               col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
     }
-    legend("topleft", legend = group_names, col = "3", lty = as.integer(c(1, "1234", 
-                                                                          "9212")), cex = 0.8)
+    legend("topleft", legend = group_names, col = "3", lty = as.integer(c(1, "2222", 
+                                                                          "5212")), cex = 0.8)
     
     # diagnostics
     plot(cbind(c(hr_smooth1$est.grid, if (ngroups > 1) {
@@ -355,13 +380,13 @@ evalq({
         pch = c(1, 8, 9)[hr_names], col = c("black", "lightgrey", "darkgrey")[hr_names])
     lines(cbind(gom_est_h[[1]]$time, log(gom_est_h[[1]]$est)), col = "3", lty = 1, lwd = 2)
     if (ngroups > 1) {
-        lines(cbind(gom_est_h[[2]]$time, log(gom_est_h[[2]]$est)), col = "3", lty = "1234", lwd = 2)
+        lines(cbind(gom_est_h[[2]]$time, log(gom_est_h[[2]]$est)), col = "3", lty = "2222", lwd = 2)
     }
     if (ngroups > 2) {
-        lines(cbind(gom_est_h[[3]]$time, log(gom_est_h[[3]]$est)), col = "3", lty = "9212", lwd = 2)
+        lines(cbind(gom_est_h[[3]]$time, log(gom_est_h[[3]]$est)), col = "3", lty = "5212", lwd = 2)
     }
-    legend("topleft", legend = group_names, col = "3", lty = as.integer(c(1, "1234", 
-        "9212")), cex = 0.8)
+    legend("topleft", legend = group_names, col = "3", lty = as.integer(c(1, "2222", 
+        "5212")), cex = 0.8)
 }, envir = PERSUADE)
 ```
 
@@ -374,13 +399,27 @@ evalq({
         col = c("black", "lightgrey", "darkgrey"))
     lines(cbind(time_pred, lnorm_pred[, 2]), col = "4", lty = 1, lwd = 2)
     if (ngroups > 1) {
-        lines(cbind(time_pred, lnorm_pred[, 3]), col = "4", lty = "1234", lwd = 2)
+        lines(cbind(time_pred, lnorm_pred[, 3]), col = "4", lty = "2222", lwd = 2)
     }
     if (ngroups > 2) {
-        lines(cbind(time_pred, lnorm_pred[, 4]), col = "4", lty = "9212", lwd = 2)
+        lines(cbind(time_pred, lnorm_pred[, 4]), col = "4", lty = "5212", lwd = 2)
     }
-    legend("bottomleft", legend = group_names, col = "4", lty = as.integer(c(1, "1234", 
-        "9212")), cex = 0.8)
+    # add shading confidence intervals
+    polygon(c(km$time[km_names==1], rev(km$time[km_names==1])), 
+            c(km$lower[km_names==1], rev(km$upper[km_names==1])), 
+            col = adjustcolor("black", alpha.f = 0.3), border = NA)
+    if (ngroups > 1) {
+      polygon(c(km$time[km_names==2], rev(km$time[km_names==2])), 
+              c(km$lower[km_names==2], rev(km$upper[km_names==2])), 
+              col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
+    }
+    if (ngroups > 2) {
+      polygon(c(km$time[km_names==3], rev(km$time[km_names==3])), 
+              c(km$lower[km_names==3], rev(km$upper[km_names==3])), 
+              col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
+    }
+    legend("bottomleft", legend = group_names, col = "4", lty = as.integer(c(1, "2222", 
+        "5212")), cex = 0.8)
     
     # annual transition probabilities
     plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), lwd = 1, lty = 1, type = "b", 
@@ -391,12 +430,12 @@ evalq({
     if (ngroups > 1) {
       lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), col = "lightgrey", type = "b", 
             lwd = 1, cex = 0.6, pch = 8)
-      lines(cbind(time_pred[-1], tp_gr_2[, 5]), col = "4", lty = "1234", lwd = 2)
+      lines(cbind(time_pred[-1], tp_gr_2[, 5]), col = "4", lty = "2222", lwd = 2)
     }
     if (ngroups > 2) {
       lines(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth), col = "darkgrey", type = "b", 
             lwd = 1, cex = 0.6, pch = 9)
-      lines(cbind(time_pred[-1], tp_gr_3[, 5]), col = "4", lty = "9212", lwd = 2)
+      lines(cbind(time_pred[-1], tp_gr_3[, 5]), col = "4", lty = "5212", lwd = 2)
     }
     # add shading confidence intervals
     polygon(c(km_tp_gr_1$time, rev(km_tp_gr_1$time)), 
@@ -412,8 +451,8 @@ evalq({
               c(km_tp_gr_3$tp_smooth_lower, rev(km_tp_gr_3$tp_smooth_upper)), 
               col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
     }
-    legend("topleft", legend = group_names, col = "4", lty = as.integer(c(1, "1234", 
-                                                                          "9212")), cex = 0.8)
+    legend("topleft", legend = group_names, col = "4", lty = as.integer(c(1, "2222", 
+                                                                          "5212")), cex = 0.8)
     
     # diagnostics
     plot(cbind(log(km$time), -qnorm(km$surv, mean = 0, sd = 1, lower.tail = TRUE, 
@@ -425,14 +464,14 @@ evalq({
         log.p = FALSE)), col = "4", lty = 1, lwd = 2)
     if (ngroups > 1) {
         lines(cbind(log(time_pred), -qnorm(lnorm_pred[, 3], mean = 0, sd = 1, lower.tail = TRUE, 
-            log.p = FALSE)), col = "4", lty = "1234", lwd = 2)
+            log.p = FALSE)), col = "4", lty = "2222", lwd = 2)
     }
     if (ngroups > 2) {
         lines(cbind(log(time_pred), -qnorm(lnorm_pred[, 4], mean = 0, sd = 1, lower.tail = TRUE, 
-            log.p = FALSE)), col = "4", lty = "9212", lwd = 2)
+            log.p = FALSE)), col = "4", lty = "5212", lwd = 2)
     }
-    legend("topleft", legend = group_names, col = "4", lty = as.integer(c(1, "1234", 
-        "9212")), cex = 0.8)
+    legend("topleft", legend = group_names, col = "4", lty = as.integer(c(1, "2222", 
+        "5212")), cex = 0.8)
 }, envir = PERSUADE)
 ```
 
@@ -445,13 +484,27 @@ evalq({
         col = c("black", "lightgrey", "darkgrey"))
     lines(cbind(time_pred, llog_pred[, 2]), col = "5", lty = 1, lwd = 2)
     if (ngroups > 1) {
-        lines(cbind(time_pred, llog_pred[, 3]), col = "5", lty = "1234", lwd = 2)
+        lines(cbind(time_pred, llog_pred[, 3]), col = "5", lty = "2222", lwd = 2)
     }
     if (ngroups > 2) {
-        lines(cbind(time_pred, llog_pred[, 4]), col = "5", lty = "9212", lwd = 2)
+        lines(cbind(time_pred, llog_pred[, 4]), col = "5", lty = "5212", lwd = 2)
     }
-    legend("bottomleft", legend = group_names, col = "5", lty = as.integer(c(1, "1234", 
-        "9212")), cex = 0.8)
+    # add shading confidence intervals
+    polygon(c(km$time[km_names==1], rev(km$time[km_names==1])), 
+            c(km$lower[km_names==1], rev(km$upper[km_names==1])), 
+            col = adjustcolor("black", alpha.f = 0.3), border = NA)
+    if (ngroups > 1) {
+      polygon(c(km$time[km_names==2], rev(km$time[km_names==2])), 
+              c(km$lower[km_names==2], rev(km$upper[km_names==2])), 
+              col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
+    }
+    if (ngroups > 2) {
+      polygon(c(km$time[km_names==3], rev(km$time[km_names==3])), 
+              c(km$lower[km_names==3], rev(km$upper[km_names==3])), 
+              col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
+    }
+    legend("bottomleft", legend = group_names, col = "5", lty = as.integer(c(1, "2222", 
+        "5212")), cex = 0.8)
     
     # annual transition probabilities
     plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), lwd = 1, lty = 1, type = "b", 
@@ -462,12 +515,12 @@ evalq({
     if (ngroups > 1) {
       lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), col = "lightgrey", type = "b", 
             lwd = 1, cex = 0.6, pch = 8)
-      lines(cbind(time_pred[-1], tp_gr_2[, 6]), col = "5", lty = "1234", lwd = 2)
+      lines(cbind(time_pred[-1], tp_gr_2[, 6]), col = "5", lty = "2222", lwd = 2)
     }
     if (ngroups > 2) {
       lines(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth), col = "darkgrey", type = "b", 
             lwd = 1, cex = 0.6, pch = 9)
-      lines(cbind(time_pred[-1], tp_gr_3[, 6]), col = "5", lty = "9212", lwd = 2)
+      lines(cbind(time_pred[-1], tp_gr_3[, 6]), col = "5", lty = "5212", lwd = 2)
     }
     # add shading confidence intervals
     polygon(c(km_tp_gr_1$time, rev(km_tp_gr_1$time)), 
@@ -483,8 +536,8 @@ evalq({
               c(km_tp_gr_3$tp_smooth_lower, rev(km_tp_gr_3$tp_smooth_upper)), 
               col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
     }
-    legend("topleft", legend = group_names, col = "5", lty = as.integer(c(1, "1234", 
-                                                                          "9212")), cex = 0.8)
+    legend("topleft", legend = group_names, col = "5", lty = as.integer(c(1, "2222", 
+                                                                          "5212")), cex = 0.8)
     
     # diagnostics
     plot(cbind(log(km$time), -log(km$surv/(1 - km$surv))), cex = 0.6, pch = c(1, 
@@ -495,14 +548,14 @@ evalq({
         lty = 1, lwd = 2)
     if (ngroups > 1) {
         lines(cbind(log(time_pred), -log(llog_pred[, 3]/(1 - llog_pred[, 3]))), col = "5", 
-            lty = "1234", lwd = 2)
+            lty = "2222", lwd = 2)
     }
     if (ngroups > 2) {
         lines(cbind(log(time_pred), -log(llog_pred[, 4]/(1 - llog_pred[, 4]))), col = "5", 
-            lty = "9212", lwd = 2)
+            lty = "5212", lwd = 2)
     }
-    legend("topleft", legend = group_names, col = "5", lty = as.integer(c(1, "1234", 
-        "9212")), cex = 0.8)
+    legend("topleft", legend = group_names, col = "5", lty = as.integer(c(1, "2222", 
+        "5212")), cex = 0.8)
 }, envir = PERSUADE)
 ```
 
@@ -514,13 +567,27 @@ evalq({
         col = c("black", "lightgrey", "darkgrey"))
     lines(cbind(time_pred, gam_pred[, 2]), col = "6", lty = 1, lwd = 2)
     if (ngroups > 1) {
-        lines(cbind(time_pred, gam_pred[, 3]), col = "6", lty = "1234", lwd = 2)
+        lines(cbind(time_pred, gam_pred[, 3]), col = "6", lty = "2222", lwd = 2)
     }
     if (ngroups > 2) {
-        lines(cbind(time_pred, gam_pred[, 4]), col = "6", lty = "9212", lwd = 2)
+        lines(cbind(time_pred, gam_pred[, 4]), col = "6", lty = "5212", lwd = 2)
     }
-    legend("bottomleft", legend = group_names, col = "6", lty = as.integer(c(1, "1234", 
-        "9212")), cex = 0.8)
+    # add shading confidence intervals
+    polygon(c(km$time[km_names==1], rev(km$time[km_names==1])), 
+            c(km$lower[km_names==1], rev(km$upper[km_names==1])), 
+            col = adjustcolor("black", alpha.f = 0.3), border = NA)
+    if (ngroups > 1) {
+      polygon(c(km$time[km_names==2], rev(km$time[km_names==2])), 
+              c(km$lower[km_names==2], rev(km$upper[km_names==2])), 
+              col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
+    }
+    if (ngroups > 2) {
+      polygon(c(km$time[km_names==3], rev(km$time[km_names==3])), 
+              c(km$lower[km_names==3], rev(km$upper[km_names==3])), 
+              col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
+    }
+    legend("bottomleft", legend = group_names, col = "6", lty = as.integer(c(1, "2222", 
+        "5212")), cex = 0.8)
     
     # annual transition probabilities
     plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), lwd = 1, lty = 1, type = "b", 
@@ -531,12 +598,12 @@ evalq({
     if (ngroups > 1) {
       lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), col = "lightgrey", type = "b", 
             lwd = 1, cex = 0.6, pch = 8)
-      lines(cbind(time_pred[-1], tp_gr_2[, 7]), col = "6", lty = "1234", lwd = 2)
+      lines(cbind(time_pred[-1], tp_gr_2[, 7]), col = "6", lty = "2222", lwd = 2)
     }
     if (ngroups > 2) {
       lines(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth), col = "darkgrey", type = "b", 
             lwd = 1, cex = 0.6, pch = 9)
-      lines(cbind(time_pred[-1], tp_gr_3[, 7]), col = "6", lty = "9212", lwd = 2)
+      lines(cbind(time_pred[-1], tp_gr_3[, 7]), col = "6", lty = "5212", lwd = 2)
     }
     # add shading confidence intervals
     polygon(c(km_tp_gr_1$time, rev(km_tp_gr_1$time)), 
@@ -552,8 +619,8 @@ evalq({
               c(km_tp_gr_3$tp_smooth_lower, rev(km_tp_gr_3$tp_smooth_upper)), 
               col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
     }
-    legend("topleft", legend = group_names, col = "6", lty = as.integer(c(1, "1234", 
-                                                                          "9212")), cex = 0.8)
+    legend("topleft", legend = group_names, col = "6", lty = as.integer(c(1, "2222", 
+                                                                          "5212")), cex = 0.8)
     
     # diagnostics --> not linear!
     plot(cbind(log(km$time), log(-log(km$surv))), cex = 0.6, pch = c(1, 8, 9)[km_names],
@@ -562,13 +629,13 @@ evalq({
         xlab = "LN(time)", ylab = "LN(cumulative hazard)")
     lines(cbind(log(time_pred), log(-log(gam_pred[, 2]))), col = "6", lty = 1, lwd = 2)
     if (ngroups > 1) {
-        lines(cbind(log(time_pred), log(-log(gam_pred[, 3]))), col = "6", lty = "1234", lwd = 2)
+        lines(cbind(log(time_pred), log(-log(gam_pred[, 3]))), col = "6", lty = "2222", lwd = 2)
     }
     if (ngroups > 2) {
-        lines(cbind(log(time_pred), log(-log(gam_pred[, 4]))), col = "6", lty = "9212", lwd = 2)
+        lines(cbind(log(time_pred), log(-log(gam_pred[, 4]))), col = "6", lty = "5212", lwd = 2)
     }
-    legend("topleft", legend = group_names, col = "6", lty = as.integer(c(1, "1234", 
-        "9212")), cex = 0.8)
+    legend("topleft", legend = group_names, col = "6", lty = as.integer(c(1, "2222", 
+        "5212")), cex = 0.8)
 }, envir = PERSUADE)
 ```
 
@@ -580,13 +647,27 @@ evalq({
         ylab = "survival", col = c("black", "lightgrey", "darkgrey"))
     lines(cbind(time_pred, ggam_pred[, 2]), col = "7", lty = 1, lwd = 2)
     if (ngroups > 1) {
-        lines(cbind(time_pred, ggam_pred[, 3]), col = "7", lty = "1234", lwd = 2)
+        lines(cbind(time_pred, ggam_pred[, 3]), col = "7", lty = "2222", lwd = 2)
     }
     if (ngroups > 2) {
-        lines(cbind(time_pred, ggam_pred[, 4]), col = "7", lty = "9212", lwd = 2)
+        lines(cbind(time_pred, ggam_pred[, 4]), col = "7", lty = "5212", lwd = 2)
     }
-    legend("bottomleft", legend = group_names, col = "7", lty = as.integer(c(1, "1234", 
-        "9212")), cex = 0.8)
+    # add shading confidence intervals
+    polygon(c(km$time[km_names==1], rev(km$time[km_names==1])), 
+            c(km$lower[km_names==1], rev(km$upper[km_names==1])), 
+            col = adjustcolor("black", alpha.f = 0.3), border = NA)
+    if (ngroups > 1) {
+      polygon(c(km$time[km_names==2], rev(km$time[km_names==2])), 
+              c(km$lower[km_names==2], rev(km$upper[km_names==2])), 
+              col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
+    }
+    if (ngroups > 2) {
+      polygon(c(km$time[km_names==3], rev(km$time[km_names==3])), 
+              c(km$lower[km_names==3], rev(km$upper[km_names==3])), 
+              col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
+    }
+    legend("bottomleft", legend = group_names, col = "7", lty = as.integer(c(1, "2222", 
+        "5212")), cex = 0.8)
     
     # annual transition probabilities
     plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), lwd = 1, lty = 1, type = "b", 
@@ -597,12 +678,12 @@ evalq({
     if (ngroups > 1) {
       lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), col = "lightgrey", type = "b", 
             lwd = 1, cex = 0.6, pch = 8)
-      lines(cbind(time_pred[-1], tp_gr_2[, 8]), col = "7", lty = "1234", lwd = 2)
+      lines(cbind(time_pred[-1], tp_gr_2[, 8]), col = "7", lty = "2222", lwd = 2)
     }
     if (ngroups > 2) {
       lines(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth), col = "darkgrey", type = "b", 
             lwd = 1, cex = 0.6, pch = 9)
-      lines(cbind(time_pred[-1], tp_gr_3[, 8]), col = "7", lty = "9212", lwd = 2)
+      lines(cbind(time_pred[-1], tp_gr_3[, 8]), col = "7", lty = "5212", lwd = 2)
     }
     # add shading confidence intervals
     polygon(c(km_tp_gr_1$time, rev(km_tp_gr_1$time)), 
@@ -618,8 +699,8 @@ evalq({
               c(km_tp_gr_3$tp_smooth_lower, rev(km_tp_gr_3$tp_smooth_upper)), 
               col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
     }
-    legend("topleft", legend = group_names, col = "7", lty = as.integer(c(1, "1234", 
-                                                                          "9212")), cex = 0.8)
+    legend("topleft", legend = group_names, col = "7", lty = as.integer(c(1, "2222", 
+                                                                          "5212")), cex = 0.8)
     
     # diagnostics --> not linear!
     plot(cbind(log(km$time), log(-log(km$surv))), cex = 0.6, pch = c(1, 8, 9)[km_names],
@@ -628,13 +709,13 @@ evalq({
         xlab = "LN(time)", ylab = "LN(cumulative hazard)")
     lines(cbind(log(time_pred), log(-log(ggam_pred[, 2]))), col = "7", lty = 1, lwd = 2)
     if (ngroups > 1) {
-        lines(cbind(log(time_pred), log(-log(ggam_pred[, 3]))), col = "7", lty = "1234", lwd = 2)
+        lines(cbind(log(time_pred), log(-log(ggam_pred[, 3]))), col = "7", lty = "2222", lwd = 2)
     }
     if (ngroups > 2) {
-        lines(cbind(log(time_pred), log(-log(ggam_pred[, 4]))), col = "7", lty = "9212", lwd = 2)
+        lines(cbind(log(time_pred), log(-log(ggam_pred[, 4]))), col = "7", lty = "5212", lwd = 2)
     }
-    legend("topleft", legend = group_names, col = "7", lty = as.integer(c(1, "1234", 
-        "9212")), cex = 0.8)
+    legend("topleft", legend = group_names, col = "7", lty = as.integer(c(1, "2222", 
+        "5212")), cex = 0.8)
 }, envir = PERSUADE)
 ```
 
@@ -667,16 +748,30 @@ evalq({
         ylab = "survival", col = c("black", "lightgrey", "darkgrey"))
     lines(cbind(time_pred, spl_hazard1_pred[, 2]), col = "1", lty = 1, lwd = 2)
     if (ngroups > 1) {
-        lines(cbind(time_pred, spl_hazard1_pred[, 3]), col = "1", lty = "1234", lwd = 2)
+        lines(cbind(time_pred, spl_hazard1_pred[, 3]), col = "1", lty = "2222", lwd = 2)
     }
     if (ngroups > 2) {
-        lines(cbind(time_pred, spl_hazard1_pred[, 4]), col = "1", lty = "9212", lwd = 2)
+        lines(cbind(time_pred, spl_hazard1_pred[, 4]), col = "1", lty = "5212", lwd = 2)
+    }
+    # add shading confidence intervals
+    polygon(c(km$time[km_names==1], rev(km$time[km_names==1])), 
+            c(km$lower[km_names==1], rev(km$upper[km_names==1])), 
+            col = adjustcolor("black", alpha.f = 0.3), border = NA)
+    if (ngroups > 1) {
+      polygon(c(km$time[km_names==2], rev(km$time[km_names==2])), 
+              c(km$lower[km_names==2], rev(km$upper[km_names==2])), 
+              col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
+    }
+    if (ngroups > 2) {
+      polygon(c(km$time[km_names==3], rev(km$time[km_names==3])), 
+              c(km$lower[km_names==3], rev(km$upper[km_names==3])), 
+              col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
     }
     abline(v = exp(spl_hazard1$knots[2]), lty = 2, lwd = 1.5)
     abline(v = exp(spl_hazard1$knots[1]), lty = 3, lwd = 1)
     abline(v = exp(spl_hazard1$knots[3]), lty = 3, lwd = 1)
-    legend("bottomleft", legend = group_names, col = "1", lty = as.integer(c(1, "1234", 
-        "9212")), cex = 0.8)
+    legend("bottomleft", legend = group_names, col = "1", lty = as.integer(c(1, "2222", 
+                                                                             "5212")), cex = 0.8)
     
     # annual transition probabilities
     plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), lwd = 1, lty = 1, type = "b", 
@@ -687,12 +782,12 @@ evalq({
     if (ngroups > 1) {
       lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), col = "lightgrey", type = "b", 
             lwd = 1, cex = 0.6, pch = 8)
-      lines(cbind(time_pred[-1], tp_gr_2[, 9]), col = "1", lty = "1234", lwd = 2)
+      lines(cbind(time_pred[-1], tp_gr_2[, 9]), col = "1", lty = "2222", lwd = 2)
     }
     if (ngroups > 2) {
       lines(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth), col = "darkgrey", type = "b", 
             lwd = 1, cex = 0.6, pch = 9)
-      lines(cbind(time_pred[-1], tp_gr_3[, 9]), col = "1", lty = "9212", lwd = 2)
+      lines(cbind(time_pred[-1], tp_gr_3[, 9]), col = "1", lty = "5212", lwd = 2)
     }
     # add shading confidence intervals
     polygon(c(km_tp_gr_1$time, rev(km_tp_gr_1$time)), 
@@ -708,11 +803,11 @@ evalq({
               c(km_tp_gr_3$tp_smooth_lower, rev(km_tp_gr_3$tp_smooth_upper)), 
               col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
     }
-    legend("topleft", legend = group_names, col = "1", lty = as.integer(c(1, "1234", 
-                                                                          "9212")), cex = 0.8)
     abline(v = exp(spl_hazard1$knots[2]), lty = 2, lwd = 1.5)
     abline(v = exp(spl_hazard1$knots[1]), lty = 3, lwd = 1)
     abline(v = exp(spl_hazard1$knots[3]), lty = 3, lwd = 1)
+    legend("topleft", legend = group_names, col = "1", lty = as.integer(c(1, "2222", 
+                                                                          "5212")), cex = 0.8)
 
     # diagnostics
     plot(cbind(log(km$time), log(-log(km$surv))), cex = 0.6, pch = c(1, 8, 9)[km_names],
@@ -722,17 +817,17 @@ evalq({
     lines(cbind(log(time_pred), log(-log(spl_hazard1_pred[, 2]))), col = "1", lty = 1, lwd = 2)
     if (ngroups > 1) {
         lines(cbind(log(time_pred), log(-log(spl_hazard1_pred[, 3]))), col = "1", 
-            lty = "1234", lwd = 2)
+            lty = "2222", lwd = 2)
     }
     if (ngroups > 2) {
         lines(cbind(log(time_pred), log(-log(spl_hazard1_pred[, 4]))), col = "1", 
-            lty = "9212", lwd = 2)
+            lty = "5212", lwd = 2)
     }
     abline(v = spl_hazard1$knots[2], lty = 2, lwd = 1.5)
     abline(v = spl_hazard1$knots[1], lty = 3, lwd = 1)
     abline(v = spl_hazard1$knots[3], lty = 3, lwd = 1)
-    legend("topleft", legend = group_names, col = "1", lty = as.integer(c(1, "1234", 
-        "9212")), cex = 0.8)
+    legend("topleft", legend = group_names, col = "1", lty = as.integer(c(1, "2222", 
+                                                                          "5212")), cex = 0.8)
 }, envir = PERSUADE)
 ```
 
@@ -744,17 +839,31 @@ evalq({
         ylab = "survival", col = c("black", "lightgrey", "darkgrey"))
     lines(cbind(time_pred, spl_hazard2_pred[, 2]), col = "2", lty = 1, lwd = 2)
     if (ngroups > 1) {
-        lines(cbind(time_pred, spl_hazard2_pred[, 3]), col = "2", lty = "1234", lwd = 2)
+        lines(cbind(time_pred, spl_hazard2_pred[, 3]), col = "2", lty = "2222", lwd = 2)
     }
     if (ngroups > 2) {
-        lines(cbind(time_pred, spl_hazard2_pred[, 4]), col = "2", lty = "9212", lwd = 2)
+        lines(cbind(time_pred, spl_hazard2_pred[, 4]), col = "2", lty = "5212", lwd = 2)
+    }
+    # add shading confidence intervals
+    polygon(c(km$time[km_names==1], rev(km$time[km_names==1])), 
+            c(km$lower[km_names==1], rev(km$upper[km_names==1])), 
+            col = adjustcolor("black", alpha.f = 0.3), border = NA)
+    if (ngroups > 1) {
+      polygon(c(km$time[km_names==2], rev(km$time[km_names==2])), 
+              c(km$lower[km_names==2], rev(km$upper[km_names==2])), 
+              col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
+    }
+    if (ngroups > 2) {
+      polygon(c(km$time[km_names==3], rev(km$time[km_names==3])), 
+              c(km$lower[km_names==3], rev(km$upper[km_names==3])), 
+              col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
     }
     abline(v = exp(spl_hazard2$knots[2]), lty = 2, lwd = 1.5)
     abline(v = exp(spl_hazard2$knots[3]), lty = 2, lwd = 1.5)
     abline(v = exp(spl_hazard2$knots[1]), lty = 3, lwd = 1)
     abline(v = exp(spl_hazard2$knots[4]), lty = 3, lwd = 1)
-    legend("bottomleft", legend = group_names, col = "2", lty = as.integer(c(1, "1234", 
-        "9212")), cex = 0.8)
+    legend("bottomleft", legend = group_names, col = "2", lty = as.integer(c(1, "2222", 
+                                                                             "5212")), cex = 0.8)
     
     # annual transition probabilities
     plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), lwd = 1, lty = 1, type = "b", 
@@ -765,12 +874,12 @@ evalq({
     if (ngroups > 1) {
       lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), col = "lightgrey", type = "b", 
             lwd = 1, cex = 0.6, pch = 8)
-      lines(cbind(time_pred[-1], tp_gr_2[, 10]), col = "2", lty = "1234", lwd = 2)
+      lines(cbind(time_pred[-1], tp_gr_2[, 10]), col = "2", lty = "2222", lwd = 2)
     }
     if (ngroups > 2) {
       lines(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth), col = "darkgrey", type = "b", 
             lwd = 1, cex = 0.6, pch = 9)
-      lines(cbind(time_pred[-1], tp_gr_3[, 10]), col = "2", lty = "9212", lwd = 2)
+      lines(cbind(time_pred[-1], tp_gr_3[, 10]), col = "2", lty = "5212", lwd = 2)
     }
     # add shading confidence intervals
     polygon(c(km_tp_gr_1$time, rev(km_tp_gr_1$time)), 
@@ -786,12 +895,12 @@ evalq({
               c(km_tp_gr_3$tp_smooth_lower, rev(km_tp_gr_3$tp_smooth_upper)), 
               col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
     }
-    legend("topleft", legend = group_names, col = "2", lty = as.integer(c(1, "1234", 
-                                                                          "9212")), cex = 0.8)
     abline(v = exp(spl_hazard2$knots[2]), lty = 2, lwd = 1.5)
     abline(v = exp(spl_hazard2$knots[3]), lty = 2, lwd = 1.5)
     abline(v = exp(spl_hazard2$knots[1]), lty = 3, lwd = 1)
     abline(v = exp(spl_hazard2$knots[4]), lty = 3, lwd = 1)
+    legend("topleft", legend = group_names, col = "2", lty = as.integer(c(1, "2222", 
+                                                                          "5212")), cex = 0.8)
 
     # diagnostics
     plot(cbind(log(km$time), log(-log(km$surv))), cex = 0.6, pch = c(1, 8, 9)[km_names],
@@ -801,18 +910,18 @@ evalq({
     lines(cbind(log(time_pred), log(-log(spl_hazard2_pred[, 2]))), col = "2", lty = 1, lwd = 2)
     if (ngroups > 1) {
         lines(cbind(log(time_pred), log(-log(spl_hazard2_pred[, 3]))), col = "2", 
-            lty = "1234", lwd = 2)
+            lty = "2222", lwd = 2)
     }
     if (ngroups > 2) {
         lines(cbind(log(time_pred), log(-log(spl_hazard2_pred[, 4]))), col = "2", 
-            lty = "9212", lwd = 2)
+            lty = "5212", lwd = 2)
     }
     abline(v = spl_hazard2$knots[2], lty = 2, lwd = 1.5)
     abline(v = spl_hazard2$knots[3], lty = 2, lwd = 1.5)
     abline(v = spl_hazard2$knots[1], lty = 3, lwd = 1)
     abline(v = spl_hazard2$knots[4], lty = 3, lwd = 1)
-    legend("topleft", legend = group_names, col = "2", lty = as.integer(c(1, "1234", 
-        "9212")), cex = 0.8)
+    legend("topleft", legend = group_names, col = "2", lty = as.integer(c(1, "2222", 
+                                                                          "5212")), cex = 0.8)
 }, envir = PERSUADE)
 ```
 
@@ -824,16 +933,30 @@ evalq({
         ylab = "survival", col = c("black", "lightgrey", "darkgrey"))
     lines(cbind(time_pred, spl_odds1_pred[, 2]), col = "3", lty = 1, lwd = 2)
     if (ngroups > 1) {
-        lines(cbind(time_pred, spl_odds1_pred[, 3]), col = "3", lty = "1234", lwd = 2)
+        lines(cbind(time_pred, spl_odds1_pred[, 3]), col = "3", lty = "2222", lwd = 2)
     }
     if (ngroups > 2) {
-        lines(cbind(time_pred, spl_odds1_pred[, 4]), col = "3", lty = "9212", lwd = 2)
+        lines(cbind(time_pred, spl_odds1_pred[, 4]), col = "3", lty = "5212", lwd = 2)
+    }
+    # add shading confidence intervals
+    polygon(c(km$time[km_names==1], rev(km$time[km_names==1])), 
+            c(km$lower[km_names==1], rev(km$upper[km_names==1])), 
+            col = adjustcolor("black", alpha.f = 0.3), border = NA)
+    if (ngroups > 1) {
+      polygon(c(km$time[km_names==2], rev(km$time[km_names==2])), 
+              c(km$lower[km_names==2], rev(km$upper[km_names==2])), 
+              col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
+    }
+    if (ngroups > 2) {
+      polygon(c(km$time[km_names==3], rev(km$time[km_names==3])), 
+              c(km$lower[km_names==3], rev(km$upper[km_names==3])), 
+              col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
     }
     abline(v = exp(spl_odds1$knots[2]), lty = 2, lwd = 1.5)
     abline(v = exp(spl_odds1$knots[1]), lty = 3, lwd = 1)
     abline(v = exp(spl_odds1$knots[3]), lty = 3, lwd = 1)
-    legend("bottomleft", legend = group_names, col = "3", lty = as.integer(c(1, "1234", 
-        "9212")), cex = 0.8)
+    legend("bottomleft", legend = group_names, col = "3", lty = as.integer(c(1, "2222", 
+                                                                             "5212")), cex = 0.8)
     
     # annual transition probabilities
     plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), lwd = 1, lty = 1, type = "b", 
@@ -844,12 +967,12 @@ evalq({
     if (ngroups > 1) {
       lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), col = "lightgrey", type = "b", 
             lwd = 1, cex = 0.6, pch = 8)
-      lines(cbind(time_pred[-1], tp_gr_2[, 11]), col = "3", lty = "1234", lwd = 2)
+      lines(cbind(time_pred[-1], tp_gr_2[, 11]), col = "3", lty = "2222", lwd = 2)
     }
     if (ngroups > 2) {
       lines(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth), col = "darkgrey", type = "b", 
             lwd = 1, cex = 0.6, pch = 9)
-      lines(cbind(time_pred[-1], tp_gr_3[, 11]), col = "3", lty = "9212", lwd = 2)
+      lines(cbind(time_pred[-1], tp_gr_3[, 11]), col = "3", lty = "5212", lwd = 2)
     }
     # add shading confidence intervals
     polygon(c(km_tp_gr_1$time, rev(km_tp_gr_1$time)), 
@@ -865,11 +988,11 @@ evalq({
               c(km_tp_gr_3$tp_smooth_lower, rev(km_tp_gr_3$tp_smooth_upper)), 
               col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
     }
-    legend("topleft", legend = group_names, col = "3", lty = as.integer(c(1, "1234", 
-                                                                          "9212")), cex = 0.8)
     abline(v = exp(spl_odds1$knots[2]), lty = 2, lwd = 1.5)
     abline(v = exp(spl_odds1$knots[1]), lty = 3, lwd = 1)
     abline(v = exp(spl_odds1$knots[3]), lty = 3, lwd = 1)
+    legend("topleft", legend = group_names, col = "3", lty = as.integer(c(1, "2222", 
+                                                                          "5212")), cex = 0.8)
 
     # diagnostics
     plot(cbind(log(km$time), -log(km$surv/(1 - km$surv))), cex = 0.6, pch = c(1, 
@@ -881,17 +1004,17 @@ evalq({
         col = "3", lty = 1, lwd = 2)
     if (ngroups > 1) {
         lines(cbind(log(time_pred), -log(spl_odds1_pred[, 3]/(1 - spl_odds1_pred[, 
-            3]))), col = "3", lty = "1234", lwd = 2)
+            3]))), col = "3", lty = "2222", lwd = 2)
     }
     if (ngroups > 2) {
         lines(cbind(log(time_pred), -log(spl_odds1_pred[, 4]/(1 - spl_odds1_pred[, 
-            4]))), col = "3", lty = "9212", lwd = 2)
+            4]))), col = "3", lty = "5212", lwd = 2)
     }
     abline(v = spl_odds1$knots[2], lty = 2, lwd = 1.5)
     abline(v = spl_odds1$knots[1], lty = 3, lwd = 1)
     abline(v = spl_odds1$knots[3], lty = 3, lwd = 1)
-    legend("topleft", legend = group_names, col = "3", lty = as.integer(c(1, "1234", 
-        "9212")), cex = 0.8)
+    legend("topleft", legend = group_names, col = "3", lty = as.integer(c(1, "2222", 
+                                                                          "5212")), cex = 0.8)
 }, envir = PERSUADE)
 ```
 
@@ -903,17 +1026,31 @@ evalq({
         ylab = "survival", col = c("black", "lightgrey", "darkgrey"))
     lines(cbind(time_pred, spl_odds2_pred[, 2]), col = "4", lty = 1, lwd = 2)
     if (ngroups > 1) {
-        lines(cbind(time_pred, spl_odds2_pred[, 3]), col = "4", lty = "1234", lwd = 2)
+        lines(cbind(time_pred, spl_odds2_pred[, 3]), col = "4", lty = "2222", lwd = 2)
     }
     if (ngroups > 2) {
-        lines(cbind(time_pred, spl_odds2_pred[, 4]), col = "4", lty = "9212", lwd = 2)
+        lines(cbind(time_pred, spl_odds2_pred[, 4]), col = "4", lty = "5212", lwd = 2)
+    }
+    # add shading confidence intervals
+    polygon(c(km$time[km_names==1], rev(km$time[km_names==1])), 
+            c(km$lower[km_names==1], rev(km$upper[km_names==1])), 
+            col = adjustcolor("black", alpha.f = 0.3), border = NA)
+    if (ngroups > 1) {
+      polygon(c(km$time[km_names==2], rev(km$time[km_names==2])), 
+              c(km$lower[km_names==2], rev(km$upper[km_names==2])), 
+              col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
+    }
+    if (ngroups > 2) {
+      polygon(c(km$time[km_names==3], rev(km$time[km_names==3])), 
+              c(km$lower[km_names==3], rev(km$upper[km_names==3])), 
+              col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
     }
     abline(v = exp(spl_odds2$knots[2]), lty = 2, lwd = 1.5)
     abline(v = exp(spl_odds2$knots[3]), lty = 2, lwd = 1.5)
     abline(v = exp(spl_odds2$knots[1]), lty = 3, lwd = 1)
     abline(v = exp(spl_odds2$knots[4]), lty = 3, lwd = 1)
-    legend("bottomleft", legend = group_names, col = "4", lty = as.integer(c(1, "1234", 
-        "9212")), cex = 0.8)
+    legend("bottomleft", legend = group_names, col = "4", lty = as.integer(c(1, "2222", 
+                                                                             "5212")), cex = 0.8)
     
     # annual transition probabilities
     plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), lwd = 1, lty = 1, type = "b", 
@@ -924,12 +1061,12 @@ evalq({
     if (ngroups > 1) {
       lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), col = "lightgrey", type = "b", 
             lwd = 1, cex = 0.6, pch = 8)
-      lines(cbind(time_pred[-1], tp_gr_2[, 12]), col = "4", lty = "1234", lwd = 2)
+      lines(cbind(time_pred[-1], tp_gr_2[, 12]), col = "4", lty = "2222", lwd = 2)
     }
     if (ngroups > 2) {
       lines(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth), col = "darkgrey", type = "b", 
             lwd = 1, cex = 0.6, pch = 9)
-      lines(cbind(time_pred[-1], tp_gr_3[, 12]), col = "4", lty = "9212", lwd = 2)
+      lines(cbind(time_pred[-1], tp_gr_3[, 12]), col = "4", lty = "5212", lwd = 2)
     }
     # add shading confidence intervals
     polygon(c(km_tp_gr_1$time, rev(km_tp_gr_1$time)), 
@@ -945,12 +1082,13 @@ evalq({
               c(km_tp_gr_3$tp_smooth_lower, rev(km_tp_gr_3$tp_smooth_upper)), 
               col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
     }
-    legend("topleft", legend = group_names, col = "4", lty = as.integer(c(1, "1234", 
-                                                                          "9212")), cex = 0.8)
     abline(v = exp(spl_odds2$knots[2]), lty = 2, lwd = 1.5)
     abline(v = exp(spl_odds2$knots[3]), lty = 2, lwd = 1.5)
     abline(v = exp(spl_odds2$knots[1]), lty = 3, lwd = 1)
     abline(v = exp(spl_odds2$knots[4]), lty = 3, lwd = 1)
+    legend("topleft", legend = group_names, col = "4", lty = as.integer(c(1, "2222", 
+                                                                          "5212")), cex = 0.8)
+
 
     # diagnostics
     plot(cbind(log(km$time), -log(km$surv/(1 - km$surv))), cex = 0.6, pch = c(1, 
@@ -962,18 +1100,18 @@ evalq({
         col = "4", lty = 1, lwd = 2)
     if (ngroups > 1) {
         lines(cbind(log(time_pred), -log(spl_odds2_pred[, 3]/(1 - spl_odds2_pred[, 
-            3]))), col = "4", lty = "1234", lwd = 2)
+            3]))), col = "4", lty = "2222", lwd = 2)
     }
     if (ngroups > 2) {
         lines(cbind(log(time_pred), -log(spl_odds2_pred[, 4]/(1 - spl_odds2_pred[, 
-            4]))), col = "4", lty = "9212", lwd = 2)
+            4]))), col = "4", lty = "5212", lwd = 2)
     }
     abline(v = spl_odds2$knots[2], lty = 2, lwd = 1.5)
     abline(v = spl_odds2$knots[3], lty = 2, lwd = 1.5)
     abline(v = spl_odds2$knots[1], lty = 3, lwd = 1)
     abline(v = spl_odds2$knots[4], lty = 3, lwd = 1)
-    legend("topleft", legend = group_names, col = "4", lty = as.integer(c(1, "1234", 
-        "9212")), cex = 0.8)
+    legend("topleft", legend = group_names, col = "4", lty = as.integer(c(1, "2222", 
+                                                                          "5212")), cex = 0.8)
 }, envir = PERSUADE)
 ```
 
@@ -985,16 +1123,30 @@ evalq({
         ylab = "survival", col = c("black", "lightgrey", "darkgrey"))
     lines(cbind(time_pred, spl_normal1_pred[, 2]), col = "5", lty = 1, lwd = 2)
     if (ngroups > 1) {
-        lines(cbind(time_pred, spl_normal1_pred[, 3]), col = "5", lty = "1234", lwd = 2)
+        lines(cbind(time_pred, spl_normal1_pred[, 3]), col = "5", lty = "2222", lwd = 2)
     }
     if (ngroups > 2) {
-        lines(cbind(time_pred, spl_normal1_pred[, 4]), col = "5", lty = "9212", lwd = 2)
+        lines(cbind(time_pred, spl_normal1_pred[, 4]), col = "5", lty = "5212", lwd = 2)
+    }
+    # add shading confidence intervals
+    polygon(c(km$time[km_names==1], rev(km$time[km_names==1])), 
+            c(km$lower[km_names==1], rev(km$upper[km_names==1])), 
+            col = adjustcolor("black", alpha.f = 0.3), border = NA)
+    if (ngroups > 1) {
+      polygon(c(km$time[km_names==2], rev(km$time[km_names==2])), 
+              c(km$lower[km_names==2], rev(km$upper[km_names==2])), 
+              col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
+    }
+    if (ngroups > 2) {
+      polygon(c(km$time[km_names==3], rev(km$time[km_names==3])), 
+              c(km$lower[km_names==3], rev(km$upper[km_names==3])), 
+              col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
     }
     abline(v = exp(spl_normal1$knots[2]), lty = 2, lwd = 1.5)
     abline(v = exp(spl_normal1$knots[1]), lty = 3, lwd = 1)
     abline(v = exp(spl_normal1$knots[3]), lty = 3, lwd = 1)
-    legend("bottomleft", legend = group_names, col = "5", lty = as.integer(c(1, "1234", 
-        "9212")), cex = 0.8)
+    legend("bottomleft", legend = group_names, col = "5", lty = as.integer(c(1, "2222", 
+                                                                             "5212")), cex = 0.8)
     
     # annual transition probabilities
     plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), lwd = 1, lty = 1, type = "b", 
@@ -1005,12 +1157,12 @@ evalq({
     if (ngroups > 1) {
       lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), col = "lightgrey", type = "b", 
             lwd = 1, cex = 0.6, pch = 8)
-      lines(cbind(time_pred[-1], tp_gr_2[, 13]), col = "5", lty = "1234", lwd = 2)
+      lines(cbind(time_pred[-1], tp_gr_2[, 13]), col = "5", lty = "2222", lwd = 2)
     }
     if (ngroups > 2) {
       lines(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth), col = "darkgrey", type = "b", 
             lwd = 1, cex = 0.6, pch = 9)
-      lines(cbind(time_pred[-1], tp_gr_3[, 13]), col = "5", lty = "9212", lwd = 2)
+      lines(cbind(time_pred[-1], tp_gr_3[, 13]), col = "5", lty = "5212", lwd = 2)
     }
     # add shading confidence intervals
     polygon(c(km_tp_gr_1$time, rev(km_tp_gr_1$time)), 
@@ -1026,11 +1178,11 @@ evalq({
               c(km_tp_gr_3$tp_smooth_lower, rev(km_tp_gr_3$tp_smooth_upper)), 
               col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
     }
-    legend("topleft", legend = group_names, col = "5", lty = as.integer(c(1, "1234", 
-                                                                          "9212")), cex = 0.8)
     abline(v = exp(spl_normal1$knots[2]), lty = 2, lwd = 1.5)
     abline(v = exp(spl_normal1$knots[1]), lty = 3, lwd = 1)
     abline(v = exp(spl_normal1$knots[3]), lty = 3, lwd = 1)
+    legend("topleft", legend = group_names, col = "5", lty = as.integer(c(1, "2222", 
+                                                                          "5212")), cex = 0.8)
 
     # diagnostics
     plot(cbind(log(km$time), -qnorm(km$surv, mean = 0, sd = 1, lower.tail = TRUE, 
@@ -1042,17 +1194,17 @@ evalq({
         log.p = FALSE)), col = "5", lty = 1, lwd = 2)
     if (ngroups > 1) {
         lines(cbind(log(time_pred), -qnorm(spl_normal1_pred[, 3], mean = 0, sd = 1, 
-            lower.tail = TRUE, log.p = FALSE)), col = "5", lty = "1234", lwd = 2)
+            lower.tail = TRUE, log.p = FALSE)), col = "5", lty = "2222", lwd = 2)
     }
     if (ngroups > 2) {
         lines(cbind(log(time_pred), -qnorm(spl_normal1_pred[, 4], mean = 0, sd = 1, 
-            lower.tail = TRUE, log.p = FALSE)), col = "5", lty = "9212", lwd = 2)
+            lower.tail = TRUE, log.p = FALSE)), col = "5", lty = "5212", lwd = 2)
     }
     abline(v = spl_normal1$knots[2], lty = 2, lwd = 1.5)
     abline(v = spl_normal1$knots[1], lty = 3, lwd = 1)
     abline(v = spl_normal1$knots[3], lty = 3, lwd = 1)
-    legend("topleft", legend = group_names, col = "5", lty = as.integer(c(1, "1234", 
-        "9212")), cex = 0.8)
+    legend("topleft", legend = group_names, col = "5", lty = as.integer(c(1, "2222", 
+                                                                          "5212")), cex = 0.8)
 }, envir = PERSUADE)
 ```
 
@@ -1064,18 +1216,32 @@ evalq({
         ylab = "survival", col = c("black", "lightgrey", "darkgrey"))
     lines(cbind(time_pred, spl_normal2_pred[, 2]), col = "6", lty = 1, lwd = 2)
     if (ngroups > 1) {
-        lines(cbind(time_pred, spl_normal2_pred[, 3]), col = "6", lty = "1234", lwd = 2)
+        lines(cbind(time_pred, spl_normal2_pred[, 3]), col = "6", lty = "2222", lwd = 2)
     }
     if (ngroups > 2) {
-        lines(cbind(time_pred, spl_normal2_pred[, 4]), col = "6", lty = "9212", lwd = 2)
+        lines(cbind(time_pred, spl_normal2_pred[, 4]), col = "6", lty = "5212", lwd = 2)
+    }
+    # add shading confidence intervals
+    polygon(c(km$time[km_names==1], rev(km$time[km_names==1])), 
+            c(km$lower[km_names==1], rev(km$upper[km_names==1])), 
+            col = adjustcolor("black", alpha.f = 0.3), border = NA)
+    if (ngroups > 1) {
+      polygon(c(km$time[km_names==2], rev(km$time[km_names==2])), 
+              c(km$lower[km_names==2], rev(km$upper[km_names==2])), 
+              col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
+    }
+    if (ngroups > 2) {
+      polygon(c(km$time[km_names==3], rev(km$time[km_names==3])), 
+              c(km$lower[km_names==3], rev(km$upper[km_names==3])), 
+              col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
     }
     abline(v = exp(spl_normal2$knots[2]), lty = 2, lwd = 1.5)
     abline(v = exp(spl_normal2$knots[3]), lty = 2, lwd = 1.5)
     abline(v = exp(spl_normal2$knots[1]), lty = 3, lwd = 1)
     abline(v = exp(spl_normal2$knots[4]), lty = 3, lwd = 1)
-    legend("bottomleft", legend = group_names, col = "6", lty = as.integer(c(1, "1234", 
-        "9212")), cex = 0.8)
-    
+    legend("bottomleft", legend = group_names, col = "6", lty = as.integer(c(1, "2222", 
+                                                                             "5212")), cex = 0.8)
+
     # annual transition probabilities
     plot(cbind(km_tp_gr_1$time, km_tp_gr_1$tp_smooth), lwd = 1, lty = 1, type = "b", 
          cex = 0.6, pch = 1, col = "black", main = "B: Annual transition probability (Spline, 2 knots, normal scale)", 
@@ -1085,12 +1251,12 @@ evalq({
     if (ngroups > 1) {
       lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), col = "lightgrey", type = "b", 
             lwd = 1, cex = 0.6, pch = 8)
-      lines(cbind(time_pred[-1], tp_gr_2[, 14]), col = "6", lty = "1234", lwd = 2)
+      lines(cbind(time_pred[-1], tp_gr_2[, 14]), col = "6", lty = "2222", lwd = 2)
     }
     if (ngroups > 2) {
       lines(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth), col = "darkgrey", type = "b", 
             lwd = 1, cex = 0.6, pch = 9)
-      lines(cbind(time_pred[-1], tp_gr_3[, 14]), col = "6", lty = "9212", lwd = 2)
+      lines(cbind(time_pred[-1], tp_gr_3[, 14]), col = "6", lty = "5212", lwd = 2)
     }
     # add shading confidence intervals
     polygon(c(km_tp_gr_1$time, rev(km_tp_gr_1$time)), 
@@ -1106,12 +1272,12 @@ evalq({
               c(km_tp_gr_3$tp_smooth_lower, rev(km_tp_gr_3$tp_smooth_upper)), 
               col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
     }
-    legend("topleft", legend = group_names, col = "6", lty = as.integer(c(1, "1234", 
-                                                                          "9212")), cex = 0.8)
     abline(v = exp(spl_normal2$knots[2]), lty = 2, lwd = 1.5)
     abline(v = exp(spl_normal2$knots[3]), lty = 2, lwd = 1.5)
     abline(v = exp(spl_normal2$knots[1]), lty = 3, lwd = 1)
     abline(v = exp(spl_normal2$knots[4]), lty = 3, lwd = 1)
+    legend("topleft", legend = group_names, col = "6", lty = as.integer(c(1, "2222", 
+                                                                          "5212")), cex = 0.8)
 
     # diagnostics
     plot(cbind(log(km$time), -qnorm(km$surv, mean = 0, sd = 1, lower.tail = TRUE, 
@@ -1123,18 +1289,18 @@ evalq({
         log.p = FALSE)), col = "6", lty = 1, lwd = 2)
     if (ngroups > 1) {
         lines(cbind(log(time_pred), -qnorm(spl_normal2_pred[, 3], mean = 0, sd = 1, 
-            lower.tail = TRUE, log.p = FALSE)), col = "6", lty = "1234", lwd = 2)
+            lower.tail = TRUE, log.p = FALSE)), col = "6", lty = "2222", lwd = 2)
     }
     if (ngroups > 2) {
         lines(cbind(log(time_pred), -qnorm(spl_normal2_pred[, 4], mean = 0, sd = 1, 
-            lower.tail = TRUE, log.p = FALSE)), col = "6", lty = "9212", lwd = 2)
+            lower.tail = TRUE, log.p = FALSE)), col = "6", lty = "5212", lwd = 2)
     }
     abline(v = spl_normal2$knots[2], lty = 2, lwd = 1.5)
     abline(v = spl_normal2$knots[3], lty = 2, lwd = 1.5)
     abline(v = spl_normal2$knots[1], lty = 3, lwd = 1)
     abline(v = spl_normal2$knots[4], lty = 3, lwd = 1)
-    legend("topleft", legend = group_names, col = "6", lty = as.integer(c(1, "1234", 
-        "9212")), cex = 0.8)
+    legend("topleft", legend = group_names, col = "6", lty = as.integer(c(1, "2222", 
+                                                                          "5212")), cex = 0.8)
 }, envir = PERSUADE)
 ```
 
@@ -1224,25 +1390,25 @@ evalq({
     # parametric curves
     plot(km[2], lwd = 2, col = "black", main = "A: Kaplan-Meier (parametric curves)", 
         xlab = "time", ylab = "survival", xlim = c(0, time_horizon))
-    lines(cbind(time_pred, expo_pred[, 3]), col = "1", lty = "1234", lwd = 1)
-    lines(cbind(time_pred, weib_pred[, 3]), col = "2", lty = "1234", lwd = 1)
-    lines(cbind(time_pred, gom_pred[, 3]), col = "3", lty = "1234", lwd = 1)
-    lines(cbind(time_pred, lnorm_pred[, 3]), col = "4", lty = "1234", lwd = 1)
-    lines(cbind(time_pred, llog_pred[, 3]), col = "5", lty = "1234", lwd = 1)
-    lines(cbind(time_pred, gam_pred[, 3]), col = "6", lty = "1234", lwd = 1)
-    lines(cbind(time_pred, ggam_pred[, 3]), col = "7", lty = "1234", lwd = 1)
-    legend("topright", legend = lbls, col = 1:7, lty = "1234", cex = 0.8)
+    lines(cbind(time_pred, expo_pred[, 3]), col = "1", lty = "2222", lwd = 1)
+    lines(cbind(time_pred, weib_pred[, 3]), col = "2", lty = "2222", lwd = 1)
+    lines(cbind(time_pred, gom_pred[, 3]), col = "3", lty = "2222", lwd = 1)
+    lines(cbind(time_pred, lnorm_pred[, 3]), col = "4", lty = "2222", lwd = 1)
+    lines(cbind(time_pred, llog_pred[, 3]), col = "5", lty = "2222", lwd = 1)
+    lines(cbind(time_pred, gam_pred[, 3]), col = "6", lty = "2222", lwd = 1)
+    lines(cbind(time_pred, ggam_pred[, 3]), col = "7", lty = "2222", lwd = 1)
+    legend("topright", legend = lbls, col = 1:7, lty = "2222", cex = 0.8)
     # spline curves
     if (show_spline == TRUE) {
         plot(km[2], lwd = 2, col = "black", main = "B: Kaplan-Meier (spline curves)", 
             xlab = "time", ylab = "survival", xlim = c(0, time_horizon))
-        lines(cbind(time_pred, spl_hazard1_pred[, 3]), col = "1", lty = "1234", lwd = 1)
-        lines(cbind(time_pred, spl_hazard2_pred[, 3]), col = "2", lty = "1234", lwd = 1)
-        lines(cbind(time_pred, spl_odds1_pred[, 3]), col = "3", lty = "1234", lwd = 1)
-        lines(cbind(time_pred, spl_odds2_pred[, 3]), col = "4", lty = "1234", lwd = 1)
-        lines(cbind(time_pred, spl_normal1_pred[, 3]), col = "5", lty = "1234", lwd = 1)
-        lines(cbind(time_pred, spl_normal2_pred[, 3]), col = "6", lty = "1234", lwd = 1)
-        legend("topright", legend = lbls_spline, col = 1:6, lty = "1234", cex = 0.8)
+        lines(cbind(time_pred, spl_hazard1_pred[, 3]), col = "1", lty = "2222", lwd = 1)
+        lines(cbind(time_pred, spl_hazard2_pred[, 3]), col = "2", lty = "2222", lwd = 1)
+        lines(cbind(time_pred, spl_odds1_pred[, 3]), col = "3", lty = "2222", lwd = 1)
+        lines(cbind(time_pred, spl_odds2_pred[, 3]), col = "4", lty = "2222", lwd = 1)
+        lines(cbind(time_pred, spl_normal1_pred[, 3]), col = "5", lty = "2222", lwd = 1)
+        lines(cbind(time_pred, spl_normal2_pred[, 3]), col = "6", lty = "2222", lwd = 1)
+        legend("topright", legend = lbls_spline, col = 1:6, lty = "2222", cex = 0.8)
     }
 }, envir = PERSUADE)
 kable_styling(kable(t(round(PERSUADE$extrapolation_gr_2[1 + PERSUADE$time_pred_surv_table, 
@@ -1259,14 +1425,14 @@ evalq({
         lwd = 2, lty = 2)
     lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth_upper), col = "black", type = "l", 
         lwd = 2, lty = 2)
-    lines(cbind(time_pred[-1], tp_gr_2[, 2]), col = "1", lty = "1234", lwd = 1)
-    lines(cbind(time_pred[-1], tp_gr_2[, 3]), col = "2", lty = "1234", lwd = 1)
-    lines(cbind(time_pred[-1], tp_gr_2[, 4]), col = "3", lty = "1234", lwd = 1)
-    lines(cbind(time_pred[-1], tp_gr_2[, 5]), col = "4", lty = "1234", lwd = 1)
-    lines(cbind(time_pred[-1], tp_gr_2[, 6]), col = "5", lty = "1234", lwd = 1)
-    lines(cbind(time_pred[-1], tp_gr_2[, 7]), col = "6", lty = "1234", lwd = 1)
-    lines(cbind(time_pred[-1], tp_gr_2[, 8]), col = "7", lty = "1234", lwd = 1)
-    legend("topleft", legend = lbls, col = 1:7, lty = "1234", cex = 0.8)
+    lines(cbind(time_pred[-1], tp_gr_2[, 2]), col = "1", lty = "2222", lwd = 1)
+    lines(cbind(time_pred[-1], tp_gr_2[, 3]), col = "2", lty = "2222", lwd = 1)
+    lines(cbind(time_pred[-1], tp_gr_2[, 4]), col = "3", lty = "2222", lwd = 1)
+    lines(cbind(time_pred[-1], tp_gr_2[, 5]), col = "4", lty = "2222", lwd = 1)
+    lines(cbind(time_pred[-1], tp_gr_2[, 6]), col = "5", lty = "2222", lwd = 1)
+    lines(cbind(time_pred[-1], tp_gr_2[, 7]), col = "6", lty = "2222", lwd = 1)
+    lines(cbind(time_pred[-1], tp_gr_2[, 8]), col = "7", lty = "2222", lwd = 1)
+    legend("topleft", legend = lbls, col = 1:7, lty = "2222", cex = 0.8)
     # spline curves
     if (show_spline == TRUE) {
         plot(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth), main = "D: Annual transition probability (spline curves)", 
@@ -1276,13 +1442,13 @@ evalq({
             lwd = 2, lty = 2)
         lines(cbind(km_tp_gr_2$time, km_tp_gr_2$tp_smooth_upper), col = "black", type = "l", 
             lwd = 2, lty = 2)
-        lines(cbind(time_pred[-1], tp_gr_2[, 9]), col = "1", lty = "1234", lwd = 1)  
-        lines(cbind(time_pred[-1], tp_gr_2[, 10]), col = "2", lty = "1234", lwd = 1)
-        lines(cbind(time_pred[-1], tp_gr_2[, 11]), col = "3", lty = "1234", lwd = 1)
-        lines(cbind(time_pred[-1], tp_gr_2[, 12]), col = "4", lty = "1234", lwd = 1)
-        lines(cbind(time_pred[-1], tp_gr_2[, 13]), col = "5", lty = "1234", lwd = 1)
-        lines(cbind(time_pred[-1], tp_gr_2[, 14]), col = "6", lty = "1234", lwd = 1)
-        legend("topleft", legend = lbls_spline, col = 1:6, lty = "1234", cex = 0.8)
+        lines(cbind(time_pred[-1], tp_gr_2[, 9]), col = "1", lty = "2222", lwd = 1)  
+        lines(cbind(time_pred[-1], tp_gr_2[, 10]), col = "2", lty = "2222", lwd = 1)
+        lines(cbind(time_pred[-1], tp_gr_2[, 11]), col = "3", lty = "2222", lwd = 1)
+        lines(cbind(time_pred[-1], tp_gr_2[, 12]), col = "4", lty = "2222", lwd = 1)
+        lines(cbind(time_pred[-1], tp_gr_2[, 13]), col = "5", lty = "2222", lwd = 1)
+        lines(cbind(time_pred[-1], tp_gr_2[, 14]), col = "6", lty = "2222", lwd = 1)
+        legend("topleft", legend = lbls_spline, col = 1:6, lty = "2222", cex = 0.8)
     }
 }, envir = PERSUADE)
 suppressWarnings(kable_styling(kable(descr(PERSUADE$tp_gr_2[, 2:PERSUADE$cols_extr], 
@@ -1298,25 +1464,25 @@ evalq({
     # parametric curves
     plot(km[3], lwd = 2, col = "black", main = "A: Kaplan-Meier (parametric curves)", 
         xlab = "time", ylab = "survival", xlim = c(0, time_horizon))
-    lines(cbind(time_pred, expo_pred[, 4]), col = "1", lty = "9212", lwd = 1)
-    lines(cbind(time_pred, weib_pred[, 4]), col = "2", lty = "9212", lwd = 1)
-    lines(cbind(time_pred, gom_pred[, 4]), col = "3", lty = "9212", lwd = 1)
-    lines(cbind(time_pred, lnorm_pred[, 4]), col = "4", lty = "9212", lwd = 1)
-    lines(cbind(time_pred, llog_pred[, 4]), col = "5", lty = "9212", lwd = 1)
-    lines(cbind(time_pred, gam_pred[, 4]), col = "6", lty = "9212", lwd = 1)
-    lines(cbind(time_pred, ggam_pred[, 4]), col = "7", lty = "9212", lwd = 1)
-    legend("topright", legend = lbls, col = 1:7, lty = "9212", cex = 0.8)
+    lines(cbind(time_pred, expo_pred[, 4]), col = "1", lty = "5212", lwd = 1)
+    lines(cbind(time_pred, weib_pred[, 4]), col = "2", lty = "5212", lwd = 1)
+    lines(cbind(time_pred, gom_pred[, 4]), col = "3", lty = "5212", lwd = 1)
+    lines(cbind(time_pred, lnorm_pred[, 4]), col = "4", lty = "5212", lwd = 1)
+    lines(cbind(time_pred, llog_pred[, 4]), col = "5", lty = "5212", lwd = 1)
+    lines(cbind(time_pred, gam_pred[, 4]), col = "6", lty = "5212", lwd = 1)
+    lines(cbind(time_pred, ggam_pred[, 4]), col = "7", lty = "5212", lwd = 1)
+    legend("topright", legend = lbls, col = 1:7, lty = "5212", cex = 0.8)
     # spline curves
     if (show_spline == TRUE) {
         plot(km[3], lwd = 2, col = "black", main = "B: Kaplan-Meier (spline curves)", 
             xlab = "time", ylab = "survival", xlim = c(0, time_horizon))
-        lines(cbind(time_pred, spl_hazard1_pred[, 4]), col = "1", lty = "9212", lwd = 1)
-        lines(cbind(time_pred, spl_hazard2_pred[, 4]), col = "2", lty = "9212", lwd = 1)
-        lines(cbind(time_pred, spl_odds1_pred[, 4]), col = "3", lty = "9212", lwd = 1)
-        lines(cbind(time_pred, spl_odds2_pred[, 4]), col = "4", lty = "9212", lwd = 1)
-        lines(cbind(time_pred, spl_normal1_pred[, 4]), col = "5", lty = "9212", lwd = 1)
-        lines(cbind(time_pred, spl_normal2_pred[, 4]), col = "6", lty = "9212", lwd = 1)
-        legend("topright", legend = lbls_spline, col = 1:6, lty = "9212", cex = 0.8)
+        lines(cbind(time_pred, spl_hazard1_pred[, 4]), col = "1", lty = "5212", lwd = 1)
+        lines(cbind(time_pred, spl_hazard2_pred[, 4]), col = "2", lty = "5212", lwd = 1)
+        lines(cbind(time_pred, spl_odds1_pred[, 4]), col = "3", lty = "5212", lwd = 1)
+        lines(cbind(time_pred, spl_odds2_pred[, 4]), col = "4", lty = "5212", lwd = 1)
+        lines(cbind(time_pred, spl_normal1_pred[, 4]), col = "5", lty = "5212", lwd = 1)
+        lines(cbind(time_pred, spl_normal2_pred[, 4]), col = "6", lty = "5212", lwd = 1)
+        legend("topright", legend = lbls_spline, col = 1:6, lty = "5212", cex = 0.8)
     }
 }, envir = PERSUADE)
 kable_styling(kable(t(round(PERSUADE$extrapolation_gr_3[1 + PERSUADE$time_pred_surv_table, 
@@ -1333,14 +1499,14 @@ evalq({
         lwd = 2, lty = 2)
     lines(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth_upper), col = "black", type = "l", 
         lwd = 2, lty = 2)
-    lines(cbind(time_pred[-1], tp_gr_3[, 2]), col = "1", lty = "9212", lwd = 1)  
-    lines(cbind(time_pred[-1], tp_gr_3[, 3]), col = "2", lty = "9212", lwd = 1)
-    lines(cbind(time_pred[-1], tp_gr_3[, 4]), col = "3", lty = "9212", lwd = 1)
-    lines(cbind(time_pred[-1], tp_gr_3[, 5]), col = "4", lty = "9212", lwd = 1)
-    lines(cbind(time_pred[-1], tp_gr_3[, 6]), col = "5", lty = "9212", lwd = 1)
-    lines(cbind(time_pred[-1], tp_gr_3[, 7]), col = "6", lty = "9212", lwd = 1)
-    lines(cbind(time_pred[-1], tp_gr_3[, 8]), col = "7", lty = "9212", lwd = 1)
-    legend("topleft", legend = lbls, col = 1:7, lty = "9212", cex = 0.8)
+    lines(cbind(time_pred[-1], tp_gr_3[, 2]), col = "1", lty = "5212", lwd = 1)  
+    lines(cbind(time_pred[-1], tp_gr_3[, 3]), col = "2", lty = "5212", lwd = 1)
+    lines(cbind(time_pred[-1], tp_gr_3[, 4]), col = "3", lty = "5212", lwd = 1)
+    lines(cbind(time_pred[-1], tp_gr_3[, 5]), col = "4", lty = "5212", lwd = 1)
+    lines(cbind(time_pred[-1], tp_gr_3[, 6]), col = "5", lty = "5212", lwd = 1)
+    lines(cbind(time_pred[-1], tp_gr_3[, 7]), col = "6", lty = "5212", lwd = 1)
+    lines(cbind(time_pred[-1], tp_gr_3[, 8]), col = "7", lty = "5212", lwd = 1)
+    legend("topleft", legend = lbls, col = 1:7, lty = "5212", cex = 0.8)
     # spline curves
     if (show_spline == TRUE) {
         plot(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth), main = "D: Annual transition probability (spline curves)", 
@@ -1350,13 +1516,13 @@ evalq({
             lwd = 2, lty = 2)
         lines(cbind(km_tp_gr_3$time, km_tp_gr_3$tp_smooth_upper), col = "black", type = "l", 
             lwd = 2, lty = 2)
-        lines(cbind(time_pred[-1], tp_gr_3[, 9]), col = "1", lty = "9212", lwd = 1)  
-        lines(cbind(time_pred[-1], tp_gr_3[, 10]), col = "2", lty = "9212", lwd = 1)
-        lines(cbind(time_pred[-1], tp_gr_3[, 11]), col = "3", lty = "9212", lwd = 1)
-        lines(cbind(time_pred[-1], tp_gr_3[, 12]), col = "4", lty = "9212", lwd = 1)
-        lines(cbind(time_pred[-1], tp_gr_3[, 13]), col = "5", lty = "9212", lwd = 1)
-        lines(cbind(time_pred[-1], tp_gr_3[, 14]), col = "6", lty = "9212", lwd = 1)
-        legend("topleft", legend = lbls_spline, col = 1:6, lty = "9212", cex = 0.8)
+        lines(cbind(time_pred[-1], tp_gr_3[, 9]), col = "1", lty = "5212", lwd = 1)  
+        lines(cbind(time_pred[-1], tp_gr_3[, 10]), col = "2", lty = "5212", lwd = 1)
+        lines(cbind(time_pred[-1], tp_gr_3[, 11]), col = "3", lty = "5212", lwd = 1)
+        lines(cbind(time_pred[-1], tp_gr_3[, 12]), col = "4", lty = "5212", lwd = 1)
+        lines(cbind(time_pred[-1], tp_gr_3[, 13]), col = "5", lty = "5212", lwd = 1)
+        lines(cbind(time_pred[-1], tp_gr_3[, 14]), col = "6", lty = "5212", lwd = 1)
+        legend("topleft", legend = lbls_spline, col = 1:6, lty = "5212", cex = 0.8)
     }
 }, envir = PERSUADE)
 suppressWarnings(kable_styling(kable(descr(PERSUADE$tp_gr_3[, 2:PERSUADE$cols_extr], 
