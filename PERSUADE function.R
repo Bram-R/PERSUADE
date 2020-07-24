@@ -306,10 +306,9 @@ PERSUADE <- function(years, status, group, strata = FALSE, time_unit, time_horiz
   }
   km_tp_gr_1$tp <- 1 - (1 - ((shift(km_tp_gr_1$surv, 1L, type = "lag") - km_tp_gr_1$surv)/
                                shift(km_tp_gr_1$surv, 1L, type = "lag")))^(1/time_unit)
-  km_tp_gr_1$tp_lower <- 1 - (1 - ((shift(km_tp_gr_1$upper, 1L, type = "lag") - km_tp_gr_1$upper)/
-                                     shift(km_tp_gr_1$upper, 1L, type = "lag")))^(1/time_unit)
-  km_tp_gr_1$tp_upper <- 1 - (1 - ((shift(km_tp_gr_1$lower, 1L, type = "lag") - km_tp_gr_1$lower)/
-                                     shift(km_tp_gr_1$lower, 1L, type = "lag")))^(1/time_unit)
+  km_tp_gr_1$tp_lower <- km_tp_gr_1$tp #would require bootstrapping --> to be implemented later)
+  km_tp_gr_1$tp_upper <- km_tp_gr_1$tp #would require bootstrapping --> to be implemented later)
+  
   km_tp_gr_1 <- km_tp_gr_1[-1, ]  #remove NA
   km_tp_gr_1$tp_smooth <- pmax(0, pmin(1, loess(km_tp_gr_1$tp ~ km_tp_gr_1$time)$fitted))
   km_tp_gr_1$tp_smooth_lower <- pmax(0, pmin(1, km_tp_gr_1$tp_smooth, loess(km_tp_gr_1$tp_lower ~ km_tp_gr_1$time)$fitted))
@@ -324,10 +323,8 @@ PERSUADE <- function(years, status, group, strata = FALSE, time_unit, time_horiz
                              upper = km_tp$upper[km_tp$strata == levels(km_tp$strata)[2]])
     km_tp_gr_2$tp <- 1 - (1 - ((shift(km_tp_gr_2$surv, 1L, type = "lag") - km_tp_gr_2$surv)/
                                  shift(km_tp_gr_2$surv, 1L, type = "lag")))^(1/time_unit)
-    km_tp_gr_2$tp_lower <- 1 - (1 - ((shift(km_tp_gr_2$upper, 1L, type = "lag") - km_tp_gr_2$upper)/
-                                       shift(km_tp_gr_2$upper, 1L, type = "lag")))^(1/time_unit)
-    km_tp_gr_2$tp_upper <- 1 - (1 - ((shift(km_tp_gr_2$lower, 1L, type = "lag") - km_tp_gr_2$lower)/
-                                       shift(km_tp_gr_2$lower, 1L, type = "lag")))^(1/time_unit)
+    km_tp_gr_2$tp_lower <- km_tp_gr_2$tp #would require bootstrapping --> to be implemented later)
+    km_tp_gr_2$tp_upper <- km_tp_gr_2$tp #would require bootstrapping --> to be implemented later)
     km_tp_gr_2 <- km_tp_gr_2[-1, ]  #remove NA
     km_tp_gr_2$tp_smooth <- pmax(0, pmin(1, loess(km_tp_gr_2$tp ~ km_tp_gr_2$time)$fitted))
     km_tp_gr_2$tp_smooth_lower <- pmax(0, pmin(1, km_tp_gr_2$tp_smooth, loess(km_tp_gr_2$tp_lower ~ km_tp_gr_2$time)$fitted))
@@ -342,10 +339,8 @@ PERSUADE <- function(years, status, group, strata = FALSE, time_unit, time_horiz
                              upper = km_tp$upper[km_tp$strata == levels(km_tp$strata)[3]])
     km_tp_gr_3$tp <- 1 - (1 - ((shift(km_tp_gr_3$surv, 1L, type = "lag") - km_tp_gr_3$surv)/
                                  shift(km_tp_gr_3$surv, 1L, type = "lag")))^(1/time_unit)
-    km_tp_gr_3$tp_lower <- 1 - (1 - ((shift(km_tp_gr_3$upper, 1L, type = "lag") - km_tp_gr_3$upper)/
-                                       shift(km_tp_gr_3$upper, 1L, type = "lag")))^(1/time_unit)
-    km_tp_gr_3$tp_upper <- 1 - (1 - ((shift(km_tp_gr_3$lower, 1L, type = "lag") - km_tp_gr_3$lower)/
-                                       shift(km_tp_gr_3$lower, 1L, type = "lag")))^(1/time_unit)
+    km_tp_gr_3$tp_lower <- km_tp_gr_3$tp #would require bootstrapping --> to be implemented later)
+    km_tp_gr_3$tp_upper <- km_tp_gr_3$tp #would require bootstrapping --> to be implemented later)
     km_tp_gr_3 <- km_tp_gr_3[-1, ]  #remove NA
     km_tp_gr_3$tp_smooth <- pmax(0, pmin(1, loess(km_tp_gr_3$tp ~ km_tp_gr_3$time)$fitted))
     km_tp_gr_3$tp_smooth_lower <- pmax(0, pmin(1, km_tp_gr_3$tp_smooth, loess(km_tp_gr_3$tp_lower ~ km_tp_gr_3$time)$fitted))
