@@ -40,6 +40,17 @@ PERSUADE <- function(years, status, group, strata = FALSE, time_unit, time_horiz
     }
   }
   
+  # km bootstrapped (for 95%CI) Needs adjusting
+  # if (ngroups == 1) {
+  #   km_boot <- sapply(c(seq(from = 0, to = max(km$time), by = time_unit)), function(x) 
+  #     bootkm(Surv(years, status), pr = FALSE, times = x))
+  # } else {
+  #   for (i in 1:ngroups){
+  #     km_boot[[i]] <- sapply(c(seq(from = 0, to = max(km$time[km_names == i]), by = time_unit)), function(x) 
+  #       bootkm(Surv(years, status)[group == levels(group)[i]], pr = FALSE, times = x))
+  #   }
+  # }
+
   # hr
   hr_smooth1 <- muhaz(years, status, group == levels(group)[1])
   if (ngroups > 1) {
@@ -510,11 +521,12 @@ PERSUADE <- function(years, status, group, strata = FALSE, time_unit, time_horiz
   # Export to global environment
   l1 <- list(years = years, status = status, group = group, ngroups = ngroups, group_names = group_names, show_spline = show_spline, 
              time_horizon = time_horizon, time_pred_surv_table = time_pred_surv_table, time_pred = time_pred, form = form, 
-             km = km, km_names = km_names, hr_smooth1 = hr_smooth1, hr_names = hr_names, hr_max = hr_max, cox_reg = cox_reg, 
-             expo = expo, weib = weib, gom = gom, lnorm = lnorm, llog = llog, gam = gam, ggam = ggam, expo_pred = expo_pred, 
-             weib_pred = weib_pred, gom_pred = gom_pred, gom_est_h = gom_est_h, lnorm_pred = lnorm_pred, llog_pred = llog_pred, 
-             gam_pred = gam_pred, ggam_pred = ggam_pred, lbls = lbls, IC = IC, extrapolation_gr_1 = extrapolation_gr_1, 
-             km_tp = km_tp, km_tp_gr_1 = km_tp_gr_1, tp_gr_1 = tp_gr_1, cols_extr = cols_extr)
+             km = km, #km_boot = km_boot, first km_boot needs fixing
+             km_names = km_names, hr_smooth1 = hr_smooth1, hr_names = hr_names, hr_max = hr_max, 
+             cox_reg = cox_reg, expo = expo, weib = weib, gom = gom, lnorm = lnorm, llog = llog, gam = gam, ggam = ggam, 
+             expo_pred = expo_pred, weib_pred = weib_pred, gom_pred = gom_pred, gom_est_h = gom_est_h, lnorm_pred = lnorm_pred, 
+             llog_pred = llog_pred, gam_pred = gam_pred, ggam_pred = ggam_pred, lbls = lbls, IC = IC, 
+             extrapolation_gr_1 = extrapolation_gr_1, km_tp = km_tp, km_tp_gr_1 = km_tp_gr_1, tp_gr_1 = tp_gr_1, cols_extr = cols_extr)
   if (ngroups > 1) {
     l2 <- list(hr_smooth2 = hr_smooth2, extrapolation_gr_2 = extrapolation_gr_2, km_tp_gr_2 = km_tp_gr_2, 
                tp_gr_2 = tp_gr_2)
