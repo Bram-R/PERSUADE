@@ -1,5 +1,5 @@
 # code is formatted using formatR::tidy_source(width.cutoff = 100)
-PERSUADE <- function(years, status, group, strata = FALSE, time_unit, time_horizon, time_pred_surv_table, 
+f_PERSUADE <- function(years, status, group, strata = FALSE, time_unit, time_horizon, time_pred_surv_table, 
                      spline_mod = FALSE, csv_semicolon = FALSE, csv_comma = FALSE, clipboard = FALSE) {
   
   # number of groups
@@ -40,7 +40,7 @@ PERSUADE <- function(years, status, group, strata = FALSE, time_unit, time_horiz
     }
   }
   
-  # hr
+  # hazard rate
   hr_smooth1 <- muhaz(years, status, group == levels(group)[1])
   if (ngroups > 1) {
     hr_smooth2 <- muhaz(years, status, group == levels(group)[2])
@@ -54,8 +54,6 @@ PERSUADE <- function(years, status, group, strata = FALSE, time_unit, time_horiz
     NA
   }, if (ngroups > 2) {
     rep(3, length(hr_smooth3$est.grid))
-  } else {
-    NA
   })
   hr_max <- data.frame(time = ceiling(max(hr_smooth1$est.grid, if (ngroups > 1) {
     hr_smooth2$est.grid
@@ -74,6 +72,73 @@ PERSUADE <- function(years, status, group, strata = FALSE, time_unit, time_horiz
   } else {
     NA
   }, na.rm = TRUE)))
+  
+  # cumulative hazard
+  cum_haz <- data.frame(group = c(rep(1, length(time_pred[time_pred <= max(years[group == levels(group)[1]])])), 
+                                  if (ngroups > 1) {
+                                    rep(2, length(time_pred[time_pred <= max(years[group == levels(group)[2]])]))
+                                  }, if (ngroups > 2) {
+                                    rep(3, length(time_pred[time_pred <= max(years[group == levels(group)[3]])]))
+                                  }))
+  cum_haz$time <- c(time_pred[0:length(cum_haz$group[cum_haz$group == 1])], if (ngroups > 1) {
+    time_pred[0:length(cum_haz$group[cum_haz$group == 2])]
+  }, if (ngroups > 2) {
+    time_pred[0:length(cum_haz$group[cum_haz$group == 3])]
+  })
+  cum_haz$H <- c(estimateNAH(years[group == levels(group)[1]], status[group == levels(group)[1]])$H(cum_haz$time[cum_haz$group == 1]), 
+                 if (ngroups > 1) {
+                   estimateNAH(years[group == levels(group)[2]], status[group == levels(group)[2]])$H(cum_haz$time[cum_haz$group == 2])
+                 }, if (ngroups > 2) {
+                   estimateNAH(years[group == levels(group)[3]], status[group == levels(group)[3]])$H(cum_haz$time[cum_haz$group == 3])
+                 })
+  cum_haz$var <- c(estimateNAH(years[group == levels(group)[1]], status[group == levels(group)[1]])$Var(cum_haz$time[cum_haz$group == 1]), 
+                   if (ngroups > 1) {
+                     estimateNAH(years[group == levels(group)[2]], status[group == levels(group)[2]])$Var(cum_haz$time[cum_haz$group == 2])
+                   }, if (ngroups > 2) {
+                     estimateNAH(years[group == levels(group)[3]], status[group == levels(group)[3]])$Var(cum_haz$time[cum_haz$group == 3])
+                   })
+  cum_haz$H_upper <- pmax(0, cum_haz$H + sqrt(cum_haz$var) * qnorm(p = 0.975))
+  cum_haz$H_lower <- pmax(0, cum_haz$H - sqrt(cum_haz$var) * qnorm(p = 0.975))
+  cum_haz$H_delta <- c(shift(cum_haz$H[cum_haz$group == 1], 1L, type = "lag") - cum_haz$H[cum_haz$group == 1], 
+                       if (ngroups > 1) {
+                         shift(cum_haz$H[cum_haz$group == 2], 1L, type = "lag") - cum_haz$H[cum_haz$group == 2]
+                       }, if (ngroups > 2) {
+                         shift(cum_haz$H[cum_haz$group == 3], 1L, type = "lag") - cum_haz$H[cum_haz$group == 3]
+                       })
+  cum_haz$H_upper_delta <- c(shift(cum_haz$H_upper[cum_haz$group == 1], 1L, type = "lag") - cum_haz$H_upper[cum_haz$group == 1], 
+                             if (ngroups > 1) {
+                               shift(cum_haz$H_upper[cum_haz$group == 2], 1L, type = "lag") - cum_haz$H_upper[cum_haz$group == 2]
+                             }, if (ngroups > 2) {
+                               shift(cum_haz$H_upper[cum_haz$group == 3], 1L, type = "lag") - cum_haz$H_upper[cum_haz$group == 3]
+                             })
+  cum_haz$H_lower_delta <- c(shift(cum_haz$H_lower[cum_haz$group == 1], 1L, type = "lag") - cum_haz$H_lower[cum_haz$group == 1], 
+                             if (ngroups > 1) {
+                               shift(cum_haz$H_lower[cum_haz$group == 2], 1L, type = "lag") - cum_haz$H_lower[cum_haz$group == 2]
+                             }, if (ngroups > 2) {
+                               shift(cum_haz$H_lower[cum_haz$group == 3], 1L, type = "lag") - cum_haz$H_lower[cum_haz$group == 3]
+                             })
+  cum_haz$tp <- 1 - exp(cum_haz$H_delta)^(1/time_unit)
+  cum_haz$tp_lower <- 1 - exp(cum_haz$H_lower_delta)^(1/time_unit)
+  cum_haz$tp_upper <- 1 - exp(cum_haz$H_upper_delta)^(1/time_unit)
+  cum_haz$tp_smooth <- pmax(0, pmin(1, c(NA, loess(cum_haz$tp[cum_haz$group == 1] ~ cum_haz$time[cum_haz$group ==  1])$fitted, 
+                                         if (ngroups > 1) {
+                                           c(NA, loess(cum_haz$tp[cum_haz$group == 2] ~ cum_haz$time[cum_haz$group == 2])$fitted)
+                                         }, if (ngroups > 2) {
+                                           c(NA, loess(cum_haz$tp[cum_haz$group == 3] ~ cum_haz$time[cum_haz$group == 3])$fitted)
+                                         })))
+  cum_haz$tp_upper_smooth <- pmax(0, pmin(1, c(NA, loess(cum_haz$tp_upper[cum_haz$group == 1] ~ cum_haz$time[cum_haz$group == 1])$fitted, 
+                                               if (ngroups > 1) {
+                                                 c(NA, loess(cum_haz$tp_upper[cum_haz$group == 2] ~ cum_haz$time[cum_haz$group == 2])$fitted)
+                                               }, if (ngroups > 2) {
+                                                 c(NA, loess(cum_haz$tp_upper[cum_haz$group == 3] ~ cum_haz$time[cum_haz$group == 3])$fitted)
+                                               })))
+  cum_haz$tp_lower_smooth <- pmax(0, pmin(1, c(NA, loess(cum_haz$tp_lower[cum_haz$group == 1] ~ cum_haz$time[cum_haz$group == 1])$fitted, 
+                                               if (ngroups > 1) {
+                                                 c(NA, loess(cum_haz$tp_lower[cum_haz$group == 2] ~ cum_haz$time[cum_haz$group == 2])$fitted)
+                                               }, if (ngroups > 2) {
+                                                 c(NA, loess(cum_haz$tp_lower[cum_haz$group == 3] ~ cum_haz$time[cum_haz$group == 3])$fitted)
+                                               })))
+  
   # cox (for Scaled Schoenfeld residuals)
   cox_reg <- coxph(form)
   
@@ -292,67 +357,47 @@ PERSUADE <- function(years, status, group, strata = FALSE, time_unit, time_horiz
     colnames(extrapolation_gr_3) <- lbls_all
   }
   
-  # calculate annual transition probability km
-  km_tp <- summary(km, times = seq(from = 0, to = time_horizon, by = time_unit))
-  if (ngroups == 1) {
-    km_tp_gr_1 <- data.frame(time = km_tp$time, surv = km_tp$surv, group = rep(1, length(km_tp$time)),
-                             lower = km_tp$lower, upper = km_tp$upper)
-  } else {
-    km_tp_gr_1 <- data.frame(time = km_tp$time[km_tp$strata == levels(km_tp$strata)[1]], 
-                             surv = km_tp$surv[km_tp$strata ==  levels(km_tp$strata)[1]], 
-                             group = rep(1, length(km_tp[km_tp$strata == levels(km_tp$strata)[1]])),
-                             lower = km_tp$lower[km_tp$strata == levels(km_tp$strata)[1]], 
-                             upper = km_tp$upper[km_tp$strata == levels(km_tp$strata)[1]])
-  }
-  km_tp_gr_1$tp <- 1 - (1 - ((shift(km_tp_gr_1$surv, 1L, type = "lag") - km_tp_gr_1$surv)/
-                               shift(km_tp_gr_1$surv, 1L, type = "lag")))^(1/time_unit)
-  km_tp_gr_1$tp_lower <- 1 - (1 - ((shift(km_tp_gr_1$upper, 1L, type = "lag") - km_tp_gr_1$upper)/
-                                     shift(km_tp_gr_1$upper, 1L, type = "lag")))^(1/time_unit)
-  km_tp_gr_1$tp_upper <- 1 - (1 - ((shift(km_tp_gr_1$lower, 1L, type = "lag") - km_tp_gr_1$lower)/
-                                     shift(km_tp_gr_1$lower, 1L, type = "lag")))^(1/time_unit)
-  
-  km_tp_gr_1 <- km_tp_gr_1[-1, ]  #remove NA
-  km_tp_gr_1$tp_smooth <- pmax(0, pmin(1, loess(km_tp_gr_1$tp ~ km_tp_gr_1$time, span=0.50)$fitted))
-  km_tp_gr_1$tp_smooth_lower <- pmax(0, pmin(1, km_tp_gr_1$tp_smooth, loess(km_tp_gr_1$tp_lower ~ km_tp_gr_1$time, span=0.50)$fitted))
-  km_tp_gr_1$tp_smooth_upper <- pmax(0, km_tp_gr_1$tp_smooth, pmin(1, loess(km_tp_gr_1$tp_upper ~ km_tp_gr_1$time, span=0.50)$fitted))
-  km_tp$maxtp_smooth <- max(km_tp_gr_1$tp_smooth_upper)
+  # calculate annual transition probability based on observed data (km)
+  km_tp_gr_1 <- data.frame(
+    time = cum_haz$time[cum_haz$group==1],
+    tp_smooth = cum_haz$tp_smooth[cum_haz$group==1],
+    tp_smooth_lower = cum_haz$tp_lower_smooth[cum_haz$group==1],
+    tp_smooth_upper = cum_haz$tp_upper_smooth[cum_haz$group==1]
+  )
   
   if (ngroups > 1) {
-    km_tp_gr_2 <- data.frame(time = km_tp$time[km_tp$strata == levels(km_tp$strata)[2]], 
-                             surv = km_tp$surv[km_tp$strata == levels(km_tp$strata)[2]], 
-                             group = rep(2, length(km_tp[km_tp$strata == levels(km_tp$strata)[2]])),
-                             lower = km_tp$lower[km_tp$strata == levels(km_tp$strata)[2]], 
-                             upper = km_tp$upper[km_tp$strata == levels(km_tp$strata)[2]])
-    km_tp_gr_2$tp <- 1 - (1 - ((shift(km_tp_gr_2$surv, 1L, type = "lag") - km_tp_gr_2$surv)/
-                                 shift(km_tp_gr_2$surv, 1L, type = "lag")))^(1/time_unit)
-    km_tp_gr_2$tp_lower <- 1 - (1 - ((shift(km_tp_gr_2$upper, 1L, type = "lag") - km_tp_gr_2$upper)/
-                                       shift(km_tp_gr_2$upper, 1L, type = "lag")))^(1/time_unit)
-    km_tp_gr_2$tp_upper <- 1 - (1 - ((shift(km_tp_gr_2$lower, 1L, type = "lag") - km_tp_gr_2$lower)/
-                                       shift(km_tp_gr_2$lower, 1L, type = "lag")))^(1/time_unit)
-    km_tp_gr_2 <- km_tp_gr_2[-1, ]  #remove NA
-    km_tp_gr_2$tp_smooth <- pmax(0, pmin(1, loess(km_tp_gr_2$tp ~ km_tp_gr_2$time, span=0.50)$fitted))
-    km_tp_gr_2$tp_smooth_lower <- pmax(0, pmin(1, km_tp_gr_2$tp_smooth, loess(km_tp_gr_2$tp_lower ~ km_tp_gr_2$time, span=0.50)$fitted))
-    km_tp_gr_2$tp_smooth_upper <- pmax(0, km_tp_gr_2$tp_smooth, pmin(1, loess(km_tp_gr_2$tp_upper ~ km_tp_gr_2$time, span=0.50)$fitted))
-    km_tp$maxtp_smooth <- max(c(km_tp_gr_1$tp_smooth_upper, km_tp_gr_2$tp_smooth_upper))
+    km_tp_gr_2 <- data.frame(
+      time = cum_haz$time[cum_haz$group==2],
+      tp_smooth = cum_haz$tp_smooth[cum_haz$group==2],
+      tp_smooth_lower = cum_haz$tp_lower_smooth[cum_haz$group==2],
+      tp_smooth_upper = cum_haz$tp_upper_smooth[cum_haz$group==2]
+    )
+    # km_tp$maxtp_smooth <- max(c(km_tp_gr_1$tp_smooth_upper, km_tp_gr_2$tp_smooth_upper), na.rm = TRUE)
   }
   if (ngroups > 2) {
-    km_tp_gr_3 <- data.frame(time = km_tp$time[km_tp$strata == levels(km_tp$strata)[3]], 
-                             surv = km_tp$surv[km_tp$strata == levels(km_tp$strata)[3]], 
-                             group = rep(3, length(km_tp[km_tp$strata == levels(km_tp$strata)[3]])),
-                             lower = km_tp$lower[km_tp$strata == levels(km_tp$strata)[3]], 
-                             upper = km_tp$upper[km_tp$strata == levels(km_tp$strata)[3]])
-    km_tp_gr_3$tp <- 1 - (1 - ((shift(km_tp_gr_3$surv, 1L, type = "lag") - km_tp_gr_3$surv)/
-                                 shift(km_tp_gr_3$surv, 1L, type = "lag")))^(1/time_unit)
-    km_tp_gr_3$tp_lower <- 1 - (1 - ((shift(km_tp_gr_3$upper, 1L, type = "lag") - km_tp_gr_3$upper)/
-                                       shift(km_tp_gr_3$upper, 1L, type = "lag")))^(1/time_unit)
-    km_tp_gr_3$tp_upper <- 1 - (1 - ((shift(km_tp_gr_3$lower, 1L, type = "lag") - km_tp_gr_3$lower)/
-                                       shift(km_tp_gr_3$lower, 1L, type = "lag")))^(1/time_unit)
-    km_tp_gr_3 <- km_tp_gr_3[-1, ]  #remove NA
-    km_tp_gr_3$tp_smooth <- pmax(0, pmin(1, loess(km_tp_gr_3$tp ~ km_tp_gr_3$time, span=0.50)$fitted))
-    km_tp_gr_3$tp_smooth_lower <- pmax(0, pmin(1, km_tp_gr_3$tp_smooth, loess(km_tp_gr_3$tp_lower ~ km_tp_gr_3$time, span=0.50)$fitted))
-    km_tp_gr_3$tp_smooth_upper <- pmax(0, km_tp_gr_3$tp_smooth, pmin(1, loess(km_tp_gr_3$tp_upper ~ km_tp_gr_3$time, span=0.50)$fitted))
-    km_tp$maxtp_smooth <- max(c(km_tp_gr_1$tp_smooth_upper, km_tp_gr_2$tp_smooth_upper, km_tp_gr_3$tp_smooth_upper))
+    km_tp_gr_3 <- data.frame(
+      time = cum_haz$time[cum_haz$group==3],
+      tp_smooth = cum_haz$tp_smooth[cum_haz$group==3],
+      tp_smooth_lower = cum_haz$tp_lower_smooth[cum_haz$group==3],
+      tp_smooth_upper = cum_haz$tp_upper_smooth[cum_haz$group==3]
+    )
+    # km_tp$maxtp_smooth <- max(c(km_tp_gr_1$tp_smooth_upper, km_tp_gr_2$tp_smooth_upper, km_tp_gr_3$tp_smooth_upper), 
+    #                           na.rm = TRUE)
   }
+  
+  km_tp <- data.frame(maxtp_smooth = max(c(km_tp_gr_1$tp_smooth_upper, if (ngroups > 1) {
+    km_tp_gr_2$tp_smooth_upper
+  }, if (ngroups > 2) {
+    km_tp_gr_3$tp_smooth_upper
+  }), na.rm = TRUE))
+  
+  hr_names <- c(rep(1, length(hr_smooth1$est.grid)), if (ngroups > 1) {
+    rep(2, length(hr_smooth2$est.grid))
+  } else {
+    NA
+  }, if (ngroups > 2) {
+    rep(3, length(hr_smooth3$est.grid))
+  })
   
   # parametric survival models
   cols_extr <- ifelse(spline_mod == TRUE, 14, 8)  # define data frame width for the annual TP calculations
@@ -513,10 +558,10 @@ PERSUADE <- function(years, status, group, strata = FALSE, time_unit, time_horiz
   # remove column names
   colnames(Survmod) <- c("Time-to-event models parameters", rep("", abs(ncol(Survmod)) - 1))
   
-  # Export to global environment
+  # export to global environment **** NEEdS ADJUSTING **** cluster (e.g. input, km, hr, cum_h, models, model_pred, misc)
   l1 <- list(years = years, status = status, group = group, ngroups = ngroups, group_names = group_names, show_spline = show_spline, 
              time_horizon = time_horizon, time_pred_surv_table = time_pred_surv_table, time_pred = time_pred, form = form, 
-             km = km, km_names = km_names, hr_smooth1 = hr_smooth1, hr_names = hr_names, hr_max = hr_max, 
+             km = km, km_names = km_names, hr_smooth1 = hr_smooth1, hr_names = hr_names, hr_max = hr_max, cum_haz = cum_haz,
              cox_reg = cox_reg, expo = expo, weib = weib, gom = gom, lnorm = lnorm, llog = llog, gam = gam, ggam = ggam, 
              expo_pred = expo_pred, weib_pred = weib_pred, gom_pred = gom_pred, gom_est_h = gom_est_h, lnorm_pred = lnorm_pred, 
              llog_pred = llog_pred, gam_pred = gam_pred, ggam_pred = ggam_pred, lbls = lbls, IC = IC, 
@@ -548,7 +593,7 @@ PERSUADE <- function(years, status, group, strata = FALSE, time_unit, time_horiz
   output <- output[order(names(output))]
   return(output)
   
-  # Export to clipboard and .csv
+  # export to clipboard and .csv
   if (csv_semicolon == TRUE) {
     write.csv2(Survmod, "PERSUADE_Time-to-event_models_parameters_semicolon.csv")
   }
