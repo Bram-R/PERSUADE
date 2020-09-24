@@ -6,7 +6,7 @@ Specifically, The intention of the template was to provide information and suppo
 1)	Visualisation of time-to-event data
 2)	Examine the proportional hazard assumption
 3)	Examine the hazard over time
-4)	Visually examine the goodness of fit by a. visualisation of parametric survival models and b. examine diagnostics of parametric survival models
+4)	Visually examine the goodness of fit by a. visualisation of the parametric survival models (estimated survival function as well as transition probabilities) and b. examine diagnostics of the parametric survival models
 5)	Examine statistical goodness of fit
 6)	Examine extrapolation
 
