@@ -29,9 +29,9 @@ time_horizon <- 40  #time horizon (in years) for predicted survival Figures
 
 ####### PERSUADE ####### 
 # PERSUADE FUNCTION (**please adjust TRUE/ FALSE if necessary**)
-PERSUADE <- f_PERSUADE(years = years, status = status, group = group, strata = TRUE, time_unit = time_unit, 
-                           time_horizon = time_horizon, time_pred_surv_table = time_pred_surv_table, 
-                           spline_mod = TRUE, csv_semicolon = FALSE, csv_comma = TRUE, clipboard = FALSE)
+PERSUADE <- f_PERSUADE(years = years, status = status, group = group, strata = TRUE, spline_mod = TRUE, 
+                       time_unit = time_unit, time_horizon = time_horizon,
+                       time_pred_surv_table = time_pred_surv_table)
 
 PERSUADE$name <- name
 save(PERSUADE, file = "PERSUADE.RData")  # save PERSUADE (so it can be loaded in the RMARKDOWN script)
@@ -42,6 +42,11 @@ xfun::Rscript_call( #Rscript_call renders the Rmd document in a new R session (s
   list(input = 'PERSUADE output.Rmd', output_file = paste0(name, '.pdf'), output_dir = paste0(name, '_output'), 
        intermediates_dir = paste0(name, '_output'))
 )
+
+# export parametric survival models to clipboard and .csv (e.g. for use in accompanying Excel file)
+write.table(PERSUADE$survmod, "clipboard-128", sep = "\t")
+write.csv(PERSUADE$survmod, paste0(name, "_output/PERSUADE_Time-to-event_models_parameters_comma.csv"))
+write.csv2(PERSUADE$survmod, paste0(name, "_output/PERSUADE_Time-to-event_models_parameters_semicolon.csv"))
 
 # file management (move PERSUADE object to output directory)
 file.copy(from = "PERSUADE.RData", to = paste0(name, "_output"))  #copy PERSUADE object to output directory
