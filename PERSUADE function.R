@@ -235,11 +235,12 @@ f_PERSUADE <- function(years, status, group, strata = FALSE, spline_mod = FALSE,
   expo_est <- summary(expo, t = time_pred)
   weib_est <- summary(weib, t = time_pred)
   gom_est <- summary(gom, t = time_pred)
-  gom_est_h <- summary(gom, t = time_pred, type = "hazard")  #used for diagnostics for Gompertz distribution
   lnorm_est <- summary(lnorm, t = time_pred)
   llog_est <- summary(llog, t = time_pred)
   gam_est <- summary(gam, t = time_pred)
   ggam_est <- summary(ggam, t = time_pred)
+  
+  gom_pred_h <- summary(gom, t = time_pred, type = "hazard")  #used for diagnostics for Gompertz distribution
   
   if (ngroups == 1) {
     expo_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) expo_est[[1]]$est))
@@ -310,7 +311,7 @@ f_PERSUADE <- function(years, status, group, strata = FALSE, spline_mod = FALSE,
   }
   
   # predicted survival
-  extrapolation_gr_1 <- if (spline_mod == TRUE) {
+  surv_gr_1 <- if (spline_mod == TRUE) {
     cbind(time_pred, expo_pred[, 2], weib_pred[, 2], gom_pred[, 2], lnorm_pred[, 2], llog_pred[, 2], 
           gam_pred[, 2], ggam_pred[, 2], spl_hazard1_pred[, 2], spl_hazard2_pred[, 2], spl_odds1_pred[, 2], 
           spl_odds2_pred[, 2], spl_normal1_pred[, 2], spl_normal2_pred[, 2])
@@ -319,7 +320,7 @@ f_PERSUADE <- function(years, status, group, strata = FALSE, spline_mod = FALSE,
           gam_pred[, 2], ggam_pred[, 2])
   }
   if (ngroups > 1) {
-    extrapolation_gr_2 <- if (spline_mod == TRUE) {
+    surv_gr_2 <- if (spline_mod == TRUE) {
       cbind(time_pred, expo_pred[, 3], weib_pred[, 3], gom_pred[, 3], lnorm_pred[, 3], llog_pred[, 3],
             gam_pred[, 3], ggam_pred[, 3], spl_hazard1_pred[, 3], spl_hazard2_pred[, 3], spl_odds1_pred[, 3], 
             spl_odds2_pred[, 3], spl_normal1_pred[, 3], spl_normal2_pred[, 3])
@@ -330,7 +331,7 @@ f_PERSUADE <- function(years, status, group, strata = FALSE, spline_mod = FALSE,
   }
   
   if (ngroups > 2) {
-    extrapolation_gr_3 <- if (spline_mod == TRUE) {
+    surv_gr_3 <- if (spline_mod == TRUE) {
       cbind(time_pred, expo_pred[, 4], weib_pred[, 4], gom_pred[, 4], lnorm_pred[, 4], llog_pred[, 4],
             gam_pred[, 4], ggam_pred[, 4], spl_hazard1_pred[, 4], spl_hazard2_pred[, 4], spl_odds1_pred[, 4],
             spl_odds2_pred[, 4], spl_normal1_pred[, 4], spl_normal2_pred[, 4])
@@ -349,12 +350,12 @@ f_PERSUADE <- function(years, status, group, strata = FALSE, spline_mod = FALSE,
       "7. Generalised Gamma")
   }
   
-  colnames(extrapolation_gr_1) <- lbls_all
+  colnames(surv_gr_1) <- lbls_all
   if (ngroups > 1) {
-    colnames(extrapolation_gr_2) <- lbls_all
+    colnames(surv_gr_2) <- lbls_all
   }
   if (ngroups > 2) {
-    colnames(extrapolation_gr_3) <- lbls_all
+    colnames(surv_gr_3) <- lbls_all
   }
   
   # calculate annual transition probability based on observed data (km)
@@ -372,7 +373,6 @@ f_PERSUADE <- function(years, status, group, strata = FALSE, spline_mod = FALSE,
       tp_smooth_lower = cum_haz$tp_lower_smooth[cum_haz$group==2],
       tp_smooth_upper = cum_haz$tp_upper_smooth[cum_haz$group==2]
     )
-    # km_tp$maxtp_smooth <- max(c(km_tp_gr_1$tp_smooth_upper, km_tp_gr_2$tp_smooth_upper), na.rm = TRUE)
   }
   if (ngroups > 2) {
     km_tp_gr_3 <- data.frame(
@@ -381,15 +381,13 @@ f_PERSUADE <- function(years, status, group, strata = FALSE, spline_mod = FALSE,
       tp_smooth_lower = cum_haz$tp_lower_smooth[cum_haz$group==3],
       tp_smooth_upper = cum_haz$tp_upper_smooth[cum_haz$group==3]
     )
-    # km_tp$maxtp_smooth <- max(c(km_tp_gr_1$tp_smooth_upper, km_tp_gr_2$tp_smooth_upper, km_tp_gr_3$tp_smooth_upper), 
-    #                           na.rm = TRUE)
   }
   
-  km_tp <- data.frame(maxtp_smooth = max(c(km_tp_gr_1$tp_smooth_upper, if (ngroups > 1) {
+  km_tp_max <- max(c(km_tp_gr_1$tp_smooth_upper, if (ngroups > 1) {
     km_tp_gr_2$tp_smooth_upper
   }, if (ngroups > 2) {
     km_tp_gr_3$tp_smooth_upper
-  }), na.rm = TRUE))
+  }), na.rm = TRUE)
   
   hr_names <- c(rep(1, length(hr_smooth1$est.grid)), if (ngroups > 1) {
     rep(2, length(hr_smooth2$est.grid))
@@ -402,17 +400,17 @@ f_PERSUADE <- function(years, status, group, strata = FALSE, spline_mod = FALSE,
   # parametric survival models
   cols_extr <- ifelse(spline_mod == TRUE, 14, 8)  # define data frame width for the annual TP calculations
   
-  tp_gr_1 <- cbind(time_pred, 1 - (1 - (shift(extrapolation_gr_1[, 2:cols_extr], 1L, type = "lag") - extrapolation_gr_1[, 2:cols_extr])/
-                                     shift(extrapolation_gr_1[, 2:cols_extr], 1L, type = "lag"))^(1/time_unit))[-1, ]
+  tp_gr_1 <- cbind(time_pred, 1 - (1 - (shift(surv_gr_1[, 2:cols_extr], 1L, type = "lag") - surv_gr_1[, 2:cols_extr])/
+                                     shift(surv_gr_1[, 2:cols_extr], 1L, type = "lag"))^(1/time_unit))[-1, ]
   
   if (ngroups > 1) {
-    tp_gr_2 <- cbind(time_pred, 1 - (1 - (shift(extrapolation_gr_2[, 2:cols_extr], 1L, type = "lag") - extrapolation_gr_2[, 2:cols_extr])/
-                                       shift(extrapolation_gr_2[, 2:cols_extr], 1L, type = "lag"))^(1/time_unit))[-1, ]
+    tp_gr_2 <- cbind(time_pred, 1 - (1 - (shift(surv_gr_2[, 2:cols_extr], 1L, type = "lag") - surv_gr_2[, 2:cols_extr])/
+                                       shift(surv_gr_2[, 2:cols_extr], 1L, type = "lag"))^(1/time_unit))[-1, ]
   }
   
   if (ngroups > 2) {
-    tp_gr_3 <- cbind(time_pred, 1 - (1 - (shift(extrapolation_gr_3[, 2:cols_extr], 1L, type = "lag") - extrapolation_gr_3[, 2:cols_extr])/
-                                       shift(extrapolation_gr_3[, 2:cols_extr], 1L, type = "lag"))^(1/time_unit))[-1, ]
+    tp_gr_3 <- cbind(time_pred, 1 - (1 - (shift(surv_gr_3[, 2:cols_extr], 1L, type = "lag") - surv_gr_3[, 2:cols_extr])/
+                                       shift(surv_gr_3[, 2:cols_extr], 1L, type = "lag"))^(1/time_unit))[-1, ]
   }
   
   # create output dataframe containing each distributions' name, the parameters' name, the parameters,
@@ -563,17 +561,17 @@ f_PERSUADE <- function(years, status, group, strata = FALSE, spline_mod = FALSE,
              time_horizon = time_horizon, time_pred_surv_table = time_pred_surv_table, time_pred = time_pred, form = form, 
              km = km, km_names = km_names, hr_smooth1 = hr_smooth1, hr_names = hr_names, hr_max = hr_max, cum_haz = cum_haz,
              cox_reg = cox_reg, expo = expo, weib = weib, gom = gom, lnorm = lnorm, llog = llog, gam = gam, ggam = ggam, 
-             expo_pred = expo_pred, weib_pred = weib_pred, gom_pred = gom_pred, gom_est_h = gom_est_h, lnorm_pred = lnorm_pred, 
+             expo_pred = expo_pred, weib_pred = weib_pred, gom_pred = gom_pred, gom_pred_h = gom_pred_h, lnorm_pred = lnorm_pred, 
              llog_pred = llog_pred, gam_pred = gam_pred, ggam_pred = ggam_pred, lbls = lbls, IC = IC, survmod = survmod,
-             extrapolation_gr_1 = extrapolation_gr_1, km_tp = km_tp, km_tp_gr_1 = km_tp_gr_1, tp_gr_1 = tp_gr_1, cols_extr = cols_extr)
+             surv_gr_1 = surv_gr_1, km_tp_max = km_tp_max, km_tp_gr_1 = km_tp_gr_1, tp_gr_1 = tp_gr_1, cols_extr = cols_extr)
   if (ngroups > 1) {
-    l2 <- list(hr_smooth2 = hr_smooth2, extrapolation_gr_2 = extrapolation_gr_2, km_tp_gr_2 = km_tp_gr_2, 
+    l2 <- list(hr_smooth2 = hr_smooth2, surv_gr_2 = surv_gr_2, km_tp_gr_2 = km_tp_gr_2, 
                tp_gr_2 = tp_gr_2)
   } else {
     l2 <- NA
   }
   if (ngroups > 2) {
-    l3 <- list(hr_smooth3 = hr_smooth3, extrapolation_gr_3 = extrapolation_gr_3, km_tp_gr_3 = km_tp_gr_3, 
+    l3 <- list(hr_smooth3 = hr_smooth3, surv_gr_3 = surv_gr_3, km_tp_gr_3 = km_tp_gr_3, 
                tp_gr_3 = tp_gr_3)
   } else {
     l3 <- NA
