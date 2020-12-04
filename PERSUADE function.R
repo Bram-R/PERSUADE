@@ -1,21 +1,21 @@
 # code is formatted using formatR::tidy_source(width.cutoff = 100)
-f_PERSUADE <- function(years, status, group, strata = FALSE, spline_mod = FALSE, 
+f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, spline_mod = FALSE, 
                        time_unit, time_horizon, time_pred_surv_table) {
   
+  #input
+  years <- as.numeric(years)  # time variable should be numeric
+  status <- as.numeric(status)  # status / event variable should be numeric
+  group <- as.factor(group)  # group variable should be a factor 
+  
   # number of groups
-  group <- droplevels(group)  #drop unused levels
-  ngroups <- length(levels(group))  #number of groups
-  group_names <- levels(group)  #name groups
+  group <- droplevels(group)  # drop unused levels
+  ngroups <- length(levels(group))  # number of groups
+  group_names <- levels(group)  # name groups
   
   if (ngroups == 1) {
     strata <- FALSE
   }
-  if (spline_mod == TRUE) {
-    show_spline <- TRUE
-  } else {
-    show_spline <- FALSE
-  }
-  
+
   # time variables
   time_horizon <- max(time_pred_surv_table, time_horizon)
   time_pred_surv_table <- time_pred_surv_table/time_unit
@@ -41,34 +41,34 @@ f_PERSUADE <- function(years, status, group, strata = FALSE, spline_mod = FALSE,
   }
   
   # hazard rate
-  hr_smooth1 <- muhaz(years, status, group == levels(group)[1])
+  hr_smooth_gr1 <- muhaz(years, status, group == levels(group)[1])
   if (ngroups > 1) {
-    hr_smooth2 <- muhaz(years, status, group == levels(group)[2])
+    hr_smooth_gr2 <- muhaz(years, status, group == levels(group)[2])
   }
   if (ngroups > 2) {
-    hr_smooth3 <- muhaz(years, status, group == levels(group)[3])
+    hr_smooth_gr3 <- muhaz(years, status, group == levels(group)[3])
   }
-  hr_names <- c(rep(1, length(hr_smooth1$est.grid)), if (ngroups > 1) {
-    rep(2, length(hr_smooth2$est.grid))
+  hr_names <- c(rep(1, length(hr_smooth_gr1$est.grid)), if (ngroups > 1) {
+    rep(2, length(hr_smooth_gr2$est.grid))
   } else {
     NA
   }, if (ngroups > 2) {
-    rep(3, length(hr_smooth3$est.grid))
+    rep(3, length(hr_smooth_gr3$est.grid))
   })
-  hr_max <- data.frame(time = ceiling(max(hr_smooth1$est.grid, if (ngroups > 1) {
-    hr_smooth2$est.grid
+  hr_max <- data.frame(time = ceiling(max(hr_smooth_gr1$est.grid, if (ngroups > 1) {
+    hr_smooth_gr2$est.grid
   } else {
     NA
   }, if (ngroups > 2) {
-    hr_smooth3$est.grid
+    hr_smooth_gr3$est.grid
   } else {
     NA
-  }, na.rm = TRUE)), hr_smooth = ceiling(max(hr_smooth1$haz.est, if (ngroups > 1) {
-    hr_smooth2$haz.est
+  }, na.rm = TRUE)), hr_smooth = ceiling(max(hr_smooth_gr1$haz.est, if (ngroups > 1) {
+    hr_smooth_gr2$haz.est
   } else {
     NA
   }, if (ngroups > 2) {
-    hr_smooth3$haz.est
+    hr_smooth_gr3$haz.est
   } else {
     NA
   }, na.rm = TRUE)))
@@ -118,8 +118,8 @@ f_PERSUADE <- function(years, status, group, strata = FALSE, spline_mod = FALSE,
                                shift(cum_haz$H_lower[cum_haz$group == 3], 1L, type = "lag") - cum_haz$H_lower[cum_haz$group == 3]
                              })
   cum_haz$tp <- 1 - exp(cum_haz$H_delta)^(1/time_unit)
-  cum_haz$tp_lower <- 1 - exp(cum_haz$H_lower_delta)^(1/time_unit)
   cum_haz$tp_upper <- 1 - exp(cum_haz$H_upper_delta)^(1/time_unit)
+  cum_haz$tp_lower <- 1 - exp(cum_haz$H_lower_delta)^(1/time_unit)
   cum_haz$tp_smooth <- pmax(0, pmin(1, c(NA, loess(cum_haz$tp[cum_haz$group == 1] ~ cum_haz$time[cum_haz$group ==  1])$fitted, 
                                          if (ngroups > 1) {
                                            c(NA, loess(cum_haz$tp[cum_haz$group == 2] ~ cum_haz$time[cum_haz$group == 2])$fitted)
@@ -269,7 +269,7 @@ f_PERSUADE <- function(years, status, group, strata = FALSE, spline_mod = FALSE,
                                                                                      paste("group=", group_names[x], sep = ""))]]$est))
   }
   
-  gom_pred[, -1][gom_pred[, -1] < 1e-15] <- 0  #prevent rounding errors for predicted transition probabilities
+  gom_pred[, -1][gom_pred[, -1] < 1e-15] <- 0  # prevent rounding errors for predicted transition probabilities
   
   colnames(expo_pred) <- colnames(weib_pred) <- colnames(gom_pred) <- colnames(lnorm_pred) <- colnames(llog_pred) <- colnames(gam_pred) <- 
     colnames(ggam_pred) <- column_names
@@ -389,28 +389,28 @@ f_PERSUADE <- function(years, status, group, strata = FALSE, spline_mod = FALSE,
     km_tp_gr_3$tp_smooth_upper
   }), na.rm = TRUE)
   
-  hr_names <- c(rep(1, length(hr_smooth1$est.grid)), if (ngroups > 1) {
-    rep(2, length(hr_smooth2$est.grid))
+  hr_names <- c(rep(1, length(hr_smooth_gr1$est.grid)), if (ngroups > 1) {
+    rep(2, length(hr_smooth_gr2$est.grid))
   } else {
     NA
   }, if (ngroups > 2) {
-    rep(3, length(hr_smooth3$est.grid))
+    rep(3, length(hr_smooth_gr3$est.grid))
   })
   
   # parametric survival models
-  cols_extr <- ifelse(spline_mod == TRUE, 14, 8)  # define data frame width for the annual TP calculations
+  cols_tp <- ifelse(spline_mod == TRUE, 14, 8)  # define data frame width for the annual TP calculations
   
-  tp_gr_1 <- cbind(time_pred, 1 - (1 - (shift(surv_gr_1[, 2:cols_extr], 1L, type = "lag") - surv_gr_1[, 2:cols_extr])/
-                                     shift(surv_gr_1[, 2:cols_extr], 1L, type = "lag"))^(1/time_unit))[-1, ]
+  tp_gr_1 <- cbind(time_pred, 1 - (1 - (shift(surv_gr_1[, 2:cols_tp], 1L, type = "lag") - surv_gr_1[, 2:cols_tp])/
+                                     shift(surv_gr_1[, 2:cols_tp], 1L, type = "lag"))^(1/time_unit))[-1, ]
   
   if (ngroups > 1) {
-    tp_gr_2 <- cbind(time_pred, 1 - (1 - (shift(surv_gr_2[, 2:cols_extr], 1L, type = "lag") - surv_gr_2[, 2:cols_extr])/
-                                       shift(surv_gr_2[, 2:cols_extr], 1L, type = "lag"))^(1/time_unit))[-1, ]
+    tp_gr_2 <- cbind(time_pred, 1 - (1 - (shift(surv_gr_2[, 2:cols_tp], 1L, type = "lag") - surv_gr_2[, 2:cols_tp])/
+                                       shift(surv_gr_2[, 2:cols_tp], 1L, type = "lag"))^(1/time_unit))[-1, ]
   }
   
   if (ngroups > 2) {
-    tp_gr_3 <- cbind(time_pred, 1 - (1 - (shift(surv_gr_3[, 2:cols_extr], 1L, type = "lag") - surv_gr_3[, 2:cols_extr])/
-                                       shift(surv_gr_3[, 2:cols_extr], 1L, type = "lag"))^(1/time_unit))[-1, ]
+    tp_gr_3 <- cbind(time_pred, 1 - (1 - (shift(surv_gr_3[, 2:cols_tp], 1L, type = "lag") - surv_gr_3[, 2:cols_tp])/
+                                       shift(surv_gr_3[, 2:cols_tp], 1L, type = "lag"))^(1/time_unit))[-1, ]
   }
   
   # create output dataframe containing each distributions' name, the parameters' name, the parameters,
@@ -556,38 +556,32 @@ f_PERSUADE <- function(years, status, group, strata = FALSE, spline_mod = FALSE,
   # remove column names
   colnames(survmod) <- c("Time-to-event models parameters", rep("", abs(ncol(survmod)) - 1))
   
-  # export to global environment **** NEEdS ADJUSTING **** cluster (e.g. input, km, hr, cum_h, models, model_pred, misc)
-  l1 <- list(years = years, status = status, group = group, ngroups = ngroups, group_names = group_names, show_spline = show_spline, 
-             time_horizon = time_horizon, time_pred_surv_table = time_pred_surv_table, time_pred = time_pred, form = form, 
-             km = km, km_names = km_names, hr_smooth1 = hr_smooth1, hr_names = hr_names, hr_max = hr_max, cum_haz = cum_haz,
-             cox_reg = cox_reg, expo = expo, weib = weib, gom = gom, lnorm = lnorm, llog = llog, gam = gam, ggam = ggam, 
-             expo_pred = expo_pred, weib_pred = weib_pred, gom_pred = gom_pred, gom_pred_h = gom_pred_h, lnorm_pred = lnorm_pred, 
-             llog_pred = llog_pred, gam_pred = gam_pred, ggam_pred = ggam_pred, lbls = lbls, IC = IC, survmod = survmod,
-             surv_gr_1 = surv_gr_1, km_tp_max = km_tp_max, km_tp_gr_1 = km_tp_gr_1, tp_gr_1 = tp_gr_1, cols_extr = cols_extr)
-  if (ngroups > 1) {
-    l2 <- list(hr_smooth2 = hr_smooth2, surv_gr_2 = surv_gr_2, km_tp_gr_2 = km_tp_gr_2, 
-               tp_gr_2 = tp_gr_2)
-  } else {
-    l2 <- NA
-  }
-  if (ngroups > 2) {
-    l3 <- list(hr_smooth3 = hr_smooth3, surv_gr_3 = surv_gr_3, km_tp_gr_3 = km_tp_gr_3, 
-               tp_gr_3 = tp_gr_3)
-  } else {
-    l3 <- NA
-  }
-  if (spline_mod == TRUE) {
-    l4 <- list(spl_hazard1 = spl_hazard1, spl_hazard2 = spl_hazard2, spl_odds1 = spl_odds1, spl_odds2 = spl_odds2, 
-               spl_normal1 = spl_normal1, spl_normal2 = spl_normal2, spl_hazard1_pred = spl_hazard1_pred, 
-               spl_hazard2_pred = spl_hazard2_pred, spl_odds1_pred = spl_odds1_pred, spl_odds2_pred = spl_odds2_pred, 
-               spl_normal1_pred = spl_normal1_pred, spl_normal2_pred = spl_normal2_pred, IC_spl = IC_spl, 
-               lbls_spline = lbls_spline)
-  } else {
-    l4 <- NA
-  }
+  # export to global environment 
+  input <- list(years = years, status = status, group = group, strata = strata, spline_mod = spline_mod, 
+                time_unit = time_unit, time_horizon = time_horizon, time_pred_surv_table = time_pred_surv_table, 
+                time_pred = time_pred)
+  hr <- c(list(hr_smooth_gr1 = hr_smooth_gr1), if (ngroups > 1) {list(hr_smooth_gr2 = hr_smooth_gr2)}, 
+          if (ngroups > 2) {list(hr_smooth_gr3 = hr_smooth_gr3)}, list(hr_names = hr_names, hr_max = hr_max))
+  tp <- c(list(gr_1 = km_tp_gr_1), if (ngroups > 1) {list(gr_2 = km_tp_gr_2)}, if (ngroups > 2) {list(gr_3 = km_tp_gr_3)}, 
+          list(max = km_tp_max))
+  surv_obs <- list(km = km, km_names = km_names, cum_haz = cum_haz, hr = hr, tp = tp, cox_reg = cox_reg)
   
-  output <- c(l1, l2, l3, l4)
-  output <- output[names(output) != ""]
-  output <- output[order(names(output))]
+  surv_model <- c(list(expo = expo, weib = weib, gom = gom, lnorm = lnorm, llog = llog, gam = gam, ggam = ggam, IC = IC), 
+                  if (spline_mod == TRUE) {list(spl_hazard1 = spl_hazard1, spl_hazard2 = spl_hazard2, spl_odds1 = spl_odds1, 
+                                                spl_odds2 = spl_odds2, spl_normal1 = spl_normal1, spl_normal2 = spl_normal2, 
+                                                IC_spl = IC_spl)}, 
+                  list(survmod = survmod))
+  surv_gr_pred <- c(list(surv_gr_1 = surv_gr_1), if (ngroups > 1) {list(surv_gr_2 = surv_gr_2)}, if (ngroups > 2) {list(surv_gr_3 = surv_gr_3)})
+  tp_gr_pred <- c(list(tp_gr_1 = tp_gr_1), if (ngroups > 1) {list(tp_gr_2 = tp_gr_2)}, if (ngroups > 2) {list(tp_gr_3 = tp_gr_3)})
+  surv_pred <- c(list(expo_pred = expo_pred, weib_pred = weib_pred, gom_pred = gom_pred, gom_pred_h = gom_pred_h, 
+                      lnorm_pred = lnorm_pred, llog_pred = llog_pred, gam_pred = gam_pred, ggam_pred = ggam_pred), 
+                 if (spline_mod == TRUE) {list(spl_hazard1_pred = spl_hazard1_pred, spl_hazard2_pred = spl_hazard2_pred, 
+                                               spl_odds1_pred = spl_odds1_pred, spl_odds2_pred = spl_odds2_pred, spl_normal1_pred = spl_normal1_pred, 
+                                               spl_normal2_pred = spl_normal2_pred)}, list(surv_gr_pred = surv_gr_pred, tp_gr_pred = tp_gr_pred))
+  misc <- c(list(form = form, group_names = group_names, ngroups = ngroups, lbls = lbls), 
+            if (spline_mod == TRUE) {list(lbls_spline = lbls_spline)}, list(cols_tp = cols_tp))
+  
+  output <- list(name = name, input = input, surv_obs = surv_obs, surv_model = surv_model, surv_pred = surv_pred, misc = misc)
+  
   return(output)
 }
