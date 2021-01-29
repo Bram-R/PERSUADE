@@ -30,8 +30,8 @@ PERSUADE <- f_PERSUADE(name = name, years = years, status = status, group = grou
                        time_pred_surv_table = time_pred_surv_table)
 
 # PERSUADE RMARKDOWN (create PDF file and images) 
-dir.create(paste0(name, "_output")) # create output directory
-save(PERSUADE, file = paste0(name, "_output/PERSUADE.RData"))  # save PERSUADE (so it can be loaded in the RMARKDOWN script)
+dir.create(paste0(name, "_output"), showWarnings = FALSE) # create output directory
+save(PERSUADE, file = paste0(name, "_output/PERSUADE.RData"))  # save PERSUADE in output directory (so it can be loaded in the RMD script)
 
 xfun::Rscript_call( #Rscript_call renders the Rmd document in a new R session (similar to clicking the Knit button in RStudio)
   rmarkdown::render,
@@ -43,10 +43,6 @@ xfun::Rscript_call( #Rscript_call renders the Rmd document in a new R session (s
 write.table(PERSUADE$surv_model$survmod, "clipboard-128", sep = "\t")
 write.csv(PERSUADE$surv_model$survmod, paste0(name, "_output/PERSUADE_Time-to-event_models_parameters_comma.csv"))
 write.csv2(PERSUADE$surv_model$survmod, paste0(name, "_output/PERSUADE_Time-to-event_models_parameters_semicolon.csv"))
-
-# # file management (move PERSUADE object to output directory)
-# file.copy(from = "PERSUADE.RData", to = paste0(name, "_output"))  #copy PERSUADE object to output directory
-# file.remove("PERSUADE.RData") #remove PERSUADE object from working directory
 
 
 
