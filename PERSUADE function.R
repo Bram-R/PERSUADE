@@ -28,18 +28,18 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
     }
   
   # hazard rate
-  hr_smooth_gr1 <- muhaz(years, status, group == levels(group)[1])
-  if (ngroups > 1) {hr_smooth_gr2 <- muhaz(years, status, group == levels(group)[2])}
-  if (ngroups > 2) {hr_smooth_gr3 <- muhaz(years, status, group == levels(group)[3])}
-  hr_names <- c(rep(1, length(hr_smooth_gr1$est.grid)), 
-                if (ngroups > 1) {rep(2, length(hr_smooth_gr2$est.grid))} else {NA}, 
-                if (ngroups > 2) {rep(3, length(hr_smooth_gr3$est.grid))})
-  hr_max <- data.frame(time = ceiling(max(hr_smooth_gr1$est.grid, 
-                                          if (ngroups > 1) {hr_smooth_gr2$est.grid} else {NA}, 
-                                          if (ngroups > 2) {hr_smooth_gr3$est.grid} else {NA}, na.rm = TRUE)), 
-                       hr_smooth = ceiling(max(hr_smooth_gr1$haz.est, 
-                                               if (ngroups > 1) {hr_smooth_gr2$haz.est} else {NA}, 
-                                               if (ngroups > 2) {hr_smooth_gr3$haz.est} else {NA}, na.rm = TRUE)))
+  haz_smooth_gr1 <- muhaz(years, status, group == levels(group)[1])
+  if (ngroups > 1) {haz_smooth_gr2 <- muhaz(years, status, group == levels(group)[2])}
+  if (ngroups > 2) {haz_smooth_gr3 <- muhaz(years, status, group == levels(group)[3])}
+  haz_names <- c(rep(1, length(haz_smooth_gr1$est.grid)), 
+                if (ngroups > 1) {rep(2, length(haz_smooth_gr2$est.grid))} else {NA}, 
+                if (ngroups > 2) {rep(3, length(haz_smooth_gr3$est.grid))})
+  haz_max <- data.frame(time = ceiling(max(haz_smooth_gr1$est.grid, 
+                                          if (ngroups > 1) {haz_smooth_gr2$est.grid} else {NA}, 
+                                          if (ngroups > 2) {haz_smooth_gr3$est.grid} else {NA}, na.rm = TRUE)), 
+                        smooth = ceiling(max(haz_smooth_gr1$haz.est, 
+                                             if (ngroups > 1) {haz_smooth_gr2$haz.est} else {NA}, 
+                                             if (ngroups > 2) {haz_smooth_gr3$haz.est} else {NA}, na.rm = TRUE)))
   
   # cumulative hazard
   cum_haz <- data.frame(group = c(rep(1, length(time_pred[time_pred <= max(years[group == levels(group)[1]])])), 
@@ -287,36 +287,36 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
   # calculate annual transition probability based on observed data (km)
   km_tp_gr_1 <- data.frame(
     time = cum_haz$time[cum_haz$group==1],
-    tp_smooth = cum_haz$tp_smooth[cum_haz$group==1],
-    tp_smooth_lower = cum_haz$tp_lower_smooth[cum_haz$group==1],
-    tp_smooth_upper = cum_haz$tp_upper_smooth[cum_haz$group==1]
+    smooth = cum_haz$tp_smooth[cum_haz$group==1],
+    smooth_lower = cum_haz$tp_lower_smooth[cum_haz$group==1],
+    smooth_upper = cum_haz$tp_upper_smooth[cum_haz$group==1]
   )
   
   if (ngroups > 1) {
     km_tp_gr_2 <- data.frame(
       time = cum_haz$time[cum_haz$group==2],
-      tp_smooth = cum_haz$tp_smooth[cum_haz$group==2],
-      tp_smooth_lower = cum_haz$tp_lower_smooth[cum_haz$group==2],
-      tp_smooth_upper = cum_haz$tp_upper_smooth[cum_haz$group==2]
+      smooth = cum_haz$tp_smooth[cum_haz$group==2],
+      smooth_lower = cum_haz$tp_lower_smooth[cum_haz$group==2],
+      smooth_upper = cum_haz$tp_upper_smooth[cum_haz$group==2]
     )
   }
   if (ngroups > 2) {
     km_tp_gr_3 <- data.frame(
       time = cum_haz$time[cum_haz$group==3],
-      tp_smooth = cum_haz$tp_smooth[cum_haz$group==3],
-      tp_smooth_lower = cum_haz$tp_lower_smooth[cum_haz$group==3],
-      tp_smooth_upper = cum_haz$tp_upper_smooth[cum_haz$group==3]
+      smooth = cum_haz$tp_smooth[cum_haz$group==3],
+      smooth_lower = cum_haz$tp_lower_smooth[cum_haz$group==3],
+      smooth_upper = cum_haz$tp_upper_smooth[cum_haz$group==3]
     )
   }
   
-  km_tp_max <- max(c(km_tp_gr_1$tp_smooth_upper, 
-                     if (ngroups > 1) {km_tp_gr_2$tp_smooth_upper}, 
-                     if (ngroups > 2) {km_tp_gr_3$tp_smooth_upper}), 
+  km_tp_max <- max(c(km_tp_gr_1$smooth_upper, 
+                     if (ngroups > 1) {km_tp_gr_2$smooth_upper}, 
+                     if (ngroups > 2) {km_tp_gr_3$smooth_upper}), 
                    na.rm = TRUE)
   
-  hr_names <- c(rep(1, length(hr_smooth_gr1$est.grid)), 
-                if (ngroups > 1) {rep(2, length(hr_smooth_gr2$est.grid))} else {NA}, 
-                if (ngroups > 2) {rep(3, length(hr_smooth_gr3$est.grid))}
+  haz_names <- c(rep(1, length(haz_smooth_gr1$est.grid)), 
+                if (ngroups > 1) {rep(2, length(haz_smooth_gr2$est.grid))} else {NA}, 
+                if (ngroups > 2) {rep(3, length(haz_smooth_gr3$est.grid))}
   )
   
   # parametric survival models
@@ -464,15 +464,15 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
   input <- list(years = years, status = status, group = group, strata = strata, spline_mod = spline_mod, 
                 time_unit = time_unit, time_horizon = time_horizon, time_pred_surv_table = time_pred_surv_table, 
                 time_pred = time_pred)
-  hr <- c(list(hr_smooth_gr1 = hr_smooth_gr1), 
-          if (ngroups > 1) {list(hr_smooth_gr2 = hr_smooth_gr2)}, 
-          if (ngroups > 2) {list(hr_smooth_gr3 = hr_smooth_gr3)}, 
-          list(hr_names = hr_names, hr_max = hr_max))
+  haz <- c(list(smooth_gr1 = haz_smooth_gr1), 
+          if (ngroups > 1) {list(smooth_gr2 = haz_smooth_gr2)}, 
+          if (ngroups > 2) {list(smooth_gr3 = haz_smooth_gr3)}, 
+          list(names = haz_names, max = haz_max))
   tp <- c(list(gr_1 = km_tp_gr_1), 
           if (ngroups > 1) {list(gr_2 = km_tp_gr_2)}, 
           if (ngroups > 2) {list(gr_3 = km_tp_gr_3)}, 
           list(max = km_tp_max))
-  surv_obs <- list(km = km, km_names = km_names, cum_haz = cum_haz, hr = hr, tp = tp, cox_reg = cox_reg)
+  surv_obs <- list(km = km, km_names = km_names, cum_haz = cum_haz, haz = haz, tp = tp, cox_reg = cox_reg)
   
   surv_model <- c(list(expo = expo, weib = weib, gom = gom, lnorm = lnorm, llog = llog, gam = gam, ggam = ggam, IC = IC), 
                   if (spline_mod == TRUE) {list(spl_hazard1 = spl_hazard1, spl_hazard2 = spl_hazard2, spl_odds1 = spl_odds1, 
