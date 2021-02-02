@@ -12,34 +12,35 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
   ngroups <- length(levels(group))  # number of groups
   group_names <- levels(group)  # name groups
   if (ngroups == 1) {strata <- FALSE}
-
+  
   # time variables
   time_horizon <- max(time_pred_surv_table, time_horizon)
   time_pred_surv_table <- time_pred_surv_table/time_unit
   time_pred <- seq(from = 0, to = time_horizon, by = time_unit)
   
   # form
-  if (ngroups == 1) {form <- as.formula(Surv(years, status) ~ 1)} else {form <- as.formula(Surv(years, status) ~ group)}
+  if (ngroups == 1) {form <- as.formula(Surv(years, status) ~ 1)} else {
+    form <- as.formula(Surv(years, status) ~ group)}
   
   # km
   km <- npsurv(form)
   km_names <- if (ngroups == 1) {rep(1, length(km$time))} else {
     if (ngroups >= 2) {c(rep(1, km$strata[1]), rep(2, km$strata[2]), if (ngroups == 3) {rep(3, km$strata[3])})}
-    }
+  }
   
   # hazard rate
-  haz_smooth_gr1 <- muhaz(years, status, group == levels(group)[1])
-  if (ngroups > 1) {haz_smooth_gr2 <- muhaz(years, status, group == levels(group)[2])}
-  if (ngroups > 2) {haz_smooth_gr3 <- muhaz(years, status, group == levels(group)[3])}
-  haz_names <- c(rep(1, length(haz_smooth_gr1$est.grid)), 
-                if (ngroups > 1) {rep(2, length(haz_smooth_gr2$est.grid))} else {NA}, 
-                if (ngroups > 2) {rep(3, length(haz_smooth_gr3$est.grid))})
-  haz_max <- data.frame(time = ceiling(max(haz_smooth_gr1$est.grid, 
-                                          if (ngroups > 1) {haz_smooth_gr2$est.grid} else {NA}, 
-                                          if (ngroups > 2) {haz_smooth_gr3$est.grid} else {NA}, na.rm = TRUE)), 
-                        smooth = ceiling(max(haz_smooth_gr1$haz.est, 
-                                             if (ngroups > 1) {haz_smooth_gr2$haz.est} else {NA}, 
-                                             if (ngroups > 2) {haz_smooth_gr3$haz.est} else {NA}, na.rm = TRUE)))
+  haz <- c(list(smooth_gr1 = muhaz(years, status, group == levels(group)[1])),
+           if (ngroups > 1) {list(smooth_gr2 = muhaz(years, status, group == levels(group)[2]))},
+           if (ngroups > 2) {list(smooth_gr3 = muhaz(years, status, group == levels(group)[3]))})
+  haz_names <- c(rep(1, length(haz$smooth_gr1$est.grid)), 
+                 if (ngroups > 1) {rep(2, length(haz$smooth_gr2$est.grid))} else {NA}, 
+                 if (ngroups > 2) {rep(3, length(haz$smooth_gr3$est.grid))})
+  haz_max <- data.frame(time = ceiling(max(haz$smooth_gr1$est.grid, 
+                                           if (ngroups > 1) {haz$smooth_gr2$est.grid} else {NA}, 
+                                           if (ngroups > 2) {haz$smooth_gr3$est.grid} else {NA}, na.rm = TRUE)), 
+                        smooth = ceiling(max(haz$smooth_gr1$haz.est, 
+                                             if (ngroups > 1) {haz$smooth_gr2$haz.est} else {NA}, 
+                                             if (ngroups > 2) {haz$smooth_gr3$haz.est} else {NA}, na.rm = TRUE)))
   
   # cumulative hazard
   cum_haz <- data.frame(group = c(rep(1, length(time_pred[time_pred <= max(years[group == levels(group)[1]])])), 
@@ -251,7 +252,7 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
           spl_odds2_pred[, 2], spl_normal1_pred[, 2], spl_normal2_pred[, 2])} else {
             cbind(time_pred, expo_pred[, 2], weib_pred[, 2], gom_pred[, 2], lnorm_pred[, 2], llog_pred[, 2],
                   gam_pred[, 2], ggam_pred[, 2])
-  }
+          }
   if (ngroups > 1) {
     surv_gr_2 <- if (spline_mod == TRUE) {
       cbind(time_pred, expo_pred[, 3], weib_pred[, 3], gom_pred[, 3], lnorm_pred[, 3], llog_pred[, 3],
@@ -259,7 +260,7 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
             spl_odds2_pred[, 3], spl_normal1_pred[, 3], spl_normal2_pred[, 3])} else {
               cbind(time_pred, expo_pred[, 3], weib_pred[, 3], gom_pred[, 3], lnorm_pred[, 3], llog_pred[, 3],
                     gam_pred[, 3], ggam_pred[, 3])
-    }
+            }
   }
   
   if (ngroups > 2) {
@@ -269,7 +270,7 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
             spl_odds2_pred[, 4], spl_normal1_pred[, 4], spl_normal2_pred[, 4])} else {
               cbind(time_pred, expo_pred[, 4], weib_pred[, 4], gom_pred[, 4], lnorm_pred[, 4], llog_pred[,4],
                     gam_pred[, 4], ggam_pred[, 4])
-    }
+            }
   }
   
   lbls_all <- if (spline_mod == TRUE) {
@@ -278,7 +279,7 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
       "10. Spline 1 knot odds", "11. Spline 2 knots odds", "12. Spline 1 knot normal", "13. Spline 2 knots normal")} else {
         c("Time", "1. Exponential", "2. Weibull", "3. Gompertz", "4. Log-normal", "5. Log-logistic", "6. Gamma", 
           "7. Generalised Gamma")
-  }
+      }
   
   colnames(surv_gr_1) <- lbls_all
   if (ngroups > 1) {colnames(surv_gr_2) <- lbls_all}
@@ -313,11 +314,6 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
                      if (ngroups > 1) {km_tp_gr_2$smooth_upper}, 
                      if (ngroups > 2) {km_tp_gr_3$smooth_upper}), 
                    na.rm = TRUE)
-  
-  haz_names <- c(rep(1, length(haz_smooth_gr1$est.grid)), 
-                if (ngroups > 1) {rep(2, length(haz_smooth_gr2$est.grid))} else {NA}, 
-                if (ngroups > 2) {rep(3, length(haz_smooth_gr3$est.grid))}
-  )
   
   # parametric survival models
   cols_tp <- ifelse(spline_mod == TRUE, 14, 8)  # define data frame width for the annual TP calculations
@@ -395,7 +391,7 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
               cbind(llog$cov, matrix(0, nrow = ngroups + 1 * addrows, ncol = 2 * addcols)), 
               cbind(gam$cov, matrix(0, nrow = ngroups + 1 * addrows, ncol = 2 * addcols)), 
               cbind(ggam$cov, matrix(0, nrow = ngroups + 2 * addrows, ncol = 1 * addcols)))
-  }
+          }
   
   survmod <- cbind(distnames, parnames, res, empty, empty, empty, cov)
   
@@ -460,14 +456,11 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
   # remove column names
   colnames(survmod) <- c("Time-to-event models parameters", rep("", abs(ncol(survmod)) - 1))
   
-  # export to global environment 
+  # output
   input <- list(years = years, status = status, group = group, strata = strata, spline_mod = spline_mod, 
                 time_unit = time_unit, time_horizon = time_horizon, time_pred_surv_table = time_pred_surv_table, 
                 time_pred = time_pred)
-  haz <- c(list(smooth_gr1 = haz_smooth_gr1), 
-          if (ngroups > 1) {list(smooth_gr2 = haz_smooth_gr2)}, 
-          if (ngroups > 2) {list(smooth_gr3 = haz_smooth_gr3)}, 
-          list(names = haz_names, max = haz_max))
+  haz <- c(haz, list(names = haz_names, max = haz_max))
   tp <- c(list(gr_1 = km_tp_gr_1), 
           if (ngroups > 1) {list(gr_2 = km_tp_gr_2)}, 
           if (ngroups > 2) {list(gr_3 = km_tp_gr_3)}, 
@@ -482,19 +475,19 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
   surv_gr_pred <- c(list(surv_gr_1 = surv_gr_1), 
                     if (ngroups > 1) {list(surv_gr_2 = surv_gr_2)}, 
                     if (ngroups > 2) {list(surv_gr_3 = surv_gr_3)})
-  tp_gr_pred <- c(list(tp_gr_1 = tp_gr_1), 
-                  if (ngroups > 1) {list(tp_gr_2 = tp_gr_2)}, 
-                  if (ngroups > 2) {list(tp_gr_3 = tp_gr_3)})
-  surv_model_pred <- c(list(expo_pred = expo_pred, weib_pred = weib_pred, gom_pred = gom_pred, lnorm_pred = lnorm_pred, llog_pred = llog_pred, 
-                          gam_pred = gam_pred, ggam_pred = ggam_pred, expo_pred_h = expo_pred_h, weib_pred_h = weib_pred_h, 
-                          gom_pred_h = gom_pred_h, lnorm_pred_h = lnorm_pred_h, llog_pred_h = llog_pred_h, gam_pred_h = gam_pred_h, 
-                          ggam_pred_h = ggam_pred_h), 
-                          (if (spline_mod == TRUE) {list(spl_hazard1_pred = spl_hazard1_pred, spl_hazard2_pred = spl_hazard2_pred, 
-                                                        spl_odds1_pred = spl_odds1_pred, spl_odds2_pred = spl_odds2_pred, spl_normal1_pred = spl_normal1_pred, 
-                                                        spl_normal2_pred = spl_normal2_pred, spl_hazard1_pred_h = spl_hazard1_pred_h, spl_hazard2_pred_h = spl_hazard2_pred_h, 
-                                                        spl_odds1_pred_h = spl_odds1_pred_h, spl_odds2_pred_h = spl_odds2_pred_h, spl_normal1_pred_h = spl_normal1_pred_h, 
-                                                        spl_normal2_pred_h = spl_normal2_pred_h)}))
-  surv_pred <- c(list(surv_model_pred = surv_model_pred, surv_gr_pred = surv_gr_pred, tp_gr_pred = tp_gr_pred))
+  tp_gr_pred <- c(list(gr_1 = tp_gr_1), 
+                  if (ngroups > 1) {list(gr_2 = tp_gr_2)}, 
+                  if (ngroups > 2) {list(gr_3 = tp_gr_3)})
+  surv_model_pred <- c(list(expo = expo_pred, weib = weib_pred, gom = gom_pred, lnorm = lnorm_pred, llog = llog_pred, 
+                            gam = gam_pred, ggam = ggam_pred, expo_h = expo_pred_h, weib_h = weib_pred_h, 
+                            gom_h = gom_pred_h, lnorm_h = lnorm_pred_h, llog_h = llog_pred_h, gam_h = gam_pred_h, 
+                            ggam_h = ggam_pred_h), 
+                       (if (spline_mod == TRUE) {list(spl_hazard1 = spl_hazard1_pred, spl_hazard2 = spl_hazard2_pred, 
+                                                      spl_odds1 = spl_odds1_pred, spl_odds2 = spl_odds2_pred, spl_normal1 = spl_normal1_pred, 
+                                                      spl_normal2 = spl_normal2_pred, spl_hazard1_h = spl_hazard1_pred_h, spl_hazard2_h = spl_hazard2_pred_h, 
+                                                      spl_odds1_h = spl_odds1_pred_h, spl_odds2_h = spl_odds2_pred_h, spl_normal1_h = spl_normal1_pred_h, 
+                                                      spl_normal2_h = spl_normal2_pred_h)}))
+  surv_pred <- c(list(model = surv_model_pred, gr = surv_gr_pred, tp_gr = tp_gr_pred))
   misc <- c(list(form = form, group_names = group_names, ngroups = ngroups, lbls = lbls), 
             if (spline_mod == TRUE) {list(lbls_spline = lbls_spline)}, list(cols_tp = cols_tp))
   
