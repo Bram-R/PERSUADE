@@ -120,7 +120,7 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
   
   # fit spline models
   if (spline_mod == TRUE) {
-    k <- 1  #number of splines
+    k <- 1  #number of knots
     spl_hazard1 <- if (strata == FALSE) {flexsurvspline(form, k = k, scale = "hazard")} else {
       flexsurvspline(form, k = k, scale = "hazard", anc = list(gamma1 = ~group, gamma2 = ~group))
     }
@@ -131,7 +131,7 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
       flexsurvspline(form, k = k, scale = "normal", anc = list(gamma1 = ~group, gamma2 = ~group))
     }
     
-    k <- 2  #number of splines
+    k <- 2  #number of knots
     spl_hazard2 <- if (strata == FALSE) {flexsurvspline(form, k = k, scale = "hazard")} else {
       flexsurvspline(form, k = k, scale = "hazard", anc = list(gamma1 = ~group, gamma2 = ~group, gamma3 = ~group))
     }
@@ -142,12 +142,25 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
       flexsurvspline(form, k = k, scale = "normal", anc = list(gamma1 = ~group, gamma2 = ~group, gamma3 = ~group))
     }
     
-    lbls_spline <- c(" 8. Spline 1 knot hazard", " 9. Spline 2 knots hazard", "10. Spline 1 knot odds", 
-                     "11. Spline 2 knots odds", "12. Spline 1 knot normal", "13. Spline 2 knots normal")
+    k <- 3  #number of knots
+    spl_hazard3 <- if (strata == FALSE) {flexsurvspline(form, k = k, scale = "hazard")} else {
+      flexsurvspline(form, k = k, scale = "hazard", anc = list(gamma1 = ~group, gamma2 = ~group, gamma3 = ~group, gamma4 = ~group))
+    }
+    spl_odds3 <- if (strata == FALSE) {flexsurvspline(form, k = k, scale = "odds")} else {
+      flexsurvspline(form, k = k, scale = "odds", anc = list(gamma1 = ~group, gamma2 = ~group, gamma3 = ~group, gamma4 = ~group))
+    }
+    spl_normal3 <- if (strata == FALSE) {flexsurvspline(form, k = k, scale = "normal")} else {
+      flexsurvspline(form, k = k, scale = "normal", anc = list(gamma1 = ~group, gamma2 = ~group, gamma3 = ~group, gamma4 = ~group))
+    }
+    
+    lbls_spline <- c(" 8. Spline 1 knot hazard", " 9. Spline 2 knots hazard", " 10. Spline 3 knots hazard", "11. Spline 1 knot odds", 
+                     "12. Spline 2 knots odds", "13. Spline 3 knots odds", "14. Spline 1 knot normal", "15. Spline 2 knots normal", 
+                     "16. Spline 3 knots normal")
     
     # calculate AIC and BIC
-    AIC_spl <- c(spl_hazard1$AIC, spl_hazard2$AIC, spl_odds1$AIC, spl_odds2$AIC, spl_normal1$AIC, spl_normal2$AIC)
-    BIC_spl <- BIC(spl_hazard1, spl_hazard2, spl_odds1, spl_odds2, spl_normal1, spl_normal2)[2]
+    AIC_spl <- c(spl_hazard1$AIC, spl_hazard2$AIC, spl_hazard3$AIC, spl_odds1$AIC, spl_odds2$AIC, spl_odds3$AIC, spl_normal1$AIC, 
+                 spl_normal2$AIC, spl_normal3$AIC)
+    BIC_spl <- BIC(spl_hazard1, spl_hazard2, spl_hazard3, spl_odds1, spl_odds2, spl_odds3, spl_normal1, spl_normal2, spl_normal3)[2]
     IC_spl <- data.frame(lbls_spline, AIC_spl, BIC_spl)
     colnames(IC_spl) <- c("Model", "AIC", "BIC")
   }
@@ -205,25 +218,34 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
   if (spline_mod == TRUE) {
     spl_hazard1_est <- summary(spl_hazard1, t = time_pred)
     spl_hazard2_est <- summary(spl_hazard2, t = time_pred)
+    spl_hazard3_est <- summary(spl_hazard3, t = time_pred)
     spl_odds1_est <- summary(spl_odds1, t = time_pred)
     spl_odds2_est <- summary(spl_odds2, t = time_pred)
+    spl_odds3_est <- summary(spl_odds3, t = time_pred)
     spl_normal1_est <- summary(spl_normal1, t = time_pred)
     spl_normal2_est <- summary(spl_normal2, t = time_pred)
+    spl_normal3_est <- summary(spl_normal3, t = time_pred)
     
     spl_hazard1_pred_h <- summary(spl_hazard1, t = time_pred, type = "hazard")
     spl_hazard2_pred_h <- summary(spl_hazard2, t = time_pred, type = "hazard")
+    spl_hazard3_pred_h <- summary(spl_hazard3, t = time_pred, type = "hazard")
     spl_odds1_pred_h <- summary(spl_odds1, t = time_pred, type = "hazard")
     spl_odds2_pred_h <- summary(spl_odds2, t = time_pred, type = "hazard")
+    spl_odds3_pred_h <- summary(spl_odds3, t = time_pred, type = "hazard")
     spl_normal1_pred_h <- summary(spl_normal1, t = time_pred, type = "hazard")
     spl_normal2_pred_h <- summary(spl_normal2, t = time_pred, type = "hazard")
+    spl_normal3_pred_h <- summary(spl_normal3, t = time_pred, type = "hazard")
     
     if (ngroups == 1) {
       spl_hazard1_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) spl_hazard1_est[[1]]$est))
       spl_hazard2_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) spl_hazard2_est[[1]]$est))
+      spl_hazard3_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) spl_hazard3_est[[1]]$est))
       spl_odds1_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) spl_odds1_est[[1]]$est))
       spl_odds2_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) spl_odds2_est[[1]]$est))
+      spl_odds3_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) spl_odds3_est[[1]]$est))
       spl_normal1_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) spl_normal1_est[[1]]$est))
       spl_normal2_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) spl_normal2_est[[1]]$est))
+      spl_normal3_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) spl_normal3_est[[1]]$est))
     }
     
     if (ngroups > 1) {
@@ -231,55 +253,51 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
         spl_hazard1_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
       spl_hazard2_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
         spl_hazard2_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
+      spl_hazard3_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
+        spl_hazard3_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
       spl_odds1_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
         spl_odds1_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
       spl_odds2_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
         spl_odds2_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
+      spl_odds3_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
+        spl_odds3_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
       spl_normal1_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
         spl_normal1_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
       spl_normal2_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
         spl_normal2_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
+      spl_normal3_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
+        spl_normal3_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
     }
     
-    colnames(spl_hazard1_pred) <- colnames(spl_hazard2_pred) <- colnames(spl_odds1_pred) <- colnames(spl_odds2_pred) <- 
-      colnames(spl_normal1_pred) <- colnames(spl_normal2_pred) <- column_names
+    colnames(spl_hazard1_pred) <- colnames(spl_hazard2_pred) <- colnames(spl_hazard3_pred)<- colnames(spl_odds1_pred) <- 
+      colnames(spl_odds2_pred) <- colnames(spl_odds3_pred) <- colnames(spl_normal1_pred) <- colnames(spl_normal2_pred) <- 
+      colnames(spl_normal3_pred) <- column_names
   }
   
   # predicted survival
-  surv_gr_1 <- if (spline_mod == TRUE) {
-    cbind(time_pred, expo_pred[, 2], weib_pred[, 2], gom_pred[, 2], lnorm_pred[, 2], llog_pred[, 2], 
-          gam_pred[, 2], ggam_pred[, 2], spl_hazard1_pred[, 2], spl_hazard2_pred[, 2], spl_odds1_pred[, 2], 
-          spl_odds2_pred[, 2], spl_normal1_pred[, 2], spl_normal2_pred[, 2])} else {
-            cbind(time_pred, expo_pred[, 2], weib_pred[, 2], gom_pred[, 2], lnorm_pred[, 2], llog_pred[, 2],
-                  gam_pred[, 2], ggam_pred[, 2])
-          }
+  surv_gr_1 <- cbind(time_pred, expo_pred[, 2], weib_pred[, 2], gom_pred[, 2], lnorm_pred[, 2], llog_pred[, 2],
+                     gam_pred[, 2], ggam_pred[, 2], if (spline_mod == TRUE) {
+                       cbind(spl_hazard1_pred[, 2], spl_hazard2_pred[, 2], spl_hazard3_pred[, 2], 
+                             spl_odds1_pred[, 2], spl_odds2_pred[, 2], spl_odds3_pred[, 2], 
+                             spl_normal1_pred[, 2], spl_normal2_pred[, 2], spl_normal3_pred[, 2])}) 
+
   if (ngroups > 1) {
-    surv_gr_2 <- if (spline_mod == TRUE) {
-      cbind(time_pred, expo_pred[, 3], weib_pred[, 3], gom_pred[, 3], lnorm_pred[, 3], llog_pred[, 3],
-            gam_pred[, 3], ggam_pred[, 3], spl_hazard1_pred[, 3], spl_hazard2_pred[, 3], spl_odds1_pred[, 3], 
-            spl_odds2_pred[, 3], spl_normal1_pred[, 3], spl_normal2_pred[, 3])} else {
-              cbind(time_pred, expo_pred[, 3], weib_pred[, 3], gom_pred[, 3], lnorm_pred[, 3], llog_pred[, 3],
-                    gam_pred[, 3], ggam_pred[, 3])
-            }
+    surv_gr_2 <- cbind(time_pred, expo_pred[, 3], weib_pred[, 3], gom_pred[, 3], lnorm_pred[, 3], llog_pred[, 3],
+                       gam_pred[, 3], ggam_pred[, 3], if (spline_mod == TRUE) {
+                         cbind(spl_hazard1_pred[, 3], spl_hazard2_pred[, 3], spl_hazard3_pred[, 3], 
+                               spl_odds1_pred[, 3], spl_odds2_pred[, 3], spl_odds3_pred[, 3], 
+                               spl_normal1_pred[, 3], spl_normal2_pred[, 3], spl_normal3_pred[, 3])}) 
   }
   
   if (ngroups > 2) {
-    surv_gr_3 <- if (spline_mod == TRUE) {
-      cbind(time_pred, expo_pred[, 4], weib_pred[, 4], gom_pred[, 4], lnorm_pred[, 4], llog_pred[, 4],
-            gam_pred[, 4], ggam_pred[, 4], spl_hazard1_pred[, 4], spl_hazard2_pred[, 4], spl_odds1_pred[, 4],
-            spl_odds2_pred[, 4], spl_normal1_pred[, 4], spl_normal2_pred[, 4])} else {
-              cbind(time_pred, expo_pred[, 4], weib_pred[, 4], gom_pred[, 4], lnorm_pred[, 4], llog_pred[,4],
-                    gam_pred[, 4], ggam_pred[, 4])
-            }
+    surv_gr_3 <- cbind(time_pred, expo_pred[, 4], weib_pred[, 4], gom_pred[, 4], lnorm_pred[, 4], llog_pred[, 4],
+            gam_pred[, 4], ggam_pred[, 4], if (spline_mod == TRUE) {
+              cbind(spl_hazard1_pred[, 4], spl_hazard2_pred[, 4], spl_hazard3_pred[, 4], 
+                    spl_odds1_pred[, 4], spl_odds2_pred[, 4], spl_odds3_pred[, 4], 
+                    spl_normal1_pred[, 4], spl_normal2_pred[, 4], spl_normal3_pred[, 4])}) 
   }
   
-  lbls_all <- if (spline_mod == TRUE) {
-    c("Time", " 1. Exponential", " 2. Weibull", " 3. Gompertz", " 4. Log-normal", " 5. Log-logistic", 
-      " 6. Gamma", " 7. Generalised Gamma", " 8. Spline 1 knot hazard", " 9. Spline 2 knots hazard", 
-      "10. Spline 1 knot odds", "11. Spline 2 knots odds", "12. Spline 1 knot normal", "13. Spline 2 knots normal")} else {
-        c("Time", "1. Exponential", "2. Weibull", "3. Gompertz", "4. Log-normal", "5. Log-logistic", "6. Gamma", 
-          "7. Generalised Gamma")
-      }
+  lbls_all <- c("time", lbls, if (spline_mod == TRUE) {lbls_spline})
   
   colnames(surv_gr_1) <- lbls_all
   if (ngroups > 1) {colnames(surv_gr_2) <- lbls_all}
@@ -468,8 +486,9 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
   surv_obs <- list(km = km, km_names = km_names, cum_haz = cum_haz, haz = haz, tp = tp, cox_reg = cox_reg)
   
   surv_model <- c(list(expo = expo, weib = weib, gom = gom, lnorm = lnorm, llog = llog, gam = gam, ggam = ggam, IC = IC), 
-                  if (spline_mod == TRUE) {list(spl_hazard1 = spl_hazard1, spl_hazard2 = spl_hazard2, spl_odds1 = spl_odds1, 
-                                                spl_odds2 = spl_odds2, spl_normal1 = spl_normal1, spl_normal2 = spl_normal2, 
+                  if (spline_mod == TRUE) {list(spl_hazard1 = spl_hazard1, spl_hazard2 = spl_hazard2, spl_hazard3 = spl_hazard3, 
+                                                spl_odds1 = spl_odds1, spl_odds2 = spl_odds2,  spl_odds3 = spl_odds3, 
+                                                spl_normal1 = spl_normal1, spl_normal2 = spl_normal2, spl_normal3 = spl_normal3, 
                                                 IC_spl = IC_spl)}, 
                   list(survmod = survmod))
   surv_gr_pred <- c(list(surv_gr_1 = surv_gr_1), 
@@ -482,11 +501,12 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
                             gam = gam_pred, ggam = ggam_pred, expo_h = expo_pred_h, weib_h = weib_pred_h, 
                             gom_h = gom_pred_h, lnorm_h = lnorm_pred_h, llog_h = llog_pred_h, gam_h = gam_pred_h, 
                             ggam_h = ggam_pred_h), 
-                       (if (spline_mod == TRUE) {list(spl_hazard1 = spl_hazard1_pred, spl_hazard2 = spl_hazard2_pred, 
-                                                      spl_odds1 = spl_odds1_pred, spl_odds2 = spl_odds2_pred, spl_normal1 = spl_normal1_pred, 
-                                                      spl_normal2 = spl_normal2_pred, spl_hazard1_h = spl_hazard1_pred_h, spl_hazard2_h = spl_hazard2_pred_h, 
-                                                      spl_odds1_h = spl_odds1_pred_h, spl_odds2_h = spl_odds2_pred_h, spl_normal1_h = spl_normal1_pred_h, 
-                                                      spl_normal2_h = spl_normal2_pred_h)}))
+                       (if (spline_mod == TRUE) {list(spl_hazard1 = spl_hazard1_pred, spl_hazard2 = spl_hazard2_pred, spl_hazard3 = spl_hazard3_pred, 
+                                                      spl_odds1 = spl_odds1_pred, spl_odds2 = spl_odds2_pred, spl_odds3 = spl_odds3_pred, 
+                                                      spl_normal1 = spl_normal1_pred, spl_normal2 = spl_normal2_pred, spl_normal3 = spl_normal3_pred, 
+                                                      spl_hazard1_h = spl_hazard1_pred_h, spl_hazard2_h = spl_hazard2_pred_h, spl_hazard3_h = spl_hazard3_pred_h, 
+                                                      spl_odds1_h = spl_odds1_pred_h, spl_odds2_h = spl_odds2_pred_h, spl_odds3_h = spl_odds3_pred_h,
+                                                      spl_normal1_h = spl_normal1_pred_h, spl_normal2_h = spl_normal2_pred_h, spl_normal3_h = spl_normal3_pred_h)}))
   surv_pred <- c(list(model = surv_model_pred, gr = surv_gr_pred, tp_gr = tp_gr_pred))
   misc <- c(list(form = form, group_names = group_names, ngroups = ngroups, lbls = lbls), 
             if (spline_mod == TRUE) {list(lbls_spline = lbls_spline)}, list(cols_tp = cols_tp))
