@@ -334,7 +334,7 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
                    na.rm = TRUE)
   
   # parametric survival models
-  cols_tp <- ifelse(spline_mod == TRUE, 14, 8)  # define data frame width for the annual TP calculations
+  cols_tp <- ifelse(spline_mod == TRUE, 17, 8)  # define data frame width for the annual TP calculations
   
   tp_gr_1 <- cbind(time_pred, 1 - (1 - (shift(surv_gr_1[, 2:cols_tp], 1L, type = "lag") - surv_gr_1[, 2:cols_tp])/
                                      shift(surv_gr_1[, 2:cols_tp], 1L, type = "lag"))^(1/time_unit))[-1, ]
@@ -491,9 +491,9 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
                                                 spl_normal1 = spl_normal1, spl_normal2 = spl_normal2, spl_normal3 = spl_normal3, 
                                                 IC_spl = IC_spl)}, 
                   list(survmod = survmod))
-  surv_gr_pred <- c(list(surv_gr_1 = surv_gr_1), 
-                    if (ngroups > 1) {list(surv_gr_2 = surv_gr_2)}, 
-                    if (ngroups > 2) {list(surv_gr_3 = surv_gr_3)})
+  surv_gr_pred <- c(list(gr_1 = surv_gr_1), 
+                    if (ngroups > 1) {list(gr_2 = surv_gr_2)}, 
+                    if (ngroups > 2) {list(gr_3 = surv_gr_3)})
   tp_gr_pred <- c(list(gr_1 = tp_gr_1), 
                   if (ngroups > 1) {list(gr_2 = tp_gr_2)}, 
                   if (ngroups > 2) {list(gr_3 = tp_gr_3)})

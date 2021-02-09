@@ -24,7 +24,7 @@ if (length(new.packages)) install.packages(new.packages)  #install new packages 
 suppressPackageStartupMessages(lapply(packages, require, character.only = TRUE))  #load packages
 
 # COLOUR PALETTE
-n <- 8  #number of different colors (to be used for palette)
+n <- 9  #number of different colors (to be used for palette)
 palette(rainbow(n = n, s = 1, v = 1, start = 0, end = max(1, n - 1)/n, alpha = 1))
 ```
 
@@ -138,23 +138,29 @@ evalq({
   legend("topleft", legend = misc$lbls, col = 1:7, lty = 1, cex = 0.8)
   
   if (input$spline_mod == TRUE) {
-    plot(cbind(surv_pred$model$spl_hazard1_h[[1]]$time, surv_pred$model$spl_hazard1_h[[1]]$est), 
+    plot(cbind(surv_obs$haz$smooth_gr1$est.grid, surv_obs$haz$smooth_gr1$haz.est),
          main = paste("Group", misc$group_names[1]),
          type = "l", col = "black", lty = 1, lwd = 2, xlab = "time", ylab = "smoothed hazard rate", 
          xlim = c(0, surv_obs$haz$max$time), ylim = c(0, surv_obs$haz$max$smooth))
     lines(cbind(surv_pred$model$spl_hazard1_h[[1]]$time, surv_pred$model$spl_hazard1_h[[1]]$est), 
           col = "1", lty = 1, lwd = 1)
-    lines(cbind(surv_pred$model$spl_hazard2_h[[1]]$time, surv_pred$model$spl_hazard1_h[[1]]$est), 
+    lines(cbind(surv_pred$model$spl_hazard2_h[[1]]$time, surv_pred$model$spl_hazard2_h[[1]]$est), 
           col = "2", lty = 1, lwd = 1)
-    lines(cbind(surv_pred$model$spl_odds1_h[[1]]$time, surv_pred$model$spl_odds1_h[[1]]$est), 
+    lines(cbind(surv_pred$model$spl_hazard3_h[[1]]$time, surv_pred$model$spl_hazard3_h[[1]]$est), 
           col = "3", lty = 1, lwd = 1)
-    lines(cbind(surv_pred$model$spl_odds2_h[[1]]$time, surv_pred$model$spl_odds2_h[[1]]$est), 
+    lines(cbind(surv_pred$model$spl_odds1_h[[1]]$time, surv_pred$model$spl_odds1_h[[1]]$est), 
           col = "4", lty = 1, lwd = 1)
-    lines(cbind(surv_pred$model$spl_normal1_h[[1]]$time, surv_pred$model$spl_normal1_h[[1]]$est), 
+    lines(cbind(surv_pred$model$spl_odds2_h[[1]]$time, surv_pred$model$spl_odds2_h[[1]]$est), 
           col = "5", lty = 1, lwd = 1)
-    lines(cbind(surv_pred$model$spl_normal2_h[[1]]$time, surv_pred$model$spl_normal2_h[[1]]$est), 
+    lines(cbind(surv_pred$model$spl_odds3_h[[1]]$time, surv_pred$model$spl_odds3_h[[1]]$est), 
           col = "6", lty = 1, lwd = 1)
-    legend("topleft", legend = misc$lbls_spline, col = 1:6, lty = 1, cex = 0.8)
+    lines(cbind(surv_pred$model$spl_normal1_h[[1]]$time, surv_pred$model$spl_normal1_h[[1]]$est), 
+          col = "7", lty = 1, lwd = 1)
+    lines(cbind(surv_pred$model$spl_normal2_h[[1]]$time, surv_pred$model$spl_normal2_h[[1]]$est), 
+          col = "8", lty = 1, lwd = 1)
+    lines(cbind(surv_pred$model$spl_normal3_h[[1]]$time, surv_pred$model$spl_normal3_h[[1]]$est), 
+          col = "9", lty = 1, lwd = 1)
+    legend("topleft", legend = misc$lbls_spline, col = 1:9, lty = 1, cex = 0.8)
   }
 }, envir = PERSUADE)
 
@@ -189,17 +195,23 @@ evalq({
            xlim = c(0, surv_obs$haz$max$time), ylim = c(0, surv_obs$haz$max$smooth))
       lines(cbind(surv_pred$model$spl_hazard1_h[[2]]$time, surv_pred$model$spl_hazard1_h[[2]]$est), 
             col = "1", lty = "2222", lwd = 1)
-      lines(cbind(surv_pred$model$spl_hazard2_h[[2]]$time, surv_pred$model$spl_hazard1_h[[2]]$est), 
+      lines(cbind(surv_pred$model$spl_hazard2_h[[2]]$time, surv_pred$model$spl_hazard2_h[[2]]$est), 
             col = "2", lty = "2222", lwd = 1)
-      lines(cbind(surv_pred$model$spl_odds1_h[[2]]$time, surv_pred$model$spl_odds1_h[[2]]$est), 
+      lines(cbind(surv_pred$model$spl_hazard3_h[[2]]$time, surv_pred$model$spl_hazard3_h[[2]]$est), 
             col = "3", lty = "2222", lwd = 1)
-      lines(cbind(surv_pred$model$spl_odds2_h[[2]]$time, surv_pred$model$spl_odds2_h[[2]]$est), 
+      lines(cbind(surv_pred$model$spl_odds1_h[[2]]$time, surv_pred$model$spl_odds1_h[[2]]$est), 
             col = "4", lty = "2222", lwd = 1)
-      lines(cbind(surv_pred$model$spl_normal1_h[[2]]$time, surv_pred$model$spl_normal1_h[[2]]$est), 
+      lines(cbind(surv_pred$model$spl_odds2_h[[2]]$time, surv_pred$model$spl_odds2_h[[2]]$est), 
             col = "5", lty = "2222", lwd = 1)
-      lines(cbind(surv_pred$model$spl_normal2_h[[2]]$time, surv_pred$model$spl_normal2_h[[2]]$est), 
+      lines(cbind(surv_pred$model$spl_odds3_h[[2]]$time, surv_pred$model$spl_odds3_h[[2]]$est), 
             col = "6", lty = "2222", lwd = 1)
-      legend("topleft", legend = misc$lbls_spline, col = 1:6, lty = "2222", cex = 0.8)
+      lines(cbind(surv_pred$model$spl_normal1_h[[2]]$time, surv_pred$model$spl_normal1_h[[2]]$est), 
+            col = "7", lty = "2222", lwd = 1)
+      lines(cbind(surv_pred$model$spl_normal2_h[[2]]$time, surv_pred$model$spl_normal2_h[[2]]$est), 
+            col = "8", lty = "2222", lwd = 1)
+      lines(cbind(surv_pred$model$spl_normal3_h[[2]]$time, surv_pred$model$spl_normal3_h[[2]]$est), 
+            col = "9", lty = "2222", lwd = 1)
+      legend("topleft", legend = misc$lbls_spline, col = 1:9, lty = "2222", cex = 0.8)
     }
   }
 }, envir = PERSUADE)
@@ -234,17 +246,23 @@ evalq({
            xlim = c(0, surv_obs$haz$max$time), ylim = c(0, surv_obs$haz$max$smooth))
       lines(cbind(surv_pred$model$spl_hazard1_h[[3]]$time, surv_pred$model$spl_hazard1_h[[3]]$est), 
             col = "1", lty = "5212", lwd = 1)
-      lines(cbind(surv_pred$model$spl_hazard2_h[[3]]$time, surv_pred$model$spl_hazard1_h[[3]]$est), 
+      lines(cbind(surv_pred$model$spl_hazard2_h[[3]]$time, surv_pred$model$spl_hazard2_h[[3]]$est), 
             col = "2", lty = "5212", lwd = 1)
-      lines(cbind(surv_pred$model$spl_odds1_h[[3]]$time, surv_pred$model$spl_odds1_h[[3]]$est), 
+      lines(cbind(surv_pred$model$spl_hazard3_h[[3]]$time, surv_pred$model$spl_hazard3_h[[3]]$est), 
             col = "3", lty = "5212", lwd = 1)
-      lines(cbind(surv_pred$model$spl_odds2_h[[3]]$time, surv_pred$model$spl_odds2_h[[3]]$est), 
+      lines(cbind(surv_pred$model$spl_odds1_h[[3]]$time, surv_pred$model$spl_odds1_h[[3]]$est), 
             col = "4", lty = "5212", lwd = 1)
-      lines(cbind(surv_pred$model$spl_normal1_h[[3]]$time, surv_pred$model$spl_normal1_h[[3]]$est), 
+      lines(cbind(surv_pred$model$spl_odds2_h[[3]]$time, surv_pred$model$spl_odds2_h[[3]]$est), 
             col = "5", lty = "5212", lwd = 1)
-      lines(cbind(surv_pred$model$spl_normal2_h[[3]]$time, surv_pred$model$spl_normal2_h[[3]]$est), 
+      lines(cbind(surv_pred$model$spl_odds3_h[[3]]$time, surv_pred$model$spl_odds3_h[[3]]$est), 
             col = "6", lty = "5212", lwd = 1)
-      legend("topleft", legend = misc$lbls_spline, col = 1:6, lty = "5212", cex = 0.8)
+      lines(cbind(surv_pred$model$spl_normal1_h[[3]]$time, surv_pred$model$spl_normal1_h[[3]]$est), 
+            col = "7", lty = "5212", lwd = 1)
+      lines(cbind(surv_pred$model$spl_normal2_h[[3]]$time, surv_pred$model$spl_normal2_h[[3]]$est), 
+            col = "8", lty = "5212", lwd = 1)
+      lines(cbind(surv_pred$model$spl_normal3_h[[3]]$time, surv_pred$model$spl_normal3_h[[3]]$est), 
+            col = "9", lty = "5212", lwd = 1)
+      legend("topleft", legend = misc$lbls_spline, col = 1:9, lty = "5212", cex = 0.8)
     }
   }
 }, envir = PERSUADE)
@@ -1078,18 +1096,18 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-##Spline odds 1 knot
-```{r spline_odds1, echo=FALSE, out.height = "30%", fig.width=11, eval = PERSUADE$input$spline_mod}
+##Spline hazard 3 knots
+```{r spline_hazard3, echo=FALSE, out.height = "30%", fig.width=11, eval = PERSUADE$input$spline_mod}
 evalq({
-  # 1 knot
-  plot(surv_obs$km, lwd = 2, main = "A: Kaplan-Meier (Spline, 1 knot, odds scale)", 
+  # 2 knots
+  plot(surv_obs$km, lwd = 2, main = "A: Kaplan-Meier (Spline, 3 knots, hazard scale)", 
        xlab = "time", ylab = "survival", col = c("black", "lightgrey", "darkgrey"))
-  lines(cbind(input$time_pred, surv_pred$model$spl_odds1[, 2]), col = "3", lty = 1, lwd = 2)
+  lines(cbind(input$time_pred, surv_pred$model$spl_hazard3[, 2]), col = "3", lty = 1, lwd = 2)
   if (misc$ngroups > 1) {
-    lines(cbind(input$time_pred, surv_pred$model$spl_odds1[, 3]), col = "3", lty = "2222", lwd = 2)
+    lines(cbind(input$time_pred, surv_pred$model$spl_hazard3[, 3]), col = "3", lty = "2222", lwd = 2)
   }
   if (misc$ngroups > 2) {
-    lines(cbind(input$time_pred, surv_pred$model$spl_odds1[, 4]), col = "3", lty = "5212", lwd = 2)
+    lines(cbind(input$time_pred, surv_pred$model$spl_hazard3[, 4]), col = "3", lty = "5212", lwd = 2)
   }
   # add shading confidence intervals
   polygon(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
@@ -1102,19 +1120,21 @@ evalq({
   }
   if (misc$ngroups > 2) {
     polygon(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
-            c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])), 
+            c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])),
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
-  abline(v = exp(surv_model$spl_odds1$knots[2]), lty = 2, lwd = 1.5)
-  abline(v = exp(surv_model$spl_odds1$knots[1]), lty = 3, lwd = 1)
-  abline(v = exp(surv_model$spl_odds1$knots[3]), lty = 3, lwd = 1)
+  abline(v = exp(surv_model$spl_hazard3$knots[2]), lty = 2, lwd = 1.5)
+  abline(v = exp(surv_model$spl_hazard3$knots[3]), lty = 2, lwd = 1.5)
+  abline(v = exp(surv_model$spl_hazard3$knots[4]), lty = 2, lwd = 1.5)
+  abline(v = exp(surv_model$spl_hazard3$knots[1]), lty = 3, lwd = 1)
+  abline(v = exp(surv_model$spl_hazard3$knots[5]), lty = 3, lwd = 1)
   legend("bottomleft", legend = misc$group_names, col = "3", 
          lty = as.integer(c(1, "2222", "5212")), cex = 0.8)
   
   # annual transition probabilities
   plot(cbind(surv_obs$tp$gr_1$time, surv_obs$tp$gr_1$smooth), lwd = 1, 
-       lty = 1, type = "b", cex = 0.6, pch = 1, col = "black",
-       main = "B: Annual transition probability (Spline, 1 knot, odds scale)", 
+       lty = 1, type = "b", cex = 0.6, pch = 1, col = "black", 
+       main = "B: Annual transition probability (Spline, 3 knots, hazard scale)", 
        xlab = "time", ylab = "annual transition probability (smoothed)", 
        ylim = c(0, ceiling(surv_obs$tp$max * 10)/10), xlim = c(0, ceiling(surv_obs$km$maxtime * 10)/10))
   lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_1[, 11]), col = "3", lty = 1, lwd = 2)
@@ -1142,52 +1162,54 @@ evalq({
             c(surv_obs$tp$gr_3$smooth_lower, rev(surv_obs$tp$gr_3$smooth_upper)), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
-  abline(v = exp(surv_model$spl_odds1$knots[2]), lty = 2, lwd = 1.5)
-  abline(v = exp(surv_model$spl_odds1$knots[1]), lty = 3, lwd = 1)
-  abline(v = exp(surv_model$spl_odds1$knots[3]), lty = 3, lwd = 1)
+  abline(v = exp(surv_model$spl_hazard3$knots[2]), lty = 2, lwd = 1.5)
+  abline(v = exp(surv_model$spl_hazard3$knots[3]), lty = 2, lwd = 1.5)
+  abline(v = exp(surv_model$spl_hazard3$knots[4]), lty = 2, lwd = 1.5)
+  abline(v = exp(surv_model$spl_hazard3$knots[1]), lty = 3, lwd = 1)
+  abline(v = exp(surv_model$spl_hazard3$knots[5]), lty = 3, lwd = 1)
   legend("topleft", legend = misc$group_names, col = "3", 
          lty = as.integer(c(1, "2222", "5212")), cex = 0.8)
   
   # diagnostics
-  plot(cbind(log(surv_obs$km$time), -log(surv_obs$km$surv/(1 - surv_obs$km$surv))), 
-       cex = 0.6, pch = c(1, 8, 9)[surv_obs$km_names], 
+  plot(cbind(log(surv_obs$km$time), log(-log(surv_obs$km$surv))), cex = 0.6, 
+       pch = c(1, 8, 9)[surv_obs$km_names], 
+       xlim = c(floor(min(log(surv_obs$km$time)[surv_obs$km$surv != 1])), 
+                ceiling(max(log(surv_obs$km$time)))), 
        col = c("black", "lightgrey", "darkgrey")[surv_obs$km_names], 
-       main = "C: Diagnostic plot (Spline, 1 knot, odds scale)", 
-       xlim = c(floor(min(log(surv_obs$km$time)[surv_obs$km$surv != 1])), ceiling(max(log(surv_obs$km$time)))), 
-       xlab = "LN(time)", ylab = "-LN(survival odds)")
-  lines(cbind(log(input$time_pred), 
-              -log(surv_pred$model$spl_odds1[, 2]/(1 - surv_pred$model$spl_odds1[, 2]))), 
+       main = "C: Diagnostic plot (Spline, 3 knots, hazard scale)", 
+       xlab = "LN(time)", ylab = "LN(cumulative hazard)")
+  lines(cbind(log(input$time_pred), log(-log(surv_pred$model$spl_hazard3[, 2]))), 
         col = "3", lty = 1, lwd = 2)
   if (misc$ngroups > 1) {
-    lines(cbind(log(input$time_pred), 
-                -log(surv_pred$model$spl_odds1[, 3]/(1 - surv_pred$model$spl_odds1[, 3]))),
+    lines(cbind(log(input$time_pred), log(-log(surv_pred$model$spl_hazard3[, 3]))), 
           col = "3", lty = "2222", lwd = 2)
   }
   if (misc$ngroups > 2) {
-    lines(cbind(log(input$time_pred), 
-                -log(surv_pred$model$spl_odds1[, 4]/(1 - surv_pred$model$spl_odds1[, 4]))), 
+    lines(cbind(log(input$time_pred), log(-log(surv_pred$model$spl_hazard3[, 4]))), 
           col = "3", lty = "5212", lwd = 2)
   }
-  abline(v = surv_model$spl_odds1$knots[2], lty = 2, lwd = 1.5)
-  abline(v = surv_model$spl_odds1$knots[1], lty = 3, lwd = 1)
-  abline(v = surv_model$spl_odds1$knots[3], lty = 3, lwd = 1)
+  abline(v = surv_model$spl_hazard3$knots[2], lty = 2, lwd = 1.5)
+  abline(v = surv_model$spl_hazard3$knots[3], lty = 2, lwd = 1.5)
+  abline(v = surv_model$spl_hazard3$knots[4], lty = 2, lwd = 1.5)
+  abline(v = surv_model$spl_hazard3$knots[1], lty = 3, lwd = 1)
+  abline(v = surv_model$spl_hazard3$knots[5], lty = 3, lwd = 1)
   legend("topleft", legend = misc$group_names, col = "3", 
          lty = as.integer(c(1, "2222", "5212")), cex = 0.8)
 }, envir = PERSUADE)
 ```
 
-##Spline odds 2 knots
-```{r spline_odds2, echo=FALSE, out.height = "30%", fig.width=11, eval = PERSUADE$input$spline_mod}
+##Spline odds 1 knot
+```{r spline_odds1, echo=FALSE, out.height = "30%", fig.width=11, eval = PERSUADE$input$spline_mod}
 evalq({
-  # 2 knots
-  plot(surv_obs$km, lwd = 2, main = "A: Kaplan-Meier (Spline, 2 knots, odds scale)", 
+  # 1 knot
+  plot(surv_obs$km, lwd = 2, main = "A: Kaplan-Meier (Spline, 1 knot, odds scale)", 
        xlab = "time", ylab = "survival", col = c("black", "lightgrey", "darkgrey"))
-  lines(cbind(input$time_pred, surv_pred$model$spl_odds2[, 2]), col = "4", lty = 1, lwd = 2)
+  lines(cbind(input$time_pred, surv_pred$model$spl_odds1[, 2]), col = "4", lty = 1, lwd = 2)
   if (misc$ngroups > 1) {
-    lines(cbind(input$time_pred, surv_pred$model$spl_odds2[, 3]), col = "4", lty = "2222", lwd = 2)
+    lines(cbind(input$time_pred, surv_pred$model$spl_odds1[, 3]), col = "4", lty = "2222", lwd = 2)
   }
   if (misc$ngroups > 2) {
-    lines(cbind(input$time_pred, surv_pred$model$spl_odds2[, 4]), col = "4", lty = "5212", lwd = 2)
+    lines(cbind(input$time_pred, surv_pred$model$spl_odds1[, 4]), col = "4", lty = "5212", lwd = 2)
   }
   # add shading confidence intervals
   polygon(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
@@ -1195,7 +1217,7 @@ evalq({
           col = adjustcolor("black", alpha.f = 0.3), border = NA)
   if (misc$ngroups > 1) {
     polygon(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
-            c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])),
+            c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])), 
             col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
   }
   if (misc$ngroups > 2) {
@@ -1203,17 +1225,16 @@ evalq({
             c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
-  abline(v = exp(surv_model$spl_odds2$knots[2]), lty = 2, lwd = 1.5)
-  abline(v = exp(surv_model$spl_odds2$knots[3]), lty = 2, lwd = 1.5)
-  abline(v = exp(surv_model$spl_odds2$knots[1]), lty = 3, lwd = 1)
-  abline(v = exp(surv_model$spl_odds2$knots[4]), lty = 3, lwd = 1)
+  abline(v = exp(surv_model$spl_odds1$knots[2]), lty = 2, lwd = 1.5)
+  abline(v = exp(surv_model$spl_odds1$knots[1]), lty = 3, lwd = 1)
+  abline(v = exp(surv_model$spl_odds1$knots[3]), lty = 3, lwd = 1)
   legend("bottomleft", legend = misc$group_names, col = "4", 
          lty = as.integer(c(1, "2222", "5212")), cex = 0.8)
   
   # annual transition probabilities
   plot(cbind(surv_obs$tp$gr_1$time, surv_obs$tp$gr_1$smooth), lwd = 1, 
-       lty = 1, type = "b", cex = 0.6, pch = 1, col = "black", 
-       main = "B: Annual transition probability (Spline, 2 knots, odds scale)", 
+       lty = 1, type = "b", cex = 0.6, pch = 1, col = "black",
+       main = "B: Annual transition probability (Spline, 1 knot, odds scale)", 
        xlab = "time", ylab = "annual transition probability (smoothed)", 
        ylim = c(0, ceiling(surv_obs$tp$max * 10)/10), xlim = c(0, ceiling(surv_obs$km$maxtime * 10)/10))
   lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_1[, 12]), col = "4", lty = 1, lwd = 2)
@@ -1241,54 +1262,52 @@ evalq({
             c(surv_obs$tp$gr_3$smooth_lower, rev(surv_obs$tp$gr_3$smooth_upper)), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
-  abline(v = exp(surv_model$spl_odds2$knots[2]), lty = 2, lwd = 1.5)
-  abline(v = exp(surv_model$spl_odds2$knots[3]), lty = 2, lwd = 1.5)
-  abline(v = exp(surv_model$spl_odds2$knots[1]), lty = 3, lwd = 1)
-  abline(v = exp(surv_model$spl_odds2$knots[4]), lty = 3, lwd = 1)
+  abline(v = exp(surv_model$spl_odds1$knots[2]), lty = 2, lwd = 1.5)
+  abline(v = exp(surv_model$spl_odds1$knots[1]), lty = 3, lwd = 1)
+  abline(v = exp(surv_model$spl_odds1$knots[3]), lty = 3, lwd = 1)
   legend("topleft", legend = misc$group_names, col = "4", 
          lty = as.integer(c(1, "2222", "5212")), cex = 0.8)
   
   # diagnostics
   plot(cbind(log(surv_obs$km$time), -log(surv_obs$km$surv/(1 - surv_obs$km$surv))), 
        cex = 0.6, pch = c(1, 8, 9)[surv_obs$km_names], 
-       col = c("black", "lightgrey", "darkgrey")[surv_obs$km_names],
-       main = "C: Diagnostic plot (Spline, 2 knots, odds scale)", 
+       col = c("black", "lightgrey", "darkgrey")[surv_obs$km_names], 
+       main = "C: Diagnostic plot (Spline, 1 knot, odds scale)", 
        xlim = c(floor(min(log(surv_obs$km$time)[surv_obs$km$surv != 1])), ceiling(max(log(surv_obs$km$time)))), 
        xlab = "LN(time)", ylab = "-LN(survival odds)")
   lines(cbind(log(input$time_pred), 
-              -log(surv_pred$model$spl_odds2[, 2]/(1 - surv_pred$model$spl_odds2[, 2]))), 
+              -log(surv_pred$model$spl_odds1[, 2]/(1 - surv_pred$model$spl_odds1[, 2]))), 
         col = "4", lty = 1, lwd = 2)
   if (misc$ngroups > 1) {
     lines(cbind(log(input$time_pred), 
-                -log(surv_pred$model$spl_odds2[, 3]/(1 - surv_pred$model$spl_odds2[, 3]))), 
+                -log(surv_pred$model$spl_odds1[, 3]/(1 - surv_pred$model$spl_odds1[, 3]))),
           col = "4", lty = "2222", lwd = 2)
   }
   if (misc$ngroups > 2) {
     lines(cbind(log(input$time_pred), 
-                -log(surv_pred$model$spl_odds2[, 4]/(1 - surv_pred$model$spl_odds2[, 4]))), 
+                -log(surv_pred$model$spl_odds1[, 4]/(1 - surv_pred$model$spl_odds1[, 4]))), 
           col = "4", lty = "5212", lwd = 2)
   }
-  abline(v = surv_model$spl_odds2$knots[2], lty = 2, lwd = 1.5)
-  abline(v = surv_model$spl_odds2$knots[3], lty = 2, lwd = 1.5)
-  abline(v = surv_model$spl_odds2$knots[1], lty = 3, lwd = 1)
-  abline(v = surv_model$spl_odds2$knots[4], lty = 3, lwd = 1)
+  abline(v = surv_model$spl_odds1$knots[2], lty = 2, lwd = 1.5)
+  abline(v = surv_model$spl_odds1$knots[1], lty = 3, lwd = 1)
+  abline(v = surv_model$spl_odds1$knots[3], lty = 3, lwd = 1)
   legend("topleft", legend = misc$group_names, col = "4", 
          lty = as.integer(c(1, "2222", "5212")), cex = 0.8)
 }, envir = PERSUADE)
 ```
 
-##Spline normal 1 knot
-```{r spline_norm1, echo=FALSE, out.height = "30%", fig.width=11, eval = PERSUADE$input$spline_mod}
+##Spline odds 2 knots
+```{r spline_odds2, echo=FALSE, out.height = "30%", fig.width=11, eval = PERSUADE$input$spline_mod}
 evalq({
-  # 1 knot
-  plot(surv_obs$km, lwd = 2, main = "A: Kaplan-Meier (Spline, 1 knot, normal scale)", 
+  # 2 knots
+  plot(surv_obs$km, lwd = 2, main = "A: Kaplan-Meier (Spline, 2 knots, odds scale)", 
        xlab = "time", ylab = "survival", col = c("black", "lightgrey", "darkgrey"))
-  lines(cbind(input$time_pred, surv_pred$model$spl_normal1[, 2]), col = "5", lty = 1, lwd = 2)
+  lines(cbind(input$time_pred, surv_pred$model$spl_odds2[, 2]), col = "5", lty = 1, lwd = 2)
   if (misc$ngroups > 1) {
-    lines(cbind(input$time_pred, surv_pred$model$spl_normal1[, 3]), col = "5", lty = "2222", lwd = 2)
+    lines(cbind(input$time_pred, surv_pred$model$spl_odds2[, 3]), col = "5", lty = "2222", lwd = 2)
   }
   if (misc$ngroups > 2) {
-    lines(cbind(input$time_pred, surv_pred$model$spl_normal1[, 4]), col = "5", lty = "5212", lwd = 2)
+    lines(cbind(input$time_pred, surv_pred$model$spl_odds2[, 4]), col = "5", lty = "5212", lwd = 2)
   }
   # add shading confidence intervals
   polygon(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
@@ -1296,7 +1315,7 @@ evalq({
           col = adjustcolor("black", alpha.f = 0.3), border = NA)
   if (misc$ngroups > 1) {
     polygon(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
-            c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])), 
+            c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])),
             col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
   }
   if (misc$ngroups > 2) {
@@ -1304,16 +1323,17 @@ evalq({
             c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
-  abline(v = exp(surv_model$spl_normal1$knots[2]), lty = 2, lwd = 1.5)
-  abline(v = exp(surv_model$spl_normal1$knots[1]), lty = 3, lwd = 1)
-  abline(v = exp(surv_model$spl_normal1$knots[3]), lty = 3, lwd = 1)
+  abline(v = exp(surv_model$spl_odds2$knots[2]), lty = 2, lwd = 1.5)
+  abline(v = exp(surv_model$spl_odds2$knots[3]), lty = 2, lwd = 1.5)
+  abline(v = exp(surv_model$spl_odds2$knots[1]), lty = 3, lwd = 1)
+  abline(v = exp(surv_model$spl_odds2$knots[4]), lty = 3, lwd = 1)
   legend("bottomleft", legend = misc$group_names, col = "5", 
          lty = as.integer(c(1, "2222", "5212")), cex = 0.8)
   
   # annual transition probabilities
   plot(cbind(surv_obs$tp$gr_1$time, surv_obs$tp$gr_1$smooth), lwd = 1, 
-       lty = 1, type = "b", cex = 0.6, pch = 1, col = "black",
-       main = "B: Annual transition probability (Spline, 1 knot, normal scale)", 
+       lty = 1, type = "b", cex = 0.6, pch = 1, col = "black", 
+       main = "B: Annual transition probability (Spline, 2 knots, odds scale)", 
        xlab = "time", ylab = "annual transition probability (smoothed)", 
        ylim = c(0, ceiling(surv_obs$tp$max * 10)/10), xlim = c(0, ceiling(surv_obs$km$maxtime * 10)/10))
   lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_1[, 13]), col = "5", lty = 1, lwd = 2)
@@ -1341,53 +1361,54 @@ evalq({
             c(surv_obs$tp$gr_3$smooth_lower, rev(surv_obs$tp$gr_3$smooth_upper)), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
-  abline(v = exp(surv_model$spl_normal1$knots[2]), lty = 2, lwd = 1.5)
-  abline(v = exp(surv_model$spl_normal1$knots[1]), lty = 3, lwd = 1)
-  abline(v = exp(surv_model$spl_normal1$knots[3]), lty = 3, lwd = 1)
+  abline(v = exp(surv_model$spl_odds2$knots[2]), lty = 2, lwd = 1.5)
+  abline(v = exp(surv_model$spl_odds2$knots[3]), lty = 2, lwd = 1.5)
+  abline(v = exp(surv_model$spl_odds2$knots[1]), lty = 3, lwd = 1)
+  abline(v = exp(surv_model$spl_odds2$knots[4]), lty = 3, lwd = 1)
   legend("topleft", legend = misc$group_names, col = "5", 
          lty = as.integer(c(1, "2222", "5212")), cex = 0.8)
   
   # diagnostics
-  plot(cbind(log(surv_obs$km$time), 
-             -qnorm(surv_obs$km$surv, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)), 
-       pch = c(1, 8, 9)[surv_obs$km_names], 
-       col = c("black", "lightgrey", "darkgrey")[surv_obs$km_names], cex = 0.6, 
-       main = "C: Diagnostic plot (Spline, 1 knot, normal scale)", 
-       xlim = c(floor(min(log(surv_obs$km$time)[surv_obs$km$surv != 1])), 
-                ceiling(max(log(surv_obs$km$time)))), xlab = "LN(time)", ylab = "- standard normal quartiles")
+  plot(cbind(log(surv_obs$km$time), -log(surv_obs$km$surv/(1 - surv_obs$km$surv))), 
+       cex = 0.6, pch = c(1, 8, 9)[surv_obs$km_names], 
+       col = c("black", "lightgrey", "darkgrey")[surv_obs$km_names],
+       main = "C: Diagnostic plot (Spline, 2 knots, odds scale)", 
+       xlim = c(floor(min(log(surv_obs$km$time)[surv_obs$km$surv != 1])), ceiling(max(log(surv_obs$km$time)))), 
+       xlab = "LN(time)", ylab = "-LN(survival odds)")
   lines(cbind(log(input$time_pred), 
-              -qnorm(surv_pred$model$spl_normal1[, 2], mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)), 
+              -log(surv_pred$model$spl_odds2[, 2]/(1 - surv_pred$model$spl_odds2[, 2]))), 
         col = "5", lty = 1, lwd = 2)
   if (misc$ngroups > 1) {
     lines(cbind(log(input$time_pred), 
-                -qnorm(surv_pred$model$spl_normal1[, 3], mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)),
+                -log(surv_pred$model$spl_odds2[, 3]/(1 - surv_pred$model$spl_odds2[, 3]))), 
           col = "5", lty = "2222", lwd = 2)
   }
   if (misc$ngroups > 2) {
     lines(cbind(log(input$time_pred), 
-                -qnorm(surv_pred$model$spl_normal1[, 4], mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)),
+                -log(surv_pred$model$spl_odds2[, 4]/(1 - surv_pred$model$spl_odds2[, 4]))), 
           col = "5", lty = "5212", lwd = 2)
   }
-  abline(v = surv_model$spl_normal1$knots[2], lty = 2, lwd = 1.5)
-  abline(v = surv_model$spl_normal1$knots[1], lty = 3, lwd = 1)
-  abline(v = surv_model$spl_normal1$knots[3], lty = 3, lwd = 1)
+  abline(v = surv_model$spl_odds2$knots[2], lty = 2, lwd = 1.5)
+  abline(v = surv_model$spl_odds2$knots[3], lty = 2, lwd = 1.5)
+  abline(v = surv_model$spl_odds2$knots[1], lty = 3, lwd = 1)
+  abline(v = surv_model$spl_odds2$knots[4], lty = 3, lwd = 1)
   legend("topleft", legend = misc$group_names, col = "5", 
          lty = as.integer(c(1, "2222", "5212")), cex = 0.8)
 }, envir = PERSUADE)
 ```
 
-##Spline normal 2 knots
-```{r spline_norm2, echo=FALSE, out.height = "30%", fig.width=11, eval = PERSUADE$input$spline_mod}
+##Spline odds 3 knots
+```{r spline_odds3, echo=FALSE, out.height = "30%", fig.width=11, eval = PERSUADE$input$spline_mod}
 evalq({
   # 2 knots
-  plot(surv_obs$km, lwd = 2, main = "A: Kaplan-Meier (Spline, 2 knots, normal scale)", 
+  plot(surv_obs$km, lwd = 2, main = "A: Kaplan-Meier (Spline, 3 knots, odds scale)", 
        xlab = "time", ylab = "survival", col = c("black", "lightgrey", "darkgrey"))
-  lines(cbind(input$time_pred, surv_pred$model$spl_normal2[, 2]), col = "6", lty = 1, lwd = 2)
+  lines(cbind(input$time_pred, surv_pred$model$spl_odds3[, 2]), col = "6", lty = 1, lwd = 2)
   if (misc$ngroups > 1) {
-    lines(cbind(input$time_pred, surv_pred$model$spl_normal2[, 3]), col = "6", lty = "2222", lwd = 2)
+    lines(cbind(input$time_pred, surv_pred$model$spl_odds3[, 3]), col = "6", lty = "2222", lwd = 2)
   }
   if (misc$ngroups > 2) {
-    lines(cbind(input$time_pred, surv_pred$model$spl_normal2[, 4]), col = "6", lty = "5212", lwd = 2)
+    lines(cbind(input$time_pred, surv_pred$model$spl_odds3[, 4]), col = "6", lty = "5212", lwd = 2)
   }
   # add shading confidence intervals
   polygon(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
@@ -1395,7 +1416,7 @@ evalq({
           col = adjustcolor("black", alpha.f = 0.3), border = NA)
   if (misc$ngroups > 1) {
     polygon(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
-            c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])), 
+            c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])),
             col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
   }
   if (misc$ngroups > 2) {
@@ -1403,17 +1424,18 @@ evalq({
             c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
-  abline(v = exp(surv_model$spl_normal2$knots[2]), lty = 2, lwd = 1.5)
-  abline(v = exp(surv_model$spl_normal2$knots[3]), lty = 2, lwd = 1.5)
-  abline(v = exp(surv_model$spl_normal2$knots[1]), lty = 3, lwd = 1)
-  abline(v = exp(surv_model$spl_normal2$knots[4]), lty = 3, lwd = 1)
+  abline(v = exp(surv_model$spl_odds3$knots[2]), lty = 2, lwd = 1.5)
+  abline(v = exp(surv_model$spl_odds3$knots[3]), lty = 2, lwd = 1.5)
+  abline(v = exp(surv_model$spl_odds3$knots[4]), lty = 2, lwd = 1.5)
+  abline(v = exp(surv_model$spl_odds3$knots[1]), lty = 3, lwd = 1)
+  abline(v = exp(surv_model$spl_odds3$knots[5]), lty = 3, lwd = 1)
   legend("bottomleft", legend = misc$group_names, col = "6", 
          lty = as.integer(c(1, "2222", "5212")), cex = 0.8)
   
   # annual transition probabilities
   plot(cbind(surv_obs$tp$gr_1$time, surv_obs$tp$gr_1$smooth), lwd = 1, 
        lty = 1, type = "b", cex = 0.6, pch = 1, col = "black", 
-       main = "B: Annual transition probability (Spline, 2 knots, normal scale)", 
+       main = "B: Annual transition probability (Spline, 3 knots, odds scale)", 
        xlab = "time", ylab = "annual transition probability (smoothed)", 
        ylim = c(0, ceiling(surv_obs$tp$max * 10)/10), xlim = c(0, ceiling(surv_obs$km$maxtime * 10)/10))
   lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_1[, 14]), col = "6", lty = 1, lwd = 2)
@@ -1441,11 +1463,214 @@ evalq({
             c(surv_obs$tp$gr_3$smooth_lower, rev(surv_obs$tp$gr_3$smooth_upper)), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
+  abline(v = exp(surv_model$spl_odds3$knots[2]), lty = 2, lwd = 1.5)
+  abline(v = exp(surv_model$spl_odds3$knots[3]), lty = 2, lwd = 1.5)
+  abline(v = exp(surv_model$spl_odds3$knots[4]), lty = 2, lwd = 1.5)
+  abline(v = exp(surv_model$spl_odds3$knots[1]), lty = 3, lwd = 1)
+  abline(v = exp(surv_model$spl_odds3$knots[5]), lty = 3, lwd = 1)
+  legend("topleft", legend = misc$group_names, col = "6", 
+         lty = as.integer(c(1, "2222", "5212")), cex = 0.8)
+  
+  # diagnostics
+  plot(cbind(log(surv_obs$km$time), -log(surv_obs$km$surv/(1 - surv_obs$km$surv))), 
+       cex = 0.6, pch = c(1, 8, 9)[surv_obs$km_names], 
+       col = c("black", "lightgrey", "darkgrey")[surv_obs$km_names],
+       main = "C: Diagnostic plot (Spline, 3 knots, odds scale)", 
+       xlim = c(floor(min(log(surv_obs$km$time)[surv_obs$km$surv != 1])), ceiling(max(log(surv_obs$km$time)))), 
+       xlab = "LN(time)", ylab = "-LN(survival odds)")
+  lines(cbind(log(input$time_pred), 
+              -log(surv_pred$model$spl_odds3[, 2]/(1 - surv_pred$model$spl_odds3[, 2]))), 
+        col = "6", lty = 1, lwd = 2)
+  if (misc$ngroups > 1) {
+    lines(cbind(log(input$time_pred), 
+                -log(surv_pred$model$spl_odds3[, 3]/(1 - surv_pred$model$spl_odds3[, 3]))), 
+          col = "6", lty = "2222", lwd = 2)
+  }
+  if (misc$ngroups > 2) {
+    lines(cbind(log(input$time_pred), 
+                -log(surv_pred$model$spl_odds3[, 4]/(1 - surv_pred$model$spl_odds3[, 4]))), 
+          col = "6", lty = "5212", lwd = 2)
+  }
+  abline(v = surv_model$spl_odds3$knots[2], lty = 2, lwd = 1.5)
+  abline(v = surv_model$spl_odds3$knots[3], lty = 2, lwd = 1.5)
+  abline(v = surv_model$spl_odds3$knots[4], lty = 2, lwd = 1.5)
+  abline(v = surv_model$spl_odds3$knots[1], lty = 3, lwd = 1)
+  abline(v = surv_model$spl_odds3$knots[5], lty = 3, lwd = 1)
+  legend("topleft", legend = misc$group_names, col = "6", 
+         lty = as.integer(c(1, "2222", "5212")), cex = 0.8)
+}, envir = PERSUADE)
+```
+
+
+##Spline normal 1 knot
+```{r spline_norm1, echo=FALSE, out.height = "30%", fig.width=11, eval = PERSUADE$input$spline_mod}
+evalq({
+  # 1 knot
+  plot(surv_obs$km, lwd = 2, main = "A: Kaplan-Meier (Spline, 1 knot, normal scale)", 
+       xlab = "time", ylab = "survival", col = c("black", "lightgrey", "darkgrey"))
+  lines(cbind(input$time_pred, surv_pred$model$spl_normal1[, 2]), col = "7", lty = 1, lwd = 2)
+  if (misc$ngroups > 1) {
+    lines(cbind(input$time_pred, surv_pred$model$spl_normal1[, 3]), col = "7", lty = "2222", lwd = 2)
+  }
+  if (misc$ngroups > 2) {
+    lines(cbind(input$time_pred, surv_pred$model$spl_normal1[, 4]), col = "7", lty = "5212", lwd = 2)
+  }
+  # add shading confidence intervals
+  polygon(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
+          c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])), 
+          col = adjustcolor("black", alpha.f = 0.3), border = NA)
+  if (misc$ngroups > 1) {
+    polygon(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
+            c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])), 
+            col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
+  }
+  if (misc$ngroups > 2) {
+    polygon(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
+            c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])), 
+            col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
+  }
+  abline(v = exp(surv_model$spl_normal1$knots[2]), lty = 2, lwd = 1.5)
+  abline(v = exp(surv_model$spl_normal1$knots[1]), lty = 3, lwd = 1)
+  abline(v = exp(surv_model$spl_normal1$knots[3]), lty = 3, lwd = 1)
+  legend("bottomleft", legend = misc$group_names, col = "7", 
+         lty = as.integer(c(1, "2222", "5212")), cex = 0.8)
+  
+  # annual transition probabilities
+  plot(cbind(surv_obs$tp$gr_1$time, surv_obs$tp$gr_1$smooth), lwd = 1, 
+       lty = 1, type = "b", cex = 0.6, pch = 1, col = "black",
+       main = "B: Annual transition probability (Spline, 1 knot, normal scale)", 
+       xlab = "time", ylab = "annual transition probability (smoothed)", 
+       ylim = c(0, ceiling(surv_obs$tp$max * 10)/10), xlim = c(0, ceiling(surv_obs$km$maxtime * 10)/10))
+  lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_1[, 15]), col = "7", lty = 1, lwd = 2)
+  if (misc$ngroups > 1) {
+    lines(cbind(surv_obs$tp$gr_2$time, surv_obs$tp$gr_2$smooth), 
+          col = "lightgrey", type = "b", lwd = 1, cex = 0.6, pch = 8)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_2[, 15]), col = "7", lty = "2222", lwd = 2)
+  }
+  if (misc$ngroups > 2) {
+    lines(cbind(surv_obs$tp$gr_3$time, surv_obs$tp$gr_3$smooth), 
+          col = "darkgrey", type = "b", lwd = 1, cex = 0.6, pch = 9)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_3[, 15]), col = "7", lty = "5212", lwd = 2)
+  }
+  # add shading confidence intervals
+  polygon(c(surv_obs$tp$gr_1$time, rev(surv_obs$tp$gr_1$time)), 
+          c(surv_obs$tp$gr_1$smooth_lower, rev(surv_obs$tp$gr_1$smooth_upper)), 
+          col = adjustcolor("black", alpha.f = 0.3), border = NA)
+  if (misc$ngroups > 1) {
+    polygon(c(surv_obs$tp$gr_2$time, rev(surv_obs$tp$gr_2$time)), 
+            c(surv_obs$tp$gr_2$smooth_lower, rev(surv_obs$tp$gr_2$smooth_upper)), 
+            col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
+  }
+  if (misc$ngroups > 2) {
+    polygon(c(surv_obs$tp$gr_3$time, rev(surv_obs$tp$gr_3$time)), 
+            c(surv_obs$tp$gr_3$smooth_lower, rev(surv_obs$tp$gr_3$smooth_upper)), 
+            col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
+  }
+  abline(v = exp(surv_model$spl_normal1$knots[2]), lty = 2, lwd = 1.5)
+  abline(v = exp(surv_model$spl_normal1$knots[1]), lty = 3, lwd = 1)
+  abline(v = exp(surv_model$spl_normal1$knots[3]), lty = 3, lwd = 1)
+  legend("topleft", legend = misc$group_names, col = "7", 
+         lty = as.integer(c(1, "2222", "5212")), cex = 0.8)
+  
+  # diagnostics
+  plot(cbind(log(surv_obs$km$time), 
+             -qnorm(surv_obs$km$surv, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)), 
+       pch = c(1, 8, 9)[surv_obs$km_names], 
+       col = c("black", "lightgrey", "darkgrey")[surv_obs$km_names], cex = 0.6, 
+       main = "C: Diagnostic plot (Spline, 1 knot, normal scale)", 
+       xlim = c(floor(min(log(surv_obs$km$time)[surv_obs$km$surv != 1])), 
+                ceiling(max(log(surv_obs$km$time)))), xlab = "LN(time)", ylab = "- standard normal quartiles")
+  lines(cbind(log(input$time_pred), 
+              -qnorm(surv_pred$model$spl_normal1[, 2], mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)), 
+        col = "7", lty = 1, lwd = 2)
+  if (misc$ngroups > 1) {
+    lines(cbind(log(input$time_pred), 
+                -qnorm(surv_pred$model$spl_normal1[, 3], mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)),
+          col = "7", lty = "2222", lwd = 2)
+  }
+  if (misc$ngroups > 2) {
+    lines(cbind(log(input$time_pred), 
+                -qnorm(surv_pred$model$spl_normal1[, 4], mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)),
+          col = "7", lty = "5212", lwd = 2)
+  }
+  abline(v = surv_model$spl_normal1$knots[2], lty = 2, lwd = 1.5)
+  abline(v = surv_model$spl_normal1$knots[1], lty = 3, lwd = 1)
+  abline(v = surv_model$spl_normal1$knots[3], lty = 3, lwd = 1)
+  legend("topleft", legend = misc$group_names, col = "7", 
+         lty = as.integer(c(1, "2222", "5212")), cex = 0.8)
+}, envir = PERSUADE)
+```
+
+##Spline normal 2 knots
+```{r spline_norm2, echo=FALSE, out.height = "30%", fig.width=11, eval = PERSUADE$input$spline_mod}
+evalq({
+  # 2 knots
+  plot(surv_obs$km, lwd = 2, main = "A: Kaplan-Meier (Spline, 2 knots, normal scale)", 
+       xlab = "time", ylab = "survival", col = c("black", "lightgrey", "darkgrey"))
+  lines(cbind(input$time_pred, surv_pred$model$spl_normal2[, 2]), col = "8", lty = 1, lwd = 2)
+  if (misc$ngroups > 1) {
+    lines(cbind(input$time_pred, surv_pred$model$spl_normal2[, 3]), col = "8", lty = "2222", lwd = 2)
+  }
+  if (misc$ngroups > 2) {
+    lines(cbind(input$time_pred, surv_pred$model$spl_normal2[, 4]), col = "8", lty = "5212", lwd = 2)
+  }
+  # add shading confidence intervals
+  polygon(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
+          c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])), 
+          col = adjustcolor("black", alpha.f = 0.3), border = NA)
+  if (misc$ngroups > 1) {
+    polygon(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
+            c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])), 
+            col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
+  }
+  if (misc$ngroups > 2) {
+    polygon(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
+            c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])), 
+            col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
+  }
   abline(v = exp(surv_model$spl_normal2$knots[2]), lty = 2, lwd = 1.5)
   abline(v = exp(surv_model$spl_normal2$knots[3]), lty = 2, lwd = 1.5)
   abline(v = exp(surv_model$spl_normal2$knots[1]), lty = 3, lwd = 1)
   abline(v = exp(surv_model$spl_normal2$knots[4]), lty = 3, lwd = 1)
-  legend("topleft", legend = misc$group_names, col = "6", 
+  legend("bottomleft", legend = misc$group_names, col = "8", 
+         lty = as.integer(c(1, "2222", "5212")), cex = 0.8)
+  
+  # annual transition probabilities
+  plot(cbind(surv_obs$tp$gr_1$time, surv_obs$tp$gr_1$smooth), lwd = 1, 
+       lty = 1, type = "b", cex = 0.6, pch = 1, col = "black", 
+       main = "B: Annual transition probability (Spline, 2 knots, normal scale)", 
+       xlab = "time", ylab = "annual transition probability (smoothed)", 
+       ylim = c(0, ceiling(surv_obs$tp$max * 10)/10), xlim = c(0, ceiling(surv_obs$km$maxtime * 10)/10))
+  lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_1[, 16]), col = "8", lty = 1, lwd = 2)
+  if (misc$ngroups > 1) {
+    lines(cbind(surv_obs$tp$gr_2$time, surv_obs$tp$gr_2$smooth), 
+          col = "lightgrey", type = "b", lwd = 1, cex = 0.6, pch = 8)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_2[, 16]), col = "8", lty = "2222", lwd = 2)
+  }
+  if (misc$ngroups > 2) {
+    lines(cbind(surv_obs$tp$gr_3$time, surv_obs$tp$gr_3$smooth), 
+          col = "darkgrey", type = "b", lwd = 1, cex = 0.6, pch = 9)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_3[, 16]), col = "8", lty = "5212", lwd = 2)
+  }
+  # add shading confidence intervals
+  polygon(c(surv_obs$tp$gr_1$time, rev(surv_obs$tp$gr_1$time)), 
+          c(surv_obs$tp$gr_1$smooth_lower, rev(surv_obs$tp$gr_1$smooth_upper)), 
+          col = adjustcolor("black", alpha.f = 0.3), border = NA)
+  if (misc$ngroups > 1) {
+    polygon(c(surv_obs$tp$gr_2$time, rev(surv_obs$tp$gr_2$time)), 
+            c(surv_obs$tp$gr_2$smooth_lower, rev(surv_obs$tp$gr_2$smooth_upper)), 
+            col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
+  }
+  if (misc$ngroups > 2) {
+    polygon(c(surv_obs$tp$gr_3$time, rev(surv_obs$tp$gr_3$time)), 
+            c(surv_obs$tp$gr_3$smooth_lower, rev(surv_obs$tp$gr_3$smooth_upper)), 
+            col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
+  }
+  abline(v = exp(surv_model$spl_normal2$knots[2]), lty = 2, lwd = 1.5)
+  abline(v = exp(surv_model$spl_normal2$knots[3]), lty = 2, lwd = 1.5)
+  abline(v = exp(surv_model$spl_normal2$knots[1]), lty = 3, lwd = 1)
+  abline(v = exp(surv_model$spl_normal2$knots[4]), lty = 3, lwd = 1)
+  legend("topleft", legend = misc$group_names, col = "8", 
          lty = as.integer(c(1, "2222", "5212")), cex = 0.8)
   
   # diagnostics
@@ -1459,25 +1684,132 @@ evalq({
        xlab = "LN(time)", ylab = "- standard normal quartiles")
   lines(cbind(log(input$time_pred), 
               -qnorm(surv_pred$model$spl_normal2[, 2], mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)), 
-        col = "6", lty = 1, lwd = 2)
+        col = "8", lty = 1, lwd = 2)
   if (misc$ngroups > 1) {
     lines(cbind(log(input$time_pred), 
                 -qnorm(surv_pred$model$spl_normal2[, 3], mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)),
-          col = "6", lty = "2222", lwd = 2)
+          col = "8", lty = "2222", lwd = 2)
   }
   if (misc$ngroups > 2) {
     lines(cbind(log(input$time_pred), 
                 -qnorm(surv_pred$model$spl_normal2[, 4], mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)),
-          col = "6", lty = "5212", lwd = 2)
+          col = "8", lty = "5212", lwd = 2)
   }
   abline(v = surv_model$spl_normal2$knots[2], lty = 2, lwd = 1.5)
   abline(v = surv_model$spl_normal2$knots[3], lty = 2, lwd = 1.5)
   abline(v = surv_model$spl_normal2$knots[1], lty = 3, lwd = 1)
   abline(v = surv_model$spl_normal2$knots[4], lty = 3, lwd = 1)
-  legend("topleft", legend = misc$group_names, col = "6", 
+  legend("topleft", legend = misc$group_names, col = "8", 
          lty = as.integer(c(1, "2222", "5212")), cex = 0.8)
 }, envir = PERSUADE)
 ```
+
+##Spline normal 3 knots
+```{r spline_norm3, echo=FALSE, out.height = "30%", fig.width=11, eval = PERSUADE$input$spline_mod}
+evalq({
+  # 2 knots
+  plot(surv_obs$km, lwd = 2, main = "A: Kaplan-Meier (Spline, 3 knots, normal scale)", 
+       xlab = "time", ylab = "survival", col = c("black", "lightgrey", "darkgrey"))
+  lines(cbind(input$time_pred, surv_pred$model$spl_normal3[, 2]), col = "9", lty = 1, lwd = 2)
+  if (misc$ngroups > 1) {
+    lines(cbind(input$time_pred, surv_pred$model$spl_normal3[, 3]), col = "9", lty = "2222", lwd = 2)
+  }
+  if (misc$ngroups > 2) {
+    lines(cbind(input$time_pred, surv_pred$model$spl_normal3[, 4]), col = "9", lty = "5212", lwd = 2)
+  }
+  # add shading confidence intervals
+  polygon(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
+          c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])), 
+          col = adjustcolor("black", alpha.f = 0.3), border = NA)
+  if (misc$ngroups > 1) {
+    polygon(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
+            c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])), 
+            col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
+  }
+  if (misc$ngroups > 2) {
+    polygon(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
+            c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])), 
+            col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
+  }
+  abline(v = exp(surv_model$spl_normal3$knots[2]), lty = 2, lwd = 1.5)
+  abline(v = exp(surv_model$spl_normal3$knots[3]), lty = 2, lwd = 1.5)
+  abline(v = exp(surv_model$spl_normal3$knots[4]), lty = 2, lwd = 1.5)
+  abline(v = exp(surv_model$spl_normal3$knots[1]), lty = 3, lwd = 1)
+  abline(v = exp(surv_model$spl_normal3$knots[5]), lty = 3, lwd = 1)
+  legend("bottomleft", legend = misc$group_names, col = "9", 
+         lty = as.integer(c(1, "2222", "5212")), cex = 0.8)
+  
+  # annual transition probabilities
+  plot(cbind(surv_obs$tp$gr_1$time, surv_obs$tp$gr_1$smooth), lwd = 1, 
+       lty = 1, type = "b", cex = 0.6, pch = 1, col = "black", 
+       main = "B: Annual transition probability (Spline, 3 knots, normal scale)", 
+       xlab = "time", ylab = "annual transition probability (smoothed)", 
+       ylim = c(0, ceiling(surv_obs$tp$max * 10)/10), xlim = c(0, ceiling(surv_obs$km$maxtime * 10)/10))
+  lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_1[, 17]), col = "9", lty = 1, lwd = 2)
+  if (misc$ngroups > 1) {
+    lines(cbind(surv_obs$tp$gr_2$time, surv_obs$tp$gr_2$smooth), 
+          col = "lightgrey", type = "b", lwd = 1, cex = 0.6, pch = 8)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_2[, 17]), col = "9", lty = "2222", lwd = 2)
+  }
+  if (misc$ngroups > 2) {
+    lines(cbind(surv_obs$tp$gr_3$time, surv_obs$tp$gr_3$smooth), 
+          col = "darkgrey", type = "b", lwd = 1, cex = 0.6, pch = 9)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_3[, 17]), col = "9", lty = "5212", lwd = 2)
+  }
+  # add shading confidence intervals
+  polygon(c(surv_obs$tp$gr_1$time, rev(surv_obs$tp$gr_1$time)), 
+          c(surv_obs$tp$gr_1$smooth_lower, rev(surv_obs$tp$gr_1$smooth_upper)), 
+          col = adjustcolor("black", alpha.f = 0.3), border = NA)
+  if (misc$ngroups > 1) {
+    polygon(c(surv_obs$tp$gr_2$time, rev(surv_obs$tp$gr_2$time)), 
+            c(surv_obs$tp$gr_2$smooth_lower, rev(surv_obs$tp$gr_2$smooth_upper)), 
+            col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
+  }
+  if (misc$ngroups > 2) {
+    polygon(c(surv_obs$tp$gr_3$time, rev(surv_obs$tp$gr_3$time)), 
+            c(surv_obs$tp$gr_3$smooth_lower, rev(surv_obs$tp$gr_3$smooth_upper)), 
+            col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
+  }
+  abline(v = exp(surv_model$spl_normal3$knots[2]), lty = 2, lwd = 1.5)
+  abline(v = exp(surv_model$spl_normal3$knots[3]), lty = 2, lwd = 1.5)
+  abline(v = exp(surv_model$spl_normal3$knots[4]), lty = 2, lwd = 1.5)
+  abline(v = exp(surv_model$spl_normal3$knots[1]), lty = 3, lwd = 1)
+  abline(v = exp(surv_model$spl_normal3$knots[5]), lty = 3, lwd = 1)
+  legend("topleft", legend = misc$group_names, col = "9", 
+         lty = as.integer(c(1, "2222", "5212")), cex = 0.8)
+  
+  # diagnostics
+  plot(cbind(log(surv_obs$km$time), 
+             -qnorm(surv_obs$km$surv, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)), 
+       pch = c(1, 8, 9)[surv_obs$km_names], 
+       col = c("black", "lightgrey", "darkgrey")[surv_obs$km_names], cex = 0.6, 
+       main = "C: Diagnostic plot (Spline, 3 knots, normal scale)", 
+       xlim = c(floor(min(log(surv_obs$km$time)[surv_obs$km$surv != 1])), 
+                ceiling(max(log(surv_obs$km$time)))), 
+       xlab = "LN(time)", ylab = "- standard normal quartiles")
+  lines(cbind(log(input$time_pred), 
+              -qnorm(surv_pred$model$spl_normal3[, 2], mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)), 
+        col = "9", lty = 1, lwd = 2)
+  if (misc$ngroups > 1) {
+    lines(cbind(log(input$time_pred), 
+                -qnorm(surv_pred$model$spl_normal3[, 3], mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)),
+          col = "9", lty = "2222", lwd = 2)
+  }
+  if (misc$ngroups > 2) {
+    lines(cbind(log(input$time_pred), 
+                -qnorm(surv_pred$model$spl_normal3[, 4], mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)),
+          col = "9", lty = "5212", lwd = 2)
+  }
+  abline(v = surv_model$spl_normal3$knots[2], lty = 2, lwd = 1.5)
+  abline(v = surv_model$spl_normal3$knots[3], lty = 2, lwd = 1.5)
+  abline(v = surv_model$spl_normal3$knots[4], lty = 2, lwd = 1.5)
+  abline(v = surv_model$spl_normal3$knots[1], lty = 3, lwd = 1)
+  abline(v = surv_model$spl_normal3$knots[5], lty = 3, lwd = 1)
+  legend("topleft", legend = misc$group_names, col = "9", 
+         lty = as.integer(c(1, "2222", "5212")), cex = 0.8)
+}, envir = PERSUADE)
+```
+
 
 \newpage
 
@@ -1505,16 +1837,19 @@ evalq({
          xlab = "time", ylab = "survival", xlim = c(0, input$time_horizon))
     lines(cbind(input$time_pred, surv_pred$model$spl_hazard1[, 2]), col = "1", lty = 1, lwd = 1)
     lines(cbind(input$time_pred, surv_pred$model$spl_hazard2[, 2]), col = "2", lty = 1, lwd = 1)
-    lines(cbind(input$time_pred, surv_pred$model$spl_odds1[, 2]), col = "3", lty = 1, lwd = 1)
-    lines(cbind(input$time_pred, surv_pred$model$spl_odds2[, 2]), col = "4", lty = 1, lwd = 1)
-    lines(cbind(input$time_pred, surv_pred$model$spl_normal1[, 2]), col = "5", lty = 1, lwd = 1)
-    lines(cbind(input$time_pred, surv_pred$model$spl_normal2[, 2]), col = "6", lty = 1, lwd = 1)
-    legend("topright", legend = misc$lbls_spline, col = 1:6, lty = 1, cex = 0.8)
+    lines(cbind(input$time_pred, surv_pred$model$spl_hazard3[, 2]), col = "3", lty = 1, lwd = 1)
+    lines(cbind(input$time_pred, surv_pred$model$spl_odds1[, 2]), col = "4", lty = 1, lwd = 1)
+    lines(cbind(input$time_pred, surv_pred$model$spl_odds2[, 2]), col = "5", lty = 1, lwd = 1)
+    lines(cbind(input$time_pred, surv_pred$model$spl_odds3[, 2]), col = "6", lty = 1, lwd = 1)
+    lines(cbind(input$time_pred, surv_pred$model$spl_normal1[, 2]), col = "7", lty = 1, lwd = 1)
+    lines(cbind(input$time_pred, surv_pred$model$spl_normal2[, 2]), col = "8", lty = 1, lwd = 1)
+    lines(cbind(input$time_pred, surv_pred$model$spl_normal3[, 2]), col = "9", lty = 1, lwd = 1)
+    legend("topright", legend = misc$lbls_spline, col = 1:9, lty = 1, cex = 0.8)
   }
 }, envir = PERSUADE)
 kable_styling(kable(t(round(
-  PERSUADE$surv_pred$gr$surv_gr_1[1 + PERSUADE$input$time_pred_surv_table, ], 3))[-1, ], 
-  col.names = paste("T=", PERSUADE$surv_pred$gr$surv_gr_1[1 + PERSUADE$input$time_pred_surv_table, ][, 1]), 
+  PERSUADE$surv_pred$gr$gr_1[1 + PERSUADE$input$time_pred_surv_table, ], 3))[-1, ], 
+  col.names = paste("T=", PERSUADE$surv_pred$gr$gr_1[1 + PERSUADE$input$time_pred_surv_table, ][, 1]), 
   format = "latex", booktabs = TRUE, 
   linesep = ""), latex_options = c("scale_down", "striped"), position = "left")
 
@@ -1552,7 +1887,10 @@ evalq({
     lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_1[, 12]), col = "4", lty = 1, lwd = 1)
     lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_1[, 13]), col = "5", lty = 1, lwd = 1)
     lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_1[, 14]), col = "6", lty = 1, lwd = 1)
-    legend("topleft", legend = misc$lbls_spline, col = 1:6, lty = 1, cex = 0.8)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_1[, 15]), col = "7", lty = 1, lwd = 1)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_1[, 16]), col = "8", lty = 1, lwd = 1)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_1[, 17]), col = "9", lty = 1, lwd = 1)
+    legend("topleft", legend = misc$lbls_spline, col = 1:9, lty = 1, cex = 0.8)
   }
 }, envir = PERSUADE)
 suppressWarnings(kable_styling(kable(descr(
@@ -1582,23 +1920,29 @@ evalq({
   legend("topleft", legend = misc$lbls, col = 1:7, lty = 1, cex = 0.8)
   
   if (input$spline_mod == TRUE) {
-    plot(cbind(surv_pred$model$spl_hazard1_h[[1]]$time, surv_pred$model$spl_hazard1_h[[1]]$est), 
+    plot(cbind(surv_obs$haz$smooth_gr1$est.grid, surv_obs$haz$smooth_gr1$haz.est),
          main = "F: Hazard function (spline curves)",
          type = "l", col = "black", lty = 1, lwd = 2, xlab = "time", ylab = "smoothed hazard rate", 
          xlim = c(0, input$time_horizon), ylim = c(0, surv_obs$haz$max$smooth))
     lines(cbind(surv_pred$model$spl_hazard1_h[[1]]$time, surv_pred$model$spl_hazard1_h[[1]]$est), 
           col = "1", lty = 1, lwd = 1)
-    lines(cbind(surv_pred$model$spl_hazard2_h[[1]]$time, surv_pred$model$spl_hazard1_h[[1]]$est), 
+    lines(cbind(surv_pred$model$spl_hazard2_h[[1]]$time, surv_pred$model$spl_hazard2_h[[1]]$est), 
           col = "2", lty = 1, lwd = 1)
-    lines(cbind(surv_pred$model$spl_odds1_h[[1]]$time, surv_pred$model$spl_odds1_h[[1]]$est), 
+    lines(cbind(surv_pred$model$spl_hazard3_h[[1]]$time, surv_pred$model$spl_hazard3_h[[1]]$est), 
           col = "3", lty = 1, lwd = 1)
-    lines(cbind(surv_pred$model$spl_odds2_h[[1]]$time, surv_pred$model$spl_odds2_h[[1]]$est), 
+    lines(cbind(surv_pred$model$spl_odds1_h[[1]]$time, surv_pred$model$spl_odds1_h[[1]]$est), 
           col = "4", lty = 1, lwd = 1)
-    lines(cbind(surv_pred$model$spl_normal1_h[[1]]$time, surv_pred$model$spl_normal1_h[[1]]$est), 
+    lines(cbind(surv_pred$model$spl_odds2_h[[1]]$time, surv_pred$model$spl_odds2_h[[1]]$est), 
           col = "5", lty = 1, lwd = 1)
-    lines(cbind(surv_pred$model$spl_normal2_h[[1]]$time, surv_pred$model$spl_normal2_h[[1]]$est), 
+    lines(cbind(surv_pred$model$spl_odds3_h[[1]]$time, surv_pred$model$spl_odds3_h[[1]]$est), 
           col = "6", lty = 1, lwd = 1)
-    legend("topleft", legend = misc$lbls_spline, col = 1:6, lty = 1, cex = 0.8)
+    lines(cbind(surv_pred$model$spl_normal1_h[[1]]$time, surv_pred$model$spl_normal1_h[[1]]$est), 
+          col = "7", lty = 1, lwd = 1)
+    lines(cbind(surv_pred$model$spl_normal2_h[[1]]$time, surv_pred$model$spl_normal2_h[[1]]$est), 
+          col = "8", lty = 1, lwd = 1)
+    lines(cbind(surv_pred$model$spl_normal3_h[[1]]$time, surv_pred$model$spl_normal3_h[[1]]$est), 
+          col = "9", lty = 1, lwd = 1)
+    legend("topleft", legend = misc$lbls_spline, col = 1:9, lty = 1, cex = 0.8)
   }
 }, envir = PERSUADE)
 ```
@@ -1625,16 +1969,19 @@ evalq({
          xlab = "time", ylab = "survival", xlim = c(0, input$time_horizon))
     lines(cbind(input$time_pred, surv_pred$model$spl_hazard1[, 3]), col = "1", lty = "2222", lwd = 1)
     lines(cbind(input$time_pred, surv_pred$model$spl_hazard2[, 3]), col = "2", lty = "2222", lwd = 1)
-    lines(cbind(input$time_pred, surv_pred$model$spl_odds1[, 3]), col = "3", lty = "2222", lwd = 1)
-    lines(cbind(input$time_pred, surv_pred$model$spl_odds2[, 3]), col = "4", lty = "2222", lwd = 1)
-    lines(cbind(input$time_pred, surv_pred$model$spl_normal1[, 3]), col = "5", lty = "2222", lwd = 1)
-    lines(cbind(input$time_pred, surv_pred$model$spl_normal2[, 3]), col = "6", lty = "2222", lwd = 1)
-    legend("topright", legend = misc$lbls_spline, col = 1:6, lty = "2222", cex = 0.8)
+    lines(cbind(input$time_pred, surv_pred$model$spl_hazard3[, 3]), col = "3", lty = "2222", lwd = 1)
+    lines(cbind(input$time_pred, surv_pred$model$spl_odds1[, 3]), col = "4", lty = "2222", lwd = 1)
+    lines(cbind(input$time_pred, surv_pred$model$spl_odds2[, 3]), col = "5", lty = "2222", lwd = 1)
+    lines(cbind(input$time_pred, surv_pred$model$spl_odds3[, 3]), col = "6", lty = "2222", lwd = 1)
+    lines(cbind(input$time_pred, surv_pred$model$spl_normal1[, 3]), col = "7", lty = "2222", lwd = 1)
+    lines(cbind(input$time_pred, surv_pred$model$spl_normal2[, 3]), col = "8", lty = "2222", lwd = 1)
+    lines(cbind(input$time_pred, surv_pred$model$spl_normal3[, 3]), col = "9", lty = "2222", lwd = 1)
+    legend("topright", legend = misc$lbls_spline, col = 1:9, lty = "2222", cex = 0.8)
   }
 }, envir = PERSUADE)
 kable_styling(kable(t(round(
-  PERSUADE$surv_pred$gr$surv_gr_2[1 + PERSUADE$input$time_pred_surv_table, ], 3))[-1, ], 
-  col.names = paste("T=", PERSUADE$surv_pred$gr$surv_gr_2[1 + PERSUADE$input$time_pred_surv_table, ][, 1]),
+  PERSUADE$surv_pred$gr$gr_2[1 + PERSUADE$input$time_pred_surv_table, ], 3))[-1, ], 
+  col.names = paste("T=", PERSUADE$surv_pred$gr$gr_2[1 + PERSUADE$input$time_pred_surv_table, ][, 1]),
   format = "latex", booktabs = TRUE, linesep = ""), 
   latex_options = c("scale_down", "striped"), position = "left")
 
@@ -1672,7 +2019,10 @@ evalq({
     lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_2[, 12]), col = "4", lty = "2222", lwd = 1)
     lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_2[, 13]), col = "5", lty = "2222", lwd = 1)
     lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_2[, 14]), col = "6", lty = "2222", lwd = 1)
-    legend("topleft", legend = misc$lbls_spline, col = 1:6, lty = "2222", cex = 0.8)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_2[, 15]), col = "7", lty = "2222", lwd = 1)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_2[, 16]), col = "8", lty = "2222", lwd = 1)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_2[, 17]), col = "9", lty = "2222", lwd = 1)
+    legend("topleft", legend = misc$lbls_spline, col = 1:9, lty = "2222", cex = 0.8)
   }
 }, envir = PERSUADE)
 suppressWarnings(kable_styling(kable(descr(
@@ -1708,17 +2058,23 @@ evalq({
          xlim = c(0, input$time_horizon), ylim = c(0, surv_obs$haz$max$smooth))
     lines(cbind(surv_pred$model$spl_hazard1_h[[2]]$time, surv_pred$model$spl_hazard1_h[[2]]$est), 
           col = "1", lty = "2222", lwd = 1)
-    lines(cbind(surv_pred$model$spl_hazard2_h[[2]]$time, surv_pred$model$spl_hazard1_h[[2]]$est), 
+    lines(cbind(surv_pred$model$spl_hazard2_h[[2]]$time, surv_pred$model$spl_hazard2_h[[2]]$est), 
           col = "2", lty = "2222", lwd = 1)
-    lines(cbind(surv_pred$model$spl_odds1_h[[2]]$time, surv_pred$model$spl_odds1_h[[2]]$est), 
+    lines(cbind(surv_pred$model$spl_hazard3_h[[2]]$time, surv_pred$model$spl_hazard3_h[[2]]$est), 
           col = "3", lty = "2222", lwd = 1)
-    lines(cbind(surv_pred$model$spl_odds2_h[[2]]$time, surv_pred$model$spl_odds2_h[[2]]$est), 
+    lines(cbind(surv_pred$model$spl_odds1_h[[2]]$time, surv_pred$model$spl_odds1_h[[2]]$est), 
           col = "4", lty = "2222", lwd = 1)
-    lines(cbind(surv_pred$model$spl_normal1_h[[2]]$time, surv_pred$model$spl_normal1_h[[2]]$est), 
+    lines(cbind(surv_pred$model$spl_odds2_h[[2]]$time, surv_pred$model$spl_odds2_h[[2]]$est), 
           col = "5", lty = "2222", lwd = 1)
-    lines(cbind(surv_pred$model$spl_normal2_h[[2]]$time, surv_pred$model$spl_normal2_h[[2]]$est), 
+    lines(cbind(surv_pred$model$spl_odds3_h[[2]]$time, surv_pred$model$spl_odds3_h[[2]]$est), 
           col = "6", lty = "2222", lwd = 1)
-    legend("topleft", legend = misc$lbls_spline, col = 1:6, lty = "2222", cex = 0.8)
+    lines(cbind(surv_pred$model$spl_normal1_h[[2]]$time, surv_pred$model$spl_normal1_h[[2]]$est), 
+          col = "7", lty = "2222", lwd = 1)
+    lines(cbind(surv_pred$model$spl_normal2_h[[2]]$time, surv_pred$model$spl_normal2_h[[2]]$est), 
+          col = "8", lty = "2222", lwd = 1)
+    lines(cbind(surv_pred$model$spl_normal3_h[[2]]$time, surv_pred$model$spl_normal3_h[[2]]$est), 
+          col = "9", lty = "2222", lwd = 1)
+    legend("topleft", legend = misc$lbls_spline, col = 1:9, lty = "2222", cex = 0.8)
   }
 }, envir = PERSUADE)
 ```
@@ -1745,16 +2101,19 @@ evalq({
          xlab = "time", ylab = "survival", xlim = c(0, input$time_horizon))
     lines(cbind(input$time_pred, surv_pred$model$spl_hazard1[, 4]), col = "1", lty = "5212", lwd = 1)
     lines(cbind(input$time_pred, surv_pred$model$spl_hazard2[, 4]), col = "2", lty = "5212", lwd = 1)
-    lines(cbind(input$time_pred, surv_pred$model$spl_odds1[, 4]), col = "3", lty = "5212", lwd = 1)
-    lines(cbind(input$time_pred, surv_pred$model$spl_odds2[, 4]), col = "4", lty = "5212", lwd = 1)
-    lines(cbind(input$time_pred, surv_pred$model$spl_normal1[, 4]), col = "5", lty = "5212", lwd = 1)
-    lines(cbind(input$time_pred, surv_pred$model$spl_normal2[, 4]), col = "6", lty = "5212", lwd = 1)
-    legend("topright", legend = misc$lbls_spline, col = 1:6, lty = "5212", cex = 0.8)
+    lines(cbind(input$time_pred, surv_pred$model$spl_hazard3[, 4]), col = "3", lty = "5212", lwd = 1)
+    lines(cbind(input$time_pred, surv_pred$model$spl_odds1[, 4]), col = "4", lty = "5212", lwd = 1)
+    lines(cbind(input$time_pred, surv_pred$model$spl_odds2[, 4]), col = "5", lty = "5212", lwd = 1)
+    lines(cbind(input$time_pred, surv_pred$model$spl_odds3[, 4]), col = "6", lty = "5212", lwd = 1)
+    lines(cbind(input$time_pred, surv_pred$model$spl_normal1[, 4]), col = "7", lty = "5212", lwd = 1)
+    lines(cbind(input$time_pred, surv_pred$model$spl_normal2[, 4]), col = "8", lty = "5212", lwd = 1)
+    lines(cbind(input$time_pred, surv_pred$model$spl_normal3[, 4]), col = "9", lty = "5212", lwd = 1)
+    legend("topright", legend = misc$lbls_spline, col = 1:9, lty = "5212", cex = 0.8)
   }
 }, envir = PERSUADE)
 kable_styling(kable(t(round(
-  PERSUADE$surv_pred$gr$surv_gr_3[1 + PERSUADE$input$time_pred_surv_table, ], 3))[-1, ], 
-  col.names = paste("T=", PERSUADE$surv_pred$gr$surv_gr_3[1 + PERSUADE$input$time_pred_surv_table, ][, 1]),
+  PERSUADE$surv_pred$gr$gr_3[1 + PERSUADE$input$time_pred_surv_table, ], 3))[-1, ], 
+  col.names = paste("T=", PERSUADE$surv_pred$gr$gr_3[1 + PERSUADE$input$time_pred_surv_table, ][, 1]),
   format = "latex", booktabs = TRUE, linesep = ""), 
   latex_options = c("scale_down", "striped"), position = "left")
 
@@ -1792,7 +2151,10 @@ evalq({
     lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_3[, 12]), col = "4", lty = "5212", lwd = 1)
     lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_3[, 13]), col = "5", lty = "5212", lwd = 1)
     lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_3[, 14]), col = "6", lty = "5212", lwd = 1)
-    legend("topleft", legend = misc$lbls_spline, col = 1:6, lty = "5212", cex = 0.8)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_3[, 15]), col = "7", lty = "5212", lwd = 1)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_3[, 16]), col = "8", lty = "5212", lwd = 1)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_3[, 17]), col = "9", lty = "5212", lwd = 1)
+    legend("topleft", legend = misc$lbls_spline, col = 1:9, lty = "5212", cex = 0.8)
   }
 }, envir = PERSUADE)
 suppressWarnings(kable_styling(kable(descr(
@@ -1828,17 +2190,23 @@ evalq({
          xlim = c(0, input$time_horizon), ylim = c(0, surv_obs$haz$max$smooth))
     lines(cbind(surv_pred$model$spl_hazard1_h[[3]]$time, surv_pred$model$spl_hazard1_h[[3]]$est), 
           col = "1", lty = "5212", lwd = 1)
-    lines(cbind(surv_pred$model$spl_hazard2_h[[3]]$time, surv_pred$model$spl_hazard1_h[[3]]$est), 
+    lines(cbind(surv_pred$model$spl_hazard2_h[[3]]$time, surv_pred$model$spl_hazard2_h[[3]]$est), 
           col = "2", lty = "5212", lwd = 1)
-    lines(cbind(surv_pred$model$spl_odds1_h[[3]]$time, surv_pred$model$spl_odds1_h[[3]]$est), 
+    lines(cbind(surv_pred$model$spl_hazard3_h[[3]]$time, surv_pred$model$spl_hazard3_h[[3]]$est), 
           col = "3", lty = "5212", lwd = 1)
-    lines(cbind(surv_pred$model$spl_odds2_h[[3]]$time, surv_pred$model$spl_odds2_h[[3]]$est), 
+    lines(cbind(surv_pred$model$spl_odds1_h[[3]]$time, surv_pred$model$spl_odds1_h[[3]]$est), 
           col = "4", lty = "5212", lwd = 1)
-    lines(cbind(surv_pred$model$spl_normal1_h[[3]]$time, surv_pred$model$spl_normal1_h[[3]]$est), 
+    lines(cbind(surv_pred$model$spl_odds2_h[[3]]$time, surv_pred$model$spl_odds2_h[[3]]$est), 
           col = "5", lty = "5212", lwd = 1)
-    lines(cbind(surv_pred$model$spl_normal2_h[[3]]$time, surv_pred$model$spl_normal2_h[[3]]$est), 
+    lines(cbind(surv_pred$model$spl_odds3_h[[3]]$time, surv_pred$model$spl_odds3_h[[3]]$est), 
           col = "6", lty = "5212", lwd = 1)
-    legend("topleft", legend = misc$lbls_spline, col = 1:6, lty = "5212", cex = 0.8)
+    lines(cbind(surv_pred$model$spl_normal1_h[[3]]$time, surv_pred$model$spl_normal1_h[[3]]$est), 
+          col = "7", lty = "5212", lwd = 1)
+    lines(cbind(surv_pred$model$spl_normal2_h[[3]]$time, surv_pred$model$spl_normal2_h[[3]]$est), 
+          col = "8", lty = "5212", lwd = 1)
+    lines(cbind(surv_pred$model$spl_normal3_h[[3]]$time, surv_pred$model$spl_normal3_h[[3]]$est), 
+          col = "9", lty = "5212", lwd = 1)
+    legend("topleft", legend = misc$lbls_spline, col = 1:9, lty = "5212", cex = 0.8)
   }
 }, envir = PERSUADE)
 ```

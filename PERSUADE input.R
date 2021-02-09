@@ -1,4 +1,3 @@
-# code is formatted using formatR::tidy_source(width.cutoff = 100)
 rm(list = setdiff(ls(), lsf.str()))  #remove all objects except functions
 
 ####### LOAD AND INSTALL PACKAGES AND FUNCTIONS #######
