@@ -1,6 +1,7 @@
 # code is formatted using formatR::tidy_source(width.cutoff = 100)
 f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, spline_mod = FALSE, 
                        time_unit, time_horizon, time_pred_surv_table) {
+  ##XP: Output alvast definiëren hier?
   
   #input
   years <- as.numeric(years)  # time variable should be numeric
@@ -183,19 +184,19 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
   gam_pred_h <- summary(gam, t = time_pred, type = "hazard")
   ggam_pred_h <- summary(ggam, t = time_pred, type = "hazard")
   
-  if (ngroups == 1) {
-    expo_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) expo_est[[1]]$est))
-    weib_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) weib_est[[1]]$est))
-    gom_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) gom_est[[1]]$est))
-    lnorm_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) lnorm_est[[1]]$est))
-    llog_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) llog_est[[1]]$est))
-    gam_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) gam_est[[1]]$est))
-    ggam_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) ggam_est[[1]]$est))
-  }
-  
-  if (ngroups > 1) {
+  #if (ngroups == 1) {
+   # expo_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) expo_est[[1]]$est)) ##XP: sapply hier overbodig? want je doet alleen cbind van 1 groep. function (x) is hier niet gebruikt want geen 'x' in expo_est[[1]]$est
+    #weib_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) weib_est[[1]]$est))
+    #gom_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) gom_est[[1]]$est))
+    #lnorm_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) lnorm_est[[1]]$est))
+    #llog_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) llog_est[[1]]$est))
+    #gam_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) gam_est[[1]]$est))
+    #ggam_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) ggam_est[[1]]$est))
+  #}
+  ##XP: REMOVE lines 187-195, 197, 212
+  #if (ngroups > 1) {
     expo_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-      expo_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
+      expo_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est)) ##XP: zou dit niet werken met 1 groep ook waardoor if() niet meer nodig is, en vorige lijnen ook niet?
     weib_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
       weib_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
     gom_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
@@ -208,7 +209,7 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
       gam_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
     ggam_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
       ggam_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
-  }
+  #}
   
   gom_pred[, -1][gom_pred[, -1] < 1e-15] <- 0  # prevent rounding errors for predicted transition probabilities
   
@@ -235,20 +236,20 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
     spl_normal1_pred_h <- summary(spl_normal1, t = time_pred, type = "hazard")
     spl_normal2_pred_h <- summary(spl_normal2, t = time_pred, type = "hazard")
     spl_normal3_pred_h <- summary(spl_normal3, t = time_pred, type = "hazard")
+    ##XP: remove lines: 240 - 252, and 271 > for the same reason as above, no 'x'in spl_hazard1_est[[1]]$est etc.
+    #if (ngroups == 1) {
+     # spl_hazard1_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) spl_hazard1_est[[1]]$est))
+      #spl_hazard2_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) spl_hazard2_est[[1]]$est))
+      #spl_hazard3_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) spl_hazard3_est[[1]]$est))
+      #spl_odds1_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) spl_odds1_est[[1]]$est))
+      #spl_odds2_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) spl_odds2_est[[1]]$est))
+      #spl_odds3_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) spl_odds3_est[[1]]$est))
+      #spl_normal1_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) spl_normal1_est[[1]]$est))
+      #spl_normal2_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) spl_normal2_est[[1]]$est))
+      #spl_normal3_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) spl_normal3_est[[1]]$est))
+    #}
     
-    if (ngroups == 1) {
-      spl_hazard1_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) spl_hazard1_est[[1]]$est))
-      spl_hazard2_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) spl_hazard2_est[[1]]$est))
-      spl_hazard3_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) spl_hazard3_est[[1]]$est))
-      spl_odds1_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) spl_odds1_est[[1]]$est))
-      spl_odds2_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) spl_odds2_est[[1]]$est))
-      spl_odds3_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) spl_odds3_est[[1]]$est))
-      spl_normal1_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) spl_normal1_est[[1]]$est))
-      spl_normal2_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) spl_normal2_est[[1]]$est))
-      spl_normal3_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) spl_normal3_est[[1]]$est))
-    }
-    
-    if (ngroups > 1) {
+    #if (ngroups > 1) {
       spl_hazard1_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
         spl_hazard1_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
       spl_hazard2_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
@@ -267,14 +268,14 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
         spl_normal2_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
       spl_normal3_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
         spl_normal3_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
-    }
+    #}
     
     colnames(spl_hazard1_pred) <- colnames(spl_hazard2_pred) <- colnames(spl_hazard3_pred)<- colnames(spl_odds1_pred) <- 
       colnames(spl_odds2_pred) <- colnames(spl_odds3_pred) <- colnames(spl_normal1_pred) <- colnames(spl_normal2_pred) <- 
       colnames(spl_normal3_pred) <- column_names
   }
   
-  # predicted survival
+  # predicted survival ##XP: dit vervangen in: 1) vector maken aantal kolommen, 2) 1 df maken met aantal kolommen afhankelijk van aantal groepen (dus afhankelijk van vector) > dan hoef je in output geen 3 lijsten te maken van output en voor TP berekening, hoef je niet 3 keer hetzelfde te doen per groep, maar 1 keer toepassen op df
   surv_gr_1 <- cbind(time_pred, expo_pred[, 2], weib_pred[, 2], gom_pred[, 2], lnorm_pred[, 2], llog_pred[, 2],
                      gam_pred[, 2], ggam_pred[, 2], if (spline_mod == TRUE) {
                        cbind(spl_hazard1_pred[, 2], spl_hazard2_pred[, 2], spl_hazard3_pred[, 2], 
@@ -303,7 +304,7 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
   if (ngroups > 1) {colnames(surv_gr_2) <- lbls_all}
   if (ngroups > 2) {colnames(surv_gr_3) <- lbls_all}
   
-  # calculate annual transition probability based on observed data (km)
+  # calculate annual transition probability based on observed data (km) ##XP: hier ook, zou je niet dit compacter maken door '1', '2', '3' te vervangen door x en dan sapply? dan hoe je if() niet meer
   km_tp_gr_1 <- data.frame(
     time = cum_haz$time[cum_haz$group==1],
     smooth = cum_haz$tp_smooth[cum_haz$group==1],
@@ -359,7 +360,7 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
       rep("7. Generalisedgamma", nrow(ggam$res.t)), rep("8. 1-knot spline hazard", nrow(spl_hazard1$res.t)), 
       rep("9. 1-knot spline odds", nrow(spl_odds1$res.t)), rep("10. 1-knot spline normal", nrow(spl_normal1$res.t)), 
       rep("11. 2-knot spline hazard", nrow(spl_hazard2$res.t)), rep("12. 2-knot spline odds", nrow(spl_odds2$res.t)), 
-      rep("13. 2-knot spline normal", nrow(spl_normal2$res.t)))} else {
+      rep("13. 2-knot spline normal", nrow(spl_normal2$res.t)))} else { ##XP: overwegen 'else' op nieuwe lijn te zetten zodat het zichtbaarder is, ik moest even zoeken
         c(rep("1. Exponential", nrow(expo$res.t)), rep("2. Weibull", nrow(weib$res.t)), rep("3. Gompertz", nrow(gom$res.t)), 
           rep("4. Log-normal", nrow(lnorm$res.t)), rep("5. Log-logistic", nrow(llog$res.t)), rep("6. Gamma", nrow(gam$res.t)), 
           rep("7. Generalisedgamma", nrow(ggam$res.t)))
@@ -369,7 +370,7 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
   parnames <- if (spline_mod == TRUE) {
     c(rownames(expo$res.t), rownames(weib$res.t), rownames(gom$res.t), rownames(lnorm$res.t), rownames(llog$res.t), 
       rownames(gam$res.t), rownames(ggam$res.t), rownames(spl_hazard1$res.t), rownames(spl_odds1$res.t), 
-      rownames(spl_normal1$res.t), rownames(spl_hazard2$res.t), rownames(spl_odds2$res.t), rownames(spl_normal2$res.t))} else {
+      rownames(spl_normal1$res.t), rownames(spl_hazard2$res.t), rownames(spl_odds2$res.t), rownames(spl_normal2$res.t))} else { ##XP: idem
         c(rownames(expo$res.t), rownames(weib$res.t), rownames(gom$res.t), rownames(lnorm$res.t), rownames(llog$res.t), 
           rownames(gam$res.t), rownames(ggam$res.t))
       }
@@ -377,18 +378,18 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
   # extract parameters of each distribution
   res <- if (spline_mod == TRUE) {
     rbind(expo$res.t, weib$res.t, gom$res.t, lnorm$res.t, llog$res.t, gam$res.t, ggam$res.t, spl_hazard1$res.t, 
-          spl_odds1$res.t, spl_normal1$res.t, spl_hazard2$res.t, spl_odds2$res.t, spl_normal2$res.t)} else {
+          spl_odds1$res.t, spl_normal1$res.t, spl_hazard2$res.t, spl_odds2$res.t, spl_normal2$res.t)} else { ##XP: idem
             rbind(expo$res.t, weib$res.t, gom$res.t, lnorm$res.t, llog$res.t, gam$res.t, ggam$res.t)
           }
   
   empty <- rep("", nrow(res))  # create vector of length of the parameters in order to separate the parameters from other outputs
   
   # compute number of additional rows
-  addrows <- if (strata == FALSE) {1} else {ifelse(ngroups == 2, 2, 3)}
+  addrows <- if (strata == FALSE) {1} else {ifelse(ngroups == 2, 2, 3)} ##XP: kan dit geautomatiseerd worden als we nog meer modellen willen toevoegen?
   addcols <- if (strata == FALSE) {1} else {ifelse(ngroups == 2, 2, 3)}
   
   # create covariance matrices of equal lengths
-  cov <- if (spline_mod == TRUE) {
+  cov <- if (spline_mod == TRUE) { ##XP: hier nog splines met 3 knots toevoegen?
     rbind(cbind(expo$cov, 
                 matrix(0, nrow = ngroups, ncol = if (strata == FALSE) {3} else {ifelse(ngroups == 2, 6, 9)})), 
           cbind(weib$cov, matrix(0, nrow = ngroups + 1 * addrows, ncol = 2 * addcols)), 
@@ -423,7 +424,7 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
   survmod <- t(survmod)
   
   # add the knots
-  if (spline_mod == TRUE) {
+  if (spline_mod == TRUE) {##XP: hier nog splines met 3 knots toevoegen?
     # 1-knot splines
     survmod[which(rownames(survmod) == "Knots"), 
             which((survmod[which(rownames(survmod) == "Distnames"), ] == "8. 1-knot spline hazard" | 
@@ -513,5 +514,5 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
   
   output <- list(name = name, input = input, surv_obs = surv_obs, surv_model = surv_model, surv_pred = surv_pred, misc = misc)
   
-  return(output)
+  return(output) ##XP: we moeten waarschijnlijk een overzicht maken van waar elke ouputs zijn in die lijst van lijsten om het transparent bij gebruikers waar ze wat kunnen vinden
 }
