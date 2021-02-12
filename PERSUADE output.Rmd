@@ -30,7 +30,7 @@ palette(rainbow(n = n, s = 1, v = 1, start = 0, end = max(1, n - 1)/n, alpha = 1
 
 ```{r input, echo=FALSE, warning = FALSE, message = FALSE, results = "hide"}
 # INPUT DATA
-load(paste0(getwd(), "/PERSUADE.RData"))
+load(paste0(getwd(),"/PERSUADE.RData"))
 ```
 
 \  
@@ -39,7 +39,8 @@ load(paste0(getwd(), "/PERSUADE.RData"))
 [Link to PERSUADE GitHub page](https://github.com/Bram-R/PERSUADE)
 \newpage
 
-#Kaplan-Meier
+# Kaplan-Meier  
+
 ```{r plot_KM, echo=FALSE, fig.height=8, fig.width=7}
 evalq({
   suppressWarnings(if (misc$ngroups > 1) {
@@ -60,8 +61,15 @@ kable_styling(kable(summary(PERSUADE$surv_obs$km)$table, format = "latex",
 
 \newpage
 
-#Stratified models?
-Should stratified parametric survival models be used?
+# Stratified models?  
+## Should stratified parametric survival models be used? 
+
+To inform the decision whether stratified or non-stratified models should be used. One should assess whether the proportional hazard (PH) assumption holds. The PH assumption entails that the ratio of the hazards of two groups is constant over time.  When the PH assumption holds, one may fit non-stratified (parametric) survival models, meaning that a single (parametric) survival model can be fitted to all groups with the group effect(s) included as a covariate of the model. When the PH assumption does not hold it is advised to fit separate (parametric) survival models to the different groups. Finally, proportional hazards is only relevant for  exponential, Weibull, and Gompertz models. Log-logistic and log normal models since these are accelerated failure time models and, by definition, do not consider hazards to be proportional over time. Group (treatment) effect can of course be modelled as a covariate when using these models. For more information, please refer to the [NICE TSD 14](http://nicedsu.org.uk/wp-content/uploads/2016/03/NICE-DSU-TSD-Survival-analysis.updated-March-2013.v2.pdf).  
+The figures below allow to examine whether the PH assumption holds. Figure A shows the relation between the natural logarithm of time (x-axis) and the natural logarithm of the cumulative hazard (y-axis). The lines in the figure representing the different groups. An indication that the PH assumption holds is when these lines are parallel. Figures B and C represent the scaled Schoenfeld residual plots. In those plots, the relation of time (x-axis) and the residuals of each observed events (y-axis) is plotted. For the PH assumption to hold, there should be not apparent relations between these residuals and time. To investigate this, a smoothed spline has been plotted (cyan). Once this smoothed line systematically deviates from a straight line with intercept 0, one can consider that the PH assumption is violated, because it indicates a relation between the coefficient (or group variable in this case) and time. This is demonstrated in [the paper from Grambsch and Therneau, Biometrika, Volume 81, Issue 3, September 1994, Pages 515–526](https://doi.org/10.1093/biomet/81.3.515).  
+Another indication that the PH assumption does not hold is when the lines from different groups Kaplan-Meier plot (previous page) cross each other.  
+**Interpretation in this case**: Based on Figure A, one could argue that the PH assumption holds since the different lines look quite parallel to each other. However, when inspecting Figures B and C, one can see that the hazard first decreases and then increases over time (in both Figures). This indicates that the PH assumption probably does not hold.  
+**CAUTION**: An indication that the PH assumption holds during the observed period of time does not indicate that it holds after the observation period (during the extrapolation).  
+
 ```{r PH_assumption, echo=FALSE, eval=if (PERSUADE$misc$ngroups>1) {TRUE} else {FALSE}, out.height = "29%", fig.width=11}
 evalq({
   plot(cbind(log(surv_obs$km$time), log(-log(surv_obs$km$surv))), main = "A: LN(cumulative hazard)", 
@@ -90,8 +98,13 @@ evalq({
 
 \newpage
 
-#Shape of the observed smoothed hazard function
-Should parametric survival models assuming a monotonic hazard rate (i.e. exponential, Weibull, Gompertz) be used?
+# Shape of the observed smoothed hazard function  
+## Should parametric survival models assuming a monotonic hazard rate (i.e. exponential, Weibull, Gompertz) be used? 
+
+The Figure below represents the smoothed hazard rate over time for each group. Based on this Figure, an exponential distribution would be considered suitable if the smoothed hazard rate would be constant over time (straight vertical line). The Weibull and Gompertz functions would be considered suitable if the smoothed hazard rate would increase or decrease monotonically (an upward or downward slope with constant gradient). More information on which shape of the hazard function can be estimated by the different parametric survival models can be found [here](https://devinincerti.com/2019/06/18/parametric_survival.html).  
+**Interpretation in this case**: Based on this Figure, one can discard all three parametric survival models (exponential, Weibull, and Gompertz), because none of these smoothed hazard rates is constant, or increases/decreases monotonically over time. Based on this information and the fact that the PH assumption does likely not hold in this case, we have decided to fit separate (stratified) parametric survival models to each group.  
+**CAUTION**: These smoothed hazard rates apply to the observed period and do not allow to make inferences about the shape of the hazard function after the observation period.  
+
 ```{r plot_hr, echo=FALSE}
 evalq({
   plot(cbind(surv_obs$haz$smooth_gr1$est.grid, surv_obs$haz$smooth_gr1$haz.est), 
@@ -112,7 +125,9 @@ evalq({
 
 \newpage
 
-#Shape of the predicted hazard function
+# Shape of the predicted hazard function  
+The following plots dislay how the hazard rates is estimated through the different parametric survival models.  
+
 ```{r plot_haz_pred, out.height = "29%", fig.width=11, echo=FALSE}
 
 # GROUP 1
@@ -271,8 +286,17 @@ evalq({
 
 \newpage
 
-#Standard parametric models?
-Do standard parametric models provide an appropriate fit to the data?
+# Standard parametric models?  
+## Do standard parametric models provide an appropriate fit to the data?  
+The circle displays the colours that are attributed to each parametric survival model in the graphs on the following pages.  
+The Table below displays the goodness-of-fit statistics for each parametric survival model, ordered from 'best' fitting to less well fitting, based on the Akaike Information Criterion (AIC). The AIC and Bayesian Information Criterion (BIC) provide a measure of the relative fit of each model to the data, while penalising for the number of parameter included in the fitted models. The lower the AIC or BIC, the better the relative fit of a model compared to other fitted models.  
+**Interpretation in this case**: Based on this Table, one can conclude that the generalised gamma and log-normal parametric survival models fit the data best relative to the other fitted models, according to the AIC.  
+**CAUTION**: These goodness-of-fit statistics only apply to the observed period of time and do not allow to issue statements about the suitability of the extrapolated survival by these fitted models beyond the observation period.  
+
+In the following pages, three plots per fitted parametric survival model are displayed to support the visual inspection of the fit of the models to the observed data. Figure A shows the Kaplan-Meier curves (black and gray) versus the fitted parametric survival models (colour). Figure B displays a comparison of the smoothed hazard rates based on the empirical data (black and gray) versus the estimated transition probabilities (colour, based on the fitted parametric survival models). In all Figures A and B, the Kaplan-Meier curves  and the smoothed hazard rates are the same. Figure C shows a specific diagnostic plot for each fitted parametric survival model. For all these plots, the rule is: the closer the coloured lines are to the black and grey lines, the better.  
+**Interpretation in this case**: Based on these plots, one can see that the generalised gamma and log-normal parametric survival models seem to estimate the transition probabilities the most closely, but there are still some discrepancies between observed and estimated transition probabilities, especially in the 'Poor' and 'Medium' group. This can be explained by the changing direction of the hazard rates in the 'Poor' group over time. It increases until approximately year 2, then decreases until approximately year 5, and then increases again. Standard parametric survival models are not able to capture multiple changes in the hazard function over time, hence, more flexible models which allow for multiple changes in the hazard functions may be required.  
+**CAUTION**: These observations only apply to the observed period of time and do not allow to issue statements about the suitability of the extrapolated survival by these fitted models beyond the observation period. Additionally, the shape of the hazard function (smoothed transition rates) at the end of the observed period may be affected by the low number of observations in the tail of the Kaplan-Meier curves. One should therefore consider these changing hazard at the end of the observed period cautiously.   
+
 ```{r plot_parametric, echo=FALSE}
 evalq({
   pie(rep(1, n), labels = misc$lbls, col = rainbow(n = n, s = 1, v = 1, start = 0, 
@@ -282,7 +306,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-##Exponential
+## Exponential
 ```{r expo, echo=FALSE, out.height = "30%", fig.width=11}
 evalq({
   # constant hazard
@@ -364,7 +388,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-##Weibull
+## Weibull
 ```{r weib, echo=FALSE, out.height = "30%", fig.width=11}
 evalq({
   # monotonically increasing or decreasing hazard
@@ -445,7 +469,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-##Gompertz
+## Gompertz
 ```{r gom, echo=FALSE, out.height = "30%", fig.width=11}
 evalq({
   # monotonically increasing or decreasing hazard
@@ -532,7 +556,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-##Log-normal
+## Log-normal
 ```{r lnorm, echo=FALSE, out.height = "30%", fig.width=11}
 evalq({
   # hazard can be non-monotonic with respect to time; initially an increasing
@@ -621,7 +645,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-##Log-logistic
+## Log-logistic
 ```{r llog, echo=FALSE, out.height = "30%", fig.width=11}
 evalq({
   # hazard can be non-monotonic with respect to time; initially an increasing
@@ -712,7 +736,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-##Gamma
+## Gamma
 ```{r gam, echo=FALSE, out.height = "30%", fig.width=11}
 evalq({
   # hazard rate has (inverted) 'U' shape over time
@@ -795,7 +819,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-##Generalised Gamma 
+## Generalised Gamma 
 ```{r ggam, echo=FALSE, out.height = "30%", fig.width=11}
 evalq({
   # more flexible: can take form of Exponential, Weibull, Gamma or Log-normal
@@ -880,8 +904,17 @@ evalq({
 
 \newpage
 
-#Parametric spline models?
-If standard parametric models are not appropriate, are spline models a more appropriate fit to the data?
+# Parametric natural cubic spline models?
+## If standard parametric models do not provide a satisfactory fit to the data based on previous observations, do spline models provide a more satisfactory fit to the data?  
+An explanation concerning these natural cubic spline models, henceforth spline models, is provided in [Royston and Pamar - 2002](https://doi.org/10.1002/sim.1203).  
+As in the previous section, the circle provides the colours attributed to each parametric survival model, spline models in this case. The Table below provides the AIC and BIC for all fitted models. This allows for a comparison of the fit of the spline models to the 'standard' parametric survival models.  
+**Interpretation in this case**: Based on this Table, one can conclude that four spline models fit the data relatively better than the generalised gamma survival model, due to their lower AIC. The difference in AIC is however marginal (4 AIC points).  
+**CAUTION**: These goodness-of-fit statistics only apply to the observed period of time and do not allow to issue statements about the suitability of the extrapolated survival by these fitted models beyond the observation period.  
+
+In the following pages, the same three plots per fitted parametric spline model are displayed to support the visual inspection of the fit of the models to the observed data, as in previous section. The interpretation of these plots remains the same.  
+**Interpretation in this case**: Based on these plots, one can see that the four spline models fit the data marginally better than the generalised gamma model.  
+**CAUTION**: These observations only apply to the observed period of time and do not allow to issue statements about the suitability of the extrapolated survival by these fitted models beyond the observation period. Additionally, the shape of the hazard function (smoothed transition rates) at the end of the observed period may be affected by the low number of observations in the tail of the Kaplan-Meier curves. One should therefore consider these changing hazard at the end of the observed period cautiously. 
+
 
 ```{r spline, echo=FALSE, eval = PERSUADE$input$spline_mod}
 evalq({
@@ -901,7 +934,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-##Spline hazard 1 knot
+## Spline hazard 1 knot
 ```{r spline_hazard1, echo=FALSE, out.height = "30%", fig.width=11, eval = PERSUADE$input$spline_mod}
 evalq({
   # 1 knot
@@ -997,7 +1030,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-##Spline hazard 2 knots
+## Spline hazard 2 knots
 ```{r spline_hazard2, echo=FALSE, out.height = "30%", fig.width=11, eval = PERSUADE$input$spline_mod}
 evalq({
   # 2 knots
@@ -1096,7 +1129,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-##Spline hazard 3 knots
+## Spline hazard 3 knots
 ```{r spline_hazard3, echo=FALSE, out.height = "30%", fig.width=11, eval = PERSUADE$input$spline_mod}
 evalq({
   # 2 knots
@@ -1198,7 +1231,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-##Spline odds 1 knot
+## Spline odds 1 knot
 ```{r spline_odds1, echo=FALSE, out.height = "30%", fig.width=11, eval = PERSUADE$input$spline_mod}
 evalq({
   # 1 knot
@@ -1296,7 +1329,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-##Spline odds 2 knots
+## Spline odds 2 knots
 ```{r spline_odds2, echo=FALSE, out.height = "30%", fig.width=11, eval = PERSUADE$input$spline_mod}
 evalq({
   # 2 knots
@@ -1397,7 +1430,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-##Spline odds 3 knots
+## Spline odds 3 knots
 ```{r spline_odds3, echo=FALSE, out.height = "30%", fig.width=11, eval = PERSUADE$input$spline_mod}
 evalq({
   # 2 knots
@@ -1502,7 +1535,7 @@ evalq({
 ```
 
 
-##Spline normal 1 knot
+## Spline normal 1 knot
 ```{r spline_norm1, echo=FALSE, out.height = "30%", fig.width=11, eval = PERSUADE$input$spline_mod}
 evalq({
   # 1 knot
@@ -1601,7 +1634,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-##Spline normal 2 knots
+## Spline normal 2 knots
 ```{r spline_norm2, echo=FALSE, out.height = "30%", fig.width=11, eval = PERSUADE$input$spline_mod}
 evalq({
   # 2 knots
@@ -1704,7 +1737,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-##Spline normal 3 knots
+## Spline normal 3 knots
 ```{r spline_norm3, echo=FALSE, out.height = "30%", fig.width=11, eval = PERSUADE$input$spline_mod}
 evalq({
   # 2 knots
@@ -1813,11 +1846,14 @@ evalq({
 
 \newpage
 
-#Validity of long-term extrapolation?
-What model(s) is/are more appropriate for long-term extrapolation?
-Are/is the selected model(s) plausible in comparison with general population mortality?
+# Plausibility of the long-term extrapolation
+## Which model(s) is/are more appropriate for long-term extrapolation?  
+## Are/is the selected model(s) plausible in comparison with general population mortality?  
+In this section, we present the estimated survival probabilities by through fitted parametric survival models for the period of time within and beyond data collection, i.e. the extrapolation. This is done by 1) plotting the survival curves (Figures A and B), 2) displaying the survival probabilities at multiple time points (first Table), 3) ploting conditional annual transition probabilities (Figures C and D), and providing the summary statistics of the estimated conditional transition probabilities (second Table). This information is provided for each group separately.  
+One way to assess the plausibility of the extrapolated survival probabilities is to compare the estimated survival probabilities at different time points with external data (e.g. observational data), and/ or to ask clinical experts about the plausibility of these extrapolations. Another way to check for plausibility is to compare the conditional transition probability with general population mortality rates (these can be obtained through national statistics). Parametric survival models providing conditional transition probabilities which are lower than the general population mortality rates may not be suitable because this would mean patients may have a lower probability of death than the general population values. Such finding require either to select an alternative model or to adjust the selected model for general population mortality rates.  
+**Interpretation in this case**: The conditional annual probabilities estimated by the two-knots spline-based model on the hazard scale was most consistent with general population mortality data of the Netherlands (although it might still require adjustment). Ideally, one would validate the plausibility of the long-term extrapolations of the two-knots spline-based model against external data.  
 
-##`r paste("Group", PERSUADE$misc$group_names[1])`
+## `r paste("Group", PERSUADE$misc$group_names[1])`
 ```{r validate_extrapolation1, echo=FALSE, out.height = "29%", fig.width=11, comment=NA}
 evalq({
   # parametric curves
@@ -1949,7 +1985,7 @@ evalq({
 
 \newpage
 
-##`r paste("Group", PERSUADE$misc$group_names[2])`
+## `r paste("Group", PERSUADE$misc$group_names[2])`
 ```{r validate_extrapolation2, echo=FALSE, out.height = "29%", fig.width=11, eval=if (PERSUADE$misc$ngroups>1) {TRUE} else {FALSE}, comment=NA}
 evalq({
   # parametric curves
@@ -2081,7 +2117,7 @@ evalq({
 
 \newpage
 
-##`r paste("Group", PERSUADE$misc$group_names[3])`
+## `r paste("Group", PERSUADE$misc$group_names[3])`
 ```{r validate_extrapolation3, echo=FALSE, out.height = "29%", fig.width=11, eval=if (PERSUADE$misc$ngroups>2) {TRUE} else {FALSE}, comment=NA}
 evalq({
   # parametric curves
@@ -2213,7 +2249,7 @@ evalq({
 
 \newpage
 
-#Session information
+# Session information
 ```{r si, echo=FALSE}
 print(sessionInfo(), RNG = TRUE, locale = FALSE)
 ```

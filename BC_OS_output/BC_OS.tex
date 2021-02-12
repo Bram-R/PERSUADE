@@ -1,36 +1,48 @@
-\documentclass[]{article}
+\PassOptionsToPackage{unicode=true}{hyperref} % options for packages loaded elsewhere
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames*,x11names*}{xcolor}
+%
+\documentclass[
+]{article}
 \usepackage{lmodern}
 \usepackage{amssymb,amsmath}
 \usepackage{ifxetex,ifluatex}
-\usepackage{fixltx2e} % provides \textsubscript
 \ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provides euro and other symbols
 \else % if luatex or xelatex
-  \ifxetex
-    \usepackage{mathspec}
-  \else
-    \usepackage{fontspec}
-  \fi
-  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
 \fi
 % use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
-% use microtype if available
-\IfFileExists{microtype.sty}{%
-\usepackage[]{microtype}
-\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
 }{}
-\PassOptionsToPackage{hyphens}{url} % url is loaded by hyperref
-\usepackage[unicode=true]{hyperref}
-\PassOptionsToPackage{usenames,dvipsnames}{color} % color is loaded by hyperref
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
 \hypersetup{
-            pdftitle={PERSUADE BC\_OS\_output},
-            colorlinks=true,
-            linkcolor=Maroon,
-            citecolor=Blue,
-            urlcolor=blue,
-            breaklinks=true}
+  pdftitle={PERSUADE BC\_OS\_output},
+  colorlinks=true,
+  linkcolor=Maroon,
+  filecolor=Maroon,
+  citecolor=Blue,
+  urlcolor=blue,
+  breaklinks=true}
 \urlstyle{same}  % don't use monospace font for urls
 \usepackage[margin=1in]{geometry}
 \usepackage{graphicx,grffile}
@@ -42,24 +54,18 @@
 % margins by default, and it is still possible to overwrite the defaults
 % using explicit options in \includegraphics[width, height, ...]{}
 \setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
-\IfFileExists{parskip.sty}{%
-\usepackage{parskip}
-}{% else
-\setlength{\parindent}{0pt}
-\setlength{\parskip}{6pt plus 2pt minus 1pt}
-}
 \setlength{\emergencystretch}{3em}  % prevent overfull lines
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
-\setcounter{secnumdepth}{0}
+\setcounter{secnumdepth}{-2}
 % Redefines (sub)paragraphs to behave more like sections
 \ifx\paragraph\undefined\else
-\let\oldparagraph\paragraph
-\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
 \fi
 \ifx\subparagraph\undefined\else
-\let\oldsubparagraph\subparagraph
-\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
 \fi
 
 % set default figure placement to htbp
@@ -84,21 +90,23 @@
 
 \title{PERSUADE BC\_OS\_output}
 \author{}
-\date{\vspace{-2.5em}2021-02-09}
+\date{\vspace{-2.5em}2021-02-11}
 
 \begin{document}
 \maketitle
 
 {
-\hypersetup{linkcolor=black}
+\hypersetup{linkcolor=}
 \setcounter{tocdepth}{2}
 \tableofcontents
 }
 ~\\
+
 \href{https://github.com/Bram-R/PERSUADE}{Link to PERSUADE GitHub page}
 \newpage
 
-\section{Kaplan-Meier}\label{kaplan-meier}
+\hypertarget{kaplan-meier}{%
+\section{Kaplan-Meier}\label{kaplan-meier}}
 
 \begin{flushleft}\includegraphics{Images/plot_KM-1} \end{flushleft}
 
@@ -117,9 +125,59 @@ group=Medium & 229 & 229 & 229 & 103 & 4.600852 & 0.1856699 & 5.254795 & 4.11506
 
 \newpage
 
-\section{Stratified models?}\label{stratified-models}
+\hypertarget{stratified-models}{%
+\section{Stratified models?}\label{stratified-models}}
 
-Should stratified parametric survival models be used?
+\hypertarget{should-stratified-parametric-survival-models-be-used}{%
+\subsection{Should stratified parametric survival models be
+used?}\label{should-stratified-parametric-survival-models-be-used}}
+
+To inform the decision whether stratified or non-stratified models
+should be used. One should assess whether the proportional hazard (PH)
+assumption holds. The PH assumption entails that the ratio of the
+hazards of two groups is constant over time. When the PH assumption
+holds, one may fit non-stratified (parametric) survival models, meaning
+that a single (parametric) survival model can be fitted to all groups
+with the group effect(s) included as a covariate of the model. When the
+PH assumption does not hold it is advised to fit separate (parametric)
+survival models to the different groups. Finally, proportional hazards
+is only relevant for exponential, Weibull, and Gompertz models.
+Log-logistic and log normal models since these are accelerated failure
+time models and, by definition, do not consider hazards to be
+proportional over time. Group (treatment) effect can of course be
+modelled as a covariate when using these models. For more information,
+please refer to the
+\href{http://nicedsu.org.uk/wp-content/uploads/2016/03/NICE-DSU-TSD-Survival-analysis.updated-March-2013.v2.pdf}{NICE
+TSD 14}.\\
+The figures below allow to examine whether the PH assumption holds.
+Figure A shows the relation between the natural logarithm of time
+(x-axis) and the natural logarithm of the cumulative hazard (y-axis).
+The lines in the figure representing the different groups. An indication
+that the PH assumption holds is when these lines are parallel. Figures B
+and C represent the scaled Schoenfeld residual plots. In those plots,
+the relation of time (x-axis) and the residuals of each observed events
+(y-axis) is plotted. For the PH assumption to hold, there should be not
+apparent relations between these residuals and time. To investigate
+this, a smoothed spline has been plotted (cyan). Once this smoothed line
+systematically deviates from a straight line with intercept 0, one can
+consider that the PH assumption is violated, because it indicates a
+relation between the coefficient (or group variable in this case) and
+time. This is demonstrated in
+\href{https://doi.org/10.1093/biomet/81.3.515}{the paper from Grambsch
+and Therneau, Biometrika, Volume 81, Issue 3, September 1994, Pages
+515--526}.\\
+Another indication that the PH assumption does not hold is when the
+lines from different groups Kaplan-Meier plot (previous page) cross each
+other.\\
+\textbf{Interpretation in this case}: Based on Figure A, one could argue
+that the PH assumption holds since the different lines look quite
+parallel to each other. However, when inspecting Figures B and C, one
+can see that the hazard first decreases and then increases over time (in
+both Figures). This indicates that the PH assumption probably does not
+hold.\\
+\textbf{CAUTION}: An indication that the PH assumption holds during the
+observed period of time does not indicate that it holds after the
+observation period (during the extrapolation).
 
 \begin{flushleft}\includegraphics[height=0.29\textheight]{Images/PH_assumption-1} \end{flushleft}
 
@@ -129,18 +187,45 @@ Should stratified parametric survival models be used?
 
 \newpage
 
+\hypertarget{shape-of-the-observed-smoothed-hazard-function}{%
 \section{Shape of the observed smoothed hazard
-function}\label{shape-of-the-observed-smoothed-hazard-function}
+function}\label{shape-of-the-observed-smoothed-hazard-function}}
 
-Should parametric survival models assuming a monotonic hazard rate
-(i.e.~exponential, Weibull, Gompertz) be used?
+\hypertarget{should-parametric-survival-models-assuming-a-monotonic-hazard-rate-i.e.-exponential-weibull-gompertz-be-used}{%
+\subsection{Should parametric survival models assuming a monotonic
+hazard rate (i.e.~exponential, Weibull, Gompertz) be
+used?}\label{should-parametric-survival-models-assuming-a-monotonic-hazard-rate-i.e.-exponential-weibull-gompertz-be-used}}
+
+The Figure below represents the smoothed hazard rate over time for each
+group. Based on this Figure, an exponential distribution would be
+considered suitable if the smoothed hazard rate would be constant over
+time (straight vertical line). The Weibull and Gompertz functions would
+be considered suitable if the smoothed hazard rate would increase or
+decrease monotonically (an upward or downward slope with constant
+gradient). More information on which shape of the hazard function can be
+estimated by the different parametric survival models can be found
+\href{https://devinincerti.com/2019/06/18/parametric_survival.html}{here}.\\
+\textbf{Interpretation in this case}: Based on this Figure, one can
+discard all three parametric survival models (exponential, Weibull, and
+Gompertz), because none of these smoothed hazard rates is constant, or
+increases/decreases monotonically over time. Based on this information
+and the fact that the PH assumption does likely not hold in this case,
+we have decided to fit separate (stratified) parametric survival models
+to each group.\\
+\textbf{CAUTION}: These smoothed hazard rates apply to the observed
+period and do not allow to make inferences about the shape of the hazard
+function after the observation period.
 
 \begin{flushleft}\includegraphics{Images/plot_hr-1} \end{flushleft}
 
 \newpage
 
+\hypertarget{shape-of-the-predicted-hazard-function}{%
 \section{Shape of the predicted hazard
-function}\label{shape-of-the-predicted-hazard-function}
+function}\label{shape-of-the-predicted-hazard-function}}
+
+The following plots dislay how the hazard rates is estimated through the
+different parametric survival models.
 
 \begin{flushleft}\includegraphics[height=0.29\textheight]{Images/plot_haz_pred-1} \end{flushleft}
 
@@ -156,9 +241,63 @@ function}\label{shape-of-the-predicted-hazard-function}
 
 \newpage
 
-\section{Standard parametric models?}\label{standard-parametric-models}
+\hypertarget{standard-parametric-models}{%
+\section{Standard parametric models?}\label{standard-parametric-models}}
 
-Do standard parametric models provide an appropriate fit to the data?
+\hypertarget{do-standard-parametric-models-provide-an-appropriate-fit-to-the-data}{%
+\subsection{Do standard parametric models provide an appropriate fit to
+the
+data?}\label{do-standard-parametric-models-provide-an-appropriate-fit-to-the-data}}
+
+The circle displays the colours that are attributed to each parametric
+survival model in the graphs on the following pages.\\
+The Table below displays the goodness-of-fit statistics for each
+parametric survival model, ordered from `best' fitting to less well
+fitting, based on the Akaike Information Criterion (AIC). The AIC and
+Bayesian Information Criterion (BIC) provide a measure of the relative
+fit of each model to the data, while penalising for the number of
+parameter included in the fitted models. The lower the AIC or BIC, the
+better the relative fit of a model compared to other fitted models.\\
+\textbf{Interpretation in this case}: Based on this Table, one can
+conclude that the generalised gamma and log-normal parametric survival
+models fit the data best relative to the other fitted models, according
+to the AIC.\\
+\textbf{CAUTION}: These goodness-of-fit statistics only apply to the
+observed period of time and do not allow to issue statements about the
+suitability of the extrapolated survival by these fitted models beyond
+the observation period.
+
+In the following pages, three plots per fitted parametric survival model
+are displayed to support the visual inspection of the fit of the models
+to the observed data. Figure A shows the Kaplan-Meier curves (black and
+gray) versus the fitted parametric survival models (colour). Figure B
+displays a comparison of the smoothed hazard rates based on the
+empirical data (black and gray) versus the estimated transition
+probabilities (colour, based on the fitted parametric survival models).
+In all Figures A and B, the Kaplan-Meier curves and the smoothed hazard
+rates are the same. Figure C shows a specific diagnostic plot for each
+fitted parametric survival model. For all these plots, the rule is: the
+closer the coloured lines are to the black and grey lines, the better.\\
+\textbf{Interpretation in this case}: Based on these plots, one can see
+that the generalised gamma and log-normal parametric survival models
+seem to estimate the transition probabilities the most closely, but
+there are still some discrepancies between observed and estimated
+transition probabilities, especially in the `Poor' and `Medium' group.
+This can be explained by the changing direction of the hazard rates in
+the `Poor' group over time. It increases until approximately year 2,
+then decreases until approximately year 5, and then increases again.
+Standard parametric survival models are not able to capture multiple
+changes in the hazard function over time, hence, more flexible models
+which allow for multiple changes in the hazard functions may be
+required.\\
+\textbf{CAUTION}: These observations only apply to the observed period
+of time and do not allow to issue statements about the suitability of
+the extrapolated survival by these fitted models beyond the observation
+period. Additionally, the shape of the hazard function (smoothed
+transition rates) at the end of the observed period may be affected by
+the low number of observations in the tail of the Kaplan-Meier curves.
+One should therefore consider these changing hazard at the end of the
+observed period cautiously.
 
 \begin{flushleft}\includegraphics{Images/plot_parametric-1} \end{flushleft}
 
@@ -179,7 +318,8 @@ Model & AIC & BIC\\
 \end{tabular}
 \end{table}
 
-\subsection{Exponential}\label{exponential}
+\hypertarget{exponential}{%
+\subsection{Exponential}\label{exponential}}
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/expo-1} \end{flushleft}
 
@@ -187,7 +327,8 @@ Model & AIC & BIC\\
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/expo-3} \end{flushleft}
 
-\subsection{Weibull}\label{weibull}
+\hypertarget{weibull}{%
+\subsection{Weibull}\label{weibull}}
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/weib-1} \end{flushleft}
 
@@ -195,7 +336,8 @@ Model & AIC & BIC\\
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/weib-3} \end{flushleft}
 
-\subsection{Gompertz}\label{gompertz}
+\hypertarget{gompertz}{%
+\subsection{Gompertz}\label{gompertz}}
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/gom-1} \end{flushleft}
 
@@ -203,7 +345,8 @@ Model & AIC & BIC\\
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/gom-3} \end{flushleft}
 
-\subsection{Log-normal}\label{log-normal}
+\hypertarget{log-normal}{%
+\subsection{Log-normal}\label{log-normal}}
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/lnorm-1} \end{flushleft}
 
@@ -211,7 +354,8 @@ Model & AIC & BIC\\
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/lnorm-3} \end{flushleft}
 
-\subsection{Log-logistic}\label{log-logistic}
+\hypertarget{log-logistic}{%
+\subsection{Log-logistic}\label{log-logistic}}
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/llog-1} \end{flushleft}
 
@@ -219,7 +363,8 @@ Model & AIC & BIC\\
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/llog-3} \end{flushleft}
 
-\subsection{Gamma}\label{gamma}
+\hypertarget{gamma}{%
+\subsection{Gamma}\label{gamma}}
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/gam-1} \end{flushleft}
 
@@ -227,7 +372,8 @@ Model & AIC & BIC\\
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/gam-3} \end{flushleft}
 
-\subsection{Generalised Gamma}\label{generalised-gamma}
+\hypertarget{generalised-gamma}{%
+\subsection{Generalised Gamma}\label{generalised-gamma}}
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/ggam-1} \end{flushleft}
 
@@ -237,10 +383,48 @@ Model & AIC & BIC\\
 
 \newpage
 
-\section{Parametric spline models?}\label{parametric-spline-models}
+\hypertarget{parametric-natural-cubic-spline-models}{%
+\section{Parametric natural cubic spline
+models?}\label{parametric-natural-cubic-spline-models}}
 
-If standard parametric models are not appropriate, are spline models a
-more appropriate fit to the data?
+\hypertarget{if-standard-parametric-models-do-not-provide-a-satisfactory-fit-to-the-data-based-on-previous-observations-do-spline-models-provide-a-more-satisfactory-fit-to-the-data}{%
+\subsection{If standard parametric models do not provide a satisfactory
+fit to the data based on previous observations, do spline models provide
+a more satisfactory fit to the
+data?}\label{if-standard-parametric-models-do-not-provide-a-satisfactory-fit-to-the-data-based-on-previous-observations-do-spline-models-provide-a-more-satisfactory-fit-to-the-data}}
+
+An explanation concerning these natural cubic spline models, henceforth
+spline models, is provided in
+\href{https://doi.org/10.1002/sim.1203}{Royston and Pamar - 2002}.\\
+As in the previous section, the circle provides the colours attributed
+to each parametric survival model, spline models in this case. The Table
+below provides the AIC and BIC for all fitted models. This allows for a
+comparison of the fit of the spline models to the `standard' parametric
+survival models.\\
+\textbf{Interpretation in this case}: Based on this Table, one can
+conclude that four spline models fit the data relatively better than the
+generalised gamma survival model, due to their lower AIC. The difference
+in AIC is however marginal (4 AIC points).\\
+\textbf{CAUTION}: These goodness-of-fit statistics only apply to the
+observed period of time and do not allow to issue statements about the
+suitability of the extrapolated survival by these fitted models beyond
+the observation period.
+
+In the following pages, the same three plots per fitted parametric
+spline model are displayed to support the visual inspection of the fit
+of the models to the observed data, as in previous section. The
+interpretation of these plots remains the same.\\
+\textbf{Interpretation in this case}: Based on these plots, one can see
+that the four spline models fit the data marginally better than the
+generalised gamma model.\\
+\textbf{CAUTION}: These observations only apply to the observed period
+of time and do not allow to issue statements about the suitability of
+the extrapolated survival by these fitted models beyond the observation
+period. Additionally, the shape of the hazard function (smoothed
+transition rates) at the end of the observed period may be affected by
+the low number of observations in the tail of the Kaplan-Meier curves.
+One should therefore consider these changing hazard at the end of the
+observed period cautiously.
 
 \begin{flushleft}\includegraphics{Images/spline-1} \end{flushleft}
 
@@ -270,7 +454,8 @@ Model & AIC & BIC\\
 \end{tabular}
 \end{table}
 
-\subsection{Spline hazard 1 knot}\label{spline-hazard-1-knot}
+\hypertarget{spline-hazard-1-knot}{%
+\subsection{Spline hazard 1 knot}\label{spline-hazard-1-knot}}
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/spline_hazard1-1} \end{flushleft}
 
@@ -278,7 +463,8 @@ Model & AIC & BIC\\
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/spline_hazard1-3} \end{flushleft}
 
-\subsection{Spline hazard 2 knots}\label{spline-hazard-2-knots}
+\hypertarget{spline-hazard-2-knots}{%
+\subsection{Spline hazard 2 knots}\label{spline-hazard-2-knots}}
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/spline_hazard2-1} \end{flushleft}
 
@@ -286,7 +472,8 @@ Model & AIC & BIC\\
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/spline_hazard2-3} \end{flushleft}
 
-\subsection{Spline hazard 3 knots}\label{spline-hazard-3-knots}
+\hypertarget{spline-hazard-3-knots}{%
+\subsection{Spline hazard 3 knots}\label{spline-hazard-3-knots}}
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/spline_hazard3-1} \end{flushleft}
 
@@ -294,7 +481,8 @@ Model & AIC & BIC\\
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/spline_hazard3-3} \end{flushleft}
 
-\subsection{Spline odds 1 knot}\label{spline-odds-1-knot}
+\hypertarget{spline-odds-1-knot}{%
+\subsection{Spline odds 1 knot}\label{spline-odds-1-knot}}
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/spline_odds1-1} \end{flushleft}
 
@@ -302,7 +490,8 @@ Model & AIC & BIC\\
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/spline_odds1-3} \end{flushleft}
 
-\subsection{Spline odds 2 knots}\label{spline-odds-2-knots}
+\hypertarget{spline-odds-2-knots}{%
+\subsection{Spline odds 2 knots}\label{spline-odds-2-knots}}
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/spline_odds2-1} \end{flushleft}
 
@@ -310,7 +499,8 @@ Model & AIC & BIC\\
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/spline_odds2-3} \end{flushleft}
 
-\subsection{Spline odds 3 knots}\label{spline-odds-3-knots}
+\hypertarget{spline-odds-3-knots}{%
+\subsection{Spline odds 3 knots}\label{spline-odds-3-knots}}
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/spline_odds3-1} \end{flushleft}
 
@@ -318,7 +508,8 @@ Model & AIC & BIC\\
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/spline_odds3-3} \end{flushleft}
 
-\subsection{Spline normal 1 knot}\label{spline-normal-1-knot}
+\hypertarget{spline-normal-1-knot}{%
+\subsection{Spline normal 1 knot}\label{spline-normal-1-knot}}
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/spline_norm1-1} \end{flushleft}
 
@@ -326,7 +517,8 @@ Model & AIC & BIC\\
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/spline_norm1-3} \end{flushleft}
 
-\subsection{Spline normal 2 knots}\label{spline-normal-2-knots}
+\hypertarget{spline-normal-2-knots}{%
+\subsection{Spline normal 2 knots}\label{spline-normal-2-knots}}
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/spline_norm2-1} \end{flushleft}
 
@@ -334,7 +526,8 @@ Model & AIC & BIC\\
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/spline_norm2-3} \end{flushleft}
 
-\subsection{Spline normal 3 knots}\label{spline-normal-3-knots}
+\hypertarget{spline-normal-3-knots}{%
+\subsection{Spline normal 3 knots}\label{spline-normal-3-knots}}
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/spline_norm3-1} \end{flushleft}
 
@@ -344,14 +537,51 @@ Model & AIC & BIC\\
 
 \newpage
 
-\section{Validity of long-term
-extrapolation?}\label{validity-of-long-term-extrapolation}
+\hypertarget{plausibility-of-the-long-term-extrapolation}{%
+\section{Plausibility of the long-term
+extrapolation}\label{plausibility-of-the-long-term-extrapolation}}
 
-What model(s) is/are more appropriate for long-term extrapolation?
-Are/is the selected model(s) plausible in comparison with general
-population mortality?
+\hypertarget{which-models-isare-more-appropriate-for-long-term-extrapolation}{%
+\subsection{Which model(s) is/are more appropriate for long-term
+extrapolation?}\label{which-models-isare-more-appropriate-for-long-term-extrapolation}}
 
-\subsection{Group Good}\label{group-good}
+\hypertarget{areis-the-selected-models-plausible-in-comparison-with-general-population-mortality}{%
+\subsection{Are/is the selected model(s) plausible in comparison with
+general population
+mortality?}\label{areis-the-selected-models-plausible-in-comparison-with-general-population-mortality}}
+
+In this section, we present the estimated survival probabilities by
+through fitted parametric survival models for the period of time within
+and beyond data collection, i.e.~the extrapolation. This is done by 1)
+plotting the survival curves (Figures A and B), 2) displaying the
+survival probabilities at multiple time points (first Table), 3) ploting
+conditional annual transition probabilities (Figures C and D), and
+providing the summary statistics of the estimated conditional transition
+probabilities (second Table). This information is provided for each
+group separately.\\
+One way to assess the plausibility of the extrapolated survival
+probabilities is to compare the estimated survival probabilities at
+different time points with external data (e.g.~observational data), and/
+or to ask clinical experts about the plausibility of these
+extrapolations. Another way to check for plausibility is to compare the
+conditional transition probability with general population mortality
+rates (these can be obtained through national statistics). Parametric
+survival models providing conditional transition probabilities which are
+lower than the general population mortality rates may not be suitable
+because this would mean patients may have a lower probability of death
+than the general population values. Such finding require either to
+select an alternative model or to adjust the selected model for general
+population mortality rates.\\
+\textbf{Interpretation in this case}: The conditional annual
+probabilities estimated by the two-knots spline-based model on the
+hazard scale was most consistent with general population mortality data
+of the Netherlands (although it might still require adjustment).
+Ideally, one would validate the plausibility of the long-term
+extrapolations of the two-knots spline-based model against external
+data.
+
+\hypertarget{group-good}{%
+\subsection{Group Good}\label{group-good}}
 
 \begin{flushleft}\includegraphics[height=0.29\textheight]{Images/validate_extrapolation1-1} \end{flushleft}
 
@@ -414,7 +644,8 @@ population mortality?
 
 \newpage
 
-\subsection{Group Medium}\label{group-medium}
+\hypertarget{group-medium}{%
+\subsection{Group Medium}\label{group-medium}}
 
 \begin{flushleft}\includegraphics[height=0.29\textheight]{Images/validate_extrapolation2-1} \end{flushleft}
 
@@ -477,7 +708,8 @@ population mortality?
 
 \newpage
 
-\subsection{Group Poor}\label{group-poor}
+\hypertarget{group-poor}{%
+\subsection{Group Poor}\label{group-poor}}
 
 \begin{flushleft}\includegraphics[height=0.29\textheight]{Images/validate_extrapolation3-1} \end{flushleft}
 
@@ -540,12 +772,13 @@ population mortality?
 
 \newpage
 
-\section{Session information}\label{session-information}
+\hypertarget{session-information}{%
+\section{Session information}\label{session-information}}
 
 \begin{verbatim}
-## R version 4.0.1 (2020-06-06)
+## R version 4.0.3 (2020-10-10)
 ## Platform: x86_64-w64-mingw32/x64 (64-bit)
-## Running under: Windows 10 x64 (build 19041)
+## Running under: Windows 10 x64 (build 17763)
 ## 
 ## Matrix products: default
 ## 
@@ -559,12 +792,12 @@ population mortality?
 ## [8] base     
 ## 
 ## other attached packages:
-##  [1] sft_2.2-1          SuppDists_1.1-9.5  fda_5.1.7          fds_1.8           
-##  [5] RCurl_1.98-1.2     rainbow_3.6        pcaPP_1.9-73       MASS_7.3-51.6     
-##  [9] Matrix_1.2-18      kableExtra_1.3.1   knitr_1.30         summarytools_0.9.6
-## [13] data.table_1.13.4  survminer_0.4.8    ggpubr_0.4.0       muhaz_1.2.6.1     
+##  [1] sft_2.2-1          SuppDists_1.1-9.5  fda_5.1.9          fds_1.8           
+##  [5] RCurl_1.98-1.2     rainbow_3.6        pcaPP_1.9-73       MASS_7.3-53       
+##  [9] Matrix_1.2-18      kableExtra_1.3.1   knitr_1.31         summarytools_0.9.8
+## [13] data.table_1.13.6  survminer_0.4.8    ggpubr_0.4.0       muhaz_1.2.6.1     
 ## [17] flexsurv_1.1.1     rms_6.1-0          SparseM_1.78       Hmisc_4.4-2       
-## [21] ggplot2_3.3.2      Formula_1.2-4      survival_3.2-7     lattice_0.20-41   
+## [21] ggplot2_3.3.3      Formula_1.2-4      survival_3.2-7     lattice_0.20-41   
 ## 
 ## loaded via a namespace (and not attached):
 ##   [1] TH.data_1.0-10      colorspace_2.0-0    ggsignif_0.6.0     
@@ -572,35 +805,36 @@ population mortality?
 ##   [7] mclust_5.4.7        htmlTable_2.1.0     base64enc_0.1-3    
 ##  [10] rstudioapi_0.13     farver_2.0.3        MatrixModels_0.4-1 
 ##  [13] mvtnorm_1.1-1       lubridate_1.7.9.2   xml2_1.3.2         
-##  [16] codetools_0.2-16    broom_0.7.2         km.ci_0.5-2        
-##  [19] cluster_2.1.0       png_0.1-7           compiler_4.0.1     
-##  [22] httr_1.4.2          backports_1.2.0     htmltools_0.5.0    
-##  [25] quantreg_5.75       tools_4.0.1         gtable_0.3.0       
-##  [28] glue_1.4.2          dplyr_1.0.2         Rcpp_1.0.5         
-##  [31] carData_3.0-4       cellranger_1.1.0    vctrs_0.3.5        
-##  [34] nlme_3.1-148        conquer_1.0.2       xfun_0.19          
-##  [37] stringr_1.4.0       openxlsx_4.2.3      rvest_0.3.6        
-##  [40] lifecycle_0.2.0     rstatix_0.6.0       polspline_1.1.19   
-##  [43] zoo_1.8-8           scales_1.1.1        hms_0.5.3          
-##  [46] sandwich_3.0-0      RColorBrewer_1.1-2  yaml_2.2.1         
-##  [49] curl_4.3            gridExtra_2.3       KMsurv_0.1-5       
-##  [52] pander_0.6.3        rpart_4.1-15        latticeExtra_0.6-29
-##  [55] stringi_1.5.3       checkmate_2.0.0     zip_2.1.1          
-##  [58] hdrcde_3.3          bitops_1.0-6        rlang_0.4.9        
-##  [61] pkgconfig_2.0.3     matrixStats_0.57.0  evaluate_0.14      
-##  [64] purrr_0.3.4         labeling_0.4.2      ks_1.11.7          
-##  [67] rapportools_1.0     htmlwidgets_1.5.2   tidyselect_1.1.0   
-##  [70] deSolve_1.28        plyr_1.8.6          magrittr_2.0.1     
-##  [73] R6_2.5.0            magick_2.5.2        generics_0.1.0     
-##  [76] multcomp_1.4-15     pillar_1.4.7        haven_2.3.1        
-##  [79] foreign_0.8-80      withr_2.3.0         abind_1.4-5        
-##  [82] nnet_7.3-14         tibble_3.0.4        mstate_0.2.12      
-##  [85] crayon_1.3.4        car_3.0-10          survMisc_0.5.5     
-##  [88] KernSmooth_2.23-17  rmarkdown_2.5       jpeg_0.1-8.1       
-##  [91] grid_4.0.1          readxl_1.3.1        forcats_0.5.0      
-##  [94] digest_0.6.27       webshot_0.5.2       xtable_1.8-4       
-##  [97] tidyr_1.1.2         munsell_0.5.0       viridisLite_0.3.0  
-## [100] tcltk_4.0.1         quadprog_1.5-8
+##  [16] codetools_0.2-16    broom_0.7.3         km.ci_0.5-2        
+##  [19] cluster_2.1.0       png_0.1-7           compiler_4.0.3     
+##  [22] httr_1.4.2          backports_1.2.0     assertthat_0.2.1   
+##  [25] htmltools_0.5.1.1   quantreg_5.83       tools_4.0.3        
+##  [28] gtable_0.3.0        glue_1.4.2          dplyr_1.0.3        
+##  [31] Rcpp_1.0.6          carData_3.0-4       cellranger_1.1.0   
+##  [34] vctrs_0.3.6         nlme_3.1-149        conquer_1.0.2      
+##  [37] xfun_0.20           stringr_1.4.0       openxlsx_4.2.3     
+##  [40] rvest_0.3.6         lifecycle_0.2.0     rstatix_0.6.0      
+##  [43] polspline_1.1.19    zoo_1.8-8           scales_1.1.1       
+##  [46] hms_1.0.0           sandwich_3.0-0      RColorBrewer_1.1-2 
+##  [49] yaml_2.2.1          curl_4.3            gridExtra_2.3      
+##  [52] KMsurv_0.1-5        pander_0.6.3        rpart_4.1-15       
+##  [55] latticeExtra_0.6-29 stringi_1.5.3       checkmate_2.0.0    
+##  [58] zip_2.1.1           hdrcde_3.4          bitops_1.0-6       
+##  [61] rlang_0.4.10        pkgconfig_2.0.3     matrixStats_0.57.0 
+##  [64] evaluate_0.14       purrr_0.3.4         labeling_0.4.2     
+##  [67] ks_1.12.0           rapportools_1.0     htmlwidgets_1.5.3  
+##  [70] tidyselect_1.1.0    deSolve_1.28        plyr_1.8.6         
+##  [73] magrittr_2.0.1      R6_2.5.0            magick_2.6.0       
+##  [76] generics_0.1.0      multcomp_1.4-15     DBI_1.1.1          
+##  [79] pillar_1.4.7        haven_2.3.1         foreign_0.8-80     
+##  [82] withr_2.4.1         abind_1.4-5         nnet_7.3-14        
+##  [85] tibble_3.0.5        mstate_0.3.1        crayon_1.3.4       
+##  [88] car_3.0-10          survMisc_0.5.5      KernSmooth_2.23-17 
+##  [91] rmarkdown_2.6       jpeg_0.1-8.1        grid_4.0.3         
+##  [94] readxl_1.3.1        forcats_0.5.1       digest_0.6.27      
+##  [97] webshot_0.5.2       xtable_1.8-4        tidyr_1.1.2        
+## [100] munsell_0.5.0       viridisLite_0.3.0   tcltk_4.0.3        
+## [103] quadprog_1.5-8
 \end{verbatim}
 
 \end{document}
