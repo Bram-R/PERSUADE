@@ -184,19 +184,8 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
   gam_pred_h <- summary(gam, t = time_pred, type = "hazard")
   ggam_pred_h <- summary(ggam, t = time_pred, type = "hazard")
   
-  #if (ngroups == 1) {
-   # expo_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) expo_est[[1]]$est)) ##XP: sapply hier overbodig? want je doet alleen cbind van 1 groep. function (x) is hier niet gebruikt want geen 'x' in expo_est[[1]]$est
-    #weib_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) weib_est[[1]]$est))
-    #gom_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) gom_est[[1]]$est))
-    #lnorm_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) lnorm_est[[1]]$est))
-    #llog_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) llog_est[[1]]$est))
-    #gam_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) gam_est[[1]]$est))
-    #ggam_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) ggam_est[[1]]$est))
-  #}
-  ##XP: REMOVE lines 187-195, 197, 212
-  #if (ngroups > 1) {
     expo_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-      expo_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est)) ##XP: zou dit niet werken met 1 groep ook waardoor if() niet meer nodig is, en vorige lijnen ook niet?
+      expo_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est)) 
     weib_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
       weib_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
     gom_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
@@ -209,7 +198,6 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
       gam_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
     ggam_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
       ggam_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
-  #}
   
   gom_pred[, -1][gom_pred[, -1] < 1e-15] <- 0  # prevent rounding errors for predicted transition probabilities
   
@@ -236,20 +224,7 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
     spl_normal1_pred_h <- summary(spl_normal1, t = time_pred, type = "hazard")
     spl_normal2_pred_h <- summary(spl_normal2, t = time_pred, type = "hazard")
     spl_normal3_pred_h <- summary(spl_normal3, t = time_pred, type = "hazard")
-    ##XP: remove lines: 240 - 252, and 271 > for the same reason as above, no 'x'in spl_hazard1_est[[1]]$est etc.
-    #if (ngroups == 1) {
-     # spl_hazard1_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) spl_hazard1_est[[1]]$est))
-      #spl_hazard2_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) spl_hazard2_est[[1]]$est))
-      #spl_hazard3_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) spl_hazard3_est[[1]]$est))
-      #spl_odds1_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) spl_odds1_est[[1]]$est))
-      #spl_odds2_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) spl_odds2_est[[1]]$est))
-      #spl_odds3_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) spl_odds3_est[[1]]$est))
-      #spl_normal1_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) spl_normal1_est[[1]]$est))
-      #spl_normal2_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) spl_normal2_est[[1]]$est))
-      #spl_normal3_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) spl_normal3_est[[1]]$est))
-    #}
-    
-    #if (ngroups > 1) {
+
       spl_hazard1_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
         spl_hazard1_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
       spl_hazard2_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
@@ -268,8 +243,7 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
         spl_normal2_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
       spl_normal3_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
         spl_normal3_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
-    #}
-    
+
     colnames(spl_hazard1_pred) <- colnames(spl_hazard2_pred) <- colnames(spl_hazard3_pred)<- colnames(spl_odds1_pred) <- 
       colnames(spl_odds2_pred) <- colnames(spl_odds3_pred) <- colnames(spl_normal1_pred) <- colnames(spl_normal2_pred) <- 
       colnames(spl_normal3_pred) <- column_names
