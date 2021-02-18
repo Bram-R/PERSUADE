@@ -184,21 +184,26 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
   gam_pred_h <- summary(gam, t = time_pred, type = "hazard")
   ggam_pred_h <- summary(ggam, t = time_pred, type = "hazard")
   
-    expo_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-      expo_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est)) 
-    weib_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-      weib_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
-    gom_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-      gom_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
-    lnorm_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-      lnorm_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
-    llog_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-      llog_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
-    gam_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-      gam_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
-    ggam_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-      ggam_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
+  if (ngroups == 1) {
+    names(expo_est) <- names(weib_est) <- names(gom_est) <- names(lnorm_est) <- names(llog_est) <- 
+      names(gam_est) <- names(ggam_est) <- paste("group=", group_names, sep = "")
+  }### ELDERS OOK TOEPASSEN
   
+  expo_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
+    expo_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est)) 
+  weib_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
+    weib_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
+  gom_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
+    gom_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
+  lnorm_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
+    lnorm_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
+  llog_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
+    llog_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
+  gam_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
+    gam_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
+  ggam_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
+    ggam_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
+
   gom_pred[, -1][gom_pred[, -1] < 1e-15] <- 0  # prevent rounding errors for predicted transition probabilities
   
   colnames(expo_pred) <- colnames(weib_pred) <- colnames(gom_pred) <- colnames(lnorm_pred) <- colnames(llog_pred) <- colnames(gam_pred) <- 

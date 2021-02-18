@@ -11,7 +11,7 @@ source("PERSUADE function.R")
 
 ####### INPUT DATA ####### (**please adjust to add your input data**)
 name <- "BC_OS"  #name (will be printed on PDF as well as used to name output directory and PDF file)
-# bc <- bc[bc$group==levels(bc$group)[3],] # used for validation purposes
+bc <- bc[bc$group==levels(bc$group)[3],] # used for validation purposes
 # bc <- bc[bc$group==levels(bc$group)[-1],] # used for validation purposes
 years <- bc$recyrs  #time in years
 status <- bc$censrec  #status / event variable

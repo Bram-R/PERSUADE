@@ -1,48 +1,36 @@
-\PassOptionsToPackage{unicode=true}{hyperref} % options for packages loaded elsewhere
-\PassOptionsToPackage{hyphens}{url}
-\PassOptionsToPackage{dvipsnames,svgnames*,x11names*}{xcolor}
-%
-\documentclass[
-]{article}
+\documentclass[]{article}
 \usepackage{lmodern}
 \usepackage{amssymb,amsmath}
 \usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
 \ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
-  \usepackage{textcomp} % provides euro and other symbols
 \else % if luatex or xelatex
-  \usepackage{unicode-math}
-  \defaultfontfeatures{Scale=MatchLowercase}
-  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
 \fi
 % use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
-\IfFileExists{microtype.sty}{% use microtype if available
-  \usepackage[]{microtype}
-  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage[]{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
 }{}
-\makeatletter
-\@ifundefined{KOMAClassName}{% if non-KOMA class
-  \IfFileExists{parskip.sty}{%
-    \usepackage{parskip}
-  }{% else
-    \setlength{\parindent}{0pt}
-    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
-}{% if KOMA class
-  \KOMAoptions{parskip=half}}
-\makeatother
-\usepackage{xcolor}
-\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
-\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\PassOptionsToPackage{hyphens}{url} % url is loaded by hyperref
+\usepackage[unicode=true]{hyperref}
+\PassOptionsToPackage{usenames,dvipsnames}{color} % color is loaded by hyperref
 \hypersetup{
-  pdftitle={PERSUADE BC\_OS\_output},
-  colorlinks=true,
-  linkcolor=Maroon,
-  filecolor=Maroon,
-  citecolor=Blue,
-  urlcolor=blue,
-  breaklinks=true}
+            pdftitle={PERSUADE BC\_OS\_output},
+            colorlinks=true,
+            linkcolor=Maroon,
+            citecolor=Blue,
+            urlcolor=blue,
+            breaklinks=true}
 \urlstyle{same}  % don't use monospace font for urls
 \usepackage[margin=1in]{geometry}
 \usepackage{graphicx,grffile}
@@ -54,18 +42,24 @@
 % margins by default, and it is still possible to overwrite the defaults
 % using explicit options in \includegraphics[width, height, ...]{}
 \setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
 \setlength{\emergencystretch}{3em}  % prevent overfull lines
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
-\setcounter{secnumdepth}{-2}
+\setcounter{secnumdepth}{0}
 % Redefines (sub)paragraphs to behave more like sections
 \ifx\paragraph\undefined\else
-  \let\oldparagraph\paragraph
-  \renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
 \fi
 \ifx\subparagraph\undefined\else
-  \let\oldsubparagraph\subparagraph
-  \renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
 \fi
 
 % set default figure placement to htbp
@@ -90,23 +84,21 @@
 
 \title{PERSUADE BC\_OS\_output}
 \author{}
-\date{\vspace{-2.5em}2021-02-11}
+\date{\vspace{-2.5em}2021-02-18}
 
 \begin{document}
 \maketitle
 
 {
-\hypersetup{linkcolor=}
+\hypersetup{linkcolor=black}
 \setcounter{tocdepth}{2}
 \tableofcontents
 }
 ~\\
-
 \href{https://github.com/Bram-R/PERSUADE}{Link to PERSUADE GitHub page}
 \newpage
 
-\hypertarget{kaplan-meier}{%
-\section{Kaplan-Meier}\label{kaplan-meier}}
+\section{Kaplan-Meier}\label{kaplan-meier}
 
 \begin{flushleft}\includegraphics{Images/plot_KM-1} \end{flushleft}
 
@@ -125,12 +117,10 @@ group=Medium & 229 & 229 & 229 & 103 & 4.600852 & 0.1856699 & 5.254795 & 4.11506
 
 \newpage
 
-\hypertarget{stratified-models}{%
-\section{Stratified models?}\label{stratified-models}}
+\section{Stratified models?}\label{stratified-models}
 
-\hypertarget{should-stratified-parametric-survival-models-be-used}{%
 \subsection{Should stratified parametric survival models be
-used?}\label{should-stratified-parametric-survival-models-be-used}}
+used?}\label{should-stratified-parametric-survival-models-be-used}
 
 To inform the decision whether stratified or non-stratified models
 should be used. One should assess whether the proportional hazard (PH)
@@ -187,14 +177,12 @@ observation period (during the extrapolation).
 
 \newpage
 
-\hypertarget{shape-of-the-observed-smoothed-hazard-function}{%
 \section{Shape of the observed smoothed hazard
-function}\label{shape-of-the-observed-smoothed-hazard-function}}
+function}\label{shape-of-the-observed-smoothed-hazard-function}
 
-\hypertarget{should-parametric-survival-models-assuming-a-monotonic-hazard-rate-i.e.-exponential-weibull-gompertz-be-used}{%
 \subsection{Should parametric survival models assuming a monotonic
 hazard rate (i.e.~exponential, Weibull, Gompertz) be
-used?}\label{should-parametric-survival-models-assuming-a-monotonic-hazard-rate-i.e.-exponential-weibull-gompertz-be-used}}
+used?}\label{should-parametric-survival-models-assuming-a-monotonic-hazard-rate-i.e.exponential-weibull-gompertz-be-used}
 
 The Figure below represents the smoothed hazard rate over time for each
 group. Based on this Figure, an exponential distribution would be
@@ -220,9 +208,8 @@ function after the observation period.
 
 \newpage
 
-\hypertarget{shape-of-the-predicted-hazard-function}{%
 \section{Shape of the predicted hazard
-function}\label{shape-of-the-predicted-hazard-function}}
+function}\label{shape-of-the-predicted-hazard-function}
 
 The following plots dislay how the hazard rates is estimated through the
 different parametric survival models.
@@ -241,13 +228,11 @@ different parametric survival models.
 
 \newpage
 
-\hypertarget{standard-parametric-models}{%
-\section{Standard parametric models?}\label{standard-parametric-models}}
+\section{Standard parametric models?}\label{standard-parametric-models}
 
-\hypertarget{do-standard-parametric-models-provide-an-appropriate-fit-to-the-data}{%
 \subsection{Do standard parametric models provide an appropriate fit to
 the
-data?}\label{do-standard-parametric-models-provide-an-appropriate-fit-to-the-data}}
+data?}\label{do-standard-parametric-models-provide-an-appropriate-fit-to-the-data}
 
 The circle displays the colours that are attributed to each parametric
 survival model in the graphs on the following pages.\\
@@ -318,8 +303,7 @@ Model & AIC & BIC\\
 \end{tabular}
 \end{table}
 
-\hypertarget{exponential}{%
-\subsection{Exponential}\label{exponential}}
+\subsection{Exponential}\label{exponential}
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/expo-1} \end{flushleft}
 
@@ -327,8 +311,7 @@ Model & AIC & BIC\\
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/expo-3} \end{flushleft}
 
-\hypertarget{weibull}{%
-\subsection{Weibull}\label{weibull}}
+\subsection{Weibull}\label{weibull}
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/weib-1} \end{flushleft}
 
@@ -336,8 +319,7 @@ Model & AIC & BIC\\
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/weib-3} \end{flushleft}
 
-\hypertarget{gompertz}{%
-\subsection{Gompertz}\label{gompertz}}
+\subsection{Gompertz}\label{gompertz}
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/gom-1} \end{flushleft}
 
@@ -345,8 +327,7 @@ Model & AIC & BIC\\
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/gom-3} \end{flushleft}
 
-\hypertarget{log-normal}{%
-\subsection{Log-normal}\label{log-normal}}
+\subsection{Log-normal}\label{log-normal}
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/lnorm-1} \end{flushleft}
 
@@ -354,8 +335,7 @@ Model & AIC & BIC\\
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/lnorm-3} \end{flushleft}
 
-\hypertarget{log-logistic}{%
-\subsection{Log-logistic}\label{log-logistic}}
+\subsection{Log-logistic}\label{log-logistic}
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/llog-1} \end{flushleft}
 
@@ -363,8 +343,7 @@ Model & AIC & BIC\\
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/llog-3} \end{flushleft}
 
-\hypertarget{gamma}{%
-\subsection{Gamma}\label{gamma}}
+\subsection{Gamma}\label{gamma}
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/gam-1} \end{flushleft}
 
@@ -372,8 +351,7 @@ Model & AIC & BIC\\
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/gam-3} \end{flushleft}
 
-\hypertarget{generalised-gamma}{%
-\subsection{Generalised Gamma}\label{generalised-gamma}}
+\subsection{Generalised Gamma}\label{generalised-gamma}
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/ggam-1} \end{flushleft}
 
@@ -383,15 +361,13 @@ Model & AIC & BIC\\
 
 \newpage
 
-\hypertarget{parametric-natural-cubic-spline-models}{%
 \section{Parametric natural cubic spline
-models?}\label{parametric-natural-cubic-spline-models}}
+models?}\label{parametric-natural-cubic-spline-models}
 
-\hypertarget{if-standard-parametric-models-do-not-provide-a-satisfactory-fit-to-the-data-based-on-previous-observations-do-spline-models-provide-a-more-satisfactory-fit-to-the-data}{%
 \subsection{If standard parametric models do not provide a satisfactory
 fit to the data based on previous observations, do spline models provide
 a more satisfactory fit to the
-data?}\label{if-standard-parametric-models-do-not-provide-a-satisfactory-fit-to-the-data-based-on-previous-observations-do-spline-models-provide-a-more-satisfactory-fit-to-the-data}}
+data?}\label{if-standard-parametric-models-do-not-provide-a-satisfactory-fit-to-the-data-based-on-previous-observations-do-spline-models-provide-a-more-satisfactory-fit-to-the-data}
 
 An explanation concerning these natural cubic spline models, henceforth
 spline models, is provided in
@@ -454,8 +430,7 @@ Model & AIC & BIC\\
 \end{tabular}
 \end{table}
 
-\hypertarget{spline-hazard-1-knot}{%
-\subsection{Spline hazard 1 knot}\label{spline-hazard-1-knot}}
+\subsection{Spline hazard 1 knot}\label{spline-hazard-1-knot}
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/spline_hazard1-1} \end{flushleft}
 
@@ -463,8 +438,7 @@ Model & AIC & BIC\\
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/spline_hazard1-3} \end{flushleft}
 
-\hypertarget{spline-hazard-2-knots}{%
-\subsection{Spline hazard 2 knots}\label{spline-hazard-2-knots}}
+\subsection{Spline hazard 2 knots}\label{spline-hazard-2-knots}
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/spline_hazard2-1} \end{flushleft}
 
@@ -472,8 +446,7 @@ Model & AIC & BIC\\
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/spline_hazard2-3} \end{flushleft}
 
-\hypertarget{spline-hazard-3-knots}{%
-\subsection{Spline hazard 3 knots}\label{spline-hazard-3-knots}}
+\subsection{Spline hazard 3 knots}\label{spline-hazard-3-knots}
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/spline_hazard3-1} \end{flushleft}
 
@@ -481,8 +454,7 @@ Model & AIC & BIC\\
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/spline_hazard3-3} \end{flushleft}
 
-\hypertarget{spline-odds-1-knot}{%
-\subsection{Spline odds 1 knot}\label{spline-odds-1-knot}}
+\subsection{Spline odds 1 knot}\label{spline-odds-1-knot}
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/spline_odds1-1} \end{flushleft}
 
@@ -490,8 +462,7 @@ Model & AIC & BIC\\
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/spline_odds1-3} \end{flushleft}
 
-\hypertarget{spline-odds-2-knots}{%
-\subsection{Spline odds 2 knots}\label{spline-odds-2-knots}}
+\subsection{Spline odds 2 knots}\label{spline-odds-2-knots}
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/spline_odds2-1} \end{flushleft}
 
@@ -499,8 +470,7 @@ Model & AIC & BIC\\
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/spline_odds2-3} \end{flushleft}
 
-\hypertarget{spline-odds-3-knots}{%
-\subsection{Spline odds 3 knots}\label{spline-odds-3-knots}}
+\subsection{Spline odds 3 knots}\label{spline-odds-3-knots}
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/spline_odds3-1} \end{flushleft}
 
@@ -508,8 +478,7 @@ Model & AIC & BIC\\
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/spline_odds3-3} \end{flushleft}
 
-\hypertarget{spline-normal-1-knot}{%
-\subsection{Spline normal 1 knot}\label{spline-normal-1-knot}}
+\subsection{Spline normal 1 knot}\label{spline-normal-1-knot}
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/spline_norm1-1} \end{flushleft}
 
@@ -517,8 +486,7 @@ Model & AIC & BIC\\
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/spline_norm1-3} \end{flushleft}
 
-\hypertarget{spline-normal-2-knots}{%
-\subsection{Spline normal 2 knots}\label{spline-normal-2-knots}}
+\subsection{Spline normal 2 knots}\label{spline-normal-2-knots}
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/spline_norm2-1} \end{flushleft}
 
@@ -526,8 +494,7 @@ Model & AIC & BIC\\
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/spline_norm2-3} \end{flushleft}
 
-\hypertarget{spline-normal-3-knots}{%
-\subsection{Spline normal 3 knots}\label{spline-normal-3-knots}}
+\subsection{Spline normal 3 knots}\label{spline-normal-3-knots}
 
 \begin{flushleft}\includegraphics[height=0.3\textheight]{Images/spline_norm3-1} \end{flushleft}
 
@@ -537,18 +504,15 @@ Model & AIC & BIC\\
 
 \newpage
 
-\hypertarget{plausibility-of-the-long-term-extrapolation}{%
 \section{Plausibility of the long-term
-extrapolation}\label{plausibility-of-the-long-term-extrapolation}}
+extrapolation}\label{plausibility-of-the-long-term-extrapolation}
 
-\hypertarget{which-models-isare-more-appropriate-for-long-term-extrapolation}{%
 \subsection{Which model(s) is/are more appropriate for long-term
-extrapolation?}\label{which-models-isare-more-appropriate-for-long-term-extrapolation}}
+extrapolation?}\label{which-models-isare-more-appropriate-for-long-term-extrapolation}
 
-\hypertarget{areis-the-selected-models-plausible-in-comparison-with-general-population-mortality}{%
 \subsection{Are/is the selected model(s) plausible in comparison with
 general population
-mortality?}\label{areis-the-selected-models-plausible-in-comparison-with-general-population-mortality}}
+mortality?}\label{areis-the-selected-models-plausible-in-comparison-with-general-population-mortality}
 
 In this section, we present the estimated survival probabilities by
 through fitted parametric survival models for the period of time within
@@ -580,8 +544,7 @@ Ideally, one would validate the plausibility of the long-term
 extrapolations of the two-knots spline-based model against external
 data.
 
-\hypertarget{group-good}{%
-\subsection{Group Good}\label{group-good}}
+\subsection{Group Good}\label{group-good}
 
 \begin{flushleft}\includegraphics[height=0.29\textheight]{Images/validate_extrapolation1-1} \end{flushleft}
 
@@ -644,8 +607,7 @@ data.
 
 \newpage
 
-\hypertarget{group-medium}{%
-\subsection{Group Medium}\label{group-medium}}
+\subsection{Group Medium}\label{group-medium}
 
 \begin{flushleft}\includegraphics[height=0.29\textheight]{Images/validate_extrapolation2-1} \end{flushleft}
 
@@ -708,8 +670,7 @@ data.
 
 \newpage
 
-\hypertarget{group-poor}{%
-\subsection{Group Poor}\label{group-poor}}
+\subsection{Group Poor}\label{group-poor}
 
 \begin{flushleft}\includegraphics[height=0.29\textheight]{Images/validate_extrapolation3-1} \end{flushleft}
 
@@ -772,13 +733,12 @@ data.
 
 \newpage
 
-\hypertarget{session-information}{%
-\section{Session information}\label{session-information}}
+\section{Session information}\label{session-information}
 
 \begin{verbatim}
-## R version 4.0.3 (2020-10-10)
+## R version 4.0.1 (2020-06-06)
 ## Platform: x86_64-w64-mingw32/x64 (64-bit)
-## Running under: Windows 10 x64 (build 17763)
+## Running under: Windows 10 x64 (build 19041)
 ## 
 ## Matrix products: default
 ## 
@@ -792,12 +752,12 @@ data.
 ## [8] base     
 ## 
 ## other attached packages:
-##  [1] sft_2.2-1          SuppDists_1.1-9.5  fda_5.1.9          fds_1.8           
-##  [5] RCurl_1.98-1.2     rainbow_3.6        pcaPP_1.9-73       MASS_7.3-53       
-##  [9] Matrix_1.2-18      kableExtra_1.3.1   knitr_1.31         summarytools_0.9.8
-## [13] data.table_1.13.6  survminer_0.4.8    ggpubr_0.4.0       muhaz_1.2.6.1     
+##  [1] sft_2.2-1          SuppDists_1.1-9.5  fda_5.1.7          fds_1.8           
+##  [5] RCurl_1.98-1.2     rainbow_3.6        pcaPP_1.9-73       MASS_7.3-51.6     
+##  [9] Matrix_1.2-18      kableExtra_1.3.1   knitr_1.30         summarytools_0.9.6
+## [13] data.table_1.13.4  survminer_0.4.8    ggpubr_0.4.0       muhaz_1.2.6.1     
 ## [17] flexsurv_1.1.1     rms_6.1-0          SparseM_1.78       Hmisc_4.4-2       
-## [21] ggplot2_3.3.3      Formula_1.2-4      survival_3.2-7     lattice_0.20-41   
+## [21] ggplot2_3.3.2      Formula_1.2-4      survival_3.2-7     lattice_0.20-41   
 ## 
 ## loaded via a namespace (and not attached):
 ##   [1] TH.data_1.0-10      colorspace_2.0-0    ggsignif_0.6.0     
@@ -805,36 +765,35 @@ data.
 ##   [7] mclust_5.4.7        htmlTable_2.1.0     base64enc_0.1-3    
 ##  [10] rstudioapi_0.13     farver_2.0.3        MatrixModels_0.4-1 
 ##  [13] mvtnorm_1.1-1       lubridate_1.7.9.2   xml2_1.3.2         
-##  [16] codetools_0.2-16    broom_0.7.3         km.ci_0.5-2        
-##  [19] cluster_2.1.0       png_0.1-7           compiler_4.0.3     
-##  [22] httr_1.4.2          backports_1.2.0     assertthat_0.2.1   
-##  [25] htmltools_0.5.1.1   quantreg_5.83       tools_4.0.3        
-##  [28] gtable_0.3.0        glue_1.4.2          dplyr_1.0.3        
-##  [31] Rcpp_1.0.6          carData_3.0-4       cellranger_1.1.0   
-##  [34] vctrs_0.3.6         nlme_3.1-149        conquer_1.0.2      
-##  [37] xfun_0.20           stringr_1.4.0       openxlsx_4.2.3     
-##  [40] rvest_0.3.6         lifecycle_0.2.0     rstatix_0.6.0      
-##  [43] polspline_1.1.19    zoo_1.8-8           scales_1.1.1       
-##  [46] hms_1.0.0           sandwich_3.0-0      RColorBrewer_1.1-2 
-##  [49] yaml_2.2.1          curl_4.3            gridExtra_2.3      
-##  [52] KMsurv_0.1-5        pander_0.6.3        rpart_4.1-15       
-##  [55] latticeExtra_0.6-29 stringi_1.5.3       checkmate_2.0.0    
-##  [58] zip_2.1.1           hdrcde_3.4          bitops_1.0-6       
-##  [61] rlang_0.4.10        pkgconfig_2.0.3     matrixStats_0.57.0 
-##  [64] evaluate_0.14       purrr_0.3.4         labeling_0.4.2     
-##  [67] ks_1.12.0           rapportools_1.0     htmlwidgets_1.5.3  
-##  [70] tidyselect_1.1.0    deSolve_1.28        plyr_1.8.6         
-##  [73] magrittr_2.0.1      R6_2.5.0            magick_2.6.0       
-##  [76] generics_0.1.0      multcomp_1.4-15     DBI_1.1.1          
-##  [79] pillar_1.4.7        haven_2.3.1         foreign_0.8-80     
-##  [82] withr_2.4.1         abind_1.4-5         nnet_7.3-14        
-##  [85] tibble_3.0.5        mstate_0.3.1        crayon_1.3.4       
-##  [88] car_3.0-10          survMisc_0.5.5      KernSmooth_2.23-17 
-##  [91] rmarkdown_2.6       jpeg_0.1-8.1        grid_4.0.3         
-##  [94] readxl_1.3.1        forcats_0.5.1       digest_0.6.27      
-##  [97] webshot_0.5.2       xtable_1.8-4        tidyr_1.1.2        
-## [100] munsell_0.5.0       viridisLite_0.3.0   tcltk_4.0.3        
-## [103] quadprog_1.5-8
+##  [16] codetools_0.2-16    broom_0.7.2         km.ci_0.5-2        
+##  [19] cluster_2.1.0       png_0.1-7           compiler_4.0.1     
+##  [22] httr_1.4.2          backports_1.2.0     htmltools_0.5.0    
+##  [25] quantreg_5.75       tools_4.0.1         gtable_0.3.0       
+##  [28] glue_1.4.2          dplyr_1.0.2         Rcpp_1.0.5         
+##  [31] carData_3.0-4       cellranger_1.1.0    vctrs_0.3.5        
+##  [34] nlme_3.1-148        conquer_1.0.2       xfun_0.19          
+##  [37] stringr_1.4.0       openxlsx_4.2.3      rvest_0.3.6        
+##  [40] lifecycle_0.2.0     rstatix_0.6.0       polspline_1.1.19   
+##  [43] zoo_1.8-8           scales_1.1.1        hms_0.5.3          
+##  [46] sandwich_3.0-0      RColorBrewer_1.1-2  yaml_2.2.1         
+##  [49] curl_4.3            gridExtra_2.3       KMsurv_0.1-5       
+##  [52] pander_0.6.3        rpart_4.1-15        latticeExtra_0.6-29
+##  [55] stringi_1.5.3       checkmate_2.0.0     zip_2.1.1          
+##  [58] hdrcde_3.3          bitops_1.0-6        rlang_0.4.9        
+##  [61] pkgconfig_2.0.3     matrixStats_0.57.0  evaluate_0.14      
+##  [64] purrr_0.3.4         labeling_0.4.2      ks_1.11.7          
+##  [67] rapportools_1.0     htmlwidgets_1.5.2   tidyselect_1.1.0   
+##  [70] deSolve_1.28        plyr_1.8.6          magrittr_2.0.1     
+##  [73] R6_2.5.0            magick_2.5.2        generics_0.1.0     
+##  [76] multcomp_1.4-15     pillar_1.4.7        haven_2.3.1        
+##  [79] foreign_0.8-80      withr_2.3.0         abind_1.4-5        
+##  [82] nnet_7.3-14         tibble_3.0.4        mstate_0.2.12      
+##  [85] crayon_1.3.4        car_3.0-10          survMisc_0.5.5     
+##  [88] KernSmooth_2.23-17  rmarkdown_2.5       jpeg_0.1-8.1       
+##  [91] grid_4.0.1          readxl_1.3.1        forcats_0.5.0      
+##  [94] digest_0.6.27       webshot_0.5.2       xtable_1.8-4       
+##  [97] tidyr_1.1.2         munsell_0.5.0       viridisLite_0.3.0  
+## [100] tcltk_4.0.1         quadprog_1.5-8
 \end{verbatim}
 
 \end{document}
