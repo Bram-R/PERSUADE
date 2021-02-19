@@ -70,6 +70,8 @@ Another indication that the PH assumption does not hold is when the lines from d
 **Interpretation in this case**: Based on Figure A, one could argue that the PH assumption holds since the different lines look quite parallel to each other. However, when inspecting Figures B and C, one can see that the hazard first decreases and then increases over time (in both Figures). This indicates that the PH assumption probably does not hold.  
 **CAUTION**: An indication that the PH assumption holds during the observed period of time does not indicate that it holds after the observation period (during the extrapolation).  
 
+\newpage
+
 ```{r PH_assumption, echo=FALSE, eval=if (PERSUADE$misc$ngroups>1) {TRUE} else {FALSE}, out.height = "29%", fig.width=11}
 evalq({
   plot(cbind(log(surv_obs$km$time), log(-log(surv_obs$km$surv))), main = "A: LN(cumulative hazard)", 
@@ -307,7 +309,7 @@ evalq({
 ```
 
 ## Exponential
-```{r expo, echo=FALSE, out.height = "30%", fig.width=11}
+```{r expo, echo=FALSE, out.height = "25%", fig.width=11}
 evalq({
   # constant hazard
   plot(surv_obs$km, lwd = 2, main = "A: Kaplan-Meier (Exponential)", xlab = "time", 
@@ -389,7 +391,7 @@ evalq({
 ```
 
 ## Weibull
-```{r weib, echo=FALSE, out.height = "30%", fig.width=11}
+```{r weib, echo=FALSE, out.height = "25%", fig.width=11}
 evalq({
   # monotonically increasing or decreasing hazard
   plot(surv_obs$km, lwd = 2, main = "A: Kaplan-Meier (Weibull)", xlab = "time", 
@@ -470,7 +472,7 @@ evalq({
 ```
 
 ## Gompertz
-```{r gom, echo=FALSE, out.height = "30%", fig.width=11}
+```{r gom, echo=FALSE, out.height = "25%", fig.width=11}
 evalq({
   # monotonically increasing or decreasing hazard
   plot(surv_obs$km, lwd = 2, main = "A: Kaplan-Meier (Gompertz)", xlab = "time", 
@@ -557,7 +559,7 @@ evalq({
 ```
 
 ## Log-normal
-```{r lnorm, echo=FALSE, out.height = "30%", fig.width=11}
+```{r lnorm, echo=FALSE, out.height = "25%", fig.width=11}
 evalq({
   # hazard can be non-monotonic with respect to time; initially an increasing
   # hazard, followed by a decreasing hazard
@@ -646,7 +648,7 @@ evalq({
 ```
 
 ## Log-logistic
-```{r llog, echo=FALSE, out.height = "30%", fig.width=11}
+```{r llog, echo=FALSE, out.height = "25%", fig.width=11}
 evalq({
   # hazard can be non-monotonic with respect to time; initially an increasing
   # hazard, followed by a decreasing hazard
@@ -737,7 +739,7 @@ evalq({
 ```
 
 ## Gamma
-```{r gam, echo=FALSE, out.height = "30%", fig.width=11}
+```{r gam, echo=FALSE, out.height = "25%", fig.width=11}
 evalq({
   # hazard rate has (inverted) 'U' shape over time
   plot(surv_obs$km, lwd = 2, main = "A: Kaplan-Meier (Gamma)", xlab = "time", ylab = "survival", 
@@ -820,7 +822,7 @@ evalq({
 ```
 
 ## Generalised Gamma 
-```{r ggam, echo=FALSE, out.height = "30%", fig.width=11}
+```{r ggam, echo=FALSE, out.height = "25%", fig.width=11}
 evalq({
   # more flexible: can take form of Exponential, Weibull, Gamma or Log-normal
   plot(surv_obs$km, lwd = 2, main = "A: Kaplan-Meier (Generalised gamma)", xlab = "time", 
@@ -935,7 +937,7 @@ evalq({
 ```
 
 ## Spline hazard 1 knot
-```{r spline_hazard1, echo=FALSE, out.height = "30%", fig.width=11, eval = PERSUADE$input$spline_mod}
+```{r spline_hazard1, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$spline_mod}
 evalq({
   # 1 knot
   plot(surv_obs$km, lwd = 2, main = "A: Kaplan-Meier (Spline, 1 knot, hazard scale)", 
@@ -1031,7 +1033,7 @@ evalq({
 ```
 
 ## Spline hazard 2 knots
-```{r spline_hazard2, echo=FALSE, out.height = "30%", fig.width=11, eval = PERSUADE$input$spline_mod}
+```{r spline_hazard2, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$spline_mod}
 evalq({
   # 2 knots
   plot(surv_obs$km, lwd = 2, main = "A: Kaplan-Meier (Spline, 2 knots, hazard scale)", 
@@ -1130,7 +1132,7 @@ evalq({
 ```
 
 ## Spline hazard 3 knots
-```{r spline_hazard3, echo=FALSE, out.height = "30%", fig.width=11, eval = PERSUADE$input$spline_mod}
+```{r spline_hazard3, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$spline_mod}
 evalq({
   # 2 knots
   plot(surv_obs$km, lwd = 2, main = "A: Kaplan-Meier (Spline, 3 knots, hazard scale)", 
@@ -1232,7 +1234,7 @@ evalq({
 ```
 
 ## Spline odds 1 knot
-```{r spline_odds1, echo=FALSE, out.height = "30%", fig.width=11, eval = PERSUADE$input$spline_mod}
+```{r spline_odds1, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$spline_mod}
 evalq({
   # 1 knot
   plot(surv_obs$km, lwd = 2, main = "A: Kaplan-Meier (Spline, 1 knot, odds scale)", 
@@ -1330,7 +1332,7 @@ evalq({
 ```
 
 ## Spline odds 2 knots
-```{r spline_odds2, echo=FALSE, out.height = "30%", fig.width=11, eval = PERSUADE$input$spline_mod}
+```{r spline_odds2, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$spline_mod}
 evalq({
   # 2 knots
   plot(surv_obs$km, lwd = 2, main = "A: Kaplan-Meier (Spline, 2 knots, odds scale)", 
@@ -1431,7 +1433,7 @@ evalq({
 ```
 
 ## Spline odds 3 knots
-```{r spline_odds3, echo=FALSE, out.height = "30%", fig.width=11, eval = PERSUADE$input$spline_mod}
+```{r spline_odds3, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$spline_mod}
 evalq({
   # 2 knots
   plot(surv_obs$km, lwd = 2, main = "A: Kaplan-Meier (Spline, 3 knots, odds scale)", 
@@ -1536,7 +1538,7 @@ evalq({
 
 
 ## Spline normal 1 knot
-```{r spline_norm1, echo=FALSE, out.height = "30%", fig.width=11, eval = PERSUADE$input$spline_mod}
+```{r spline_norm1, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$spline_mod}
 evalq({
   # 1 knot
   plot(surv_obs$km, lwd = 2, main = "A: Kaplan-Meier (Spline, 1 knot, normal scale)", 
@@ -1635,7 +1637,7 @@ evalq({
 ```
 
 ## Spline normal 2 knots
-```{r spline_norm2, echo=FALSE, out.height = "30%", fig.width=11, eval = PERSUADE$input$spline_mod}
+```{r spline_norm2, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$spline_mod}
 evalq({
   # 2 knots
   plot(surv_obs$km, lwd = 2, main = "A: Kaplan-Meier (Spline, 2 knots, normal scale)", 
@@ -1738,7 +1740,7 @@ evalq({
 ```
 
 ## Spline normal 3 knots
-```{r spline_norm3, echo=FALSE, out.height = "30%", fig.width=11, eval = PERSUADE$input$spline_mod}
+```{r spline_norm3, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$spline_mod}
 evalq({
   # 2 knots
   plot(surv_obs$km, lwd = 2, main = "A: Kaplan-Meier (Spline, 3 knots, normal scale)", 
@@ -1852,6 +1854,8 @@ evalq({
 In this section, we present the estimated survival probabilities by through fitted parametric survival models for the period of time within and beyond data collection, i.e. the extrapolation. This is done by 1) plotting the survival curves (Figures A and B), 2) displaying the survival probabilities at multiple time points (first Table), 3) ploting conditional annual transition probabilities (Figures C and D), and providing the summary statistics of the estimated conditional transition probabilities (second Table). This information is provided for each group separately.  
 One way to assess the plausibility of the extrapolated survival probabilities is to compare the estimated survival probabilities at different time points with external data (e.g. observational data), and/ or to ask clinical experts about the plausibility of these extrapolations. Another way to check for plausibility is to compare the conditional transition probability with general population mortality rates (these can be obtained through national statistics). Parametric survival models providing conditional transition probabilities which are lower than the general population mortality rates may not be suitable because this would mean patients may have a lower probability of death than the general population values. Such finding require either to select an alternative model or to adjust the selected model for general population mortality rates.  
 **Interpretation in this case**: The conditional annual probabilities estimated by the two-knots spline-based model on the hazard scale was most consistent with general population mortality data of the Netherlands (although it might still require adjustment). Ideally, one would validate the plausibility of the long-term extrapolations of the two-knots spline-based model against external data.  
+
+\newpage
 
 ## `r paste("Group", PERSUADE$misc$group_names[1])`
 ```{r validate_extrapolation1, echo=FALSE, out.height = "29%", fig.width=11, comment=NA}

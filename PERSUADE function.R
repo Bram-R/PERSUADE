@@ -187,8 +187,9 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
   if (ngroups == 1) {
     names(expo_est) <- names(weib_est) <- names(gom_est) <- names(lnorm_est) <- names(llog_est) <- 
       names(gam_est) <- names(ggam_est) <- paste("group=", group_names, sep = "")
-  }### ELDERS OOK TOEPASSEN
+  } # name has to be changed if there is only one group
   
+  # extract prediction for each group
   expo_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
     expo_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est)) 
   weib_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
@@ -229,24 +230,31 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
     spl_normal1_pred_h <- summary(spl_normal1, t = time_pred, type = "hazard")
     spl_normal2_pred_h <- summary(spl_normal2, t = time_pred, type = "hazard")
     spl_normal3_pred_h <- summary(spl_normal3, t = time_pred, type = "hazard")
-
-      spl_hazard1_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
+    
+    if (ngroups == 1) {
+      names(spl_hazard1_est) <- names(spl_hazard2_est) <- names(spl_hazard3_est) <- 
+        names(spl_odds1_est) <- names(spl_odds2_est) <- names(spl_odds3_est) <- 
+        names(spl_normal1_est) <- names(spl_normal2_est) <- names(spl_normal3_est) <- paste("group=", group_names, sep = "")
+    } # name has to be changed if there is only one group
+    
+    # extract prediction for each group
+    spl_hazard1_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
         spl_hazard1_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
-      spl_hazard2_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
+    spl_hazard2_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
         spl_hazard2_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
-      spl_hazard3_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
+    spl_hazard3_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
         spl_hazard3_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
-      spl_odds1_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
+    spl_odds1_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
         spl_odds1_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
-      spl_odds2_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
+    spl_odds2_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
         spl_odds2_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
-      spl_odds3_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
+    spl_odds3_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
         spl_odds3_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
-      spl_normal1_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
+    spl_normal1_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
         spl_normal1_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
-      spl_normal2_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
+    spl_normal2_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
         spl_normal2_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
-      spl_normal3_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
+    spl_normal3_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
         spl_normal3_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
 
     colnames(spl_hazard1_pred) <- colnames(spl_hazard2_pred) <- colnames(spl_hazard3_pred)<- colnames(spl_odds1_pred) <- 
