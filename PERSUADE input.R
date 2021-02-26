@@ -25,7 +25,8 @@ time_horizon <- 40  #time horizon (in years) for predicted survival Figures
 
 ####### PERSUADE ####### 
 # PERSUADE FUNCTION (**please adjust TRUE/ FALSE if necessary**)
-PERSUADE <- f_PERSUADE(name = name, years = years, status = status, group = group, strata = TRUE, spline_mod = TRUE, 
+PERSUADE <- f_PERSUADE(name = name, years = years, status = status, group = group, 
+                       strata = TRUE, spline_mod = TRUE, cure_mod = TRUE,
                        time_unit = time_unit, time_horizon = time_horizon,
                        time_pred_surv_table = time_pred_surv_table)
 

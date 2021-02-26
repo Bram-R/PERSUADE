@@ -1,5 +1,5 @@
 # code is formatted using formatR::tidy_source(width.cutoff = 100)
-f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, spline_mod = FALSE, 
+f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, spline_mod = FALSE, cure_mod = FALSE,
                        time_unit, time_horizon, time_pred_surv_table) {
   ##XP: Output alvast definiëren hier?
   
@@ -165,6 +165,119 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
     IC_spl <- data.frame(lbls_spline, AIC_spl, BIC_spl)
     colnames(IC_spl) <- c("Model", "AIC", "BIC")
   }
+  
+  # fit cure models
+  if (cure_mod == TRUE) {
+    weib_cure_mix_logit <- lapply(c(1:ngroups), function(x)
+      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
+                   link = "logistic", dist = "weibull", mixture = TRUE)
+    )
+    weib_cure_mix_cloglog <- lapply(c(1:ngroups), function(x)
+      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
+                   link = "loglog", dist = "weibull", mixture = TRUE)
+    )
+    weib_cure_mix_identity <- lapply(c(1:ngroups), function(x)
+      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
+                   link = "identity", dist = "weibull", mixture = TRUE)
+    )
+    weib_cure_mix_probit <- lapply(c(1:ngroups), function(x)
+      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
+                   link = "probit", dist = "weibull", mixture = TRUE)
+    )
+    weib_cure_nmix_logit <- lapply(c(1:ngroups), function(x)
+      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
+                   link = "logistic", dist = "weibull", mixture = FALSE)
+    )
+    weib_cure_nmix_cloglog <- lapply(c(1:ngroups), function(x)
+      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
+                   link = "loglog", dist = "weibull", mixture = FALSE)
+    )
+    weib_cure_nmix_identity <- lapply(c(1:ngroups), function(x)
+      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
+                   link = "identity", dist = "weibull", mixture = FALSE)
+    )
+    weib_cure_nmix_probit <- lapply(c(1:ngroups), function(x)
+      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
+                   link = "probit", dist = "weibull", mixture = FALSE)
+    )
+    
+    lnorm_cure_mix_logit <- lapply(c(1:ngroups), function(x)
+      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
+                   link = "logistic", dist = "lnorm", mixture = TRUE)
+    )
+    lnorm_cure_mix_cloglog <- lapply(c(1:ngroups), function(x)
+      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
+                   link = "loglog", dist = "lnorm", mixture = TRUE)
+    )
+    lnorm_cure_mix_identity <- lapply(c(1:ngroups), function(x)
+      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
+                   link = "identity", dist = "lnorm", mixture = TRUE)
+    )
+    lnorm_cure_mix_probit <- lapply(c(1:ngroups), function(x)
+      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
+                   link = "probit", dist = "lnorm", mixture = TRUE)
+    )
+    lnorm_cure_nmix_logit <- lapply(c(1:ngroups), function(x)
+      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
+                   link = "logistic", dist = "lnorm", mixture = FALSE)
+    )
+    lnorm_cure_nmix_cloglog <- lapply(c(1:ngroups), function(x)
+      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
+                   link = "loglog", dist = "lnorm", mixture = FALSE)
+    )
+    lnorm_cure_nmix_identity <- lapply(c(1:ngroups), function(x)
+      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
+                   link = "identity", dist = "lnorm", mixture = FALSE)
+    )
+    lnorm_cure_nmix_probit <- lapply(c(1:ngroups), function(x)
+      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
+                   link = "probit", dist = "lnorm", mixture = FALSE)
+    )
+    
+    llog_cure_mix_logit <- lapply(c(1:ngroups), function(x)
+      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
+                   link = "logistic", dist = "llogis", mixture = TRUE)
+    )
+    llog_cure_mix_cloglog <- lapply(c(1:ngroups), function(x)
+      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
+                   link = "loglog", dist = "llogis", mixture = TRUE)
+    )
+    llog_cure_mix_identity <- lapply(c(1:ngroups), function(x)
+      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
+                   link = "identity", dist = "llogis", mixture = TRUE)
+    )
+    llog_cure_mix_probit <- lapply(c(1:ngroups), function(x)
+      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
+                   link = "probit", dist = "llogis", mixture = TRUE)
+    )
+    llog_cure_nmix_logit <- lapply(c(1:ngroups), function(x)
+      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
+                   link = "logistic", dist = "llogis", mixture = FALSE)
+    )
+    llog_cure_nmix_cloglog <- lapply(c(1:ngroups), function(x)
+      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
+                   link = "loglog", dist = "llogis", mixture = FALSE)
+    )
+    llog_cure_nmix_identity <- lapply(c(1:ngroups), function(x)
+      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
+                   link = "identity", dist = "llogis", mixture = FALSE)
+    )
+    llog_cure_nmix_probit <- lapply(c(1:ngroups), function(x)
+      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
+                   link = "probit", dist = "llogis", mixture = FALSE)
+    )
+    
+    #lbls_cure <- c("17. Spline 1 knot hazard", " 9. Spline 2 knots hazard", " 10. Spline 3 knots hazard", "11. Spline 1 knot odds", 
+    #                 "12. Spline 2 knots odds", "13. Spline 3 knots odds", "14. Spline 1 knot normal", "15. Spline 2 knots normal", 
+    #                 "16. Spline 3 knots normal")
+    
+    # calculate AIC and BIC
+    #AIC_cure <- c()
+    #BIC_cure <- BIC()[2]
+    #IC_cure <- data.frame(lbls_cure, AIC_cure, BIC_cure)
+    #colnames(IC_cure) <- c("Model", "AIC", "BIC")
+  }
+  
   # predicted values parametric models
   column_names <- c("Time", group_names)
   
