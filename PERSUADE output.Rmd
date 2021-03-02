@@ -288,8 +288,7 @@ evalq({
 
 \newpage
 
-# Standard parametric models?  
-## Do standard parametric models provide an appropriate fit to the data?  
+# Assessment of fit to the observed data: standard parametric models  
 The circle displays the colours that are attributed to each parametric survival model in the graphs on the following pages.  
 The Table below displays the goodness-of-fit statistics for each parametric survival model, ordered from 'best' fitting to less well fitting, based on the Akaike Information Criterion (AIC). The AIC and Bayesian Information Criterion (BIC) provide a measure of the relative fit of each model to the data, while penalising for the number of parameter included in the fitted models. The lower the AIC or BIC, the better the relative fit of a model compared to other fitted models.  
 **Interpretation in this case**: Based on this Table, one can conclude that the generalised gamma and log-normal parametric survival models fit the data best relative to the other fitted models, according to the AIC.  
@@ -906,7 +905,7 @@ evalq({
 
 \newpage
 
-# Parametric natural cubic spline models?
+# Assessment of fit to the observed data: parametric natural cubic spline models
 ## If standard parametric models do not provide a satisfactory fit to the data based on previous observations, do spline models provide a more satisfactory fit to the data?  
 An explanation concerning these natural cubic spline models, henceforth spline models, is provided in [Royston and Pamar - 2002](https://doi.org/10.1002/sim.1203).  
 As in the previous section, the circle provides the colours attributed to each parametric survival model, spline models in this case. The Table below provides the AIC and BIC for all fitted models. This allows for a comparison of the fit of the spline models to the 'standard' parametric survival models.  
@@ -2253,7 +2252,16 @@ evalq({
 
 \newpage
 
+# PERSUADE object information
+```{r si, echo=FALSE}
+print(str(PERSUADE, max.level = 2))
+```
+
+\newpage
+
 # Session information
 ```{r si, echo=FALSE}
 print(sessionInfo(), RNG = TRUE, locale = FALSE)
 ```
+
+
