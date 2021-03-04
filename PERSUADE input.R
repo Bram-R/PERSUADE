@@ -2,7 +2,7 @@ rm(list = setdiff(ls(), lsf.str()))  #remove all objects except functions
 
 ####### LOAD AND INSTALL PACKAGES AND FUNCTIONS #######
 packages <- c("rms", "survival", "flexsurv", "muhaz", "survminer", "ggplot2", "data.table", "summarytools", 
-              "knitr", "kableExtra", "sft")
+              "knitr", "kableExtra", "sft", "flexsurvcure")
 new.packages <- packages[!(packages %in% installed.packages()[, "Package"])]  #check for new packages
 if (length(new.packages)) install.packages(new.packages)  #install new packages (if needed)
 suppressPackageStartupMessages(lapply(packages, require, character.only = TRUE))  #load packages
@@ -11,8 +11,8 @@ source("PERSUADE function.R")
 
 ####### INPUT DATA ####### (**please adjust to add your input data**)
 name <- "BC_OS"  #name (will be printed on PDF as well as used to name output directory and PDF file)
-# bc <- bc[bc$group==levels(bc$group)[1],] # used for validation purposes
-# bc <- bc[bc$group==levels(bc$group)[-1],] # used for validation purposes
+#bc <- bc[bc$group==levels(bc$group)[1],] # used for validation purposes
+#bc <- bc[bc$group==levels(bc$group)[-1],] # used for validation purposes
 years <- bc$recyrs  #time in years
 status <- bc$censrec  #status / event variable
 group <- bc$group  #grouping variable (with a maximum of 3 levels), please amend the names of the groups here if you wish
