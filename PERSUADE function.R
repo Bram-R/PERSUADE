@@ -12,6 +12,8 @@ f_PERSUADE <- function(name = "no_name", years, status, group,
   years <- as.numeric(years)  # time variable should be numeric
   status <- as.numeric(status)  # status / event variable should be numeric
   group <- as.factor(group)  # group variable should be a factor 
+  if (cure_mod == FALSE) {cure_link <- NA}
+  
   
   # number of groups
   group <- droplevels(group)  # drop unused levels
@@ -159,7 +161,7 @@ f_PERSUADE <- function(name = "no_name", years, status, group,
       flexsurvspline(form, k = k, scale = "normal", anc = list(gamma1 = ~group, gamma2 = ~group, gamma3 = ~group, gamma4 = ~group))
     }
     
-    lbls_spline <- c(" 8. Spline 1 knot hazard", " 9. Spline 2 knots hazard", " 10. Spline 3 knots hazard", "11. Spline 1 knot odds", 
+    lbls_spline <- c(" 8. Spline 1 knot hazard", " 9. Spline 2 knots hazard", "10. Spline 3 knots hazard", "11. Spline 1 knot odds", 
                      "12. Spline 2 knots odds", "13. Spline 3 knots odds", "14. Spline 1 knot normal", "15. Spline 2 knots normal", 
                      "16. Spline 3 knots normal")
     
@@ -344,7 +346,7 @@ f_PERSUADE <- function(name = "no_name", years, status, group,
     cure_lnorm_mix_pred_h <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
       data.frame(summary(cure_lnorm_mix[[x]], t = time_pred, type = "hazard"))[,2]))
     cure_lnorm_nmix_pred_h <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-      data.frame(summary(cure_lnorm_nmix[[x]], t = time_pred), type = "hazard")[,2]))
+      data.frame(summary(cure_lnorm_nmix[[x]], t = time_pred, type = "hazard"))[,2]))
     cure_llog_mix_pred_h <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
       data.frame(summary(cure_llog_mix[[x]], t = time_pred, type = "hazard"))[,2]))
     cure_llog_nmix_pred_h <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
@@ -353,11 +355,15 @@ f_PERSUADE <- function(name = "no_name", years, status, group,
     if (ngroups == 1) {
       names(cure_weib_mix_pred) <- names(cure_weib_nmix_pred) <- names(cure_lnorm_mix_pred) <- 
         names(cure_lnorm_nmix_pred) <- names(cure_llog_mix_pred) <- names(cure_llog_nmix_pred) <- 
+        names(cure_weib_mix_pred_h) <- names(cure_weib_nmix_pred_h) <- names(cure_lnorm_mix_pred_h) <- 
+        names(cure_lnorm_nmix_pred_h) <- names(cure_llog_mix_pred_h) <- names(cure_llog_nmix_pred_h) <- 
         paste("group=", group_names, sep = "")
     } # name has to be changed if there is only one group
 
     colnames(cure_weib_mix_pred) <- colnames(cure_weib_nmix_pred) <- colnames(cure_lnorm_mix_pred) <- 
       colnames(cure_lnorm_nmix_pred) <- colnames(cure_llog_mix_pred) <- colnames(cure_llog_nmix_pred) <- 
+      colnames(cure_weib_mix_pred_h) <- colnames(cure_weib_nmix_pred_h) <- colnames(cure_lnorm_mix_pred_h) <- 
+      colnames(cure_lnorm_nmix_pred_h) <- colnames(cure_llog_mix_pred_h) <- colnames(cure_llog_nmix_pred_h) <- 
       column_names
   }
   
@@ -430,7 +436,7 @@ f_PERSUADE <- function(name = "no_name", years, status, group,
                    na.rm = TRUE)
   
   # parametric survival models
-  cols_tp <- ifelse(spline_mod == TRUE, 17, 8)  # define data frame width for the annual TP calculations
+  cols_tp <- 8 + (if (spline_mod == TRUE) {9} else {0}) + (if (cure_mod == TRUE) {6} else {0})
   
   tp_gr_1 <- cbind(time_pred, 1 - (1 - (shift(surv_gr_1[, 2:cols_tp], 1L, type = "lag") - surv_gr_1[, 2:cols_tp])/
                                      shift(surv_gr_1[, 2:cols_tp], 1L, type = "lag"))^(1/time_unit))[-1, ]
@@ -572,8 +578,8 @@ f_PERSUADE <- function(name = "no_name", years, status, group,
   
   # output
   input <- list(years = years, status = status, group = group, strata = strata, spline_mod = spline_mod, 
-                time_unit = time_unit, time_horizon = time_horizon, time_pred_surv_table = time_pred_surv_table, 
-                time_pred = time_pred)
+                cure_mod = cure_mod, cure_link = cure_link, time_unit = time_unit, time_horizon = time_horizon, 
+                time_pred_surv_table = time_pred_surv_table, time_pred = time_pred)
   haz <- c(haz, list(names = haz_names, max = haz_max))
   tp <- c(list(gr_1 = km_tp_gr_1), 
           if (ngroups > 1) {list(gr_2 = km_tp_gr_2)}, 
@@ -614,8 +620,10 @@ f_PERSUADE <- function(name = "no_name", years, status, group,
                                                    cure_lnorm_mix_h = cure_lnorm_mix_pred_h, cure_lnorm_nmix_h = cure_lnorm_nmix_pred_h, 
                                                    cure_llog_mix_h = cure_llog_mix_pred_h,  cure_llog_nmix_h = cure_llog_nmix_pred_h)})
   surv_pred <- c(list(model = surv_model_pred, gr = surv_gr_pred, tp_gr = tp_gr_pred))
-  misc <- c(list(form = form, group_names = group_names, ngroups = ngroups, lbls = lbls), 
-            if (spline_mod == TRUE) {list(lbls_spline = lbls_spline)}, list(cols_tp = cols_tp))
+  misc <- c(list(form = form, group_names = group_names, ngroups = ngroups, lbls_all = lbls_all, lbls = lbls), 
+            if (spline_mod == TRUE) {list(lbls_spline = lbls_spline)}, 
+            if (cure_mod == TRUE) {list(lbls_cure = lbls_cure)}, 
+            list(cols_tp = cols_tp))
   
   output <- list(name = name, input = input, surv_obs = surv_obs, surv_model = surv_model, surv_pred = surv_pred, misc = misc)
   
