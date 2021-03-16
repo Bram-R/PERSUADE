@@ -33,7 +33,7 @@ f_PERSUADE <- function(name = "no_name", years, status, group,
   # km
   km <- npsurv(form)
   km_names <- if (ngroups == 1) {rep(1, length(km$time))} else {
-    if (ngroups >= 2) {c(rep(1, km$strata[1]), rep(2, km$strata[2]), if (ngroups == 3) {rep(3, km$strata[3])})}
+    if (ngroups > 1) {c(rep(1, km$strata[1]), rep(2, km$strata[2]), if (ngroups == 3) {rep(3, km$strata[3])})}
   }
   
   # hazard rate
@@ -326,7 +326,7 @@ f_PERSUADE <- function(name = "no_name", years, status, group,
   }
   
   if (cure_mod == TRUE) {
-    cure_weib_mix_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
+    cure_weib_mix_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) ## BR do this similarly for the other models (1 ipv 2 steps)
       data.frame(summary(cure_weib_mix[[x]], t = time_pred))[,2]))
     cure_weib_nmix_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
       data.frame(summary(cure_weib_nmix[[x]], t = time_pred))[,2]))
