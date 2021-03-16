@@ -740,32 +740,32 @@ data.
 \begin{table}
 
 \caption{\label{tab:validate_extrapolation1}Summary statistics of annual transition probabilities}
-\begin{tabular}[t]{lrrrrr}
+\begin{tabular}[t]{lrrrrrrrr}
 \toprule
-  & Min & Q1 & Median & Q3 & Max\\
+  & Mean & Std.Dev & Min & Q1 & Median & Q3 & Max & IQR\\
 \midrule
-\cellcolor{gray!6}{1. Exponential} & \cellcolor{gray!6}{0.0585969} & \cellcolor{gray!6}{0.0585969} & \cellcolor{gray!6}{0.0585969} & \cellcolor{gray!6}{0.0585969} & \cellcolor{gray!6}{0.0585969}\\
-2. Weibull & 0.0039603 & 0.1641779 & 0.2507544 & 0.3170901 & 0.3714738\\
-\cellcolor{gray!6}{3. Gompertz} & \cellcolor{gray!6}{0.0342601} & \cellcolor{gray!6}{0.1256322} & \cellcolor{gray!6}{0.4037134} & \cellcolor{gray!6}{0.8634656} & \cellcolor{gray!6}{1.0000000}\\
-4. Log-normal & 0.0000121 & 0.0563972 & 0.0670524 & 0.0819079 & 0.0936091\\
-\cellcolor{gray!6}{5. Log-logistic} & \cellcolor{gray!6}{0.0022936} & \cellcolor{gray!6}{0.0533146} & \cellcolor{gray!6}{0.0700441} & \cellcolor{gray!6}{0.0935993} & \cellcolor{gray!6}{0.1092616}\\
-6. Gamma & 0.0014181 & 0.1390361 & 0.1644882 & 0.1750195 & 0.1807519\\
-\cellcolor{gray!6}{7. Generalised Gamma} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0191123} & \cellcolor{gray!6}{0.0269247} & \cellcolor{gray!6}{0.0452063} & \cellcolor{gray!6}{0.0862100}\\
-8. Spline 1 knot hazard & 0.0000002 & 0.0592140 & 0.0598953 & 0.0610195 & 0.0916043\\
-\cellcolor{gray!6}{9. Spline 2 knots hazard} & \cellcolor{gray!6}{0.0000002} & \cellcolor{gray!6}{0.0576502} & \cellcolor{gray!6}{0.0585313} & \cellcolor{gray!6}{0.0599923} & \cellcolor{gray!6}{0.0923962}\\
-10. Spline 3 knots hazard & 0.0003310 & 0.0798260 & 0.0865334 & 0.0909988 & 0.0996328\\
-\cellcolor{gray!6}{11. Spline 1 knot odds} & \cellcolor{gray!6}{0.0000002} & \cellcolor{gray!6}{0.0281269} & \cellcolor{gray!6}{0.0363823} & \cellcolor{gray!6}{0.0502992} & \cellcolor{gray!6}{0.0917044}\\
-12. Spline 2 knots odds & 0.0000002 & 0.0278516 & 0.0359503 & 0.0497462 & 0.0924439\\
-\cellcolor{gray!6}{13. Spline 3 knots odds} & \cellcolor{gray!6}{0.0003253} & \cellcolor{gray!6}{0.0358147} & \cellcolor{gray!6}{0.0466608} & \cellcolor{gray!6}{0.0638606} & \cellcolor{gray!6}{0.0999099}\\
-14. Spline 1 knot normal & 0.0000000 & 0.0345970 & 0.0424046 & 0.0560095 & 0.0865141\\
-\cellcolor{gray!6}{15. Spline 2 knots normal} & \cellcolor{gray!6}{0.0000006} & \cellcolor{gray!6}{0.0281480} & \cellcolor{gray!6}{0.0348987} & \cellcolor{gray!6}{0.0473455} & \cellcolor{gray!6}{0.0953359}\\
-16. Spline 3 knots normal & 0.0007793 & 0.0386308 & 0.0470013 & 0.0611992 & 0.0975846\\
-\cellcolor{gray!6}{17. Mixture cure Weibull} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0001031} & \cellcolor{gray!6}{0.0987558}\\
-18. Non-mixture cure Weibull & 0.0000000 & 0.0000000 & 0.0000000 & 0.0001575 & 0.0985854\\
-\cellcolor{gray!6}{19. Mixture cure Log-normal} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0000929} & \cellcolor{gray!6}{0.0008027} & \cellcolor{gray!6}{0.0116086} & \cellcolor{gray!6}{0.0931907}\\
-20. Non-mixture cure Log-normal & 0.0000000 & 0.0001962 & 0.0012968 & 0.0132969 & 0.0934968\\
-\cellcolor{gray!6}{21. Mixture cure Log-logistic} & \cellcolor{gray!6}{0.0000516} & \cellcolor{gray!6}{0.0001512} & \cellcolor{gray!6}{0.0006917} & \cellcolor{gray!6}{0.0075147} & \cellcolor{gray!6}{0.0986522}\\
-22. Non-mixture cure Log-logistic & 0.0000517 & 0.0001509 & 0.0006881 & 0.0074554 & 0.0987027\\
+\cellcolor{gray!6}{1. Exponential} & \cellcolor{gray!6}{0.0585969} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0585969} & \cellcolor{gray!6}{0.0585969} & \cellcolor{gray!6}{0.0585969} & \cellcolor{gray!6}{0.0585969} & \cellcolor{gray!6}{0.0585969} & \cellcolor{gray!6}{0.0000000}\\
+2. Weibull & 0.2349897 & 0.0957992 & 0.0039603 & 0.1641779 & 0.2507544 & 0.3170901 & 0.3714738 & 0.1525734\\
+\cellcolor{gray!6}{3. Gompertz} & \cellcolor{gray!6}{0.4784514} & \cellcolor{gray!6}{0.3579470} & \cellcolor{gray!6}{0.0342601} & \cellcolor{gray!6}{0.1256322} & \cellcolor{gray!6}{0.4037134} & \cellcolor{gray!6}{0.8634656} & \cellcolor{gray!6}{1.0000000} & \cellcolor{gray!6}{0.7378334}\\
+4. Log-normal & 0.0683436 & 0.0166027 & 0.0000121 & 0.0563972 & 0.0670524 & 0.0819079 & 0.0936091 & 0.0254606\\
+\cellcolor{gray!6}{5. Log-logistic} & \cellcolor{gray!6}{0.0728032} & \cellcolor{gray!6}{0.0230017} & \cellcolor{gray!6}{0.0022936} & \cellcolor{gray!6}{0.0533146} & \cellcolor{gray!6}{0.0700441} & \cellcolor{gray!6}{0.0935993} & \cellcolor{gray!6}{0.1092616} & \cellcolor{gray!6}{0.0401882}\\
+6. Gamma & 0.1493002 & 0.0379093 & 0.0014181 & 0.1390361 & 0.1644882 & 0.1750195 & 0.1807519 & 0.0358775\\
+\cellcolor{gray!6}{7. Generalised Gamma} & \cellcolor{gray!6}{0.0347149} & \cellcolor{gray!6}{0.0206128} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0191123} & \cellcolor{gray!6}{0.0269247} & \cellcolor{gray!6}{0.0452063} & \cellcolor{gray!6}{0.0862100} & \cellcolor{gray!6}{0.0260182}\\
+8. Spline 1 knot hazard & 0.0605266 & 0.0109221 & 0.0000002 & 0.0592140 & 0.0598953 & 0.0610195 & 0.0916043 & 0.0018010\\
+\cellcolor{gray!6}{9. Spline 2 knots hazard} & \cellcolor{gray!6}{0.0593803} & \cellcolor{gray!6}{0.0110234} & \cellcolor{gray!6}{0.0000002} & \cellcolor{gray!6}{0.0576502} & \cellcolor{gray!6}{0.0585313} & \cellcolor{gray!6}{0.0599923} & \cellcolor{gray!6}{0.0923962} & \cellcolor{gray!6}{0.0023363}\\
+10. Spline 3 knots hazard & 0.0832632 & 0.0146134 & 0.0003310 & 0.0798260 & 0.0865334 & 0.0909988 & 0.0996328 & 0.0111549\\
+\cellcolor{gray!6}{11. Spline 1 knot odds} & \cellcolor{gray!6}{0.0410014} & \cellcolor{gray!6}{0.0174571} & \cellcolor{gray!6}{0.0000002} & \cellcolor{gray!6}{0.0281269} & \cellcolor{gray!6}{0.0363823} & \cellcolor{gray!6}{0.0502992} & \cellcolor{gray!6}{0.0917044} & \cellcolor{gray!6}{0.0221203}\\
+12. Spline 2 knots odds & 0.0406443 & 0.0174917 & 0.0000002 & 0.0278516 & 0.0359503 & 0.0497462 & 0.0924439 & 0.0218428\\
+\cellcolor{gray!6}{13. Spline 3 knots odds} & \cellcolor{gray!6}{0.0497623} & \cellcolor{gray!6}{0.0176792} & \cellcolor{gray!6}{0.0003253} & \cellcolor{gray!6}{0.0358147} & \cellcolor{gray!6}{0.0466608} & \cellcolor{gray!6}{0.0638606} & \cellcolor{gray!6}{0.0999099} & \cellcolor{gray!6}{0.0279854}\\
+14. Spline 1 knot normal & 0.0463860 & 0.0161648 & 0.0000000 & 0.0345970 & 0.0424046 & 0.0560095 & 0.0865141 & 0.0213599\\
+\cellcolor{gray!6}{15. Spline 2 knots normal} & \cellcolor{gray!6}{0.0400250} & \cellcolor{gray!6}{0.0171948} & \cellcolor{gray!6}{0.0000006} & \cellcolor{gray!6}{0.0281480} & \cellcolor{gray!6}{0.0348987} & \cellcolor{gray!6}{0.0473455} & \cellcolor{gray!6}{0.0953359} & \cellcolor{gray!6}{0.0191484}\\
+16. Spline 3 knots normal & 0.0503355 & 0.0161995 & 0.0007793 & 0.0386308 & 0.0470013 & 0.0611992 & 0.0975846 & 0.0225147\\
+\cellcolor{gray!6}{17. Mixture cure Weibull} & \cellcolor{gray!6}{0.0103115} & \cellcolor{gray!6}{0.0253657} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0001031} & \cellcolor{gray!6}{0.0987558} & \cellcolor{gray!6}{0.0000986}\\
+18. Non-mixture cure Weibull & 0.0104098 & 0.0254044 & 0.0000000 & 0.0000000 & 0.0000000 & 0.0001575 & 0.0985854 & 0.0001510\\
+\cellcolor{gray!6}{19. Mixture cure Log-normal} & \cellcolor{gray!6}{0.0135710} & \cellcolor{gray!6}{0.0252751} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0000929} & \cellcolor{gray!6}{0.0008027} & \cellcolor{gray!6}{0.0116086} & \cellcolor{gray!6}{0.0931907} & \cellcolor{gray!6}{0.0114404}\\
+20. Non-mixture cure Log-normal & 0.0140594 & 0.0251944 & 0.0000000 & 0.0001962 & 0.0012968 & 0.0132969 & 0.0934968 & 0.0130702\\
+\cellcolor{gray!6}{21. Mixture cure Log-logistic} & \cellcolor{gray!6}{0.0122019} & \cellcolor{gray!6}{0.0249146} & \cellcolor{gray!6}{0.0000516} & \cellcolor{gray!6}{0.0001512} & \cellcolor{gray!6}{0.0006917} & \cellcolor{gray!6}{0.0075147} & \cellcolor{gray!6}{0.0986522} & \cellcolor{gray!6}{0.0073113}\\
+22. Non-mixture cure Log-logistic & 0.0121786 & 0.0249023 & 0.0000517 & 0.0001509 & 0.0006881 & 0.0074554 & 0.0987027 & 0.0072528\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -829,32 +829,32 @@ data.
 \begin{table}
 
 \caption{\label{tab:validate_extrapolation2}Summary statistics of annual transition probabilities}
-\begin{tabular}[t]{lrrrrr}
+\begin{tabular}[t]{lrrrrrrrr}
 \toprule
-  & Min & Q1 & Median & Q3 & Max\\
+  & Mean & Std.Dev & Min & Q1 & Median & Q3 & Max & IQR\\
 \midrule
-\cellcolor{gray!6}{1. Exponential} & \cellcolor{gray!6}{0.1278820} & \cellcolor{gray!6}{0.1278820} & \cellcolor{gray!6}{0.1278820} & \cellcolor{gray!6}{0.1278820} & \cellcolor{gray!6}{0.1278820}\\
-2. Weibull & 0.0298491 & 0.2382194 & 0.2998675 & 0.3413164 & 0.3730304\\
-\cellcolor{gray!6}{3. Gompertz} & \cellcolor{gray!6}{0.0960264} & \cellcolor{gray!6}{0.2326209} & \cellcolor{gray!6}{0.5026105} & \cellcolor{gray!6}{0.8415103} & \cellcolor{gray!6}{1.0000000}\\
-4. Log-normal & 0.0004751 & 0.0692201 & 0.0864990 & 0.1175437 & 0.1630482\\
-\cellcolor{gray!6}{5. Log-logistic} & \cellcolor{gray!6}{0.0150627} & \cellcolor{gray!6}{0.0512119} & \cellcolor{gray!6}{0.0722192} & \cellcolor{gray!6}{0.1148301} & \cellcolor{gray!6}{0.1673124}\\
-6. Gamma & 0.0159374 & 0.2105278 & 0.2273428 & 0.2338793 & 0.2373538\\
-\cellcolor{gray!6}{7. Generalised Gamma} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0249765} & \cellcolor{gray!6}{0.0361491} & \cellcolor{gray!6}{0.0643696} & \cellcolor{gray!6}{0.1783037}\\
-8. Spline 1 knot hazard & 0.0005533 & 0.0961200 & 0.1007177 & 0.1087714 & 0.1767370\\
-\cellcolor{gray!6}{9. Spline 2 knots hazard} & \cellcolor{gray!6}{0.0000006} & \cellcolor{gray!6}{0.1921569} & \cellcolor{gray!6}{0.2213494} & \cellcolor{gray!6}{0.2415978} & \cellcolor{gray!6}{0.2568265}\\
-10. Spline 3 knots hazard & 0.0000040 & 0.2243467 & 0.2816554 & 0.3202621 & 0.3498686\\
-\cellcolor{gray!6}{11. Spline 1 knot odds} & \cellcolor{gray!6}{0.0004610} & \cellcolor{gray!6}{0.0331955} & \cellcolor{gray!6}{0.0461415} & \cellcolor{gray!6}{0.0743721} & \cellcolor{gray!6}{0.1809477}\\
-12. Spline 2 knots odds & 0.0000004 & 0.0500917 & 0.0706148 & 0.1135216 & 0.2192447\\
-\cellcolor{gray!6}{13. Spline 3 knots odds} & \cellcolor{gray!6}{0.0000052} & \cellcolor{gray!6}{0.0581364} & \cellcolor{gray!6}{0.0821832} & \cellcolor{gray!6}{0.1255993} & \cellcolor{gray!6}{0.2117141}\\
-14. Spline 1 knot normal & 0.0000012 & 0.0444894 & 0.0569700 & 0.0823605 & 0.1804334\\
-\cellcolor{gray!6}{15. Spline 2 knots normal} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0682231} & \cellcolor{gray!6}{0.0852159} & \cellcolor{gray!6}{0.1164045} & \cellcolor{gray!6}{0.2005479}\\
-16. Spline 3 knots normal & 0.0000001 & 0.0939627 & 0.1132858 & 0.1426801 & 0.2122248\\
-\cellcolor{gray!6}{17. Mixture cure Weibull} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0000059} & \cellcolor{gray!6}{0.0191609} & \cellcolor{gray!6}{0.1672892}\\
-18. Non-mixture cure Weibull & 0.0000000 & 0.0000000 & 0.0000548 & 0.0281639 & 0.1675628\\
-\cellcolor{gray!6}{19. Mixture cure Log-normal} & \cellcolor{gray!6}{0.0001478} & \cellcolor{gray!6}{0.0035974} & \cellcolor{gray!6}{0.0128314} & \cellcolor{gray!6}{0.0569406} & \cellcolor{gray!6}{0.1684663}\\
-20. Non-mixture cure Log-normal & 0.0001962 & 0.0048679 & 0.0133317 & 0.0491721 & 0.1721086\\
-\cellcolor{gray!6}{21. Mixture cure Log-logistic} & \cellcolor{gray!6}{0.0012991} & \cellcolor{gray!6}{0.0028998} & \cellcolor{gray!6}{0.0085638} & \cellcolor{gray!6}{0.0419015} & \cellcolor{gray!6}{0.1712400}\\
-22. Non-mixture cure Log-logistic & 0.0010967 & 0.0024492 & 0.0073855 & 0.0377612 & 0.1712106\\
+\cellcolor{gray!6}{1. Exponential} & \cellcolor{gray!6}{0.1278820} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.1278820} & \cellcolor{gray!6}{0.1278820} & \cellcolor{gray!6}{0.1278820} & \cellcolor{gray!6}{0.1278820} & \cellcolor{gray!6}{0.1278820} & \cellcolor{gray!6}{0.0000000}\\
+2. Weibull & 0.2818916 & 0.0732627 & 0.0298491 & 0.2382194 & 0.2998675 & 0.3413164 & 0.3730304 & 0.1028543\\
+\cellcolor{gray!6}{3. Gompertz} & \cellcolor{gray!6}{0.5313783} & \cellcolor{gray!6}{0.3082529} & \cellcolor{gray!6}{0.0960264} & \cellcolor{gray!6}{0.2326209} & \cellcolor{gray!6}{0.5026105} & \cellcolor{gray!6}{0.8415103} & \cellcolor{gray!6}{1.0000000} & \cellcolor{gray!6}{0.6074770}\\
+4. Log-normal & 0.0954433 & 0.0321269 & 0.0004751 & 0.0692201 & 0.0864990 & 0.1175437 & 0.1630482 & 0.0482006\\
+\cellcolor{gray!6}{5. Log-logistic} & \cellcolor{gray!6}{0.0853562} & \cellcolor{gray!6}{0.0400803} & \cellcolor{gray!6}{0.0150627} & \cellcolor{gray!6}{0.0512119} & \cellcolor{gray!6}{0.0722192} & \cellcolor{gray!6}{0.1148301} & \cellcolor{gray!6}{0.1673124} & \cellcolor{gray!6}{0.0634470}\\
+6. Gamma & 0.2142916 & 0.0338979 & 0.0159374 & 0.2105278 & 0.2273428 & 0.2338793 & 0.2373538 & 0.0232792\\
+\cellcolor{gray!6}{7. Generalised Gamma} & \cellcolor{gray!6}{0.0527725} & \cellcolor{gray!6}{0.0403634} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0249765} & \cellcolor{gray!6}{0.0361491} & \cellcolor{gray!6}{0.0643696} & \cellcolor{gray!6}{0.1783037} & \cellcolor{gray!6}{0.0392711}\\
+8. Spline 1 knot hazard & 0.1055301 & 0.0199804 & 0.0005533 & 0.0961200 & 0.1007177 & 0.1087714 & 0.1767370 & 0.0126190\\
+\cellcolor{gray!6}{9. Spline 2 knots hazard} & \cellcolor{gray!6}{0.2108105} & \cellcolor{gray!6}{0.0424037} & \cellcolor{gray!6}{0.0000006} & \cellcolor{gray!6}{0.1921569} & \cellcolor{gray!6}{0.2213494} & \cellcolor{gray!6}{0.2415978} & \cellcolor{gray!6}{0.2568265} & \cellcolor{gray!6}{0.0493204}\\
+10. Spline 3 knots hazard & 0.2648787 & 0.0695995 & 0.0000040 & 0.2243467 & 0.2816554 & 0.3202621 & 0.3498686 & 0.0956896\\
+\cellcolor{gray!6}{11. Spline 1 knot odds} & \cellcolor{gray!6}{0.0602433} & \cellcolor{gray!6}{0.0377595} & \cellcolor{gray!6}{0.0004610} & \cellcolor{gray!6}{0.0331955} & \cellcolor{gray!6}{0.0461415} & \cellcolor{gray!6}{0.0743721} & \cellcolor{gray!6}{0.1809477} & \cellcolor{gray!6}{0.0410625}\\
+12. Spline 2 knots odds & 0.0828374 & 0.0396992 & 0.0000004 & 0.0500917 & 0.0706148 & 0.1135216 & 0.2192447 & 0.0632652\\
+\cellcolor{gray!6}{13. Spline 3 knots odds} & \cellcolor{gray!6}{0.0937702} & \cellcolor{gray!6}{0.0420449} & \cellcolor{gray!6}{0.0000052} & \cellcolor{gray!6}{0.0581364} & \cellcolor{gray!6}{0.0821832} & \cellcolor{gray!6}{0.1255993} & \cellcolor{gray!6}{0.2117141} & \cellcolor{gray!6}{0.0672824}\\
+14. Spline 1 knot normal & 0.0691260 & 0.0346943 & 0.0000012 & 0.0444894 & 0.0569700 & 0.0823605 & 0.1804334 & 0.0378197\\
+\cellcolor{gray!6}{15. Spline 2 knots normal} & \cellcolor{gray!6}{0.0933942} & \cellcolor{gray!6}{0.0319718} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0682231} & \cellcolor{gray!6}{0.0852159} & \cellcolor{gray!6}{0.1164045} & \cellcolor{gray!6}{0.2005479} & \cellcolor{gray!6}{0.0480608}\\
+16. Spline 3 knots normal & 0.1188116 & 0.0321078 & 0.0000001 & 0.0939627 & 0.1132858 & 0.1426801 & 0.2122248 & 0.0486132\\
+\cellcolor{gray!6}{17. Mixture cure Weibull} & \cellcolor{gray!6}{0.0274205} & \cellcolor{gray!6}{0.0519801} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0000059} & \cellcolor{gray!6}{0.0191609} & \cellcolor{gray!6}{0.1672892} & \cellcolor{gray!6}{0.0189217}\\
+18. Non-mixture cure Weibull & 0.0284836 & 0.0517239 & 0.0000000 & 0.0000000 & 0.0000548 & 0.0281639 & 0.1675628 & 0.0279040\\
+\cellcolor{gray!6}{19. Mixture cure Log-normal} & \cellcolor{gray!6}{0.0386248} & \cellcolor{gray!6}{0.0496451} & \cellcolor{gray!6}{0.0001478} & \cellcolor{gray!6}{0.0035974} & \cellcolor{gray!6}{0.0128314} & \cellcolor{gray!6}{0.0569406} & \cellcolor{gray!6}{0.1684663} & \cellcolor{gray!6}{0.0533108}\\
+20. Non-mixture cure Log-normal & 0.0369202 & 0.0476273 & 0.0001962 & 0.0048679 & 0.0133317 & 0.0491721 & 0.1721086 & 0.0441369\\
+\cellcolor{gray!6}{21. Mixture cure Log-logistic} & \cellcolor{gray!6}{0.0336695} & \cellcolor{gray!6}{0.0485634} & \cellcolor{gray!6}{0.0012991} & \cellcolor{gray!6}{0.0028998} & \cellcolor{gray!6}{0.0085638} & \cellcolor{gray!6}{0.0419015} & \cellcolor{gray!6}{0.1712400} & \cellcolor{gray!6}{0.0388233}\\
+22. Non-mixture cure Log-logistic & 0.0321761 & 0.0482523 & 0.0010967 & 0.0024492 & 0.0073855 & 0.0377612 & 0.1712106 & 0.0351424\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -918,32 +918,32 @@ data.
 \begin{table}
 
 \caption{\label{tab:validate_extrapolation3}Summary statistics of annual transition probabilities}
-\begin{tabular}[t]{lrrrrr}
+\begin{tabular}[t]{lrrrrrrrr}
 \toprule
-  & Min & Q1 & Median & Q3 & Max\\
+  & Mean & Std.Dev & Min & Q1 & Median & Q3 & Max & IQR\\
 \midrule
-\cellcolor{gray!6}{1. Exponential} & \cellcolor{gray!6}{0.2449482} & \cellcolor{gray!6}{0.2449482} & \cellcolor{gray!6}{0.2449482} & \cellcolor{gray!6}{0.2449482} & \cellcolor{gray!6}{0.2449482}\\
-2. Weibull & 0.0907442 & 0.4105709 & 0.4790585 & 0.5216195 & 0.5525972\\
-\cellcolor{gray!6}{3. Gompertz} & \cellcolor{gray!6}{0.2169796} & \cellcolor{gray!6}{0.3698466} & \cellcolor{gray!6}{0.5818235} & \cellcolor{gray!6}{0.8071868} & \cellcolor{gray!6}{1.0000000}\\
-4. Log-normal & 0.0022958 & 0.1000774 & 0.1279068 & 0.1841659 & 0.3070152\\
-\cellcolor{gray!6}{5. Log-logistic} & \cellcolor{gray!6}{0.0305143} & \cellcolor{gray!6}{0.0571627} & \cellcolor{gray!6}{0.0832145} & \cellcolor{gray!6}{0.1494462} & \cellcolor{gray!6}{0.3207417}\\
-6. Gamma & 0.0471845 & 0.3701940 & 0.3852535 & 0.3907371 & 0.3935697\\
-\cellcolor{gray!6}{7. Generalised Gamma} & \cellcolor{gray!6}{0.0000317} & \cellcolor{gray!6}{0.0518395} & \cellcolor{gray!6}{0.0728961} & \cellcolor{gray!6}{0.1237607} & \cellcolor{gray!6}{0.3222943}\\
-8. Spline 1 knot hazard & 0.0048605 & 0.0929348 & 0.1060806 & 0.1322263 & 0.3462113\\
-\cellcolor{gray!6}{9. Spline 2 knots hazard} & \cellcolor{gray!6}{0.0027621} & \cellcolor{gray!6}{0.1183362} & \cellcolor{gray!6}{0.1309295} & \cellcolor{gray!6}{0.1552006} & \cellcolor{gray!6}{0.3471134}\\
-10. Spline 3 knots hazard & 0.0031604 & 0.1581132 & 0.1681704 & 0.1865373 & 0.3590229\\
-\cellcolor{gray!6}{11. Spline 1 knot odds} & \cellcolor{gray!6}{0.0040186} & \cellcolor{gray!6}{0.0370407} & \cellcolor{gray!6}{0.0534928} & \cellcolor{gray!6}{0.0956147} & \cellcolor{gray!6}{0.3493116}\\
-12. Spline 2 knots odds & 0.0029239 & 0.0397013 & 0.0573770 & 0.1025038 & 0.3469030\\
-\cellcolor{gray!6}{13. Spline 3 knots odds} & \cellcolor{gray!6}{0.0031346} & \cellcolor{gray!6}{0.0443526} & \cellcolor{gray!6}{0.0641665} & \cellcolor{gray!6}{0.1145082} & \cellcolor{gray!6}{0.3547245}\\
-14. Spline 1 knot normal & 0.0001727 & 0.0667705 & 0.0870224 & 0.1315769 & 0.3327152\\
-\cellcolor{gray!6}{15. Spline 2 knots normal} & \cellcolor{gray!6}{0.0003302} & \cellcolor{gray!6}{0.0575542} & \cellcolor{gray!6}{0.0758377} & \cellcolor{gray!6}{0.1164719} & \cellcolor{gray!6}{0.3361441}\\
-16. Spline 3 knots normal & 0.0005575 & 0.0702242 & 0.0912163 & 0.1362709 & 0.3562720\\
-\cellcolor{gray!6}{17. Mixture cure Weibull} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0019526} & \cellcolor{gray!6}{0.3124571}\\
-18. Non-mixture cure Weibull & 0.0000000 & 0.0000000 & 0.0000000 & 0.0058137 & 0.3224039\\
-\cellcolor{gray!6}{19. Mixture cure Log-normal} & \cellcolor{gray!6}{0.0002039} & \cellcolor{gray!6}{0.0008353} & \cellcolor{gray!6}{0.0048810} & \cellcolor{gray!6}{0.0495432} & \cellcolor{gray!6}{0.3220204}\\
-20. Non-mixture cure Log-normal & 0.0012590 & 0.0032428 & 0.0107457 & 0.0537620 & 0.3323853\\
-\cellcolor{gray!6}{21. Mixture cure Log-logistic} & \cellcolor{gray!6}{0.0005930} & \cellcolor{gray!6}{0.0014141} & \cellcolor{gray!6}{0.0047437} & \cellcolor{gray!6}{0.0321531} & \cellcolor{gray!6}{0.3414361}\\
-22. Non-mixture cure Log-logistic & 0.0004619 & 0.0010900 & 0.0036280 & 0.0253772 & 0.3434417\\
+\cellcolor{gray!6}{1. Exponential} & \cellcolor{gray!6}{0.2449482} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.2449482} & \cellcolor{gray!6}{0.2449482} & \cellcolor{gray!6}{0.2449482} & \cellcolor{gray!6}{0.2449482} & \cellcolor{gray!6}{0.2449482} & \cellcolor{gray!6}{0.0000000}\\
+2. Weibull & 0.4544976 & 0.0865169 & 0.0907442 & 0.4105709 & 0.4790585 & 0.5216195 & 0.5525972 & 0.1107778\\
+\cellcolor{gray!6}{3. Gompertz} & \cellcolor{gray!6}{0.5870906} & \cellcolor{gray!6}{0.2349728} & \cellcolor{gray!6}{0.2169796} & \cellcolor{gray!6}{0.3698466} & \cellcolor{gray!6}{0.5818235} & \cellcolor{gray!6}{0.8071868} & \cellcolor{gray!6}{1.0000000} & \cellcolor{gray!6}{0.4373402}\\
+4. Log-normal & 0.1496409 & 0.0630510 & 0.0022958 & 0.1000774 & 0.1279068 & 0.1841659 & 0.3070152 & 0.0838631\\
+\cellcolor{gray!6}{5. Log-logistic} & \cellcolor{gray!6}{0.1158111} & \cellcolor{gray!6}{0.0780753} & \cellcolor{gray!6}{0.0305143} & \cellcolor{gray!6}{0.0571627} & \cellcolor{gray!6}{0.0832145} & \cellcolor{gray!6}{0.1494462} & \cellcolor{gray!6}{0.3207417} & \cellcolor{gray!6}{0.0920005}\\
+6. Gamma & 0.3702654 & 0.0421058 & 0.0471845 & 0.3701940 & 0.3852535 & 0.3907371 & 0.3935697 & 0.0204764\\
+\cellcolor{gray!6}{7. Generalised Gamma} & \cellcolor{gray!6}{0.1013639} & \cellcolor{gray!6}{0.0706160} & \cellcolor{gray!6}{0.0000317} & \cellcolor{gray!6}{0.0518395} & \cellcolor{gray!6}{0.0728961} & \cellcolor{gray!6}{0.1237607} & \cellcolor{gray!6}{0.3222943} & \cellcolor{gray!6}{0.0717062}\\
+8. Spline 1 knot hazard & 0.1254303 & 0.0555367 & 0.0048605 & 0.0929348 & 0.1060806 & 0.1322263 & 0.3462113 & 0.0391837\\
+\cellcolor{gray!6}{9. Spline 2 knots hazard} & \cellcolor{gray!6}{0.1469155} & \cellcolor{gray!6}{0.0485978} & \cellcolor{gray!6}{0.0027621} & \cellcolor{gray!6}{0.1183362} & \cellcolor{gray!6}{0.1309295} & \cellcolor{gray!6}{0.1552006} & \cellcolor{gray!6}{0.3471134} & \cellcolor{gray!6}{0.0367658}\\
+10. Spline 3 knots hazard & 0.1787527 & 0.0386871 & 0.0031604 & 0.1581132 & 0.1681704 & 0.1865373 & 0.3590229 & 0.0283502\\
+\cellcolor{gray!6}{11. Spline 1 knot odds} & \cellcolor{gray!6}{0.0828358} & \cellcolor{gray!6}{0.0722684} & \cellcolor{gray!6}{0.0040186} & \cellcolor{gray!6}{0.0370407} & \cellcolor{gray!6}{0.0534928} & \cellcolor{gray!6}{0.0956147} & \cellcolor{gray!6}{0.3493116} & \cellcolor{gray!6}{0.0583932}\\
+12. Spline 2 knots odds & 0.0867603 & 0.0720369 & 0.0029239 & 0.0397013 & 0.0573770 & 0.1025038 & 0.3469030 & 0.0626095\\
+\cellcolor{gray!6}{13. Spline 3 knots odds} & \cellcolor{gray!6}{0.0933644} & \cellcolor{gray!6}{0.0716684} & \cellcolor{gray!6}{0.0031346} & \cellcolor{gray!6}{0.0443526} & \cellcolor{gray!6}{0.0641665} & \cellcolor{gray!6}{0.1145082} & \cellcolor{gray!6}{0.3547245} & \cellcolor{gray!6}{0.0699417}\\
+14. Spline 1 knot normal & 0.1114168 & 0.0648053 & 0.0001727 & 0.0667705 & 0.0870224 & 0.1315769 & 0.3327152 & 0.0646236\\
+\cellcolor{gray!6}{15. Spline 2 knots normal} & \cellcolor{gray!6}{0.1011547} & \cellcolor{gray!6}{0.0666094} & \cellcolor{gray!6}{0.0003302} & \cellcolor{gray!6}{0.0575542} & \cellcolor{gray!6}{0.0758377} & \cellcolor{gray!6}{0.1164719} & \cellcolor{gray!6}{0.3361441} & \cellcolor{gray!6}{0.0587484}\\
+16. Spline 3 knots normal & 0.1148143 & 0.0640431 & 0.0005575 & 0.0702242 & 0.0912163 & 0.1362709 & 0.3562720 & 0.0658618\\
+\cellcolor{gray!6}{17. Mixture cure Weibull} & \cellcolor{gray!6}{0.0374953} & \cellcolor{gray!6}{0.0871122} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0019526} & \cellcolor{gray!6}{0.3124571} & \cellcolor{gray!6}{0.0019062}\\
+18. Non-mixture cure Weibull & 0.0389260 & 0.0878954 & 0.0000000 & 0.0000000 & 0.0000000 & 0.0058137 & 0.3224039 & 0.0057065\\
+\cellcolor{gray!6}{19. Mixture cure Log-normal} & \cellcolor{gray!6}{0.0496395} & \cellcolor{gray!6}{0.0871508} & \cellcolor{gray!6}{0.0002039} & \cellcolor{gray!6}{0.0008353} & \cellcolor{gray!6}{0.0048810} & \cellcolor{gray!6}{0.0495432} & \cellcolor{gray!6}{0.3220204} & \cellcolor{gray!6}{0.0484359}\\
+20. Non-mixture cure Log-normal & 0.0514956 & 0.0842490 & 0.0012590 & 0.0032428 & 0.0107457 & 0.0537620 & 0.3323853 & 0.0503940\\
+\cellcolor{gray!6}{21. Mixture cure Log-logistic} & \cellcolor{gray!6}{0.0439682} & \cellcolor{gray!6}{0.0847543} & \cellcolor{gray!6}{0.0005930} & \cellcolor{gray!6}{0.0014141} & \cellcolor{gray!6}{0.0047437} & \cellcolor{gray!6}{0.0321531} & \cellcolor{gray!6}{0.3414361} & \cellcolor{gray!6}{0.0305649}\\
+22. Non-mixture cure Log-logistic & 0.0410716 & 0.0836704 & 0.0004619 & 0.0010900 & 0.0036280 & 0.0253772 & 0.3434417 & 0.0241440\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1032,7 +1032,7 @@ data.
 ##   ..$ tp_gr:List of 3
 ##  $ misc      :List of 8
 ##   ..$ form       :Class 'formula'  language Surv(years, status) ~ group
-##   .. .. ..- attr(*, ".Environment")=<environment: 0x00000000241a5648> 
+##   .. .. ..- attr(*, ".Environment")=<environment: 0x000000002419fd90> 
 ##   ..$ group_names: chr [1:3] "Good" "Medium" "Poor"
 ##   ..$ ngroups    : int 3
 ##   ..$ lbls_all   : chr [1:23] "time" " 1. Exponential" " 2. Weibull" " 3. Gompertz" ...

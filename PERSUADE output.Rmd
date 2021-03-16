@@ -2814,7 +2814,7 @@ evalq({
   }
 }, envir = PERSUADE)
 suppressWarnings(kable_styling(kable(descr(
-  PERSUADE$surv_pred$tp_gr$gr_1[, 2:PERSUADE$misc$cols_tp], stats = "fivenum", transpose = TRUE), 
+  PERSUADE$surv_pred$tp_gr$gr_1[, 2:PERSUADE$misc$cols_tp], stats = c("mean", "sd", "min", "q1", "med", "q3", "max", "iqr"), transpose = TRUE), 
   format = "latex", booktabs = TRUE, linesep = "", caption = "Summary statistics of annual transition probabilities"), 
   latex_options = "striped", position = "left"))
 
@@ -2997,7 +2997,7 @@ evalq({
   }
 }, envir = PERSUADE)
 suppressWarnings(kable_styling(kable(descr(
-  PERSUADE$surv_pred$tp_gr$gr_2[, 2:PERSUADE$misc$cols_tp], stats = "fivenum", transpose = TRUE), 
+  PERSUADE$surv_pred$tp_gr$gr_2[, 2:PERSUADE$misc$cols_tp], stats = c("mean", "sd", "min", "q1", "med", "q3", "max", "iqr"), transpose = TRUE), 
   format = "latex", booktabs = TRUE, linesep = "", caption = "Summary statistics of annual transition probabilities"), 
   latex_options = "striped", position = "left"))
 
@@ -3179,7 +3179,7 @@ evalq({
   
 }, envir = PERSUADE)
 suppressWarnings(kable_styling(kable(descr(
-  PERSUADE$surv_pred$tp_gr$gr_3[, 2:PERSUADE$misc$cols_tp], stats = "fivenum", transpose = TRUE), 
+  PERSUADE$surv_pred$tp_gr$gr_3[, 2:PERSUADE$misc$cols_tp], stats = c("mean", "sd", "min", "q1", "med", "q3", "max", "iqr"), transpose = TRUE), 
   format = "latex", booktabs = TRUE, linesep = "", caption = "Summary statistics of annual transition probabilities"), 
   latex_options = "striped", position = "left"))
 

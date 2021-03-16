@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 2.9.7440 64-bit) (preloaded format=pdflatex 2020.5.29)  16 MAR 2021 08:59
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 2.9.7440 64-bit) (preloaded format=pdflatex 2020.5.29)  16 MAR 2021 17:18
 entering extended mode
 **C:/Users/bramr/Documents/PERSUADE/BC_OS_output/BC_OS.tex
 (C:/Users/bramr/Documents/PERSUADE/BC_OS_output/BC_OS.tex
@@ -1191,6 +1191,11 @@ File: Images/validate_extrapolation1-6.pdf Graphic file (type pdf)
 Package pdftex.def Info: Images/validate_extrapolation1-6.pdf  used on input li
 ne 738.
 (pdftex.def)             Requested size: 461.08293pt x 188.62483pt.
+
+Overfull \hbox (128.49489pt too wide) in paragraph at lines 743--771
+[][] 
+ []
+
 <Images/validate_extrapolation1-7.pdf, id=1105, 794.97pt x 325.215pt>
 File: Images/validate_extrapolation1-7.pdf Graphic file (type pdf)
 <use Images/validate_extrapolation1-7.pdf>
@@ -1265,6 +1270,11 @@ File: Images/validate_extrapolation2-6.pdf Graphic file (type pdf)
 Package pdftex.def Info: Images/validate_extrapolation2-6.pdf  used on input li
 ne 827.
 (pdftex.def)             Requested size: 461.08293pt x 188.62483pt.
+
+Overfull \hbox (128.49489pt too wide) in paragraph at lines 832--860
+[][] 
+ []
+
 <Images/validate_extrapolation2-7.pdf, id=1191, 794.97pt x 325.215pt>
 File: Images/validate_extrapolation2-7.pdf Graphic file (type pdf)
 <use Images/validate_extrapolation2-7.pdf>
@@ -1339,6 +1349,11 @@ File: Images/validate_extrapolation3-6.pdf Graphic file (type pdf)
 Package pdftex.def Info: Images/validate_extrapolation3-6.pdf  used on input li
 ne 916.
 (pdftex.def)             Requested size: 461.08293pt x 188.62483pt.
+
+Overfull \hbox (128.49489pt too wide) in paragraph at lines 921--949
+[][] 
+ []
+
 <Images/validate_extrapolation3-7.pdf, id=1277, 794.97pt x 325.215pt>
 File: Images/validate_extrapolation3-7.pdf Graphic file (type pdf)
 <use Images/validate_extrapolation3-7.pdf>
@@ -1443,7 +1458,7 @@ MiKTeX 2.9/fonts/enc/dvips/lm/lm-ec.enc}<C:/Program Files/MiKTeX 2.9/fonts/type
 Files/MiKTeX 2.9/fonts/type1/public/lm/lmr12.pfb><C:/Program Files/MiKTeX 2.9/f
 onts/type1/public/lm/lmr17.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/
 lm/lmtt10.pfb>
-Output written on BC_OS.pdf (57 pages, 2508804 bytes).
+Output written on BC_OS.pdf (57 pages, 2510719 bytes).
 PDF statistics:
  1390 PDF objects out of 1440 (max. 8388607)
  101 named destinations out of 1000 (max. 500000)
