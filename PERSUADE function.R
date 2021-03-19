@@ -1,12 +1,19 @@
 # code is formatted using formatR::tidy_source(width.cutoff = 100)
-f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, spline_mod = FALSE, cure_mod = FALSE,
+f_PERSUADE <- function(name = "no_name", years, status, group, 
+                       strata = FALSE, spline_mod = FALSE, cure_mod = FALSE, cure_link = "logistic",
                        time_unit, time_horizon, time_pred_surv_table) {
   ##XP: Output alvast definiëren hier?
+  
+  # strata <- TRUE # for validation purposes
+  # spline_mod <- TRUE # for validation purposes
+  # cure_mod <- TRUE # for validation purposes
   
   #input
   years <- as.numeric(years)  # time variable should be numeric
   status <- as.numeric(status)  # status / event variable should be numeric
   group <- as.factor(group)  # group variable should be a factor 
+  if (cure_mod == FALSE) {cure_link <- NA}
+  
   
   # number of groups
   group <- droplevels(group)  # drop unused levels
@@ -26,7 +33,7 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
   # km
   km <- npsurv(form)
   km_names <- if (ngroups == 1) {rep(1, length(km$time))} else {
-    if (ngroups >= 2) {c(rep(1, km$strata[1]), rep(2, km$strata[2]), if (ngroups == 3) {rep(3, km$strata[3])})}
+    if (ngroups > 1) {c(rep(1, km$strata[1]), rep(2, km$strata[2]), if (ngroups == 3) {rep(3, km$strata[3])})}
   }
   
   # hazard rate
@@ -154,7 +161,7 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
       flexsurvspline(form, k = k, scale = "normal", anc = list(gamma1 = ~group, gamma2 = ~group, gamma3 = ~group, gamma4 = ~group))
     }
     
-    lbls_spline <- c(" 8. Spline 1 knot hazard", " 9. Spline 2 knots hazard", " 10. Spline 3 knots hazard", "11. Spline 1 knot odds", 
+    lbls_spline <- c(" 8. Spline 1 knot hazard", " 9. Spline 2 knots hazard", "10. Spline 3 knots hazard", "11. Spline 1 knot odds", 
                      "12. Spline 2 knots odds", "13. Spline 3 knots odds", "14. Spline 1 knot normal", "15. Spline 2 knots normal", 
                      "16. Spline 3 knots normal")
     
@@ -168,114 +175,57 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
   
   # fit cure models
   if (cure_mod == TRUE) {
-    weib_cure_mix_logit <- lapply(c(1:ngroups), function(x)
+    cure_weib_mix <- lapply(c(1:ngroups), function(x)
       flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
-                   link = "logistic", dist = "weibull", mixture = TRUE)
+                   link = cure_link, dist = "weibull", mixture = TRUE)
     )
-    weib_cure_mix_cloglog <- lapply(c(1:ngroups), function(x)
+    cure_weib_nmix <- lapply(c(1:ngroups), function(x)
       flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
-                   link = "loglog", dist = "weibull", mixture = TRUE)
-    )
-    weib_cure_mix_identity <- lapply(c(1:ngroups), function(x)
-      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
-                   link = "identity", dist = "weibull", mixture = TRUE)
-    )
-    weib_cure_mix_probit <- lapply(c(1:ngroups), function(x)
-      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
-                   link = "probit", dist = "weibull", mixture = TRUE)
-    )
-    weib_cure_nmix_logit <- lapply(c(1:ngroups), function(x)
-      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
-                   link = "logistic", dist = "weibull", mixture = FALSE)
-    )
-    weib_cure_nmix_cloglog <- lapply(c(1:ngroups), function(x)
-      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
-                   link = "loglog", dist = "weibull", mixture = FALSE)
-    )
-    weib_cure_nmix_identity <- lapply(c(1:ngroups), function(x)
-      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
-                   link = "identity", dist = "weibull", mixture = FALSE)
-    )
-    weib_cure_nmix_probit <- lapply(c(1:ngroups), function(x)
-      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
-                   link = "probit", dist = "weibull", mixture = FALSE)
+                   link = cure_link, dist = "weibull", mixture = FALSE)
     )
     
-    lnorm_cure_mix_logit <- lapply(c(1:ngroups), function(x)
+    cure_lnorm_mix <- lapply(c(1:ngroups), function(x)
       flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
-                   link = "logistic", dist = "lnorm", mixture = TRUE)
+                   link = cure_link, dist = "lnorm", mixture = TRUE)
     )
-    lnorm_cure_mix_cloglog <- lapply(c(1:ngroups), function(x)
+    cure_lnorm_nmix <- lapply(c(1:ngroups), function(x)
       flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
-                   link = "loglog", dist = "lnorm", mixture = TRUE)
-    )
-    lnorm_cure_mix_identity <- lapply(c(1:ngroups), function(x)
-      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
-                   link = "identity", dist = "lnorm", mixture = TRUE)
-    )
-    lnorm_cure_mix_probit <- lapply(c(1:ngroups), function(x)
-      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
-                   link = "probit", dist = "lnorm", mixture = TRUE)
-    )
-    lnorm_cure_nmix_logit <- lapply(c(1:ngroups), function(x)
-      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
-                   link = "logistic", dist = "lnorm", mixture = FALSE)
-    )
-    lnorm_cure_nmix_cloglog <- lapply(c(1:ngroups), function(x)
-      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
-                   link = "loglog", dist = "lnorm", mixture = FALSE)
-    )
-    lnorm_cure_nmix_identity <- lapply(c(1:ngroups), function(x)
-      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
-                   link = "identity", dist = "lnorm", mixture = FALSE)
-    )
-    lnorm_cure_nmix_probit <- lapply(c(1:ngroups), function(x)
-      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
-                   link = "probit", dist = "lnorm", mixture = FALSE)
+                   link = cure_link, dist = "lnorm", mixture = FALSE)
     )
     
-    llog_cure_mix_logit <- lapply(c(1:ngroups), function(x)
+    cure_llog_mix <- lapply(c(1:ngroups), function(x)
       flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
-                   link = "logistic", dist = "llogis", mixture = TRUE)
+                   link = cure_link, dist = "llogis", mixture = TRUE)
     )
-    llog_cure_mix_cloglog <- lapply(c(1:ngroups), function(x)
+    cure_llog_nmix <- lapply(c(1:ngroups), function(x)
       flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
-                   link = "loglog", dist = "llogis", mixture = TRUE)
-    )
-    llog_cure_mix_identity <- lapply(c(1:ngroups), function(x)
-      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
-                   link = "identity", dist = "llogis", mixture = TRUE)
-    )
-    llog_cure_mix_probit <- lapply(c(1:ngroups), function(x)
-      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
-                   link = "probit", dist = "llogis", mixture = TRUE)
-    )
-    llog_cure_nmix_logit <- lapply(c(1:ngroups), function(x)
-      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
-                   link = "logistic", dist = "llogis", mixture = FALSE)
-    )
-    llog_cure_nmix_cloglog <- lapply(c(1:ngroups), function(x)
-      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
-                   link = "loglog", dist = "llogis", mixture = FALSE)
-    )
-    llog_cure_nmix_identity <- lapply(c(1:ngroups), function(x)
-      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
-                   link = "identity", dist = "llogis", mixture = FALSE)
-    )
-    llog_cure_nmix_probit <- lapply(c(1:ngroups), function(x)
-      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
-                   link = "probit", dist = "llogis", mixture = FALSE)
+                   link = cure_link, dist = "llogis", mixture = FALSE)
     )
     
-    #lbls_cure <- c("17. Spline 1 knot hazard", " 9. Spline 2 knots hazard", " 10. Spline 3 knots hazard", "11. Spline 1 knot odds", 
-    #                 "12. Spline 2 knots odds", "13. Spline 3 knots odds", "14. Spline 1 knot normal", "15. Spline 2 knots normal", 
-    #                 "16. Spline 3 knots normal")
+    lbls_cure <- c("17. Mixture cure Weibull", "18. Non-mixture cure Weibull", 
+                   "19. Mixture cure Log-normal", "20. Non-mixture cure Log-normal", 
+                   "21. Mixture cure Log-logistic", "22. Non-mixture cure Log-logistic") 
+       
     
-    # calculate AIC and BIC
-    #AIC_cure <- c()
-    #BIC_cure <- BIC()[2]
-    #IC_cure <- data.frame(lbls_cure, AIC_cure, BIC_cure)
-    #colnames(IC_cure) <- c("Model", "AIC", "BIC")
+    # calculate AIC 
+    AIC_cure <- c(sum(sapply(c(1:ngroups), function(x) cure_weib_mix[[x]]$AIC)),
+                  sum(sapply(c(1:ngroups), function(x) cure_weib_nmix[[x]]$AIC)),
+                  sum(sapply(c(1:ngroups), function(x) cure_lnorm_mix[[x]]$AIC)),
+                  sum(sapply(c(1:ngroups), function(x) cure_lnorm_nmix[[x]]$AIC)),
+                  sum(sapply(c(1:ngroups), function(x) cure_llog_mix[[x]]$AIC)),
+                  sum(sapply(c(1:ngroups), function(x) cure_llog_nmix[[x]]$AIC)))
+    cure_fraction <- rbind(sapply(c(1:ngroups), function(x) cure_weib_mix[[x]]$res[1,1:3]),
+                           sapply(c(1:ngroups), function(x) cure_weib_nmix[[x]]$res[1,1:3]),
+                           sapply(c(1:ngroups), function(x) cure_lnorm_mix[[x]]$res[1,1:3]),
+                           sapply(c(1:ngroups), function(x) cure_lnorm_nmix[[x]]$res[1,1:3]),
+                           sapply(c(1:ngroups), function(x) cure_llog_mix[[x]]$res[1,1:3]),
+                           sapply(c(1:ngroups), function(x) cure_llog_nmix[[x]]$res[1,1:3])) 
+    
+    cure_fraction <- matrix(ncol = ngroups, data = sapply(c(1:(ngroups*6)), function(x) 
+      paste0(round(cure_fraction[x,1],3)*100, "% (",round(cure_fraction[x,2],3)*100,"% - ",round(cure_fraction[x,3],3)*100,"%)")))
+    
+    IC_cure <- data.frame(lbls_cure, AIC_cure, cure_fraction)
+    colnames(IC_cure) <- c("Model", "AIC", paste0("Cure fraction ", group_names))
   }
   
   # predicted values parametric models
@@ -317,7 +267,7 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
     gam_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
   ggam_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
     ggam_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
-
+  
   gom_pred[, -1][gom_pred[, -1] < 1e-15] <- 0  # prevent rounding errors for predicted transition probabilities
   
   colnames(expo_pred) <- colnames(weib_pred) <- colnames(gom_pred) <- colnames(lnorm_pred) <- colnames(llog_pred) <- colnames(gam_pred) <- 
@@ -352,27 +302,69 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
     
     # extract prediction for each group
     spl_hazard1_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-        spl_hazard1_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
+      spl_hazard1_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
     spl_hazard2_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-        spl_hazard2_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
+      spl_hazard2_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
     spl_hazard3_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-        spl_hazard3_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
+      spl_hazard3_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
     spl_odds1_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-        spl_odds1_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
+      spl_odds1_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
     spl_odds2_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-        spl_odds2_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
+      spl_odds2_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
     spl_odds3_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-        spl_odds3_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
+      spl_odds3_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
     spl_normal1_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-        spl_normal1_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
+      spl_normal1_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
     spl_normal2_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-        spl_normal2_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
+      spl_normal2_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
     spl_normal3_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-        spl_normal3_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
-
+      spl_normal3_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
+    
     colnames(spl_hazard1_pred) <- colnames(spl_hazard2_pred) <- colnames(spl_hazard3_pred)<- colnames(spl_odds1_pred) <- 
       colnames(spl_odds2_pred) <- colnames(spl_odds3_pred) <- colnames(spl_normal1_pred) <- colnames(spl_normal2_pred) <- 
       colnames(spl_normal3_pred) <- column_names
+  }
+  
+  if (cure_mod == TRUE) {
+    cure_weib_mix_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) ## BR do this similarly for the other models (1 ipv 2 steps)
+      data.frame(summary(cure_weib_mix[[x]], t = time_pred))[,2]))
+    cure_weib_nmix_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
+      data.frame(summary(cure_weib_nmix[[x]], t = time_pred))[,2]))
+    cure_lnorm_mix_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
+      data.frame(summary(cure_lnorm_mix[[x]], t = time_pred))[,2]))
+    cure_lnorm_nmix_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
+      data.frame(summary(cure_lnorm_nmix[[x]], t = time_pred))[,2]))
+    cure_llog_mix_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
+      data.frame(summary(cure_llog_mix[[x]], t = time_pred))[,2]))
+    cure_llog_nmix_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
+      data.frame(summary(cure_llog_nmix[[x]], t = time_pred))[,2]))
+    
+    cure_weib_mix_pred_h <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
+      data.frame(summary(cure_weib_mix[[x]], t = time_pred, type = "hazard"))[,2]))
+    cure_weib_nmix_pred_h <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
+      data.frame(summary(cure_weib_nmix[[x]], t = time_pred, type = "hazard"))[,2]))
+    cure_lnorm_mix_pred_h <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
+      data.frame(summary(cure_lnorm_mix[[x]], t = time_pred, type = "hazard"))[,2]))
+    cure_lnorm_nmix_pred_h <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
+      data.frame(summary(cure_lnorm_nmix[[x]], t = time_pred, type = "hazard"))[,2]))
+    cure_llog_mix_pred_h <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
+      data.frame(summary(cure_llog_mix[[x]], t = time_pred, type = "hazard"))[,2]))
+    cure_llog_nmix_pred_h <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
+      data.frame(summary(cure_llog_nmix[[x]], t = time_pred, type = "hazard"))[,2]))
+
+    if (ngroups == 1) {
+      names(cure_weib_mix_pred) <- names(cure_weib_nmix_pred) <- names(cure_lnorm_mix_pred) <- 
+        names(cure_lnorm_nmix_pred) <- names(cure_llog_mix_pred) <- names(cure_llog_nmix_pred) <- 
+        names(cure_weib_mix_pred_h) <- names(cure_weib_nmix_pred_h) <- names(cure_lnorm_mix_pred_h) <- 
+        names(cure_lnorm_nmix_pred_h) <- names(cure_llog_mix_pred_h) <- names(cure_llog_nmix_pred_h) <- 
+        paste("group=", group_names, sep = "")
+    } # name has to be changed if there is only one group
+
+    colnames(cure_weib_mix_pred) <- colnames(cure_weib_nmix_pred) <- colnames(cure_lnorm_mix_pred) <- 
+      colnames(cure_lnorm_nmix_pred) <- colnames(cure_llog_mix_pred) <- colnames(cure_llog_nmix_pred) <- 
+      colnames(cure_weib_mix_pred_h) <- colnames(cure_weib_nmix_pred_h) <- colnames(cure_lnorm_mix_pred_h) <- 
+      colnames(cure_lnorm_nmix_pred_h) <- colnames(cure_llog_mix_pred_h) <- colnames(cure_llog_nmix_pred_h) <- 
+      column_names
   }
   
   # predicted survival ##XP: dit vervangen in: 1) vector maken aantal kolommen, 2) 1 df maken met aantal kolommen afhankelijk van aantal groepen (dus afhankelijk van vector) > dan hoef je in output geen 3 lijsten te maken van output en voor TP berekening, hoef je niet 3 keer hetzelfde te doen per groep, maar 1 keer toepassen op df
@@ -380,25 +372,34 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
                      gam_pred[, 2], ggam_pred[, 2], if (spline_mod == TRUE) {
                        cbind(spl_hazard1_pred[, 2], spl_hazard2_pred[, 2], spl_hazard3_pred[, 2], 
                              spl_odds1_pred[, 2], spl_odds2_pred[, 2], spl_odds3_pred[, 2], 
-                             spl_normal1_pred[, 2], spl_normal2_pred[, 2], spl_normal3_pred[, 2])}) 
-
+                             spl_normal1_pred[, 2], spl_normal2_pred[, 2], spl_normal3_pred[, 2])}, 
+                     if (cure_mod == TRUE) {
+                       cbind(cure_weib_mix_pred[, 2], cure_weib_nmix_pred[, 2], cure_lnorm_mix_pred[, 2], 
+                             cure_lnorm_nmix_pred[, 2], cure_llog_mix_pred[, 2], cure_llog_nmix_pred[, 2])}) 
+  
   if (ngroups > 1) {
     surv_gr_2 <- cbind(time_pred, expo_pred[, 3], weib_pred[, 3], gom_pred[, 3], lnorm_pred[, 3], llog_pred[, 3],
                        gam_pred[, 3], ggam_pred[, 3], if (spline_mod == TRUE) {
                          cbind(spl_hazard1_pred[, 3], spl_hazard2_pred[, 3], spl_hazard3_pred[, 3], 
                                spl_odds1_pred[, 3], spl_odds2_pred[, 3], spl_odds3_pred[, 3], 
-                               spl_normal1_pred[, 3], spl_normal2_pred[, 3], spl_normal3_pred[, 3])}) 
+                               spl_normal1_pred[, 3], spl_normal2_pred[, 3], spl_normal3_pred[, 3])}, 
+                       if (cure_mod == TRUE) {
+                         cbind(cure_weib_mix_pred[, 3], cure_weib_nmix_pred[, 3], cure_lnorm_mix_pred[, 3], 
+                               cure_lnorm_nmix_pred[, 3], cure_llog_mix_pred[, 3], cure_llog_nmix_pred[, 3])}) 
   }
   
   if (ngroups > 2) {
     surv_gr_3 <- cbind(time_pred, expo_pred[, 4], weib_pred[, 4], gom_pred[, 4], lnorm_pred[, 4], llog_pred[, 4],
-            gam_pred[, 4], ggam_pred[, 4], if (spline_mod == TRUE) {
-              cbind(spl_hazard1_pred[, 4], spl_hazard2_pred[, 4], spl_hazard3_pred[, 4], 
-                    spl_odds1_pred[, 4], spl_odds2_pred[, 4], spl_odds3_pred[, 4], 
-                    spl_normal1_pred[, 4], spl_normal2_pred[, 4], spl_normal3_pred[, 4])}) 
+                       gam_pred[, 4], ggam_pred[, 4], if (spline_mod == TRUE) {
+                         cbind(spl_hazard1_pred[, 4], spl_hazard2_pred[, 4], spl_hazard3_pred[, 4], 
+                               spl_odds1_pred[, 4], spl_odds2_pred[, 4], spl_odds3_pred[, 4], 
+                               spl_normal1_pred[, 4], spl_normal2_pred[, 4], spl_normal3_pred[, 4])}, 
+                       if (cure_mod == TRUE) {
+                         cbind(cure_weib_mix_pred[, 4], cure_weib_nmix_pred[, 4], cure_lnorm_mix_pred[, 4], 
+                               cure_lnorm_nmix_pred[, 4], cure_llog_mix_pred[, 4], cure_llog_nmix_pred[, 4])}) 
   }
   
-  lbls_all <- c("time", lbls, if (spline_mod == TRUE) {lbls_spline})
+  lbls_all <- c("time", lbls, if (spline_mod == TRUE) {lbls_spline}, if (cure_mod == TRUE) {lbls_cure})
   
   colnames(surv_gr_1) <- lbls_all
   if (ngroups > 1) {colnames(surv_gr_2) <- lbls_all}
@@ -435,7 +436,7 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
                    na.rm = TRUE)
   
   # parametric survival models
-  cols_tp <- ifelse(spline_mod == TRUE, 17, 8)  # define data frame width for the annual TP calculations
+  cols_tp <- 8 + (if (spline_mod == TRUE) {9} else {0}) + (if (cure_mod == TRUE) {6} else {0})
   
   tp_gr_1 <- cbind(time_pred, 1 - (1 - (shift(surv_gr_1[, 2:cols_tp], 1L, type = "lag") - surv_gr_1[, 2:cols_tp])/
                                      shift(surv_gr_1[, 2:cols_tp], 1L, type = "lag"))^(1/time_unit))[-1, ]
@@ -577,8 +578,8 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
   
   # output
   input <- list(years = years, status = status, group = group, strata = strata, spline_mod = spline_mod, 
-                time_unit = time_unit, time_horizon = time_horizon, time_pred_surv_table = time_pred_surv_table, 
-                time_pred = time_pred)
+                cure_mod = cure_mod, cure_link = cure_link, time_unit = time_unit, time_horizon = time_horizon, 
+                time_pred_surv_table = time_pred_surv_table, time_pred = time_pred)
   haz <- c(haz, list(names = haz_names, max = haz_max))
   tp <- c(list(gr_1 = km_tp_gr_1), 
           if (ngroups > 1) {list(gr_2 = km_tp_gr_2)}, 
@@ -591,6 +592,10 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
                                                 spl_odds1 = spl_odds1, spl_odds2 = spl_odds2,  spl_odds3 = spl_odds3, 
                                                 spl_normal1 = spl_normal1, spl_normal2 = spl_normal2, spl_normal3 = spl_normal3, 
                                                 IC_spl = IC_spl)}, 
+                  if (cure_mod == TRUE) {list(cure_weib_mix = cure_weib_mix, cure_weib_nmix = cure_weib_nmix, 
+                                              cure_lnorm_mix = cure_lnorm_mix, cure_lnorm_nmix = cure_lnorm_nmix, 
+                                              cure_llog_mix = cure_llog_mix,  cure_llog_nmix = cure_llog_nmix, 
+                                              IC_cure = IC_cure)}, 
                   list(survmod = survmod))
   surv_gr_pred <- c(list(gr_1 = surv_gr_1), 
                     if (ngroups > 1) {list(gr_2 = surv_gr_2)}, 
@@ -602,15 +607,23 @@ f_PERSUADE <- function(name = "no_name", years, status, group, strata = FALSE, s
                             gam = gam_pred, ggam = ggam_pred, expo_h = expo_pred_h, weib_h = weib_pred_h, 
                             gom_h = gom_pred_h, lnorm_h = lnorm_pred_h, llog_h = llog_pred_h, gam_h = gam_pred_h, 
                             ggam_h = ggam_pred_h), 
-                       (if (spline_mod == TRUE) {list(spl_hazard1 = spl_hazard1_pred, spl_hazard2 = spl_hazard2_pred, spl_hazard3 = spl_hazard3_pred, 
-                                                      spl_odds1 = spl_odds1_pred, spl_odds2 = spl_odds2_pred, spl_odds3 = spl_odds3_pred, 
-                                                      spl_normal1 = spl_normal1_pred, spl_normal2 = spl_normal2_pred, spl_normal3 = spl_normal3_pred, 
-                                                      spl_hazard1_h = spl_hazard1_pred_h, spl_hazard2_h = spl_hazard2_pred_h, spl_hazard3_h = spl_hazard3_pred_h, 
-                                                      spl_odds1_h = spl_odds1_pred_h, spl_odds2_h = spl_odds2_pred_h, spl_odds3_h = spl_odds3_pred_h,
-                                                      spl_normal1_h = spl_normal1_pred_h, spl_normal2_h = spl_normal2_pred_h, spl_normal3_h = spl_normal3_pred_h)}))
+                       if (spline_mod == TRUE) {list(spl_hazard1 = spl_hazard1_pred, spl_hazard2 = spl_hazard2_pred, spl_hazard3 = spl_hazard3_pred, 
+                                                     spl_odds1 = spl_odds1_pred, spl_odds2 = spl_odds2_pred, spl_odds3 = spl_odds3_pred, 
+                                                     spl_normal1 = spl_normal1_pred, spl_normal2 = spl_normal2_pred, spl_normal3 = spl_normal3_pred, 
+                                                     spl_hazard1_h = spl_hazard1_pred_h, spl_hazard2_h = spl_hazard2_pred_h, spl_hazard3_h = spl_hazard3_pred_h, 
+                                                     spl_odds1_h = spl_odds1_pred_h, spl_odds2_h = spl_odds2_pred_h, spl_odds3_h = spl_odds3_pred_h,
+                                                     spl_normal1_h = spl_normal1_pred_h, spl_normal2_h = spl_normal2_pred_h, spl_normal3_h = spl_normal3_pred_h)},
+                       if (cure_mod == TRUE) {list(cure_weib_mix = cure_weib_mix_pred, cure_weib_nmix = cure_weib_nmix_pred, 
+                                                   cure_lnorm_mix = cure_lnorm_mix_pred, cure_lnorm_nmix = cure_lnorm_nmix_pred, 
+                                                   cure_llog_mix = cure_llog_mix_pred,  cure_llog_nmix = cure_llog_nmix_pred,
+                                                   cure_weib_mix_h = cure_weib_mix_pred_h, cure_weib_nmix_h = cure_weib_nmix_pred_h, 
+                                                   cure_lnorm_mix_h = cure_lnorm_mix_pred_h, cure_lnorm_nmix_h = cure_lnorm_nmix_pred_h, 
+                                                   cure_llog_mix_h = cure_llog_mix_pred_h,  cure_llog_nmix_h = cure_llog_nmix_pred_h)})
   surv_pred <- c(list(model = surv_model_pred, gr = surv_gr_pred, tp_gr = tp_gr_pred))
-  misc <- c(list(form = form, group_names = group_names, ngroups = ngroups, lbls = lbls), 
-            if (spline_mod == TRUE) {list(lbls_spline = lbls_spline)}, list(cols_tp = cols_tp))
+  misc <- c(list(form = form, group_names = group_names, ngroups = ngroups, lbls_all = lbls_all, lbls = lbls), 
+            if (spline_mod == TRUE) {list(lbls_spline = lbls_spline)}, 
+            if (cure_mod == TRUE) {list(lbls_cure = lbls_cure)}, 
+            list(cols_tp = cols_tp))
   
   output <- list(name = name, input = input, surv_obs = surv_obs, surv_model = surv_model, surv_pred = surv_pred, misc = misc)
   
