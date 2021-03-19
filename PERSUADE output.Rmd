@@ -401,10 +401,11 @@ evalq({
             c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])),
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
-  legend("bottomleft", legend = rep(misc$group_names, 2), 
+  legend("bottomleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col = c(rep("1", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(1, misc$ngroups)), 
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = 'n')
   
   # annual transition probabilities
   plot(cbind(surv_obs$tp$gr_1$time, surv_obs$tp$gr_1$smooth), lwd = 1, 
@@ -440,11 +441,12 @@ evalq({
             c(surv_obs$tp$gr_3$smooth_lower, rev(surv_obs$tp$gr_3$smooth_upper)), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("1", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
   # diagnostics
   plot(cbind(surv_obs$km$time, -log(surv_obs$km$surv)), cex = 0.6, 
@@ -457,11 +459,12 @@ evalq({
   if (misc$ngroups > 2) {
     lines(cbind(input$time_pred, -log(surv_pred$model$expo[, 4])), col = "1", lty = "5212", lwd = 2)
   }
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("1", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
 }, envir = PERSUADE)
 ```
@@ -495,10 +498,11 @@ evalq({
             c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])),
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
-  legend("bottomleft", legend = rep(misc$group_names, 2), 
+  legend("bottomleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col = c(rep("2", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(1, misc$ngroups)), 
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
   # annual transition probabilities
   plot(cbind(surv_obs$tp$gr_1$time, surv_obs$tp$gr_1$smooth), lwd = 1, 
@@ -532,11 +536,12 @@ evalq({
             c(surv_obs$tp$gr_3$smooth_lower, rev(surv_obs$tp$gr_3$smooth_upper)), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("2", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
   # diagnostics
   plot(cbind(log(surv_obs$km$time), log(-log(surv_obs$km$surv))), cex = 0.6, pch = c(1, 8, 9)[surv_obs$km_names],
@@ -550,11 +555,12 @@ evalq({
   if (misc$ngroups > 2) {
     lines(cbind(log(input$time_pred), log(-log(surv_pred$model$weib[, 4]))), col = "2", lty = "5212", lwd = 2)
   }
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("2", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
 }, envir = PERSUADE)
 ```
 
@@ -587,10 +593,11 @@ evalq({
             c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
-  legend("bottomleft", legend = rep(misc$group_names, 2), 
+  legend("bottomleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col = c(rep("3", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(1, misc$ngroups)), 
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
   # annual transition probabilities
   plot(cbind(surv_obs$tp$gr_1$time, surv_obs$tp$gr_1$smooth), lwd = 1, 
@@ -624,11 +631,12 @@ evalq({
             c(surv_obs$tp$gr_3$smooth_lower, rev(surv_obs$tp$gr_3$smooth_upper)), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("3", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
   # diagnostics
   plot(cbind(c(surv_obs$haz$smooth_gr1$est.grid, 
@@ -648,11 +656,13 @@ evalq({
     lines(cbind(surv_pred$model$gom_h[[3]]$time, log(surv_pred$model$gom_h[[3]]$est)), 
           col = "3", lty = "5212", lwd = 2)
   }
-  legend("bottomleft", legend = rep(misc$group_names, 2), 
+  legend("bottomleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("3", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
+  
 }, envir = PERSUADE)
 ```
 
@@ -686,10 +696,11 @@ evalq({
             c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])),
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
-  legend("bottomleft", legend = rep(misc$group_names, 2), 
+  legend("bottomleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col = c(rep("4", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(1, misc$ngroups)), 
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
   # annual transition probabilities
   plot(cbind(surv_obs$tp$gr_1$time, surv_obs$tp$gr_1$smooth), lwd = 1, 
@@ -722,11 +733,12 @@ evalq({
             c(surv_obs$tp$gr_3$smooth_lower, rev(surv_obs$tp$gr_3$smooth_upper)), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("4", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
   # diagnostics
   plot(cbind(log(surv_obs$km$time), 
@@ -748,11 +760,13 @@ evalq({
                 -qnorm(surv_pred$model$lnorm[, 4], mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)), 
           col = "4", lty = "5212", lwd = 2)
   }
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("4", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
+  
 }, envir = PERSUADE)
 ```
 
@@ -786,10 +800,11 @@ evalq({
             c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])),
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
-  legend("bottomleft", legend = rep(misc$group_names, 2), 
+  legend("bottomleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col = c(rep("5", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(1, misc$ngroups)), 
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
   # annual transition probabilities
   plot(cbind(surv_obs$tp$gr_1$time, surv_obs$tp$gr_1$smooth), lwd = 1, 
@@ -823,11 +838,12 @@ evalq({
             c(surv_obs$tp$gr_3$smooth_lower, rev(surv_obs$tp$gr_3$smooth_upper)), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("5", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
   # diagnostics
   plot(cbind(log(surv_obs$km$time), -log(surv_obs$km$surv/(1 - surv_obs$km$surv))), 
@@ -849,12 +865,14 @@ evalq({
                 -log(surv_pred$model$llog[, 4]/(1 - surv_pred$model$llog[, 4]))),
           col = "5", lty = "5212", lwd = 2)
   }
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("5", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
-}, envir = PERSUADE)
+         cex = 0.8, ncol = 2,
+         bty = "n")
+  
+  }, envir = PERSUADE)
 ```
 
 \newpage 
@@ -886,10 +904,11 @@ evalq({
             c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
-  legend("bottomleft", legend = rep(misc$group_names, 2), 
+  legend("bottomleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col = c(rep("6", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(1, misc$ngroups)), 
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
   # annual transition probabilities
   plot(cbind(surv_obs$tp$gr_1$time, surv_obs$tp$gr_1$smooth), lwd = 1, 
@@ -922,11 +941,12 @@ evalq({
             c(surv_obs$tp$gr_3$smooth_lower, rev(surv_obs$tp$gr_3$smooth_upper)), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("6", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
   # diagnostics --> not linear!
   plot(cbind(log(surv_obs$km$time), log(-log(surv_obs$km$surv))), cex = 0.6, 
@@ -942,11 +962,13 @@ evalq({
   if (misc$ngroups > 2) {
     lines(cbind(log(input$time_pred), log(-log(surv_pred$model$gam[, 4]))), col = "6", lty = "5212", lwd = 2)
   }
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("6", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
+  
 }, envir = PERSUADE)
 ```
 
@@ -979,10 +1001,11 @@ evalq({
             c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
-  legend("bottomleft", legend = rep(misc$group_names, 2), 
+  legend("bottomleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col = c(rep("7", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(1, misc$ngroups)), 
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
   # annual transition probabilities
   plot(cbind(surv_obs$tp$gr_1$time, surv_obs$tp$gr_1$smooth), lwd = 1, 
@@ -1015,11 +1038,12 @@ evalq({
             c(surv_obs$tp$gr_3$smooth_lower, rev(surv_obs$tp$gr_3$smooth_upper)), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("7", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
   # diagnostics --> not linear!
   plot(cbind(log(surv_obs$km$time), log(-log(surv_obs$km$surv))), cex = 0.6, 
@@ -1036,11 +1060,13 @@ evalq({
   if (misc$ngroups > 2) {
     lines(cbind(log(input$time_pred), log(-log(surv_pred$model$ggam[, 4]))), col = "7", lty = "5212", lwd = 2)
   }
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("7", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
+  
 }, envir = PERSUADE)
 ```
 
@@ -1108,10 +1134,11 @@ evalq({
   abline(v = exp(surv_model$spl_hazard1$knots[2]), lty = 2, lwd = 1.5)
   abline(v = exp(surv_model$spl_hazard1$knots[1]), lty = 3, lwd = 1)
   abline(v = exp(surv_model$spl_hazard1$knots[3]), lty = 3, lwd = 1)
-  legend("bottomleft", legend = rep(misc$group_names, 2), 
+  legend("bottomleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col = c(rep("1", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(1, misc$ngroups)), 
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
   # annual transition probabilities
   plot(cbind(surv_obs$tp$gr_1$time, surv_obs$tp$gr_1$smooth), lwd = 1, 
@@ -1147,11 +1174,12 @@ evalq({
   abline(v = exp(surv_model$spl_hazard1$knots[2]), lty = 2, lwd = 1.5)
   abline(v = exp(surv_model$spl_hazard1$knots[1]), lty = 3, lwd = 1)
   abline(v = exp(surv_model$spl_hazard1$knots[3]), lty = 3, lwd = 1)
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("1", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
   # diagnostics
   plot(cbind(log(surv_obs$km$time), log(-log(surv_obs$km$surv))), cex = 0.6, 
@@ -1174,11 +1202,13 @@ evalq({
   abline(v = surv_model$spl_hazard1$knots[2], lty = 2, lwd = 1.5)
   abline(v = surv_model$spl_hazard1$knots[1], lty = 3, lwd = 1)
   abline(v = surv_model$spl_hazard1$knots[3], lty = 3, lwd = 1)
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("1", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
+  
 }, envir = PERSUADE)
 ```
 
@@ -1215,10 +1245,11 @@ evalq({
   abline(v = exp(surv_model$spl_hazard2$knots[3]), lty = 2, lwd = 1.5)
   abline(v = exp(surv_model$spl_hazard2$knots[1]), lty = 3, lwd = 1)
   abline(v = exp(surv_model$spl_hazard2$knots[4]), lty = 3, lwd = 1)
-  legend("bottomleft", legend = rep(misc$group_names, 2), 
+  legend("bottomleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col = c(rep("2", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(1, misc$ngroups)), 
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
   # annual transition probabilities
   plot(cbind(surv_obs$tp$gr_1$time, surv_obs$tp$gr_1$smooth), lwd = 1, 
@@ -1255,11 +1286,12 @@ evalq({
   abline(v = exp(surv_model$spl_hazard2$knots[3]), lty = 2, lwd = 1.5)
   abline(v = exp(surv_model$spl_hazard2$knots[1]), lty = 3, lwd = 1)
   abline(v = exp(surv_model$spl_hazard2$knots[4]), lty = 3, lwd = 1)
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("2", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
   # diagnostics
   plot(cbind(log(surv_obs$km$time), log(-log(surv_obs$km$surv))), cex = 0.6, 
@@ -1283,11 +1315,13 @@ evalq({
   abline(v = surv_model$spl_hazard2$knots[3], lty = 2, lwd = 1.5)
   abline(v = surv_model$spl_hazard2$knots[1], lty = 3, lwd = 1)
   abline(v = surv_model$spl_hazard2$knots[4], lty = 3, lwd = 1)
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("2", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
+  
 }, envir = PERSUADE)
 ```
 
@@ -1325,10 +1359,11 @@ evalq({
   abline(v = exp(surv_model$spl_hazard3$knots[4]), lty = 2, lwd = 1.5)
   abline(v = exp(surv_model$spl_hazard3$knots[1]), lty = 3, lwd = 1)
   abline(v = exp(surv_model$spl_hazard3$knots[5]), lty = 3, lwd = 1)
-  legend("bottomleft", legend = rep(misc$group_names, 2), 
+  legend("bottomleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col = c(rep("3", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(1, misc$ngroups)), 
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
   # annual transition probabilities
   plot(cbind(surv_obs$tp$gr_1$time, surv_obs$tp$gr_1$smooth), lwd = 1, 
@@ -1366,11 +1401,12 @@ evalq({
   abline(v = exp(surv_model$spl_hazard3$knots[4]), lty = 2, lwd = 1.5)
   abline(v = exp(surv_model$spl_hazard3$knots[1]), lty = 3, lwd = 1)
   abline(v = exp(surv_model$spl_hazard3$knots[5]), lty = 3, lwd = 1)
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("3", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
   # diagnostics
   plot(cbind(log(surv_obs$km$time), log(-log(surv_obs$km$surv))), cex = 0.6, 
@@ -1395,11 +1431,13 @@ evalq({
   abline(v = surv_model$spl_hazard3$knots[4], lty = 2, lwd = 1.5)
   abline(v = surv_model$spl_hazard3$knots[1], lty = 3, lwd = 1)
   abline(v = surv_model$spl_hazard3$knots[5], lty = 3, lwd = 1)
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("3", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
+  
 }, envir = PERSUADE)
 ```
 
@@ -1435,10 +1473,11 @@ evalq({
   abline(v = exp(surv_model$spl_odds1$knots[2]), lty = 2, lwd = 1.5)
   abline(v = exp(surv_model$spl_odds1$knots[1]), lty = 3, lwd = 1)
   abline(v = exp(surv_model$spl_odds1$knots[3]), lty = 3, lwd = 1)
-  legend("bottomleft", legend = rep(misc$group_names, 2), 
+  legend("bottomleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col = c(rep("4", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(1, misc$ngroups)), 
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
   # annual transition probabilities
   plot(cbind(surv_obs$tp$gr_1$time, surv_obs$tp$gr_1$smooth), lwd = 1, 
@@ -1474,11 +1513,12 @@ evalq({
   abline(v = exp(surv_model$spl_odds1$knots[2]), lty = 2, lwd = 1.5)
   abline(v = exp(surv_model$spl_odds1$knots[1]), lty = 3, lwd = 1)
   abline(v = exp(surv_model$spl_odds1$knots[3]), lty = 3, lwd = 1)
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("4", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
   # diagnostics
   plot(cbind(log(surv_obs$km$time), -log(surv_obs$km$surv/(1 - surv_obs$km$surv))), 
@@ -1503,11 +1543,13 @@ evalq({
   abline(v = surv_model$spl_odds1$knots[2], lty = 2, lwd = 1.5)
   abline(v = surv_model$spl_odds1$knots[1], lty = 3, lwd = 1)
   abline(v = surv_model$spl_odds1$knots[3], lty = 3, lwd = 1)
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("4", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
+  
 }, envir = PERSUADE)
 ```
 
@@ -1544,10 +1586,11 @@ evalq({
   abline(v = exp(surv_model$spl_odds2$knots[3]), lty = 2, lwd = 1.5)
   abline(v = exp(surv_model$spl_odds2$knots[1]), lty = 3, lwd = 1)
   abline(v = exp(surv_model$spl_odds2$knots[4]), lty = 3, lwd = 1)
-  legend("bottomleft", legend = rep(misc$group_names, 2), 
+  legend("bottomleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col = c(rep("5", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(1, misc$ngroups)), 
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
   # annual transition probabilities
   plot(cbind(surv_obs$tp$gr_1$time, surv_obs$tp$gr_1$smooth), lwd = 1, 
@@ -1584,11 +1627,12 @@ evalq({
   abline(v = exp(surv_model$spl_odds2$knots[3]), lty = 2, lwd = 1.5)
   abline(v = exp(surv_model$spl_odds2$knots[1]), lty = 3, lwd = 1)
   abline(v = exp(surv_model$spl_odds2$knots[4]), lty = 3, lwd = 1)
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("5", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
   # diagnostics
   plot(cbind(log(surv_obs$km$time), -log(surv_obs$km$surv/(1 - surv_obs$km$surv))), 
@@ -1614,11 +1658,13 @@ evalq({
   abline(v = surv_model$spl_odds2$knots[3], lty = 2, lwd = 1.5)
   abline(v = surv_model$spl_odds2$knots[1], lty = 3, lwd = 1)
   abline(v = surv_model$spl_odds2$knots[4], lty = 3, lwd = 1)
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("5", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
+  
 }, envir = PERSUADE)
 ```
 
@@ -1656,10 +1702,11 @@ evalq({
   abline(v = exp(surv_model$spl_odds3$knots[4]), lty = 2, lwd = 1.5)
   abline(v = exp(surv_model$spl_odds3$knots[1]), lty = 3, lwd = 1)
   abline(v = exp(surv_model$spl_odds3$knots[5]), lty = 3, lwd = 1)
-  legend("bottomleft", legend = rep(misc$group_names, 2), 
+  legend("bottomleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col = c(rep("6", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(1, misc$ngroups)), 
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
   # annual transition probabilities
   plot(cbind(surv_obs$tp$gr_1$time, surv_obs$tp$gr_1$smooth), lwd = 1, 
@@ -1697,11 +1744,12 @@ evalq({
   abline(v = exp(surv_model$spl_odds3$knots[4]), lty = 2, lwd = 1.5)
   abline(v = exp(surv_model$spl_odds3$knots[1]), lty = 3, lwd = 1)
   abline(v = exp(surv_model$spl_odds3$knots[5]), lty = 3, lwd = 1)
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("6", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
   # diagnostics
   plot(cbind(log(surv_obs$km$time), -log(surv_obs$km$surv/(1 - surv_obs$km$surv))), 
@@ -1728,11 +1776,13 @@ evalq({
   abline(v = surv_model$spl_odds3$knots[4], lty = 2, lwd = 1.5)
   abline(v = surv_model$spl_odds3$knots[1], lty = 3, lwd = 1)
   abline(v = surv_model$spl_odds3$knots[5], lty = 3, lwd = 1)
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("6", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
+  
 }, envir = PERSUADE)
 ```
 
@@ -1769,10 +1819,11 @@ evalq({
   abline(v = exp(surv_model$spl_normal1$knots[2]), lty = 2, lwd = 1.5)
   abline(v = exp(surv_model$spl_normal1$knots[1]), lty = 3, lwd = 1)
   abline(v = exp(surv_model$spl_normal1$knots[3]), lty = 3, lwd = 1)
-  legend("bottomleft", legend = rep(misc$group_names, 2), 
+  legend("bottomleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col = c(rep("7", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(1, misc$ngroups)), 
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
   # annual transition probabilities
   plot(cbind(surv_obs$tp$gr_1$time, surv_obs$tp$gr_1$smooth), lwd = 1, 
@@ -1808,11 +1859,12 @@ evalq({
   abline(v = exp(surv_model$spl_normal1$knots[2]), lty = 2, lwd = 1.5)
   abline(v = exp(surv_model$spl_normal1$knots[1]), lty = 3, lwd = 1)
   abline(v = exp(surv_model$spl_normal1$knots[3]), lty = 3, lwd = 1)
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("7", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
   # diagnostics
   plot(cbind(log(surv_obs$km$time), 
@@ -1838,11 +1890,13 @@ evalq({
   abline(v = surv_model$spl_normal1$knots[2], lty = 2, lwd = 1.5)
   abline(v = surv_model$spl_normal1$knots[1], lty = 3, lwd = 1)
   abline(v = surv_model$spl_normal1$knots[3], lty = 3, lwd = 1)
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("7", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
+  
 }, envir = PERSUADE)
 ```
 
@@ -1879,10 +1933,11 @@ evalq({
   abline(v = exp(surv_model$spl_normal2$knots[3]), lty = 2, lwd = 1.5)
   abline(v = exp(surv_model$spl_normal2$knots[1]), lty = 3, lwd = 1)
   abline(v = exp(surv_model$spl_normal2$knots[4]), lty = 3, lwd = 1)
-  legend("bottomleft", legend = rep(misc$group_names, 2), 
+  legend("bottomleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col = c(rep("8", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(1, misc$ngroups)), 
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
   # annual transition probabilities
   plot(cbind(surv_obs$tp$gr_1$time, surv_obs$tp$gr_1$smooth), lwd = 1, 
@@ -1919,11 +1974,12 @@ evalq({
   abline(v = exp(surv_model$spl_normal2$knots[3]), lty = 2, lwd = 1.5)
   abline(v = exp(surv_model$spl_normal2$knots[1]), lty = 3, lwd = 1)
   abline(v = exp(surv_model$spl_normal2$knots[4]), lty = 3, lwd = 1)
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("8", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
   # diagnostics
   plot(cbind(log(surv_obs$km$time), 
@@ -1951,11 +2007,13 @@ evalq({
   abline(v = surv_model$spl_normal2$knots[3], lty = 2, lwd = 1.5)
   abline(v = surv_model$spl_normal2$knots[1], lty = 3, lwd = 1)
   abline(v = surv_model$spl_normal2$knots[4], lty = 3, lwd = 1)
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("8", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
+  
 }, envir = PERSUADE)
 ```
 
@@ -1993,10 +2051,11 @@ evalq({
   abline(v = exp(surv_model$spl_normal3$knots[4]), lty = 2, lwd = 1.5)
   abline(v = exp(surv_model$spl_normal3$knots[1]), lty = 3, lwd = 1)
   abline(v = exp(surv_model$spl_normal3$knots[5]), lty = 3, lwd = 1)
-  legend("bottomleft", legend = rep(misc$group_names, 2), 
+  legend("bottomleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col = c(rep("9", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(1, misc$ngroups)), 
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
   # annual transition probabilities
   plot(cbind(surv_obs$tp$gr_1$time, surv_obs$tp$gr_1$smooth), lwd = 1, 
@@ -2034,11 +2093,12 @@ evalq({
   abline(v = exp(surv_model$spl_normal3$knots[4]), lty = 2, lwd = 1.5)
   abline(v = exp(surv_model$spl_normal3$knots[1]), lty = 3, lwd = 1)
   abline(v = exp(surv_model$spl_normal3$knots[5]), lty = 3, lwd = 1)
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("9", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
   # diagnostics
   plot(cbind(log(surv_obs$km$time), 
@@ -2067,11 +2127,13 @@ evalq({
   abline(v = surv_model$spl_normal3$knots[4], lty = 2, lwd = 1.5)
   abline(v = surv_model$spl_normal3$knots[1], lty = 3, lwd = 1)
   abline(v = surv_model$spl_normal3$knots[5], lty = 3, lwd = 1)
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("9", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
+  
 }, envir = PERSUADE)
 ```
 
@@ -2132,10 +2194,11 @@ evalq({
             c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
-  legend("bottomleft", legend = rep(misc$group_names, 2), 
+  legend("bottomleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col = c(rep("1", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(1, misc$ngroups)), 
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
   # annual transition probabilities
   plot(cbind(surv_obs$tp$gr_1$time, surv_obs$tp$gr_1$smooth), lwd = 1, 
@@ -2168,11 +2231,12 @@ evalq({
             c(surv_obs$tp$gr_3$smooth_lower, rev(surv_obs$tp$gr_3$smooth_upper)), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("1", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
   # diagnostics
   plot(cbind(log(surv_obs$km$time), log(-log(surv_obs$km$surv))), cex = 0.6, 
@@ -2192,11 +2256,13 @@ evalq({
     lines(cbind(log(input$time_pred), log(-log(surv_pred$model$cure_weib_mix[, 4]))), 
           col = "1", lty = "5212", lwd = 2)
   }
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("1", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
+  
 }, envir = PERSUADE)
 ```
 
@@ -2229,10 +2295,11 @@ evalq({
             c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
-  legend("bottomleft", legend = rep(misc$group_names, 2), 
+  legend("bottomleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col = c(rep("1", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(1, misc$ngroups)), 
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
   # annual transition probabilities
   plot(cbind(surv_obs$tp$gr_1$time, surv_obs$tp$gr_1$smooth), lwd = 1, 
@@ -2265,11 +2332,12 @@ evalq({
             c(surv_obs$tp$gr_3$smooth_lower, rev(surv_obs$tp$gr_3$smooth_upper)), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("1", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
   # diagnostics
   plot(cbind(log(surv_obs$km$time), log(-log(surv_obs$km$surv))), cex = 0.6, 
@@ -2289,11 +2357,13 @@ evalq({
     lines(cbind(log(input$time_pred), log(-log(surv_pred$model$cure_weib_nmix[, 4]))), 
           col = "2", lty = "5212", lwd = 2)
   }
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("1", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
+  
 }, envir = PERSUADE)
 ```
 
@@ -2325,10 +2395,11 @@ evalq({
             c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
-  legend("bottomleft", legend = rep(misc$group_names, 2), 
+  legend("bottomleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col = c(rep("1", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(1, misc$ngroups)), 
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
   # annual transition probabilities
   plot(cbind(surv_obs$tp$gr_1$time, surv_obs$tp$gr_1$smooth), lwd = 1, 
@@ -2361,11 +2432,12 @@ evalq({
             c(surv_obs$tp$gr_3$smooth_lower, rev(surv_obs$tp$gr_3$smooth_upper)), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("1", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
   # diagnostics
   plot(cbind(log(surv_obs$km$time), 
@@ -2387,11 +2459,13 @@ evalq({
                 -qnorm(surv_pred$model$cure_lnorm_mix[, 4], mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)), 
           col = "3", lty = "5212", lwd = 2)
   }
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("4", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
+  
 }, envir = PERSUADE)
 ```
 
@@ -2424,10 +2498,11 @@ evalq({
             c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
-  legend("bottomleft", legend = rep(misc$group_names, 2), 
+  legend("bottomleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col = c(rep("1", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(1, misc$ngroups)), 
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
   # annual transition probabilities
   plot(cbind(surv_obs$tp$gr_1$time, surv_obs$tp$gr_1$smooth), lwd = 1, 
@@ -2460,11 +2535,12 @@ evalq({
             c(surv_obs$tp$gr_3$smooth_lower, rev(surv_obs$tp$gr_3$smooth_upper)), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("1", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
   # diagnostics
   plot(cbind(log(surv_obs$km$time), 
@@ -2486,11 +2562,13 @@ evalq({
                 -qnorm(surv_pred$model$cure_lnorm_nmix[, 4], mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)), 
           col = "4", lty = "5212", lwd = 2)
   }
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("4", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
+  
 }, envir = PERSUADE)
 ```
 
@@ -2521,10 +2599,11 @@ evalq({
             c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
-  legend("bottomleft", legend = rep(misc$group_names, 2), 
+  legend("bottomleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col = c(rep("1", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(1, misc$ngroups)), 
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
   # annual transition probabilities
   plot(cbind(surv_obs$tp$gr_1$time, surv_obs$tp$gr_1$smooth), lwd = 1, 
@@ -2557,11 +2636,12 @@ evalq({
             c(surv_obs$tp$gr_3$smooth_lower, rev(surv_obs$tp$gr_3$smooth_upper)), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("1", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
   # diagnostics
   plot(cbind(log(surv_obs$km$time), -log(surv_obs$km$surv/(1 - surv_obs$km$surv))), 
@@ -2584,11 +2664,13 @@ evalq({
                 -log(surv_pred$model$cure_llog_mix[, 4]/(1 - surv_pred$model$cure_llog_mix[, 4]))),
           col = "5", lty = "5212", lwd = 2)
   }
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("5", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
+  
 }, envir = PERSUADE)
 ```
 
@@ -2621,10 +2703,11 @@ evalq({
             c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
-  legend("bottomleft", legend = rep(misc$group_names, 2), 
+  legend("bottomleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col = c(rep("1", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(1, misc$ngroups)), 
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
   # annual transition probabilities
   plot(cbind(surv_obs$tp$gr_1$time, surv_obs$tp$gr_1$smooth), lwd = 1, 
@@ -2657,11 +2740,12 @@ evalq({
             c(surv_obs$tp$gr_3$smooth_lower, rev(surv_obs$tp$gr_3$smooth_upper)), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("1", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
   
    # diagnostics
   plot(cbind(log(surv_obs$km$time), -log(surv_obs$km$surv/(1 - surv_obs$km$surv))), 
@@ -2684,11 +2768,12 @@ evalq({
                 -log(surv_pred$model$cure_llog_nmix[, 4]/(1 - surv_pred$model$cure_llog_nmix[, 4]))),
           col = "6", lty = "5212", lwd = 2)
   }
-  legend("topleft", legend = rep(misc$group_names, 2), 
+  legend("topleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
          col =  c(rep("5", misc$ngroups), c("black", "lightgrey", "darkgrey")[1:misc$ngroups]), 
          lty = c(as.integer(c(1, "2222", "5212")[1:misc$ngroups]), rep(NA, misc$ngroups)),
          pch = c(rep(NA, misc$ngroups), c(1, 8, 9)[1:misc$ngroups]),
-         cex = 0.8, ncol = 2)
+         cex = 0.8, ncol = 2,
+         bty = "n")
 }, envir = PERSUADE)
 ```
 
