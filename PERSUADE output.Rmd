@@ -56,7 +56,7 @@ evalq({
 }, envir = PERSUADE)
 
 kable_styling(kable(summary(PERSUADE$surv_obs$km)$table, format = "latex", 
-                    row.names = TRUE, booktabs = TRUE, linesep = ""), latex_options = "striped")
+                    row.names = TRUE, booktabs = TRUE, linesep = ""), latex_options = c("scale_down", "striped"))
 ```
 
 \newpage
@@ -191,17 +191,17 @@ evalq({
          main = paste("Group", misc$group_names[1]),
          type = "l", col = "black", lty = 1, lwd = 2, xlab = "time", ylab = "smoothed hazard rate", 
          xlim = c(0, surv_obs$haz$max$time), ylim = c(0, surv_obs$haz$max$smooth))
-    lines(cbind(surv_pred$model$cure_weib_mix_h[,1], surv_pred$model$cure_weib_mix_h[,2]),
+    lines(cbind(surv_pred$model$cure_weib_mix_h[, 1], surv_pred$model$cure_weib_mix_h[,2]),
           col = "1", lty = 1, lwd = 1)
-    lines(cbind(surv_pred$model$cure_weib_nmix_h[,1], surv_pred$model$cure_weib_nmix_h[,2]),
+    lines(cbind(surv_pred$model$cure_weib_nmix_h[, 1], surv_pred$model$cure_weib_nmix_h[,2]),
           col = "2", lty = 1, lwd = 1)
-    lines(cbind(surv_pred$model$cure_lnorm_mix_h[,1], surv_pred$model$cure_lnorm_mix_h[,2]),
+    lines(cbind(surv_pred$model$cure_lnorm_mix_h[, 1], surv_pred$model$cure_lnorm_mix_h[,2]),
           col = "3", lty = 1, lwd = 1)
-    lines(cbind(surv_pred$model$cure_lnorm_nmix_h[,1], surv_pred$model$cure_lnorm_nmix_h[,2]),
+    lines(cbind(surv_pred$model$cure_lnorm_nmix_h[, 1], surv_pred$model$cure_lnorm_nmix_h[,2]),
           col = "4", lty = 1, lwd = 1)
-    lines(cbind(surv_pred$model$cure_llog_mix_h[,1], surv_pred$model$cure_llog_mix_h[,2]),
+    lines(cbind(surv_pred$model$cure_llog_mix_h[, 1], surv_pred$model$cure_llog_mix_h[,2]),
           col = "5", lty = 1, lwd = 1)
-    lines(cbind(surv_pred$model$cure_llog_nmix_h[,1], surv_pred$model$cure_llog_nmix_h[,2]),
+    lines(cbind(surv_pred$model$cure_llog_nmix_h[, 1], surv_pred$model$cure_llog_nmix_h[,2]),
           col = "6", lty = 1, lwd = 1)
     legend("topleft", legend = misc$lbls_cure, col = 1:6, lty = 1, cex = 0.8)
   }
@@ -255,26 +255,26 @@ evalq({
             col = "9", lty = "2222", lwd = 1)
       legend("topleft", legend = misc$lbls_spline, col = 1:9, lty = "2222", cex = 0.8)
     }
-  }
-  
-  if (input$cure_mod == TRUE) {
-    plot(cbind(surv_obs$haz$smooth_gr2$est.grid, surv_obs$haz$smooth_gr2$haz.est),
-         main = paste("Group", misc$group_names[2]),
-         type = "l", col = "black", lty = "2222", lwd = 2, xlab = "time", ylab = "smoothed hazard rate", 
-         xlim = c(0, surv_obs$haz$max$time), ylim = c(0, surv_obs$haz$max$smooth))
-    lines(cbind(surv_pred$model$cure_weib_mix_h[,1], surv_pred$model$cure_weib_mix_h[,3]),
-          col = "1", lty = "2222", lwd = 1)
-    lines(cbind(surv_pred$model$cure_weib_nmix_h[,1], surv_pred$model$cure_weib_nmix_h[,3]),
-          col = "2", lty = "2222", lwd = 1)
-    lines(cbind(surv_pred$model$cure_lnorm_mix_h[,1], surv_pred$model$cure_lnorm_mix_h[,3]),
-          col = "3", lty = "2222", lwd = 1)
-    lines(cbind(surv_pred$model$cure_lnorm_nmix_h[,1], surv_pred$model$cure_lnorm_nmix_h[,3]),
-          col = "4", lty = "2222", lwd = 1)
-    lines(cbind(surv_pred$model$cure_llog_mix_h[,1], surv_pred$model$cure_llog_mix_h[,3]),
-          col = "5", lty = "2222", lwd = 1)
-    lines(cbind(surv_pred$model$cure_llog_nmix_h[,1], surv_pred$model$cure_llog_nmix_h[,3]),
-          col = "6", lty = "2222", lwd = 1)
-    legend("topleft", legend = misc$lbls_cure, col = 1:6, lty = "2222", cex = 0.8)
+    
+    if (input$cure_mod == TRUE) {
+      plot(cbind(surv_obs$haz$smooth_gr2$est.grid, surv_obs$haz$smooth_gr2$haz.est),
+           main = paste("Group", misc$group_names[2]),
+           type = "l", col = "black", lty = "2222", lwd = 2, xlab = "time", ylab = "smoothed hazard rate", 
+           xlim = c(0, surv_obs$haz$max$time), ylim = c(0, surv_obs$haz$max$smooth))
+      lines(cbind(surv_pred$model$cure_weib_mix_h[, 1], surv_pred$model$cure_weib_mix_h[,3]),
+            col = "1", lty = "2222", lwd = 1)
+      lines(cbind(surv_pred$model$cure_weib_nmix_h[, 1], surv_pred$model$cure_weib_nmix_h[,3]),
+            col = "2", lty = "2222", lwd = 1)
+      lines(cbind(surv_pred$model$cure_lnorm_mix_h[, 1], surv_pred$model$cure_lnorm_mix_h[,3]),
+            col = "3", lty = "2222", lwd = 1)
+      lines(cbind(surv_pred$model$cure_lnorm_nmix_h[, 1], surv_pred$model$cure_lnorm_nmix_h[,3]),
+            col = "4", lty = "2222", lwd = 1)
+      lines(cbind(surv_pred$model$cure_llog_mix_h[, 1], surv_pred$model$cure_llog_mix_h[,3]),
+            col = "5", lty = "2222", lwd = 1)
+      lines(cbind(surv_pred$model$cure_llog_nmix_h[, 1], surv_pred$model$cure_llog_nmix_h[,3]),
+            col = "6", lty = "2222", lwd = 1)
+      legend("topleft", legend = misc$lbls_cure, col = 1:6, lty = "2222", cex = 0.8)
+    }
   }
 }, envir = PERSUADE)
 
@@ -326,26 +326,26 @@ evalq({
             col = "9", lty = "5212", lwd = 1)
       legend("topleft", legend = misc$lbls_spline, col = 1:9, lty = "5212", cex = 0.8)
     }
-  }
-  
-  if (input$cure_mod == TRUE) {
-    plot(cbind(surv_obs$haz$smooth_gr3$est.grid, surv_obs$haz$smooth_gr3$haz.est), 
-         main = paste("Group", misc$group_names[3]),
-         type = "l", col = "black", lty = "5212", lwd = 2, xlab = "time", ylab = "smoothed hazard rate", 
-         xlim = c(0, surv_obs$haz$max$time), ylim = c(0, surv_obs$haz$max$smooth))
-    lines(cbind(surv_pred$model$cure_weib_mix_h[,1], surv_pred$model$cure_weib_mix_h[,4]),
-          col = "1", lty = "5212", lwd = 1)
-    lines(cbind(surv_pred$model$cure_weib_nmix_h[,1], surv_pred$model$cure_weib_nmix_h[,4]),
-          col = "2", lty = "5212", lwd = 1)
-    lines(cbind(surv_pred$model$cure_lnorm_mix_h[,1], surv_pred$model$cure_lnorm_mix_h[,4]),
-          col = "3", lty = "5212", lwd = 1)
-    lines(cbind(surv_pred$model$cure_lnorm_nmix_h[,1], surv_pred$model$cure_lnorm_nmix_h[,4]),
-          col = "4", lty = "5212", lwd = 1)
-    lines(cbind(surv_pred$model$cure_llog_mix_h[,1], surv_pred$model$cure_llog_mix_h[,4]),
-          col = "5", lty = "5212", lwd = 1)
-    lines(cbind(surv_pred$model$cure_llog_nmix_h[,1], surv_pred$model$cure_llog_nmix_h[,4]),
-          col = "6", lty = "5212", lwd = 1)
-    legend("topleft", legend = misc$lbls_cure, col = 1:6, lty = "5212", cex = 0.8)
+    
+    if (input$cure_mod == TRUE) {
+      plot(cbind(surv_obs$haz$smooth_gr3$est.grid, surv_obs$haz$smooth_gr3$haz.est), 
+           main = paste("Group", misc$group_names[3]),
+           type = "l", col = "black", lty = "5212", lwd = 2, xlab = "time", ylab = "smoothed hazard rate", 
+           xlim = c(0, surv_obs$haz$max$time), ylim = c(0, surv_obs$haz$max$smooth))
+      lines(cbind(surv_pred$model$cure_weib_mix_h[, 1], surv_pred$model$cure_weib_mix_h[,4]),
+            col = "1", lty = "5212", lwd = 1)
+      lines(cbind(surv_pred$model$cure_weib_nmix_h[, 1], surv_pred$model$cure_weib_nmix_h[,4]),
+            col = "2", lty = "5212", lwd = 1)
+      lines(cbind(surv_pred$model$cure_lnorm_mix_h[, 1], surv_pred$model$cure_lnorm_mix_h[,4]),
+            col = "3", lty = "5212", lwd = 1)
+      lines(cbind(surv_pred$model$cure_lnorm_nmix_h[, 1], surv_pred$model$cure_lnorm_nmix_h[,4]),
+            col = "4", lty = "5212", lwd = 1)
+      lines(cbind(surv_pred$model$cure_llog_mix_h[, 1], surv_pred$model$cure_llog_mix_h[,4]),
+            col = "5", lty = "5212", lwd = 1)
+      lines(cbind(surv_pred$model$cure_llog_nmix_h[, 1], surv_pred$model$cure_llog_nmix_h[,4]),
+            col = "6", lty = "5212", lwd = 1)
+      legend("topleft", legend = misc$lbls_cure, col = 1:6, lty = "5212", cex = 0.8)
+    }
   }
 }, envir = PERSUADE)
 
@@ -388,17 +388,17 @@ evalq({
     lines(cbind(input$time_pred, surv_pred$model$expo[, 4]), col = "1", lty = "5212", lwd = 2)
   }
   # add shading confidence intervals
-  polygon(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
-          c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])), 
+  polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
+                             c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])))), 
           col = adjustcolor("black", alpha.f = 0.3), border = NA)
   if (misc$ngroups > 1) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
-            c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])), 
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])))), 
             col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
   }
   if (misc$ngroups > 2) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names ==3])),
-            c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])),
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names ==3])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])))),
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
   legend("bottomleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
@@ -485,17 +485,17 @@ evalq({
     lines(cbind(input$time_pred, surv_pred$model$weib[, 4]), col = "2", lty = "5212", lwd = 2)
   }
   # add shading confidence intervals
-  polygon(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
-          c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])), 
+  polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
+                             c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])))), 
           col = adjustcolor("black", alpha.f = 0.3), border = NA)
   if (misc$ngroups > 1) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
-            c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])),
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])))),
             col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
   }
   if (misc$ngroups > 2) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
-            c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])),
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])))),
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
   legend("bottomleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
@@ -580,17 +580,17 @@ evalq({
     lines(cbind(input$time_pred, surv_pred$model$gom[, 4]), col = "3", lty = "5212", lwd = 2)
   }
   # add shading confidence intervals
-  polygon(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
-          c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])), 
+  polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
+                             c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])))), 
           col = adjustcolor("black", alpha.f = 0.3), border = NA)
   if (misc$ngroups > 1) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
-            c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])),
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])))),
             col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
   }
   if (misc$ngroups > 2) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
-            c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])), 
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])))), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
   legend("bottomleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
@@ -683,17 +683,17 @@ evalq({
     lines(cbind(input$time_pred, surv_pred$model$lnorm[, 4]), col = "4", lty = "5212", lwd = 2)
   }
   # add shading confidence intervals
-  polygon(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
-          c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])), 
+  polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
+                             c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])))), 
           col = adjustcolor("black", alpha.f = 0.3), border = NA)
   if (misc$ngroups > 1) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
-            c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])),
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])))),
             col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
   }
   if (misc$ngroups > 2) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
-            c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])),
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])))),
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
   legend("bottomleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
@@ -787,17 +787,17 @@ evalq({
     lines(cbind(input$time_pred, surv_pred$model$llog[, 4]), col = "5", lty = "5212", lwd = 2)
   }
   # add shading confidence intervals
-  polygon(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
-          c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])), 
+  polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
+                             c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])))), 
           col = adjustcolor("black", alpha.f = 0.3), border = NA)
   if (misc$ngroups > 1) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
-            c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])), 
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])))), 
             col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
   }
   if (misc$ngroups > 2) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
-            c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])),
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])))),
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
   legend("bottomleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
@@ -872,7 +872,7 @@ evalq({
          cex = 0.8, ncol = 2,
          bty = "n")
   
-  }, envir = PERSUADE)
+}, envir = PERSUADE)
 ```
 
 \newpage 
@@ -891,17 +891,17 @@ evalq({
     lines(cbind(input$time_pred, surv_pred$model$gam[, 4]), col = "6", lty = "5212", lwd = 2)
   }
   # add shading confidence intervals
-  polygon(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])), 
-          c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])), 
+  polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])), 
+                             c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])))), 
           col = adjustcolor("black", alpha.f = 0.3), border = NA)
   if (misc$ngroups > 1) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
-            c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])),
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])))),
             col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
   }
   if (misc$ngroups > 2) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
-            c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])), 
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])))), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
   legend("bottomleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
@@ -988,17 +988,17 @@ evalq({
     lines(cbind(input$time_pred, surv_pred$model$ggam[, 4]), col = "7", lty = "5212", lwd = 2)
   }
   # add shading confidence intervals
-  polygon(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
-          c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])), 
+  polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
+                             c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])))), 
           col = adjustcolor("black", alpha.f = 0.3), border = NA)
   if (misc$ngroups > 1) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
-            c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])), 
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])))), 
             col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
   }
   if (misc$ngroups > 2) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
-            c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])), 
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])))), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
   legend("bottomleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
@@ -1102,9 +1102,9 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-\newpage 
+`r if(PERSUADE$input$spline_mod == TRUE) {return("\\newpage")}`
 
-## Spline 1 knot hazard 
+## Spline 1 knot hazard
 ```{r spline_hazard1, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$spline_mod}
 evalq({
   # 1 knot
@@ -1118,17 +1118,17 @@ evalq({
     lines(cbind(input$time_pred, surv_pred$model$spl_hazard1[, 4]), col = "1", lty = "5212", lwd = 2)
   }
   # add shading confidence intervals
-  polygon(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
-          c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])), 
+  polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
+                             c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])))), 
           col = adjustcolor("black", alpha.f = 0.3), border = NA)
   if (misc$ngroups > 1) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
-            c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])), 
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])))), 
             col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
   }
   if (misc$ngroups > 2) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
-            c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])), 
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])))), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
   abline(v = exp(surv_model$spl_hazard1$knots[2]), lty = 2, lwd = 1.5)
@@ -1212,7 +1212,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-\newpage 
+`r if(PERSUADE$input$spline_mod == TRUE) {return("\\newpage")}`
 
 ## Spline 2 knots hazard
 ```{r spline_hazard2, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$spline_mod}
@@ -1228,17 +1228,17 @@ evalq({
     lines(cbind(input$time_pred, surv_pred$model$spl_hazard2[, 4]), col = "2", lty = "5212", lwd = 2)
   }
   # add shading confidence intervals
-  polygon(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
-          c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])), 
+  polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
+                             c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])))), 
           col = adjustcolor("black", alpha.f = 0.3), border = NA)
   if (misc$ngroups > 1) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
-            c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])), 
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])))), 
             col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
   }
   if (misc$ngroups > 2) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
-            c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])),
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])))),
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
   abline(v = exp(surv_model$spl_hazard2$knots[2]), lty = 2, lwd = 1.5)
@@ -1325,7 +1325,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-\newpage 
+`r if(PERSUADE$input$spline_mod == TRUE) {return("\\newpage")}`
 
 ## Spline 3 knots hazard 
 ```{r spline_hazard3, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$spline_mod}
@@ -1341,17 +1341,17 @@ evalq({
     lines(cbind(input$time_pred, surv_pred$model$spl_hazard3[, 4]), col = "3", lty = "5212", lwd = 2)
   }
   # add shading confidence intervals
-  polygon(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
-          c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])), 
+  polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
+                             c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])))), 
           col = adjustcolor("black", alpha.f = 0.3), border = NA)
   if (misc$ngroups > 1) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
-            c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])), 
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])))), 
             col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
   }
   if (misc$ngroups > 2) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
-            c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])),
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])))),
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
   abline(v = exp(surv_model$spl_hazard3$knots[2]), lty = 2, lwd = 1.5)
@@ -1441,7 +1441,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-\newpage 
+`r if(PERSUADE$input$spline_mod == TRUE) {return("\\newpage")}`
 
 ## Spline 1 knot odds 
 ```{r spline_odds1, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$spline_mod}
@@ -1457,17 +1457,17 @@ evalq({
     lines(cbind(input$time_pred, surv_pred$model$spl_odds1[, 4]), col = "4", lty = "5212", lwd = 2)
   }
   # add shading confidence intervals
-  polygon(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
-          c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])), 
+  polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
+                             c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])))), 
           col = adjustcolor("black", alpha.f = 0.3), border = NA)
   if (misc$ngroups > 1) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
-            c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])), 
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])))), 
             col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
   }
   if (misc$ngroups > 2) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
-            c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])), 
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])))), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
   abline(v = exp(surv_model$spl_odds1$knots[2]), lty = 2, lwd = 1.5)
@@ -1553,7 +1553,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-\newpage 
+`r if(PERSUADE$input$spline_mod == TRUE) {return("\\newpage")}`
 
 ## Spline 2 knots odds 
 ```{r spline_odds2, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$spline_mod}
@@ -1569,17 +1569,17 @@ evalq({
     lines(cbind(input$time_pred, surv_pred$model$spl_odds2[, 4]), col = "5", lty = "5212", lwd = 2)
   }
   # add shading confidence intervals
-  polygon(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
-          c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])), 
+  polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
+                             c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])))), 
           col = adjustcolor("black", alpha.f = 0.3), border = NA)
   if (misc$ngroups > 1) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
-            c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])),
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])))),
             col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
   }
   if (misc$ngroups > 2) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
-            c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])), 
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])))), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
   abline(v = exp(surv_model$spl_odds2$knots[2]), lty = 2, lwd = 1.5)
@@ -1668,7 +1668,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-\newpage 
+`r if(PERSUADE$input$spline_mod == TRUE) {return("\\newpage")}`
 
 ## Spline 3 knots odds 
 ```{r spline_odds3, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$spline_mod}
@@ -1684,17 +1684,17 @@ evalq({
     lines(cbind(input$time_pred, surv_pred$model$spl_odds3[, 4]), col = "6", lty = "5212", lwd = 2)
   }
   # add shading confidence intervals
-  polygon(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
-          c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])), 
+  polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
+                             c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])))), 
           col = adjustcolor("black", alpha.f = 0.3), border = NA)
   if (misc$ngroups > 1) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
-            c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])),
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])))),
             col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
   }
   if (misc$ngroups > 2) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
-            c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])), 
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])))), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
   abline(v = exp(surv_model$spl_odds3$knots[2]), lty = 2, lwd = 1.5)
@@ -1786,8 +1786,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-
-\newpage 
+`r if(PERSUADE$input$spline_mod == TRUE) {return("\\newpage")}`
 
 ## Spline 1 knot normal 
 ```{r spline_norm1, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$spline_mod}
@@ -1803,17 +1802,17 @@ evalq({
     lines(cbind(input$time_pred, surv_pred$model$spl_normal1[, 4]), col = "7", lty = "5212", lwd = 2)
   }
   # add shading confidence intervals
-  polygon(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
-          c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])), 
+  polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
+                             c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])))), 
           col = adjustcolor("black", alpha.f = 0.3), border = NA)
   if (misc$ngroups > 1) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
-            c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])), 
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])))), 
             col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
   }
   if (misc$ngroups > 2) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
-            c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])), 
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])))), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
   abline(v = exp(surv_model$spl_normal1$knots[2]), lty = 2, lwd = 1.5)
@@ -1900,7 +1899,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-\newpage 
+`r if(PERSUADE$input$spline_mod == TRUE) {return("\\newpage")}`
 
 ## Spline 2 knots normal 
 ```{r spline_norm2, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$spline_mod}
@@ -1916,17 +1915,17 @@ evalq({
     lines(cbind(input$time_pred, surv_pred$model$spl_normal2[, 4]), col = "8", lty = "5212", lwd = 2)
   }
   # add shading confidence intervals
-  polygon(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
-          c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])), 
+  polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
+                             c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])))), 
           col = adjustcolor("black", alpha.f = 0.3), border = NA)
   if (misc$ngroups > 1) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
-            c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])), 
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])))), 
             col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
   }
   if (misc$ngroups > 2) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
-            c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])), 
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])))), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
   abline(v = exp(surv_model$spl_normal2$knots[2]), lty = 2, lwd = 1.5)
@@ -2017,7 +2016,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-\newpage 
+`r if(PERSUADE$input$spline_mod == TRUE) {return("\\newpage")}`
 
 ## Spline 3 knots normal 
 ```{r spline_norm3, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$spline_mod}
@@ -2033,17 +2032,17 @@ evalq({
     lines(cbind(input$time_pred, surv_pred$model$spl_normal3[, 4]), col = "9", lty = "5212", lwd = 2)
   }
   # add shading confidence intervals
-  polygon(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
-          c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])), 
+  polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
+                             c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])))), 
           col = adjustcolor("black", alpha.f = 0.3), border = NA)
   if (misc$ngroups > 1) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
-            c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])), 
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])))), 
             col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
   }
   if (misc$ngroups > 2) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
-            c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])), 
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])))), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
   abline(v = exp(surv_model$spl_normal3$knots[2]), lty = 2, lwd = 1.5)
@@ -2160,12 +2159,12 @@ evalq({
 evalq({
   kable_styling(kable(surv_model$IC_cure[,-2], 
                       format = "latex", row.names = FALSE, booktabs = TRUE, 
-                      linesep = ""), latex_options = "striped")
+                      linesep = ""), latex_options = c("scale_down", "striped"))
   
 }, envir = PERSUADE)
 ```
 
-\newpage 
+`r if(PERSUADE$input$cure_mod == TRUE) {return("\\newpage")}`
 
 ## Mixture cure Weibull
 ```{r cure_weib_mix, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$cure_mod}
@@ -2181,17 +2180,17 @@ evalq({
     lines(cbind(input$time_pred, surv_pred$model$cure_weib_mix[, 4]), col = "1", lty = "5212", lwd = 2)
   }
   # add shading confidence intervals
-  polygon(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
-          c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])), 
+  polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
+                             c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])))), 
           col = adjustcolor("black", alpha.f = 0.3), border = NA)
   if (misc$ngroups > 1) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
-            c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])), 
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])))), 
             col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
   }
   if (misc$ngroups > 2) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
-            c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])), 
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])))), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
   legend("bottomleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
@@ -2206,16 +2205,19 @@ evalq({
        main = "B: Annual transition probability (Weibull mixture cure)", 
        xlab = "time", ylab = "annual transition probability (smoothed)", 
        ylim = c(0, ceiling(surv_obs$tp$max * 10)/10), xlim = c(0, ceiling(surv_obs$km$maxtime * 10)/10))
-  lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_1[, 18]), col = "1", lty = 1, lwd = 2)
+  lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_1[, 18 - if(input$spline_mod == FALSE) {9} else {0}]), 
+        col = "1", lty = 1, lwd = 2)
   if (misc$ngroups > 1) {
     lines(cbind(surv_obs$tp$gr_2$time, surv_obs$tp$gr_2$smooth), 
           col = "lightgrey", type = "b", lwd = 1, cex = 0.6, pch = 8)
-    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_2[, 18]), col = "1", lty = "2222", lwd = 2)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_2[, 18 - if(input$spline_mod == FALSE) {9} else {0}]), 
+          col = "1", lty = "2222", lwd = 2)
   }
   if (misc$ngroups > 2) {
     lines(cbind(surv_obs$tp$gr_3$time, surv_obs$tp$gr_3$smooth), 
           col = "darkgrey", type = "b", lwd = 1, cex = 0.6, pch = 9)
-    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_3[, 18]), col = "1", lty = "5212", lwd = 2)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_3[, 18 - if(input$spline_mod == FALSE) {9} else {0}]), 
+          col = "1", lty = "5212", lwd = 2)
   }
   # add shading confidence intervals
   polygon(c(surv_obs$tp$gr_1$time, rev(surv_obs$tp$gr_1$time)), 
@@ -2266,7 +2268,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-\newpage
+`r if(PERSUADE$input$cure_mod == TRUE) {return("\\newpage")}`
 
 ## Non-mixture cure Weibull
 ```{r cure_weib_nmix, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$cure_mod}
@@ -2282,17 +2284,17 @@ evalq({
     lines(cbind(input$time_pred, surv_pred$model$cure_weib_nmix[, 4]), col = "2", lty = "5212", lwd = 2)
   }
   # add shading confidence intervals
-  polygon(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
-          c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])), 
+  polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
+                             c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])))), 
           col = adjustcolor("black", alpha.f = 0.3), border = NA)
   if (misc$ngroups > 1) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
-            c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])), 
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])))), 
             col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
   }
   if (misc$ngroups > 2) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
-            c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])), 
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])))), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
   legend("bottomleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
@@ -2307,16 +2309,19 @@ evalq({
        main = "B: Annual transition probability (Weibull non-mixture cure)", 
        xlab = "time", ylab = "annual transition probability (smoothed)", 
        ylim = c(0, ceiling(surv_obs$tp$max * 10)/10), xlim = c(0, ceiling(surv_obs$km$maxtime * 10)/10))
-  lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_1[, 19]), col = "2", lty = 1, lwd = 2)
+  lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_1[, 19 - if(input$spline_mod == FALSE) {9} else {0}]), 
+        col = "2", lty = 1, lwd = 2)
   if (misc$ngroups > 1) {
     lines(cbind(surv_obs$tp$gr_2$time, surv_obs$tp$gr_2$smooth), 
           col = "lightgrey", type = "b", lwd = 1, cex = 0.6, pch = 8)
-    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_2[, 19]), col = "2", lty = "2222", lwd = 2)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_2[, 19 - if(input$spline_mod == FALSE) {9} else {0}]),
+          col = "2", lty = "2222", lwd = 2)
   }
   if (misc$ngroups > 2) {
     lines(cbind(surv_obs$tp$gr_3$time, surv_obs$tp$gr_3$smooth), 
           col = "darkgrey", type = "b", lwd = 1, cex = 0.6, pch = 9)
-    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_3[, 19]), col = "2", lty = "5212", lwd = 2)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_3[, 19 - if(input$spline_mod == FALSE) {9} else {0}]), 
+          col = "2", lty = "5212", lwd = 2)
   }
   # add shading confidence intervals
   polygon(c(surv_obs$tp$gr_1$time, rev(surv_obs$tp$gr_1$time)), 
@@ -2367,6 +2372,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
+`r if(PERSUADE$input$cure_mod == TRUE) {return("\\newpage")}`
 
 ## Mixture cure Log-normal
 ```{r cure_lnorm_mix, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$cure_mod}
@@ -2382,17 +2388,17 @@ evalq({
     lines(cbind(input$time_pred, surv_pred$model$cure_lnorm_mix[, 4]), col = "3", lty = "5212", lwd = 2)
   }
   # add shading confidence intervals
-  polygon(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
-          c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])), 
+  polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
+                             c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])))), 
           col = adjustcolor("black", alpha.f = 0.3), border = NA)
   if (misc$ngroups > 1) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
-            c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])), 
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])))), 
             col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
   }
   if (misc$ngroups > 2) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
-            c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])), 
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])))), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
   legend("bottomleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
@@ -2407,16 +2413,19 @@ evalq({
        main = "B: Annual transition probability (Log-normal mixture cure)", 
        xlab = "time", ylab = "annual transition probability (smoothed)", 
        ylim = c(0, ceiling(surv_obs$tp$max * 10)/10), xlim = c(0, ceiling(surv_obs$km$maxtime * 10)/10))
-  lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_1[, 20]), col = "3", lty = 1, lwd = 2)
+  lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_1[, 20 - if(input$spline_mod == FALSE) {9} else {0}]), 
+        col = "3", lty = 1, lwd = 2)
   if (misc$ngroups > 1) {
     lines(cbind(surv_obs$tp$gr_2$time, surv_obs$tp$gr_2$smooth), 
           col = "lightgrey", type = "b", lwd = 1, cex = 0.6, pch = 8)
-    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_2[, 20]), col = "3", lty = "2222", lwd = 2)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_2[, 20 - if(input$spline_mod == FALSE) {9} else {0}]),
+          col = "3", lty = "2222", lwd = 2)
   }
   if (misc$ngroups > 2) {
     lines(cbind(surv_obs$tp$gr_3$time, surv_obs$tp$gr_3$smooth), 
           col = "darkgrey", type = "b", lwd = 1, cex = 0.6, pch = 9)
-    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_3[, 20]), col = "3", lty = "5212", lwd = 2)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_3[, 20 - if(input$spline_mod == FALSE) {9} else {0}]),
+          col = "3", lty = "5212", lwd = 2)
   }
   # add shading confidence intervals
   polygon(c(surv_obs$tp$gr_1$time, rev(surv_obs$tp$gr_1$time)), 
@@ -2469,7 +2478,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-\newpage
+`r if(PERSUADE$input$cure_mod == TRUE) {return("\\newpage")}`
 
 ## Non-mixture cure Log-normal
 ```{r cure_lnorm_nmix, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$cure_mod}
@@ -2485,17 +2494,17 @@ evalq({
     lines(cbind(input$time_pred, surv_pred$model$cure_lnorm_nmix[, 4]), col = "4", lty = "5212", lwd = 2)
   }
   # add shading confidence intervals
-  polygon(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
-          c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])), 
+  polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
+                             c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])))), 
           col = adjustcolor("black", alpha.f = 0.3), border = NA)
   if (misc$ngroups > 1) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
-            c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])), 
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])))), 
             col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
   }
   if (misc$ngroups > 2) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
-            c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])), 
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])))), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
   legend("bottomleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
@@ -2510,16 +2519,19 @@ evalq({
        main = "B: Annual transition probability (Log-normal non-mixture cure)", 
        xlab = "time", ylab = "annual transition probability (smoothed)", 
        ylim = c(0, ceiling(surv_obs$tp$max * 10)/10), xlim = c(0, ceiling(surv_obs$km$maxtime * 10)/10))
-  lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_1[, 21]), col = "4", lty = 1, lwd = 2)
+  lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_1[, 21 - if(input$spline_mod == FALSE) {9} else {0}]),
+        col = "4", lty = 1, lwd = 2)
   if (misc$ngroups > 1) {
     lines(cbind(surv_obs$tp$gr_2$time, surv_obs$tp$gr_2$smooth), 
           col = "lightgrey", type = "b", lwd = 1, cex = 0.6, pch = 8)
-    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_2[, 21]), col = "4", lty = "2222", lwd = 2)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_2[, 21 - if(input$spline_mod == FALSE) {9} else {0}]), 
+          col = "4", lty = "2222", lwd = 2)
   }
   if (misc$ngroups > 2) {
     lines(cbind(surv_obs$tp$gr_3$time, surv_obs$tp$gr_3$smooth), 
           col = "darkgrey", type = "b", lwd = 1, cex = 0.6, pch = 9)
-    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_3[, 21]), col = "4", lty = "5212", lwd = 2)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_3[, 21 - if(input$spline_mod == FALSE) {9} else {0}]), 
+          col = "4", lty = "5212", lwd = 2)
   }
   # add shading confidence intervals
   polygon(c(surv_obs$tp$gr_1$time, rev(surv_obs$tp$gr_1$time)), 
@@ -2572,6 +2584,8 @@ evalq({
 }, envir = PERSUADE)
 ```
 
+`r if(PERSUADE$input$cure_mod == TRUE) {return("\\newpage")}`
+
 ## Mixture cure Log-logistic
 ```{r cure_llog_mix, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$cure_mod}
 evalq({
@@ -2586,17 +2600,17 @@ evalq({
     lines(cbind(input$time_pred, surv_pred$model$cure_llog_mix[, 4]), col = "5", lty = "5212", lwd = 2)
   }
   # add shading confidence intervals
-  polygon(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
-          c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])), 
+  polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
+                             c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])))), 
           col = adjustcolor("black", alpha.f = 0.3), border = NA)
   if (misc$ngroups > 1) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
-            c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])), 
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])))), 
             col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
   }
   if (misc$ngroups > 2) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
-            c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])), 
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])))), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
   legend("bottomleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
@@ -2611,16 +2625,19 @@ evalq({
        main = "B: Annual transition probability (Log-logistic mixture cure)", 
        xlab = "time", ylab = "annual transition probability (smoothed)", 
        ylim = c(0, ceiling(surv_obs$tp$max * 10)/10), xlim = c(0, ceiling(surv_obs$km$maxtime * 10)/10))
-  lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_1[, 22]), col = "5", lty = 1, lwd = 2)
+  lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_1[, 22 - if(input$spline_mod == FALSE) {9} else {0}]),
+        col = "5", lty = 1, lwd = 2)
   if (misc$ngroups > 1) {
     lines(cbind(surv_obs$tp$gr_2$time, surv_obs$tp$gr_2$smooth), 
           col = "lightgrey", type = "b", lwd = 1, cex = 0.6, pch = 8)
-    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_2[, 22]), col = "5", lty = "2222", lwd = 2)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_2[, 22 - if(input$spline_mod == FALSE) {9} else {0}]), 
+          col = "5", lty = "2222", lwd = 2)
   }
   if (misc$ngroups > 2) {
     lines(cbind(surv_obs$tp$gr_3$time, surv_obs$tp$gr_3$smooth), 
           col = "darkgrey", type = "b", lwd = 1, cex = 0.6, pch = 9)
-    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_3[, 22]), col = "5", lty = "5212", lwd = 2)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_3[, 22 - if(input$spline_mod == FALSE) {9} else {0}]), 
+          col = "5", lty = "5212", lwd = 2)
   }
   # add shading confidence intervals
   polygon(c(surv_obs$tp$gr_1$time, rev(surv_obs$tp$gr_1$time)), 
@@ -2674,7 +2691,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-\newpage
+`r if(PERSUADE$input$cure_mod == TRUE) {return("\\newpage")}`
 
 ## Non-mixture cure Log-logistic
 ```{r cure_llog_nmix, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$cure_mod}
@@ -2690,17 +2707,17 @@ evalq({
     lines(cbind(input$time_pred, surv_pred$model$cure_llog_nmix[, 4]), col = "6", lty = "5212", lwd = 2)
   }
   # add shading confidence intervals
-  polygon(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
-          c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])), 
+  polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 1], rev(surv_obs$km$time[surv_obs$km_names == 1])),
+                             c(surv_obs$km$lower[surv_obs$km_names == 1], rev(surv_obs$km$upper[surv_obs$km_names == 1])))), 
           col = adjustcolor("black", alpha.f = 0.3), border = NA)
   if (misc$ngroups > 1) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
-            c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])), 
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 2], rev(surv_obs$km$time[surv_obs$km_names == 2])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 2], rev(surv_obs$km$upper[surv_obs$km_names == 2])))), 
             col = adjustcolor("lightgrey", alpha.f = 0.3), border = NA)
   }
   if (misc$ngroups > 2) {
-    polygon(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
-            c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])), 
+    polygon(na.omit(data.frame(c(surv_obs$km$time[surv_obs$km_names == 3], rev(surv_obs$km$time[surv_obs$km_names == 3])),
+                               c(surv_obs$km$lower[surv_obs$km_names == 3], rev(surv_obs$km$upper[surv_obs$km_names == 3])))), 
             col = adjustcolor("darkgrey", alpha.f = 0.3), border = NA)
   }
   legend("bottomleft", legend = c(misc$group_names, rep("", length(misc$group_names))), 
@@ -2715,16 +2732,19 @@ evalq({
        main = "B: Annual transition probability (Log-logistic non-mixture cure)", 
        xlab = "time", ylab = "annual transition probability (smoothed)", 
        ylim = c(0, ceiling(surv_obs$tp$max * 10)/10), xlim = c(0, ceiling(surv_obs$km$maxtime * 10)/10))
-  lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_1[, 23]), col = "6", lty = 1, lwd = 2)
+  lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_1[, 23 - if(input$spline_mod == FALSE) {9} else {0}]), 
+        col = "6", lty = 1, lwd = 2)
   if (misc$ngroups > 1) {
     lines(cbind(surv_obs$tp$gr_2$time, surv_obs$tp$gr_2$smooth), 
           col = "lightgrey", type = "b", lwd = 1, cex = 0.6, pch = 8)
-    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_2[, 23]), col = "6", lty = "2222", lwd = 2)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_2[, 23 - if(input$spline_mod == FALSE) {9} else {0}]), 
+          col = "6", lty = "2222", lwd = 2)
   }
   if (misc$ngroups > 2) {
     lines(cbind(surv_obs$tp$gr_3$time, surv_obs$tp$gr_3$smooth), 
           col = "darkgrey", type = "b", lwd = 1, cex = 0.6, pch = 9)
-    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_3[, 23]), col = "6", lty = "5212", lwd = 2)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_3[, 23 - if(input$spline_mod == FALSE) {9} else {0}]), 
+          col = "6", lty = "5212", lwd = 2)
   }
   # add shading confidence intervals
   polygon(c(surv_obs$tp$gr_1$time, rev(surv_obs$tp$gr_1$time)), 
@@ -2747,7 +2767,7 @@ evalq({
          cex = 0.8, ncol = 2,
          bty = "n")
   
-   # diagnostics
+  # diagnostics
   plot(cbind(log(surv_obs$km$time), -log(surv_obs$km$surv/(1 - surv_obs$km$surv))), 
        cex = 0.6, pch = c(1, 8, 9)[surv_obs$km_names], 
        col = c("black", "lightgrey", "darkgrey")[surv_obs$km_names],
@@ -2889,19 +2909,25 @@ evalq({
           col = "black", type = "l", lwd = 2, lty = 2)
     lines(cbind(surv_obs$tp$gr_1$time, surv_obs$tp$gr_1$smooth_upper), 
           col = "black", type = "l", lwd = 2, lty = 2)
-    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_1[, 18]), col = "1", lty = 1, lwd = 1)
-    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_1[, 19]), col = "2", lty = 1, lwd = 1)
-    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_1[, 20]), col = "3", lty = 1, lwd = 1)
-    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_1[, 21]), col = "4", lty = 1, lwd = 1)
-    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_1[, 22]), col = "5", lty = 1, lwd = 1)
-    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_1[, 23]), col = "6", lty = 1, lwd = 1)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_1[, 18 - if(input$spline_mod == FALSE) {9} else {0}]), 
+          col = "1", lty = 1, lwd = 1)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_1[, 19 - if(input$spline_mod == FALSE) {9} else {0}]), 
+          col = "2", lty = 1, lwd = 1)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_1[, 20 - if(input$spline_mod == FALSE) {9} else {0}]), 
+          col = "3", lty = 1, lwd = 1)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_1[, 21 - if(input$spline_mod == FALSE) {9} else {0}]), 
+          col = "4", lty = 1, lwd = 1)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_1[, 22 - if(input$spline_mod == FALSE) {9} else {0}]), 
+          col = "5", lty = 1, lwd = 1)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_1[, 23 - if(input$spline_mod == FALSE) {9} else {0}]), 
+          col = "6", lty = 1, lwd = 1)
     legend("topleft", legend = misc$lbls_cure, col = 1:6, lty = 1, cex = 0.8)
   }
 }, envir = PERSUADE)
 suppressWarnings(kable_styling(kable(descr(
   PERSUADE$surv_pred$tp_gr$gr_1[, 2:PERSUADE$misc$cols_tp], stats = c("mean", "sd", "min", "q1", "med", "q3", "max", "iqr"), transpose = TRUE), 
   format = "latex", booktabs = TRUE, linesep = "", caption = "Summary statistics of annual transition probabilities"), 
-  latex_options = "striped", position = "left"))
+  latex_options = c("scale_down", "striped"), position = "left"))
 
 evalq({
   plot(cbind(surv_obs$haz$smooth_gr1$est.grid, surv_obs$haz$smooth_gr1$haz.est),
@@ -2950,24 +2976,24 @@ evalq({
     legend("topleft", legend = misc$lbls_spline, col = 1:9, lty = 1, cex = 0.8)
   }
   
-  if (input$spline_mod == TRUE) {
+  if (input$cure_mod == TRUE) {
     plot(cbind(surv_obs$haz$smooth_gr1$est.grid, surv_obs$haz$smooth_gr1$haz.est),
          main = "I: Hazard function (cure curves)",
          type = "l", col = "black", lty = 1, lwd = 2, xlab = "time", ylab = "smoothed hazard rate", 
          xlim = c(0, input$time_horizon), ylim = c(0, surv_obs$haz$max$smooth))
-    lines(cbind(surv_pred$model$cure_weib_mix_h[,1], surv_pred$model$cure_weib_mix_h[,2]), 
+    lines(cbind(surv_pred$model$cure_weib_mix_h[, 1], surv_pred$model$cure_weib_mix_h[,2]), 
           col = "1", lty = 1, lwd = 1)
-    lines(cbind(surv_pred$model$cure_weib_nmix_h[,1], surv_pred$model$cure_weib_nmix_h[,2]), 
+    lines(cbind(surv_pred$model$cure_weib_nmix_h[, 1], surv_pred$model$cure_weib_nmix_h[,2]), 
           col = "2", lty = 1, lwd = 1)
-    lines(cbind(surv_pred$model$cure_lnorm_mix_h[,1], surv_pred$model$cure_lnorm_mix_h[,2]), 
+    lines(cbind(surv_pred$model$cure_lnorm_mix_h[, 1], surv_pred$model$cure_lnorm_mix_h[,2]), 
           col = "3", lty = 1, lwd = 1)
-    lines(cbind(surv_pred$model$cure_lnorm_nmix_h[,1], surv_pred$model$cure_lnorm_nmix_h[,2]), 
+    lines(cbind(surv_pred$model$cure_lnorm_nmix_h[, 1], surv_pred$model$cure_lnorm_nmix_h[,2]), 
           col = "4", lty = 1, lwd = 1)
-    lines(cbind(surv_pred$model$cure_llog_mix_h[,1], surv_pred$model$cure_llog_mix_h[,2]), 
+    lines(cbind(surv_pred$model$cure_llog_mix_h[, 1], surv_pred$model$cure_llog_mix_h[,2]), 
           col = "5", lty = 1, lwd = 1)
-    lines(cbind(surv_pred$model$cure_llog_nmix_h[,1], surv_pred$model$cure_llog_nmix_h[,2]), 
+    lines(cbind(surv_pred$model$cure_llog_nmix_h[, 1], surv_pred$model$cure_llog_nmix_h[,2]), 
           col = "6", lty = 1, lwd = 1)
-    legend("topleft", legend = misc$lbls_spline, col = 1:9, lty = 1, cex = 0.8)
+    legend("topleft", legend = misc$lbls_cure, col = 1:9, lty = 1, cex = 0.8)
   }
   
 }, envir = PERSUADE)
@@ -3063,7 +3089,7 @@ evalq({
     legend("topleft", legend = misc$lbls_spline, col = 1:9, lty = "2222", cex = 0.8)
   }
   # cure curves
-  if (input$spline_mod == TRUE) {
+  if (input$cure_mod == TRUE) {
     plot(cbind(surv_obs$tp$gr_2$time, surv_obs$tp$gr_2$smooth), 
          main = "F: Annual transition probability (cure curves)", xlab = "time", 
          ylab = "annual transition probability", ylim = c(0, 1), xlim = c(0, input$time_horizon), 
@@ -3072,19 +3098,25 @@ evalq({
           col = "black", type = "l", lwd = 2, lty = 2)
     lines(cbind(surv_obs$tp$gr_2$time, surv_obs$tp$gr_2$smooth_upper), 
           col = "black", type = "l", lwd = 2, lty = 2)
-    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_2[, 18]), col = "1", lty = "2222", lwd = 1)
-    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_2[, 19]), col = "2", lty = "2222", lwd = 1)
-    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_2[, 20]), col = "3", lty = "2222", lwd = 1)
-    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_2[, 21]), col = "4", lty = "2222", lwd = 1)
-    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_2[, 22]), col = "5", lty = "2222", lwd = 1)
-    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_2[, 23]), col = "6", lty = "2222", lwd = 1)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_2[, 18 - if(input$spline_mod == FALSE) {9} else {0}]), 
+          col = "1", lty = "2222", lwd = 1)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_2[, 19 - if(input$spline_mod == FALSE) {9} else {0}]), 
+          col = "2", lty = "2222", lwd = 1)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_2[, 20 - if(input$spline_mod == FALSE) {9} else {0}]), 
+          col = "3", lty = "2222", lwd = 1)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_2[, 21 - if(input$spline_mod == FALSE) {9} else {0}]), 
+          col = "4", lty = "2222", lwd = 1)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_2[, 22 - if(input$spline_mod == FALSE) {9} else {0}]), 
+          col = "5", lty = "2222", lwd = 1)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_2[, 23 - if(input$spline_mod == FALSE) {9} else {0}]), 
+          col = "6", lty = "2222", lwd = 1)
     legend("topleft", legend = misc$lbls_cure, col = 1:6, lty = "2222", cex = 0.8)
   }
 }, envir = PERSUADE)
 suppressWarnings(kable_styling(kable(descr(
   PERSUADE$surv_pred$tp_gr$gr_2[, 2:PERSUADE$misc$cols_tp], stats = c("mean", "sd", "min", "q1", "med", "q3", "max", "iqr"), transpose = TRUE), 
   format = "latex", booktabs = TRUE, linesep = "", caption = "Summary statistics of annual transition probabilities"), 
-  latex_options = "striped", position = "left"))
+  latex_options = c("scale_down", "striped"), position = "left"))
 
 evalq({
   plot(cbind(surv_obs$haz$smooth_gr2$est.grid, surv_obs$haz$smooth_gr2$haz.est), 
@@ -3134,20 +3166,20 @@ evalq({
   }
   if (input$cure_mod == TRUE) {
     plot(cbind(surv_obs$haz$smooth_gr2$est.grid, surv_obs$haz$smooth_gr2$haz.est),
-         main = "I: Hazard function (spline curves)",
+         main = "I: Hazard function (cure curves)",
          type = "l", col = "black", lty = "2222", lwd = 2, xlab = "time", ylab = "smoothed hazard rate", 
          xlim = c(0, input$time_horizon), ylim = c(0, surv_obs$haz$max$smooth))
-    lines(cbind(surv_pred$model$cure_weib_mix_h[,1], surv_pred$model$cure_weib_mix_h[,3]), 
+    lines(cbind(surv_pred$model$cure_weib_mix_h[, 1], surv_pred$model$cure_weib_mix_h[,3]), 
           col = "1", lty = "2222", lwd = 1)
-    lines(cbind(surv_pred$model$cure_weib_nmix_h[,1], surv_pred$model$cure_weib_nmix_h[,3]),
+    lines(cbind(surv_pred$model$cure_weib_nmix_h[, 1], surv_pred$model$cure_weib_nmix_h[,3]),
           col = "2", lty = "2222", lwd = 1)
-    lines(cbind(surv_pred$model$cure_lnorm_mix_h[,1], surv_pred$model$cure_lnorm_mix_h[,3]), 
+    lines(cbind(surv_pred$model$cure_lnorm_mix_h[, 1], surv_pred$model$cure_lnorm_mix_h[,3]), 
           col = "3", lty = "2222", lwd = 1)
-    lines(cbind(surv_pred$model$cure_lnorm_nmix_h[,1], surv_pred$model$cure_lnorm_nmix_h[,3]), 
+    lines(cbind(surv_pred$model$cure_lnorm_nmix_h[, 1], surv_pred$model$cure_lnorm_nmix_h[,3]), 
           col = "4", lty = "2222", lwd = 1)
-        lines(cbind(surv_pred$model$cure_llog_mix_h[,1], surv_pred$model$cure_llog_mix_h[,3]), 
+    lines(cbind(surv_pred$model$cure_llog_mix_h[, 1], surv_pred$model$cure_llog_mix_h[,3]), 
           col = "5", lty = "2222", lwd = 1)
-    lines(cbind(surv_pred$model$cure_llog_nmix_h[,1], surv_pred$model$cure_llog_nmix_h[,3]), 
+    lines(cbind(surv_pred$model$cure_llog_nmix_h[, 1], surv_pred$model$cure_llog_nmix_h[,3]), 
           col = "6", lty = "2222", lwd = 1)
     legend("topleft", legend = misc$lbls_cure, col = 1:6, lty = "2222", cex = 0.8)
   }
@@ -3253,12 +3285,18 @@ evalq({
           col = "black", type = "l", lwd = 2, lty = 2)
     lines(cbind(surv_obs$tp$gr_3$time, surv_obs$tp$gr_3$smooth_upper), 
           col = "black", type = "l", lwd = 2, lty = 2)
-    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_3[, 18]), col = "1", lty = "5212", lwd = 1)
-    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_3[, 19]), col = "2", lty = "5212", lwd = 1)
-    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_3[, 20]), col = "3", lty = "5212", lwd = 1)
-    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_3[, 21]), col = "4", lty = "5212", lwd = 1)
-    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_3[, 22]), col = "5", lty = "5212", lwd = 1)
-    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_3[, 23]), col = "6", lty = "5212", lwd = 1)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_3[, 18 - if(input$spline_mod == FALSE) {9} else {0}]), 
+          col = "1", lty = "5212", lwd = 1)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_3[, 19 - if(input$spline_mod == FALSE) {9} else {0}]), 
+          col = "2", lty = "5212", lwd = 1)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_3[, 20 - if(input$spline_mod == FALSE) {9} else {0}]), 
+          col = "3", lty = "5212", lwd = 1)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_3[, 21 - if(input$spline_mod == FALSE) {9} else {0}]), 
+          col = "4", lty = "5212", lwd = 1)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_3[, 22 - if(input$spline_mod == FALSE) {9} else {0}]),
+          col = "5", lty = "5212", lwd = 1)
+    lines(cbind(input$time_pred[-1], surv_pred$tp_gr$gr_3[, 23 - if(input$spline_mod == FALSE) {9} else {0}]), 
+          col = "6", lty = "5212", lwd = 1)
     legend("topleft", legend = misc$lbls_cure, col = 1:6, lty = "5212", cex = 0.8)
   }
   
@@ -3266,7 +3304,7 @@ evalq({
 suppressWarnings(kable_styling(kable(descr(
   PERSUADE$surv_pred$tp_gr$gr_3[, 2:PERSUADE$misc$cols_tp], stats = c("mean", "sd", "min", "q1", "med", "q3", "max", "iqr"), transpose = TRUE), 
   format = "latex", booktabs = TRUE, linesep = "", caption = "Summary statistics of annual transition probabilities"), 
-  latex_options = "striped", position = "left"))
+  latex_options = c("scale_down", "striped"), position = "left"))
 
 evalq({
   plot(cbind(surv_obs$haz$smooth_gr3$est.grid, surv_obs$haz$smooth_gr3$haz.est), 
@@ -3314,22 +3352,22 @@ evalq({
           col = "9", lty = "5212", lwd = 1)
     legend("topleft", legend = misc$lbls_spline, col = 1:9, lty = "5212", cex = 0.8)
   }
-  if (input$spline_mod == TRUE) {
+  if (input$cure_mod == TRUE) {
     plot(cbind(surv_obs$haz$smooth_gr3$est.grid, surv_obs$haz$smooth_gr3$haz.est), 
-         main = "I: Hazard function (spline curves)",
+         main = "I: Hazard function (cure curves)",
          type = "l", col = "black", lty = "5212", lwd = 2, xlab = "time", ylab = "smoothed hazard rate", 
          xlim = c(0, input$time_horizon), ylim = c(0, surv_obs$haz$max$smooth))
-    lines(cbind(surv_pred$model$cure_weib_mix_h[,1], surv_pred$model$cure_weib_mix_h[,4]),
+    lines(cbind(surv_pred$model$cure_weib_mix_h[, 1], surv_pred$model$cure_weib_mix_h[,4]),
           col = "1", lty = "5212", lwd = 1)
-    lines(cbind(surv_pred$model$cure_weib_nmix_h[,1], surv_pred$model$cure_weib_nmix_h[,4]),
+    lines(cbind(surv_pred$model$cure_weib_nmix_h[, 1], surv_pred$model$cure_weib_nmix_h[,4]),
           col = "2", lty = "5212", lwd = 1)
-    lines(cbind(surv_pred$model$cure_lnorm_mix_h[,1], surv_pred$model$cure_lnorm_mix_h[,4]),
+    lines(cbind(surv_pred$model$cure_lnorm_mix_h[, 1], surv_pred$model$cure_lnorm_mix_h[,4]),
           col = "3", lty = "5212", lwd = 1)
-    lines(cbind(surv_pred$model$cure_lnorm_nmix_h[,1], surv_pred$model$cure_lnorm_nmix_h[,4]),
+    lines(cbind(surv_pred$model$cure_lnorm_nmix_h[, 1], surv_pred$model$cure_lnorm_nmix_h[,4]),
           col = "4", lty = "5212", lwd = 1)
-    lines(cbind(surv_pred$model$cure_llog_mix_h[,1], surv_pred$model$cure_llog_mix_h[,4]),
+    lines(cbind(surv_pred$model$cure_llog_mix_h[, 1], surv_pred$model$cure_llog_mix_h[,4]),
           col = "5", lty = "5212", lwd = 1)
-    lines(cbind(surv_pred$model$cure_llog_nmix_h[,1], surv_pred$model$cure_llog_nmix_h[,4]),
+    lines(cbind(surv_pred$model$cure_llog_nmix_h[, 1], surv_pred$model$cure_llog_nmix_h[,4]),
           col = "6", lty = "5212", lwd = 1)
     legend("topleft", legend = misc$lbls_cure, col = 1:6, lty = "5212", cex = 0.8)
   }

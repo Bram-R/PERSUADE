@@ -7,7 +7,8 @@ f_PERSUADE <- function(name = "no_name", years, status, group,
   # strata <- TRUE # for validation purposes
   # spline_mod <- TRUE # for validation purposes
   # cure_mod <- TRUE # for validation purposes
-  
+  # cure_link = "logistic" # for validation purposes
+
   #input
   years <- as.numeric(years)  # time variable should be numeric
   status <- as.numeric(status)  # status / event variable should be numeric
@@ -221,9 +222,13 @@ f_PERSUADE <- function(name = "no_name", years, status, group,
                            sapply(c(1:ngroups), function(x) cure_llog_mix[[x]]$res[1,1:3]),
                            sapply(c(1:ngroups), function(x) cure_llog_nmix[[x]]$res[1,1:3])) 
     
-    cure_fraction <- matrix(ncol = ngroups, data = sapply(c(1:(ngroups*6)), function(x) 
-      paste0(round(cure_fraction[x,1],3)*100, "% (",round(cure_fraction[x,2],3)*100,"% - ",round(cure_fraction[x,3],3)*100,"%)")))
-    
+    cure_fraction <- matrix(ncol = ngroups, data = 
+                              sapply(c(1:ngroups), function(x) 
+                                sapply(seq(1, 18, by = 3), function(y) 
+                                  paste0(round(cure_fraction[y, x],3)*100, "% (",round(cure_fraction[y + 1, x],3)*100,"% - ",round(cure_fraction[y + 2, x],3)*100,"%)")
+                                )
+                              )
+    )
     IC_cure <- data.frame(lbls_cure, AIC_cure, cure_fraction)
     colnames(IC_cure) <- c("Model", "AIC", paste0("Cure fraction ", group_names))
   }
