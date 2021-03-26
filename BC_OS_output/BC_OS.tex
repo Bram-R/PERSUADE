@@ -33,6 +33,9 @@
             breaklinks=true}
 \urlstyle{same}  % don't use monospace font for urls
 \usepackage[margin=1in]{geometry}
+\usepackage{longtable,booktabs}
+% Fix footnotes in tables (requires footnote package)
+\IfFileExists{footnote.sty}{\usepackage{footnote}\makesavenoteenv{long table}}{}
 \usepackage{graphicx,grffile}
 \makeatletter
 \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
@@ -84,7 +87,7 @@
 
 \title{PERSUADE BC\_OS\_output}
 \author{}
-\date{\vspace{-2.5em}2021-03-25}
+\date{\vspace{-2.5em}2021-03-26}
 
 \begin{document}
 \maketitle
@@ -131,44 +134,38 @@ holds, one may fit non-stratified (parametric) survival models, meaning
 that a single (parametric) survival model can be fitted to all groups
 with the group effect(s) included as a covariate of the model. When the
 PH assumption does not hold it is advised to fit separate (parametric)
-survival models to the different groups. Finally, proportional hazards
-is only relevant for exponential, Weibull, and Gompertz models.
-Log-logistic and log normal models since these are accelerated failure
-time models and, by definition, do not consider hazards to be
-proportional over time. Group (treatment) effect can of course be
-modelled as a covariate when using these models. For more information,
-please refer to the
+survival models to the different groups. Finally, this section only
+provides plots to assess the proportional hazards assumption over the
+period for which data are observed. Even if these plots indicate that
+the PH assumption does hold, it might be violated in the period for
+which no data are observed. For more information, please refer to the
 \href{http://nicedsu.org.uk/wp-content/uploads/2016/03/NICE-DSU-TSD-Survival-analysis.updated-March-2013.v2.pdf}{NICE
 TSD 14}.\\
-The figures below allow to examine whether the PH assumption holds.
-Figure A shows the relation between the natural logarithm of time
-(x-axis) and the natural logarithm of the cumulative hazard (y-axis).
-The lines in the figure representing the different groups. An indication
-that the PH assumption holds is when these lines are parallel. Figures B
-and C represent the scaled Schoenfeld residual plots. In those plots,
-the relation of time (x-axis) and the residuals of each observed events
-(y-axis) is plotted. For the PH assumption to hold, there should be not
-apparent relations between these residuals and time. To investigate
-this, a smoothed spline has been plotted (cyan). Once this smoothed line
-systematically deviates from a straight line with intercept 0, one can
-consider that the PH assumption is violated, because it indicates a
-relation between the coefficient (or group variable in this case) and
-time. This is demonstrated in
-\href{https://doi.org/10.1093/biomet/81.3.515}{the paper from Grambsch
-and Therneau, Biometrika, Volume 81, Issue 3, September 1994, Pages
-515--526}.\\
+The Figures below allow to examine whether the PH assumption holds over
+the observed data period. Figure A shows the relation between the
+natural logarithm of time (x-axis) and the natural logarithm of the
+cumulative hazard (y-axis). The lines in the Figure representing the
+different groups. An indication that the PH assumption holds is when
+these lines are parallel. Figures B and C represent the scaled
+Schoenfeld residual plots. In those plots, the relation of time (x-axis)
+and the residuals of the observed events (y-axis) is plotted. For the PH
+assumption to hold, there should be not apparent relations between these
+residuals and time. To investigate this, a smoothed spline has been
+plotted (cyan). Once this smoothed line systematically deviates from a
+straight line, one can consider that the PH assumption is violated,
+because it indicates a relation between the coefficient (or group
+variable in this case) and time. This is demonstrated by
+\href{https://doi.org/10.1093/biomet/81.3.515}{Grambsch and Therneau
+(1994)}.\\
 Another indication that the PH assumption does not hold is when the
 lines from different groups Kaplan-Meier plot (previous page) cross each
-other.\\
-\textbf{Interpretation in this case}: Based on Figure A, one could argue
-that the PH assumption holds since the different lines look quite
-parallel to each other. However, when inspecting Figures B and C, one
-can see that the hazard first decreases and then increases over time (in
-both Figures). This indicates that the PH assumption probably does not
-hold.\\
-\textbf{CAUTION}: An indication that the PH assumption holds during the
-observed period of time does not indicate that it holds after the
-observation period (during the extrapolation).
+other.
+
+\textbf{CAUTION}: These plots apply to the observed data period and do
+not allow to make inferences about the proportional hazard function
+assumption beyond this period. Additionally, the end of the observed
+data period may be affected by the low number of observations. One
+should consider this when interpreting the tail of the curves.
 
 \newpage
 
@@ -185,28 +182,100 @@ observation period (during the extrapolation).
 \subsection{Shape of the observed smoothed hazard
 function}\label{shape-of-the-observed-smoothed-hazard-function}
 
-Should parametric survival models assuming a monotonic hazard rate
-(i.e.~exponential, Weibull, Gompertz) be used?
+The hazard function, or the instantaneous rate at which an event occurs
+at a specific time point given survival until that time point. The
+hazard function can take a variety of shapes depending on the
+distribution/parametric survival model considered. The plausibility of
+different shapes for the hazard function should be considered given the
+observed hazard function (considered below) and/or external data (not
+considered below).
 
-The Figure below represents the smoothed hazard rate over time for each
-group. Based on this Figure, an exponential distribution would be
-considered suitable if the smoothed hazard rate would be constant over
-time (straight vertical line). The Weibull and Gompertz functions would
-be considered suitable if the smoothed hazard rate would increase or
-decrease monotonically (an upward or downward slope with constant
-gradient). More information on which shape of the hazard function can be
-estimated by the different parametric survival models can be found
-\href{https://devinincerti.com/2019/06/18/parametric_survival.html}{here}.\\
-\textbf{Interpretation in this case}: Based on this Figure, one can
-discard all three parametric survival models (exponential, Weibull, and
-Gompertz), because none of these smoothed hazard rates is constant, or
-increases/decreases monotonically over time. Based on this information
-and the fact that the PH assumption does likely not hold in this case,
-we have decided to fit separate (stratified) parametric survival models
-to each group.\\
-\textbf{CAUTION}: These smoothed hazard rates apply to the observed
-period and do not allow to make inferences about the shape of the hazard
-function after the observation period.
+See below for an overview of the potential shapes for the hazard
+function for standard parametric survival models:
+
+\begin{longtable}[]{@{}lll@{}}
+\toprule
+\begin{minipage}[b]{0.04\columnwidth}\raggedright\strut
+No\strut
+\end{minipage} & \begin{minipage}[b]{0.22\columnwidth}\raggedright\strut
+Distribution\strut
+\end{minipage} & \begin{minipage}[b]{0.22\columnwidth}\raggedright\strut
+Hazard function shape\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.04\columnwidth}\raggedright\strut
+1\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+Exponential\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+constant hazard\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.04\columnwidth}\raggedright\strut
+2\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+Weibull\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+monotonically increasing and decreasing hazards\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.04\columnwidth}\raggedright\strut
+3\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+Gompertz\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+monotonically increasing and decreasing hazards\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.04\columnwidth}\raggedright\strut
+4\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+Log-normal\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+arc-shaped and monotonically decreasing hazards\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.04\columnwidth}\raggedright\strut
+5\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+Log-logistic\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+arc-shaped and monotonically decreasing hazards\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.04\columnwidth}\raggedright\strut
+6\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+Gamma\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+monotonically increasing and decreasing hazards\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.04\columnwidth}\raggedright\strut
+7\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+Generalised Gamma\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+arc-shaped, bathtub-shaped, monotonically increasing, and monotonically
+decreasing hazards\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+as the spline-based and (non-)mixture cure models are based on the
+standard parametric models, the assumed hazard functions can be derived
+from the Table above as well. For spline-based models using the hazard
+scale, the Weibull distribution (thus monotonically increasing and
+decreasing hazards) is used and the hazard function can differ for the
+different segments (i.e.~between the knot locations). Similarly for
+spline-based models using the odds (log-logistic distribution) and
+normal scale (log-normal distribution) as well as the distributions used
+for the (non-)mixture cure models (different hazard functions are
+potentially estimated for the (non-)cure fraction). More information and
+visualisation of the shape of the hazard function that can be estimated
+by the different parametric survival models can be found
+\href{https://devinincerti.com/2019/06/18/parametric_survival.html}{here}.
+
+\textbf{CAUTION}: These plots apply to the observed data period and do
+not allow to make inferences about the shape of the hazard function
+beyond this period. Additionally, the end of the observed data period
+may be affected by the low number of observations. One should consider
+this when interpreting the tail of the curves.
 
 \begin{flushleft}\includegraphics{Images/plot_hr-1} \end{flushleft}
 
@@ -215,7 +284,7 @@ function after the observation period.
 \subsection{Shape of the predicted hazard
 function}\label{shape-of-the-predicted-hazard-function}
 
-The following plots dislay how the hazard rates is estimated through the
+The following plots dislay how the hazard rates is estimated using the
 different parametric survival models.
 
 \begin{flushleft}\includegraphics[height=0.29\textheight]{Images/plot_haz_pred-1} \end{flushleft}
@@ -230,6 +299,12 @@ different parametric survival models.
 
 \begin{flushleft}\includegraphics[height=0.29\textheight]{Images/plot_haz_pred-6} \end{flushleft}
 
+\begin{flushleft}\includegraphics[height=0.29\textheight]{Images/plot_haz_pred-7} \end{flushleft}
+
+\begin{flushleft}\includegraphics[height=0.29\textheight]{Images/plot_haz_pred-8} \end{flushleft}
+
+\begin{flushleft}\includegraphics[height=0.29\textheight]{Images/plot_haz_pred-9} \end{flushleft}
+
 \newpage
 
 \section{Standard parametric models}\label{standard-parametric-models}
@@ -238,19 +313,11 @@ The circle displays the colours that are attributed to each parametric
 survival model in the graphs on the following pages.\\
 The Table below displays the goodness-of-fit statistics for each
 parametric survival model, ordered from `best' fitting to less well
-fitting, based on the Akaike Information Criterion (AIC). The AIC and
+fitting based on the Akaike Information Criterion (AIC). The AIC and
 Bayesian Information Criterion (BIC) provide a measure of the relative
 fit of each model to the data, while penalising for the number of
 parameter included in the fitted models. The lower the AIC or BIC, the
-better the relative fit of a model compared to other fitted models.\\
-\textbf{Interpretation in this case}: Based on this Table, one can
-conclude that the generalised gamma and log-normal parametric survival
-models fit the data best relative to the other fitted models, according
-to the AIC.\\
-\textbf{CAUTION}: These goodness-of-fit statistics only apply to the
-observed period of time and do not allow to issue statements about the
-suitability of the extrapolated survival by these fitted models beyond
-the observation period.
+better the relative fit of a model compared to other fitted models.
 
 In the following pages, three plots per fitted parametric survival model
 are displayed to support the visual inspection of the fit of the models
@@ -258,31 +325,28 @@ to the observed data. Figure A shows the Kaplan-Meier curves (black and
 gray) versus the fitted parametric survival models (colour). Figure B
 displays a comparison of the smoothed hazard rates based on the
 empirical data (black and gray) versus the estimated transition
-probabilities (colour, based on the fitted parametric survival models).
-In all Figures A and B, the Kaplan-Meier curves and the smoothed hazard
-rates are the same. Figure C shows a specific diagnostic plot for each
-fitted parametric survival model. For all these plots, the rule is: the
-closer the coloured lines are to the black and grey lines, the better.\\
-\textbf{Interpretation in this case}: Based on these plots, one can see
-that the generalised gamma and log-normal parametric survival models
-seem to estimate the transition probabilities the most closely, but
-there are still some discrepancies between observed and estimated
-transition probabilities, especially in the `Poor' and `Medium' group.
-This can be explained by the changing direction of the hazard rates in
-the `Poor' group over time. It increases until approximately year 2,
-then decreases until approximately year 5, and then increases again.
-Standard parametric survival models are not able to capture multiple
-changes in the hazard function over time, hence, more flexible models
-which allow for multiple changes in the hazard functions may be
-required.\\
-\textbf{CAUTION}: These observations only apply to the observed period
-of time and do not allow to issue statements about the suitability of
-the extrapolated survival by these fitted models beyond the observation
-period. Additionally, the shape of the hazard function (smoothed
-transition rates) at the end of the observed period may be affected by
-the low number of observations in the tail of the Kaplan-Meier curves.
-One should therefore consider these changing hazard at the end of the
-observed period cautiously.
+probabilities (colour). In all Figures A and B, the Kaplan-Meier curves
+and the smoothed hazard rates are the same. Figure C shows a specific
+diagnostic plot for each fitted parametric survival model (see graphical
+test in Table 1 by
+\href{https://doi.org/10.1007/s40273-013-0064-3}{Ishak et al. (2013)}.
+For all these plots, the rule is: the closer the coloured lines are to
+the black and grey lines, the better.
+
+Notably, the Weibull (shape = 1), Gompertz (shape = 0) and gamma (shape
+= 1) distributions can simplify to the exponential distribution. The
+generalised gamma distribution can simplify to the log-normal (Q = 0),
+Weibull (Q = 1), exponential (Q = 1 and scale = 1) and gamma (Q = scale)
+distributions. Information regarding the parameterisation of the
+parametric survival models can be found
+\href{https://devinincerti.com/code/survival-distributions.html}{here}.
+
+\textbf{CAUTION}: These goodness-of-fit statistics only apply to the
+observed data period and do not allow to issue statements about the
+suitability of the extrapolated survival by these fitted models beyond
+this period. Additionally, the end of the observed data period may be
+affected by the low number of observations. One should consider this
+when interpreting the tail of the curves.
 
 \begin{flushleft}\includegraphics{Images/plot_parametric-1} \end{flushleft}
 
@@ -379,58 +443,141 @@ Model & AIC & BIC\\
 models}\label{parametric-natural-cubic-spline-models}
 
 If standard parametric models do not provide a satisfactory fit to the
-data based on previous observations, do spline models provide a more
-satisfactory fit to the data?\\
-An explanation concerning these natural cubic spline models, henceforth
-spline models, is provided in
-\href{https://doi.org/10.1002/sim.1203}{Royston and Pamar - 2002}.\\
-As in the previous section, the circle provides the colours attributed
-to each parametric survival model, spline models in this case. The Table
-below provides the AIC and BIC for all fitted models. This allows for a
-comparison of the fit of the spline models to the `standard' parametric
-survival models.\\
-\textbf{Interpretation in this case}: Based on this Table, one can
-conclude that four spline models fit the data relatively better than the
-generalised gamma survival model, due to their lower AIC. The difference
-in AIC is however marginal (4 AIC points).\\
-\textbf{CAUTION}: These goodness-of-fit statistics only apply to the
-observed period of time and do not allow to issue statements about the
-suitability of the extrapolated survival by these fitted models beyond
-the observation period.
+data based on previous observations, do spline-based models provide a
+more satisfactory fit to the data? An explanation concerning these
+natural cubic spline models, henceforth spline-based models, is provided
+in \href{https://doi.org/10.1002/sim.1203}{Royston and Pamar - 2002}.
 
-In the following pages, the same three plots per fitted parametric
-spline model are displayed to support the visual inspection of the fit
-of the models to the observed data, as in previous section. The
-interpretation of these plots remains the same.\\
-\textbf{Interpretation in this case}: Based on these plots, one can see
-that the four spline models fit the data marginally better than the
-generalised gamma model.\\
-\textbf{CAUTION}: These observations only apply to the observed period
-of time and do not allow to issue statements about the suitability of
-the extrapolated survival by these fitted models beyond the observation
-period. Additionally, the shape of the hazard function (smoothed
-transition rates) at the end of the observed period may be affected by
-the low number of observations in the tail of the Kaplan-Meier curves.
-One should therefore consider these changing hazard at the end of the
-observed period cautiously.
+Similar plots are provided as provided (and explained) in the previous
+section. As highlighted above, spline-based models using the hazard
+scale, odds scale and normal scale are extensions of the standard
+parametric survival models using the Weibull, log-logistic and
+log-normal distribution respectively.
+
+\textbf{CAUTION}: These goodness-of-fit statistics only apply to the
+observed data period and do not allow to issue statements about the
+suitability of the extrapolated survival by these fitted models beyond
+this period. Additionally, the end of the observed data period may be
+affected by the low number of observations. One should consider this
+when interpreting the tail of the curves.
+
+\begin{flushleft}\includegraphics{Images/spline-1} \end{flushleft}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lrr}
+\toprule
+Model & AIC & BIC\\
+\midrule
+\cellcolor{gray!6}{9. Spline 2 knots hazard} & \cellcolor{gray!6}{1585.894} & \cellcolor{gray!6}{1640.264}\\
+12. Spline 2 knots odds & 1587.289 & 1641.659\\
+\cellcolor{gray!6}{14. Spline 1 knot normal} & \cellcolor{gray!6}{1587.682} & \cellcolor{gray!6}{1628.460}\\
+15. Spline 2 knots normal & 1588.343 & 1642.714\\
+\cellcolor{gray!6}{7. Generalised Gamma} & \cellcolor{gray!6}{1589.049} & \cellcolor{gray!6}{1629.826}\\
+8. Spline 1 knot hazard & 1589.327 & 1630.105\\
+\cellcolor{gray!6}{16. Spline 3 knots normal} & \cellcolor{gray!6}{1589.832} & \cellcolor{gray!6}{1657.795}\\
+10. Spline 3 knots hazard & 1589.875 & 1657.838\\
+\cellcolor{gray!6}{11. Spline 1 knot odds} & \cellcolor{gray!6}{1590.221} & \cellcolor{gray!6}{1630.999}\\
+13. Spline 3 knots odds & 1590.720 & 1658.683\\
+\cellcolor{gray!6}{4. Log-normal} & \cellcolor{gray!6}{1592.880} & \cellcolor{gray!6}{1620.066}\\
+5. Log-logistic & 1609.294 & 1636.479\\
+\cellcolor{gray!6}{6. Gamma} & \cellcolor{gray!6}{1621.982} & \cellcolor{gray!6}{1649.167}\\
+2. Weibull & 1632.618 & 1659.803\\
+\cellcolor{gray!6}{3. Gompertz} & \cellcolor{gray!6}{1660.954} & \cellcolor{gray!6}{1688.140}\\
+1. Exponential & 1668.212 & 1681.805\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\newpage
 
 \subsection{Spline 1 knot hazard}\label{spline-1-knot-hazard}
 
+\begin{flushleft}\includegraphics[height=0.25\textheight]{Images/spline_hazard1-1} \end{flushleft}
+
+\begin{flushleft}\includegraphics[height=0.25\textheight]{Images/spline_hazard1-2} \end{flushleft}
+
+\begin{flushleft}\includegraphics[height=0.25\textheight]{Images/spline_hazard1-3} \end{flushleft}
+
+\newpage
+
 \subsection{Spline 2 knots hazard}\label{spline-2-knots-hazard}
+
+\begin{flushleft}\includegraphics[height=0.25\textheight]{Images/spline_hazard2-1} \end{flushleft}
+
+\begin{flushleft}\includegraphics[height=0.25\textheight]{Images/spline_hazard2-2} \end{flushleft}
+
+\begin{flushleft}\includegraphics[height=0.25\textheight]{Images/spline_hazard2-3} \end{flushleft}
+
+\newpage
 
 \subsection{Spline 3 knots hazard}\label{spline-3-knots-hazard}
 
+\begin{flushleft}\includegraphics[height=0.25\textheight]{Images/spline_hazard3-1} \end{flushleft}
+
+\begin{flushleft}\includegraphics[height=0.25\textheight]{Images/spline_hazard3-2} \end{flushleft}
+
+\begin{flushleft}\includegraphics[height=0.25\textheight]{Images/spline_hazard3-3} \end{flushleft}
+
+\newpage
+
 \subsection{Spline 1 knot odds}\label{spline-1-knot-odds}
+
+\begin{flushleft}\includegraphics[height=0.25\textheight]{Images/spline_odds1-1} \end{flushleft}
+
+\begin{flushleft}\includegraphics[height=0.25\textheight]{Images/spline_odds1-2} \end{flushleft}
+
+\begin{flushleft}\includegraphics[height=0.25\textheight]{Images/spline_odds1-3} \end{flushleft}
+
+\newpage
 
 \subsection{Spline 2 knots odds}\label{spline-2-knots-odds}
 
+\begin{flushleft}\includegraphics[height=0.25\textheight]{Images/spline_odds2-1} \end{flushleft}
+
+\begin{flushleft}\includegraphics[height=0.25\textheight]{Images/spline_odds2-2} \end{flushleft}
+
+\begin{flushleft}\includegraphics[height=0.25\textheight]{Images/spline_odds2-3} \end{flushleft}
+
+\newpage
+
 \subsection{Spline 3 knots odds}\label{spline-3-knots-odds}
+
+\begin{flushleft}\includegraphics[height=0.25\textheight]{Images/spline_odds3-1} \end{flushleft}
+
+\begin{flushleft}\includegraphics[height=0.25\textheight]{Images/spline_odds3-2} \end{flushleft}
+
+\begin{flushleft}\includegraphics[height=0.25\textheight]{Images/spline_odds3-3} \end{flushleft}
+
+\newpage
 
 \subsection{Spline 1 knot normal}\label{spline-1-knot-normal}
 
+\begin{flushleft}\includegraphics[height=0.25\textheight]{Images/spline_norm1-1} \end{flushleft}
+
+\begin{flushleft}\includegraphics[height=0.25\textheight]{Images/spline_norm1-2} \end{flushleft}
+
+\begin{flushleft}\includegraphics[height=0.25\textheight]{Images/spline_norm1-3} \end{flushleft}
+
+\newpage
+
 \subsection{Spline 2 knots normal}\label{spline-2-knots-normal}
 
+\begin{flushleft}\includegraphics[height=0.25\textheight]{Images/spline_norm2-1} \end{flushleft}
+
+\begin{flushleft}\includegraphics[height=0.25\textheight]{Images/spline_norm2-2} \end{flushleft}
+
+\begin{flushleft}\includegraphics[height=0.25\textheight]{Images/spline_norm2-3} \end{flushleft}
+
+\newpage
+
 \subsection{Spline 3 knots normal}\label{spline-3-knots-normal}
+
+\begin{flushleft}\includegraphics[height=0.25\textheight]{Images/spline_norm3-1} \end{flushleft}
+
+\begin{flushleft}\includegraphics[height=0.25\textheight]{Images/spline_norm3-2} \end{flushleft}
+
+\begin{flushleft}\includegraphics[height=0.25\textheight]{Images/spline_norm3-3} \end{flushleft}
 
 \newpage
 
@@ -553,39 +700,31 @@ Log-logistic}\label{non-mixture-cure-log-logistic}
 
 \section{Long-term extrapolation}\label{long-term-extrapolation}
 
-Which model(s) is/are more appropriate/plausible for long-term
-extrapolation?\\
-Are/is the selected model(s) plausible in comparison with general
-population mortality?\\
-In this section, we present the estimated survival probabilities by
-through fitted parametric survival models for the period of time within
-and beyond data collection, i.e.~the extrapolation. This is done by 1)
-plotting the survival curves (Figures A and B), 2) displaying the
-survival probabilities at multiple time points (first Table), 3) ploting
-conditional annual transition probabilities (Figures C and D), and
-providing the summary statistics of the estimated conditional transition
-probabilities (second Table). This information is provided for each
-group separately.\\
+The plausibility of the estimated survival beyond the oberseved data
+period should be considered and is typically an influential aspect of
+health economic models. This includes considering model(s) is/are more
+appropriate/plausible for long-term extrapolation when compared to
+external data (including general population mortality)?\\
+In this section, the estimated survival probabilities for the period of
+time within and beyond data collection, i.e.~the extrapolation are
+presented (can be specified by the user). This is done by 1) plotting
+the survival curves (Figures A, B and C), 2) displaying the survival
+probabilities at multiple time points (first Table), 3) ploting annual
+transition probabilities (Figures D, E and F), 3) ploting the smoothed
+hazard functions (Figures G, H and I), and providing the summary
+statistics of the estimated annual transition probabilities (second
+Table). This information is provided for each group separately.\\
 One way to assess the plausibility of the extrapolated survival
 probabilities is to compare the estimated survival probabilities at
-different time points with external data (e.g.~observational data), and/
-or to ask clinical experts about the plausibility of these
-extrapolations. Another way to check for plausibility is to compare the
-conditional transition probability with general population mortality
-rates (these can be obtained through national statistics). Parametric
-survival models providing conditional transition probabilities which are
-lower than the general population mortality rates may not be suitable
-because this would mean patients may have a lower probability of death
-than the general population values. Such finding require either to
-select an alternative model or to adjust the selected model for general
-population mortality rates.\\
-\textbf{Interpretation in this case}: The conditional annual
-probabilities estimated by the two-knots spline-based model on the
-hazard scale was most consistent with general population mortality data
-of the Netherlands (although it might still require adjustment).
-Ideally, one would validate the plausibility of the long-term
-extrapolations of the two-knots spline-based model against external
-data.
+different time points with external data (e.g.~observational data and/or
+expert opinion). Another way to check for plausibility is to compare the
+annual transition probability with those observed in the general
+population (general population mortality can be obtained through
+national statistics). Parametric survival models annual conditional
+transition probabilities more favourable than those observed for the
+general population may not be plausible. This would require either to
+select an alternative parametric survival model or to adjust the
+selected parametric survival model for general population probabilities.
 
 \newpage
 
@@ -594,6 +733,8 @@ data.
 \begin{flushleft}\includegraphics[height=0.29\textheight]{Images/validate_extrapolation1-1} \end{flushleft}
 
 \begin{flushleft}\includegraphics[height=0.29\textheight]{Images/validate_extrapolation1-2} \end{flushleft}
+
+\begin{flushleft}\includegraphics[height=0.29\textheight]{Images/validate_extrapolation1-3} \end{flushleft}
 
 \begin{table}
 
@@ -610,19 +751,30 @@ data.
 \cellcolor{gray!6}{5. Log-logistic} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{0.980} & \cellcolor{gray!6}{0.932} & \cellcolor{gray!6}{0.865} & \cellcolor{gray!6}{0.789} & \cellcolor{gray!6}{0.712} & \cellcolor{gray!6}{0.403} & \cellcolor{gray!6}{0.240} & \cellcolor{gray!6}{0.156} & \cellcolor{gray!6}{0.108} & \cellcolor{gray!6}{0.080} & \cellcolor{gray!6}{0.061}\\
 6. Gamma & 1 & 0.982 & 0.935 & 0.869 & 0.793 & 0.714 & 0.367 & 0.165 & 0.069 & 0.027 & 0.011 & 0.004\\
 \cellcolor{gray!6}{7. Generalised Gamma} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{0.991} & \cellcolor{gray!6}{0.928} & \cellcolor{gray!6}{0.849} & \cellcolor{gray!6}{0.778} & \cellcolor{gray!6}{0.717} & \cellcolor{gray!6}{0.526} & \cellcolor{gray!6}{0.425} & \cellcolor{gray!6}{0.362} & \cellcolor{gray!6}{0.319} & \cellcolor{gray!6}{0.286} & \cellcolor{gray!6}{0.261}\\
-17. Mixture cure Weibull & 1 & 0.986 & 0.934 & 0.853 & 0.770 & 0.708 & 0.652 & 0.652 & 0.652 & 0.652 & 0.652 & 0.652\\
-\cellcolor{gray!6}{18. Non-mixture cure Weibull} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{0.987} & \cellcolor{gray!6}{0.934} & \cellcolor{gray!6}{0.852} & \cellcolor{gray!6}{0.770} & \cellcolor{gray!6}{0.708} & \cellcolor{gray!6}{0.649} & \cellcolor{gray!6}{0.649} & \cellcolor{gray!6}{0.649} & \cellcolor{gray!6}{0.649} & \cellcolor{gray!6}{0.649} & \cellcolor{gray!6}{0.649}\\
-19. Mixture cure Log-normal & 1 & 0.991 & 0.930 & 0.845 & 0.771 & 0.715 & 0.600 & 0.578 & 0.573 & 0.572 & 0.571 & 0.571\\
-\cellcolor{gray!6}{20. Non-mixture cure Log-normal} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{0.991} & \cellcolor{gray!6}{0.930} & \cellcolor{gray!6}{0.845} & \cellcolor{gray!6}{0.771} & \cellcolor{gray!6}{0.715} & \cellcolor{gray!6}{0.597} & \cellcolor{gray!6}{0.571} & \cellcolor{gray!6}{0.564} & \cellcolor{gray!6}{0.561} & \cellcolor{gray!6}{0.561} & \cellcolor{gray!6}{0.560}\\
-21. Mixture cure Log-logistic & 1 & 0.989 & 0.933 & 0.846 & 0.767 & 0.712 & 0.624 & 0.610 & 0.607 & 0.605 & 0.604 & 0.604\\
-\cellcolor{gray!6}{22. Non-mixture cure Log-logistic} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{0.989} & \cellcolor{gray!6}{0.933} & \cellcolor{gray!6}{0.846} & \cellcolor{gray!6}{0.767} & \cellcolor{gray!6}{0.712} & \cellcolor{gray!6}{0.624} & \cellcolor{gray!6}{0.611} & \cellcolor{gray!6}{0.607} & \cellcolor{gray!6}{0.606} & \cellcolor{gray!6}{0.605} & \cellcolor{gray!6}{0.605}\\
+8. Spline 1 knot hazard & 1 & 0.992 & 0.927 & 0.843 & 0.774 & 0.719 & 0.521 & 0.381 & 0.279 & 0.205 & 0.151 & 0.111\\
+\cellcolor{gray!6}{9. Spline 2 knots hazard} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{0.992} & \cellcolor{gray!6}{0.928} & \cellcolor{gray!6}{0.843} & \cellcolor{gray!6}{0.774} & \cellcolor{gray!6}{0.719} & \cellcolor{gray!6}{0.523} & \cellcolor{gray!6}{0.384} & \cellcolor{gray!6}{0.283} & \cellcolor{gray!6}{0.210} & \cellcolor{gray!6}{0.156} & \cellcolor{gray!6}{0.116}\\
+10. Spline 3 knots hazard & 1 & 0.994 & 0.922 & 0.843 & 0.779 & 0.721 & 0.486 & 0.319 & 0.205 & 0.130 & 0.081 & 0.050\\
+\cellcolor{gray!6}{11. Spline 1 knot odds} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{0.992} & \cellcolor{gray!6}{0.927} & \cellcolor{gray!6}{0.843} & \cellcolor{gray!6}{0.774} & \cellcolor{gray!6}{0.718} & \cellcolor{gray!6}{0.532} & \cellcolor{gray!6}{0.415} & \cellcolor{gray!6}{0.338} & \cellcolor{gray!6}{0.283} & \cellcolor{gray!6}{0.242} & \cellcolor{gray!6}{0.211}\\
+12. Spline 2 knots odds & 1 & 0.992 & 0.928 & 0.843 & 0.774 & 0.718 & 0.533 & 0.418 & 0.340 & 0.285 & 0.245 & 0.213\\
+\cellcolor{gray!6}{13. Spline 3 knots odds} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{0.994} & \cellcolor{gray!6}{0.922} & \cellcolor{gray!6}{0.844} & \cellcolor{gray!6}{0.780} & \cellcolor{gray!6}{0.721} & \cellcolor{gray!6}{0.498} & \cellcolor{gray!6}{0.363} & \cellcolor{gray!6}{0.277} & \cellcolor{gray!6}{0.220} & \cellcolor{gray!6}{0.180} & \cellcolor{gray!6}{0.151}\\
+14. Spline 1 knot normal & 1 & 0.992 & 0.926 & 0.847 & 0.778 & 0.719 & 0.515 & 0.391 & 0.308 & 0.250 & 0.207 & 0.174\\
+\cellcolor{gray!6}{15. Spline 2 knots normal} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{0.992} & \cellcolor{gray!6}{0.929} & \cellcolor{gray!6}{0.842} & \cellcolor{gray!6}{0.773} & \cellcolor{gray!6}{0.718} & \cellcolor{gray!6}{0.538} & \cellcolor{gray!6}{0.426} & \cellcolor{gray!6}{0.350} & \cellcolor{gray!6}{0.295} & \cellcolor{gray!6}{0.253} & \cellcolor{gray!6}{0.220}\\
+16. Spline 3 knots normal & 1 & 0.994 & 0.921 & 0.845 & 0.780 & 0.721 & 0.503 & 0.371 & 0.285 & 0.225 & 0.182 & 0.150\\
+\cellcolor{gray!6}{17. Mixture cure Weibull} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{0.986} & \cellcolor{gray!6}{0.934} & \cellcolor{gray!6}{0.853} & \cellcolor{gray!6}{0.770} & \cellcolor{gray!6}{0.708} & \cellcolor{gray!6}{0.652} & \cellcolor{gray!6}{0.652} & \cellcolor{gray!6}{0.652} & \cellcolor{gray!6}{0.652} & \cellcolor{gray!6}{0.652} & \cellcolor{gray!6}{0.652}\\
+18. Non-mixture cure Weibull & 1 & 0.987 & 0.934 & 0.852 & 0.770 & 0.708 & 0.649 & 0.649 & 0.649 & 0.649 & 0.649 & 0.649\\
+\cellcolor{gray!6}{19. Mixture cure Log-normal} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{0.991} & \cellcolor{gray!6}{0.930} & \cellcolor{gray!6}{0.845} & \cellcolor{gray!6}{0.771} & \cellcolor{gray!6}{0.715} & \cellcolor{gray!6}{0.600} & \cellcolor{gray!6}{0.578} & \cellcolor{gray!6}{0.573} & \cellcolor{gray!6}{0.572} & \cellcolor{gray!6}{0.571} & \cellcolor{gray!6}{0.571}\\
+20. Non-mixture cure Log-normal & 1 & 0.991 & 0.930 & 0.845 & 0.771 & 0.715 & 0.597 & 0.571 & 0.564 & 0.561 & 0.561 & 0.560\\
+\cellcolor{gray!6}{21. Mixture cure Log-logistic} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{0.989} & \cellcolor{gray!6}{0.933} & \cellcolor{gray!6}{0.846} & \cellcolor{gray!6}{0.767} & \cellcolor{gray!6}{0.712} & \cellcolor{gray!6}{0.624} & \cellcolor{gray!6}{0.610} & \cellcolor{gray!6}{0.607} & \cellcolor{gray!6}{0.605} & \cellcolor{gray!6}{0.604} & \cellcolor{gray!6}{0.604}\\
+22. Non-mixture cure Log-logistic & 1 & 0.989 & 0.933 & 0.846 & 0.767 & 0.712 & 0.624 & 0.611 & 0.607 & 0.606 & 0.605 & 0.605\\
 \bottomrule
 \end{tabular}}
 \end{table}
 
-\begin{flushleft}\includegraphics[height=0.29\textheight]{Images/validate_extrapolation1-3} \end{flushleft}
-
 \begin{flushleft}\includegraphics[height=0.29\textheight]{Images/validate_extrapolation1-4} \end{flushleft}
+
+\begin{flushleft}\includegraphics[height=0.29\textheight]{Images/validate_extrapolation1-5} \end{flushleft}
+
+\begin{flushleft}\includegraphics[height=0.29\textheight]{Images/validate_extrapolation1-6} \end{flushleft}
 
 \begin{table}
 
@@ -639,19 +791,30 @@ data.
 \cellcolor{gray!6}{5. Log-logistic} & \cellcolor{gray!6}{0.0728032} & \cellcolor{gray!6}{0.0230017} & \cellcolor{gray!6}{0.0022936} & \cellcolor{gray!6}{0.0533146} & \cellcolor{gray!6}{0.0700441} & \cellcolor{gray!6}{0.0935993} & \cellcolor{gray!6}{0.1092616} & \cellcolor{gray!6}{0.0401882}\\
 6. Gamma & 0.1493002 & 0.0379093 & 0.0014181 & 0.1390361 & 0.1644882 & 0.1750195 & 0.1807519 & 0.0358775\\
 \cellcolor{gray!6}{7. Generalised Gamma} & \cellcolor{gray!6}{0.0347149} & \cellcolor{gray!6}{0.0206128} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0191123} & \cellcolor{gray!6}{0.0269247} & \cellcolor{gray!6}{0.0452063} & \cellcolor{gray!6}{0.0862100} & \cellcolor{gray!6}{0.0260182}\\
-17. Mixture cure Weibull & 0.0103115 & 0.0253657 & 0.0000000 & 0.0000000 & 0.0000000 & 0.0001031 & 0.0987558 & 0.0000986\\
-\cellcolor{gray!6}{18. Non-mixture cure Weibull} & \cellcolor{gray!6}{0.0104098} & \cellcolor{gray!6}{0.0254044} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0001575} & \cellcolor{gray!6}{0.0985854} & \cellcolor{gray!6}{0.0001510}\\
-19. Mixture cure Log-normal & 0.0135710 & 0.0252751 & 0.0000000 & 0.0000929 & 0.0008027 & 0.0116086 & 0.0931907 & 0.0114404\\
-\cellcolor{gray!6}{20. Non-mixture cure Log-normal} & \cellcolor{gray!6}{0.0140594} & \cellcolor{gray!6}{0.0251944} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0001962} & \cellcolor{gray!6}{0.0012968} & \cellcolor{gray!6}{0.0132969} & \cellcolor{gray!6}{0.0934968} & \cellcolor{gray!6}{0.0130702}\\
-21. Mixture cure Log-logistic & 0.0122019 & 0.0249146 & 0.0000516 & 0.0001512 & 0.0006917 & 0.0075147 & 0.0986522 & 0.0073113\\
-\cellcolor{gray!6}{22. Non-mixture cure Log-logistic} & \cellcolor{gray!6}{0.0121786} & \cellcolor{gray!6}{0.0249023} & \cellcolor{gray!6}{0.0000517} & \cellcolor{gray!6}{0.0001509} & \cellcolor{gray!6}{0.0006881} & \cellcolor{gray!6}{0.0074554} & \cellcolor{gray!6}{0.0987027} & \cellcolor{gray!6}{0.0072528}\\
+8. Spline 1 knot hazard & 0.0605266 & 0.0109221 & 0.0000002 & 0.0592140 & 0.0598953 & 0.0610195 & 0.0916043 & 0.0018010\\
+\cellcolor{gray!6}{9. Spline 2 knots hazard} & \cellcolor{gray!6}{0.0593803} & \cellcolor{gray!6}{0.0110234} & \cellcolor{gray!6}{0.0000002} & \cellcolor{gray!6}{0.0576502} & \cellcolor{gray!6}{0.0585313} & \cellcolor{gray!6}{0.0599923} & \cellcolor{gray!6}{0.0923962} & \cellcolor{gray!6}{0.0023363}\\
+10. Spline 3 knots hazard & 0.0832632 & 0.0146134 & 0.0003310 & 0.0798260 & 0.0865334 & 0.0909988 & 0.0996328 & 0.0111549\\
+\cellcolor{gray!6}{11. Spline 1 knot odds} & \cellcolor{gray!6}{0.0410014} & \cellcolor{gray!6}{0.0174571} & \cellcolor{gray!6}{0.0000002} & \cellcolor{gray!6}{0.0281269} & \cellcolor{gray!6}{0.0363823} & \cellcolor{gray!6}{0.0502992} & \cellcolor{gray!6}{0.0917044} & \cellcolor{gray!6}{0.0221203}\\
+12. Spline 2 knots odds & 0.0406443 & 0.0174917 & 0.0000002 & 0.0278516 & 0.0359503 & 0.0497462 & 0.0924439 & 0.0218428\\
+\cellcolor{gray!6}{13. Spline 3 knots odds} & \cellcolor{gray!6}{0.0497623} & \cellcolor{gray!6}{0.0176792} & \cellcolor{gray!6}{0.0003253} & \cellcolor{gray!6}{0.0358147} & \cellcolor{gray!6}{0.0466608} & \cellcolor{gray!6}{0.0638606} & \cellcolor{gray!6}{0.0999099} & \cellcolor{gray!6}{0.0279854}\\
+14. Spline 1 knot normal & 0.0463860 & 0.0161648 & 0.0000000 & 0.0345970 & 0.0424046 & 0.0560095 & 0.0865141 & 0.0213599\\
+\cellcolor{gray!6}{15. Spline 2 knots normal} & \cellcolor{gray!6}{0.0400250} & \cellcolor{gray!6}{0.0171948} & \cellcolor{gray!6}{0.0000006} & \cellcolor{gray!6}{0.0281480} & \cellcolor{gray!6}{0.0348987} & \cellcolor{gray!6}{0.0473455} & \cellcolor{gray!6}{0.0953359} & \cellcolor{gray!6}{0.0191484}\\
+16. Spline 3 knots normal & 0.0503355 & 0.0161995 & 0.0007793 & 0.0386308 & 0.0470013 & 0.0611992 & 0.0975846 & 0.0225147\\
+\cellcolor{gray!6}{17. Mixture cure Weibull} & \cellcolor{gray!6}{0.0103115} & \cellcolor{gray!6}{0.0253657} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0001031} & \cellcolor{gray!6}{0.0987558} & \cellcolor{gray!6}{0.0000986}\\
+18. Non-mixture cure Weibull & 0.0104098 & 0.0254044 & 0.0000000 & 0.0000000 & 0.0000000 & 0.0001575 & 0.0985854 & 0.0001510\\
+\cellcolor{gray!6}{19. Mixture cure Log-normal} & \cellcolor{gray!6}{0.0135710} & \cellcolor{gray!6}{0.0252751} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0000929} & \cellcolor{gray!6}{0.0008027} & \cellcolor{gray!6}{0.0116086} & \cellcolor{gray!6}{0.0931907} & \cellcolor{gray!6}{0.0114404}\\
+20. Non-mixture cure Log-normal & 0.0140594 & 0.0251944 & 0.0000000 & 0.0001962 & 0.0012968 & 0.0132969 & 0.0934968 & 0.0130702\\
+\cellcolor{gray!6}{21. Mixture cure Log-logistic} & \cellcolor{gray!6}{0.0122019} & \cellcolor{gray!6}{0.0249146} & \cellcolor{gray!6}{0.0000516} & \cellcolor{gray!6}{0.0001512} & \cellcolor{gray!6}{0.0006917} & \cellcolor{gray!6}{0.0075147} & \cellcolor{gray!6}{0.0986522} & \cellcolor{gray!6}{0.0073113}\\
+22. Non-mixture cure Log-logistic & 0.0121786 & 0.0249023 & 0.0000517 & 0.0001509 & 0.0006881 & 0.0074554 & 0.0987027 & 0.0072528\\
 \bottomrule
 \end{tabular}}
 \end{table}
 
-\begin{flushleft}\includegraphics[height=0.29\textheight]{Images/validate_extrapolation1-5} \end{flushleft}
+\begin{flushleft}\includegraphics[height=0.29\textheight]{Images/validate_extrapolation1-7} \end{flushleft}
 
-\begin{flushleft}\includegraphics[height=0.29\textheight]{Images/validate_extrapolation1-6} \end{flushleft}
+\begin{flushleft}\includegraphics[height=0.29\textheight]{Images/validate_extrapolation1-8} \end{flushleft}
+
+\begin{flushleft}\includegraphics[height=0.29\textheight]{Images/validate_extrapolation1-9} \end{flushleft}
 
 \newpage
 
@@ -660,6 +823,8 @@ data.
 \begin{flushleft}\includegraphics[height=0.29\textheight]{Images/validate_extrapolation2-1} \end{flushleft}
 
 \begin{flushleft}\includegraphics[height=0.29\textheight]{Images/validate_extrapolation2-2} \end{flushleft}
+
+\begin{flushleft}\includegraphics[height=0.29\textheight]{Images/validate_extrapolation2-3} \end{flushleft}
 
 \begin{table}
 
@@ -676,19 +841,30 @@ data.
 \cellcolor{gray!6}{5. Log-logistic} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{0.927} & \cellcolor{gray!6}{0.801} & \cellcolor{gray!6}{0.673} & \cellcolor{gray!6}{0.561} & \cellcolor{gray!6}{0.468} & \cellcolor{gray!6}{0.218} & \cellcolor{gray!6}{0.124} & \cellcolor{gray!6}{0.081} & \cellcolor{gray!6}{0.057} & \cellcolor{gray!6}{0.043} & \cellcolor{gray!6}{0.034}\\
 6. Gamma & 1 & 0.930 & 0.813 & 0.689 & 0.572 & 0.469 & 0.154 & 0.045 & 0.013 & 0.003 & 0.001 & 0.000\\
 \cellcolor{gray!6}{7. Generalised Gamma} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{0.937} & \cellcolor{gray!6}{0.774} & \cellcolor{gray!6}{0.648} & \cellcolor{gray!6}{0.556} & \cellcolor{gray!6}{0.488} & \cellcolor{gray!6}{0.310} & \cellcolor{gray!6}{0.232} & \cellcolor{gray!6}{0.187} & \cellcolor{gray!6}{0.158} & \cellcolor{gray!6}{0.138} & \cellcolor{gray!6}{0.122}\\
-17. Mixture cure Weibull & 1 & 0.928 & 0.804 & 0.676 & 0.563 & 0.475 & 0.319 & 0.310 & 0.309 & 0.309 & 0.309 & 0.309\\
-\cellcolor{gray!6}{18. Non-mixture cure Weibull} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{0.929} & \cellcolor{gray!6}{0.801} & \cellcolor{gray!6}{0.670} & \cellcolor{gray!6}{0.559} & \cellcolor{gray!6}{0.475} & \cellcolor{gray!6}{0.314} & \cellcolor{gray!6}{0.297} & \cellcolor{gray!6}{0.296} & \cellcolor{gray!6}{0.296} & \cellcolor{gray!6}{0.296} & \cellcolor{gray!6}{0.296}\\
-19. Mixture cure Log-normal & 1 & 0.936 & 0.790 & 0.658 & 0.556 & 0.479 & 0.295 & 0.238 & 0.215 & 0.205 & 0.200 & 0.197\\
-\cellcolor{gray!6}{20. Non-mixture cure Log-normal} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{0.937} & \cellcolor{gray!6}{0.787} & \cellcolor{gray!6}{0.654} & \cellcolor{gray!6}{0.555} & \cellcolor{gray!6}{0.482} & \cellcolor{gray!6}{0.315} & \cellcolor{gray!6}{0.261} & \cellcolor{gray!6}{0.237} & \cellcolor{gray!6}{0.225} & \cellcolor{gray!6}{0.218} & \cellcolor{gray!6}{0.214}\\
-21. Mixture cure Log-logistic & 1 & 0.931 & 0.793 & 0.658 & 0.553 & 0.477 & 0.318 & 0.275 & 0.259 & 0.250 & 0.246 & 0.243\\
-\cellcolor{gray!6}{22. Non-mixture cure Log-logistic} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{0.931} & \cellcolor{gray!6}{0.793} & \cellcolor{gray!6}{0.659} & \cellcolor{gray!6}{0.554} & \cellcolor{gray!6}{0.479} & \cellcolor{gray!6}{0.327} & \cellcolor{gray!6}{0.287} & \cellcolor{gray!6}{0.272} & \cellcolor{gray!6}{0.265} & \cellcolor{gray!6}{0.261} & \cellcolor{gray!6}{0.258}\\
+8. Spline 1 knot hazard & 1 & 0.939 & 0.782 & 0.652 & 0.558 & 0.486 & 0.265 & 0.150 & 0.087 & 0.052 & 0.031 & 0.019\\
+\cellcolor{gray!6}{9. Spline 2 knots hazard} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{0.935} & \cellcolor{gray!6}{0.766} & \cellcolor{gray!6}{0.673} & \cellcolor{gray!6}{0.579} & \cellcolor{gray!6}{0.490} & \cellcolor{gray!6}{0.184} & \cellcolor{gray!6}{0.061} & \cellcolor{gray!6}{0.018} & \cellcolor{gray!6}{0.005} & \cellcolor{gray!6}{0.001} & \cellcolor{gray!6}{0.000}\\
+10. Spline 3 knots hazard & 1 & 0.936 & 0.761 & 0.674 & 0.585 & 0.491 & 0.159 & 0.040 & 0.008 & 0.001 & 0.000 & 0.000\\
+\cellcolor{gray!6}{11. Spline 1 knot odds} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{0.939} & \cellcolor{gray!6}{0.778} & \cellcolor{gray!6}{0.648} & \cellcolor{gray!6}{0.556} & \cellcolor{gray!6}{0.489} & \cellcolor{gray!6}{0.301} & \cellcolor{gray!6}{0.213} & \cellcolor{gray!6}{0.162} & \cellcolor{gray!6}{0.131} & \cellcolor{gray!6}{0.109} & \cellcolor{gray!6}{0.093}\\
+12. Spline 2 knots odds & 1 & 0.935 & 0.769 & 0.673 & 0.576 & 0.489 & 0.235 & 0.136 & 0.089 & 0.063 & 0.048 & 0.037\\
+\cellcolor{gray!6}{13. Spline 3 knots odds} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{0.937} & \cellcolor{gray!6}{0.761} & \cellcolor{gray!6}{0.675} & \cellcolor{gray!6}{0.583} & \cellcolor{gray!6}{0.489} & \cellcolor{gray!6}{0.207} & \cellcolor{gray!6}{0.108} & \cellcolor{gray!6}{0.066} & \cellcolor{gray!6}{0.044} & \cellcolor{gray!6}{0.032} & \cellcolor{gray!6}{0.024}\\
+14. Spline 1 knot normal & 1 & 0.938 & 0.775 & 0.648 & 0.557 & 0.488 & 0.290 & 0.195 & 0.141 & 0.107 & 0.084 & 0.067\\
+\cellcolor{gray!6}{15. Spline 2 knots normal} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{0.930} & \cellcolor{gray!6}{0.773} & \cellcolor{gray!6}{0.669} & \cellcolor{gray!6}{0.572} & \cellcolor{gray!6}{0.489} & \cellcolor{gray!6}{0.240} & \cellcolor{gray!6}{0.135} & \cellcolor{gray!6}{0.083} & \cellcolor{gray!6}{0.054} & \cellcolor{gray!6}{0.037} & \cellcolor{gray!6}{0.026}\\
+16. Spline 3 knots normal & 1 & 0.937 & 0.761 & 0.675 & 0.583 & 0.489 & 0.198 & 0.091 & 0.047 & 0.026 & 0.015 & 0.010\\
+\cellcolor{gray!6}{17. Mixture cure Weibull} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{0.928} & \cellcolor{gray!6}{0.804} & \cellcolor{gray!6}{0.676} & \cellcolor{gray!6}{0.563} & \cellcolor{gray!6}{0.475} & \cellcolor{gray!6}{0.319} & \cellcolor{gray!6}{0.310} & \cellcolor{gray!6}{0.309} & \cellcolor{gray!6}{0.309} & \cellcolor{gray!6}{0.309} & \cellcolor{gray!6}{0.309}\\
+18. Non-mixture cure Weibull & 1 & 0.929 & 0.801 & 0.670 & 0.559 & 0.475 & 0.314 & 0.297 & 0.296 & 0.296 & 0.296 & 0.296\\
+\cellcolor{gray!6}{19. Mixture cure Log-normal} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{0.936} & \cellcolor{gray!6}{0.790} & \cellcolor{gray!6}{0.658} & \cellcolor{gray!6}{0.556} & \cellcolor{gray!6}{0.479} & \cellcolor{gray!6}{0.295} & \cellcolor{gray!6}{0.238} & \cellcolor{gray!6}{0.215} & \cellcolor{gray!6}{0.205} & \cellcolor{gray!6}{0.200} & \cellcolor{gray!6}{0.197}\\
+20. Non-mixture cure Log-normal & 1 & 0.937 & 0.787 & 0.654 & 0.555 & 0.482 & 0.315 & 0.261 & 0.237 & 0.225 & 0.218 & 0.214\\
+\cellcolor{gray!6}{21. Mixture cure Log-logistic} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{0.931} & \cellcolor{gray!6}{0.793} & \cellcolor{gray!6}{0.658} & \cellcolor{gray!6}{0.553} & \cellcolor{gray!6}{0.477} & \cellcolor{gray!6}{0.318} & \cellcolor{gray!6}{0.275} & \cellcolor{gray!6}{0.259} & \cellcolor{gray!6}{0.250} & \cellcolor{gray!6}{0.246} & \cellcolor{gray!6}{0.243}\\
+22. Non-mixture cure Log-logistic & 1 & 0.931 & 0.793 & 0.659 & 0.554 & 0.479 & 0.327 & 0.287 & 0.272 & 0.265 & 0.261 & 0.258\\
 \bottomrule
 \end{tabular}}
 \end{table}
 
-\begin{flushleft}\includegraphics[height=0.29\textheight]{Images/validate_extrapolation2-3} \end{flushleft}
-
 \begin{flushleft}\includegraphics[height=0.29\textheight]{Images/validate_extrapolation2-4} \end{flushleft}
+
+\begin{flushleft}\includegraphics[height=0.29\textheight]{Images/validate_extrapolation2-5} \end{flushleft}
+
+\begin{flushleft}\includegraphics[height=0.29\textheight]{Images/validate_extrapolation2-6} \end{flushleft}
 
 \begin{table}
 
@@ -705,19 +881,30 @@ data.
 \cellcolor{gray!6}{5. Log-logistic} & \cellcolor{gray!6}{0.0853562} & \cellcolor{gray!6}{0.0400803} & \cellcolor{gray!6}{0.0150627} & \cellcolor{gray!6}{0.0512119} & \cellcolor{gray!6}{0.0722192} & \cellcolor{gray!6}{0.1148301} & \cellcolor{gray!6}{0.1673124} & \cellcolor{gray!6}{0.0634470}\\
 6. Gamma & 0.2142916 & 0.0338979 & 0.0159374 & 0.2105278 & 0.2273428 & 0.2338793 & 0.2373538 & 0.0232792\\
 \cellcolor{gray!6}{7. Generalised Gamma} & \cellcolor{gray!6}{0.0527725} & \cellcolor{gray!6}{0.0403634} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0249765} & \cellcolor{gray!6}{0.0361491} & \cellcolor{gray!6}{0.0643696} & \cellcolor{gray!6}{0.1783037} & \cellcolor{gray!6}{0.0392711}\\
-17. Mixture cure Weibull & 0.0274205 & 0.0519801 & 0.0000000 & 0.0000000 & 0.0000059 & 0.0191609 & 0.1672892 & 0.0189217\\
-\cellcolor{gray!6}{18. Non-mixture cure Weibull} & \cellcolor{gray!6}{0.0284836} & \cellcolor{gray!6}{0.0517239} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0000548} & \cellcolor{gray!6}{0.0281639} & \cellcolor{gray!6}{0.1675628} & \cellcolor{gray!6}{0.0279040}\\
-19. Mixture cure Log-normal & 0.0386248 & 0.0496451 & 0.0001478 & 0.0035974 & 0.0128314 & 0.0569406 & 0.1684663 & 0.0533108\\
-\cellcolor{gray!6}{20. Non-mixture cure Log-normal} & \cellcolor{gray!6}{0.0369202} & \cellcolor{gray!6}{0.0476273} & \cellcolor{gray!6}{0.0001962} & \cellcolor{gray!6}{0.0048679} & \cellcolor{gray!6}{0.0133317} & \cellcolor{gray!6}{0.0491721} & \cellcolor{gray!6}{0.1721086} & \cellcolor{gray!6}{0.0441369}\\
-21. Mixture cure Log-logistic & 0.0336695 & 0.0485634 & 0.0012991 & 0.0028998 & 0.0085638 & 0.0419015 & 0.1712400 & 0.0388233\\
-\cellcolor{gray!6}{22. Non-mixture cure Log-logistic} & \cellcolor{gray!6}{0.0321761} & \cellcolor{gray!6}{0.0482523} & \cellcolor{gray!6}{0.0010967} & \cellcolor{gray!6}{0.0024492} & \cellcolor{gray!6}{0.0073855} & \cellcolor{gray!6}{0.0377612} & \cellcolor{gray!6}{0.1712106} & \cellcolor{gray!6}{0.0351424}\\
+8. Spline 1 knot hazard & 0.1055301 & 0.0199804 & 0.0005533 & 0.0961200 & 0.1007177 & 0.1087714 & 0.1767370 & 0.0126190\\
+\cellcolor{gray!6}{9. Spline 2 knots hazard} & \cellcolor{gray!6}{0.2108105} & \cellcolor{gray!6}{0.0424037} & \cellcolor{gray!6}{0.0000006} & \cellcolor{gray!6}{0.1921569} & \cellcolor{gray!6}{0.2213494} & \cellcolor{gray!6}{0.2415978} & \cellcolor{gray!6}{0.2568265} & \cellcolor{gray!6}{0.0493204}\\
+10. Spline 3 knots hazard & 0.2648787 & 0.0695995 & 0.0000040 & 0.2243467 & 0.2816554 & 0.3202621 & 0.3498686 & 0.0956896\\
+\cellcolor{gray!6}{11. Spline 1 knot odds} & \cellcolor{gray!6}{0.0602433} & \cellcolor{gray!6}{0.0377595} & \cellcolor{gray!6}{0.0004610} & \cellcolor{gray!6}{0.0331955} & \cellcolor{gray!6}{0.0461415} & \cellcolor{gray!6}{0.0743721} & \cellcolor{gray!6}{0.1809477} & \cellcolor{gray!6}{0.0410625}\\
+12. Spline 2 knots odds & 0.0828374 & 0.0396992 & 0.0000004 & 0.0500917 & 0.0706148 & 0.1135216 & 0.2192447 & 0.0632652\\
+\cellcolor{gray!6}{13. Spline 3 knots odds} & \cellcolor{gray!6}{0.0937702} & \cellcolor{gray!6}{0.0420449} & \cellcolor{gray!6}{0.0000052} & \cellcolor{gray!6}{0.0581364} & \cellcolor{gray!6}{0.0821832} & \cellcolor{gray!6}{0.1255993} & \cellcolor{gray!6}{0.2117141} & \cellcolor{gray!6}{0.0672824}\\
+14. Spline 1 knot normal & 0.0691260 & 0.0346943 & 0.0000012 & 0.0444894 & 0.0569700 & 0.0823605 & 0.1804334 & 0.0378197\\
+\cellcolor{gray!6}{15. Spline 2 knots normal} & \cellcolor{gray!6}{0.0933942} & \cellcolor{gray!6}{0.0319718} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0682231} & \cellcolor{gray!6}{0.0852159} & \cellcolor{gray!6}{0.1164045} & \cellcolor{gray!6}{0.2005479} & \cellcolor{gray!6}{0.0480608}\\
+16. Spline 3 knots normal & 0.1188116 & 0.0321078 & 0.0000001 & 0.0939627 & 0.1132858 & 0.1426801 & 0.2122248 & 0.0486132\\
+\cellcolor{gray!6}{17. Mixture cure Weibull} & \cellcolor{gray!6}{0.0274205} & \cellcolor{gray!6}{0.0519801} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0000059} & \cellcolor{gray!6}{0.0191609} & \cellcolor{gray!6}{0.1672892} & \cellcolor{gray!6}{0.0189217}\\
+18. Non-mixture cure Weibull & 0.0284836 & 0.0517239 & 0.0000000 & 0.0000000 & 0.0000548 & 0.0281639 & 0.1675628 & 0.0279040\\
+\cellcolor{gray!6}{19. Mixture cure Log-normal} & \cellcolor{gray!6}{0.0386248} & \cellcolor{gray!6}{0.0496451} & \cellcolor{gray!6}{0.0001478} & \cellcolor{gray!6}{0.0035974} & \cellcolor{gray!6}{0.0128314} & \cellcolor{gray!6}{0.0569406} & \cellcolor{gray!6}{0.1684663} & \cellcolor{gray!6}{0.0533108}\\
+20. Non-mixture cure Log-normal & 0.0369202 & 0.0476273 & 0.0001962 & 0.0048679 & 0.0133317 & 0.0491721 & 0.1721086 & 0.0441369\\
+\cellcolor{gray!6}{21. Mixture cure Log-logistic} & \cellcolor{gray!6}{0.0336695} & \cellcolor{gray!6}{0.0485634} & \cellcolor{gray!6}{0.0012991} & \cellcolor{gray!6}{0.0028998} & \cellcolor{gray!6}{0.0085638} & \cellcolor{gray!6}{0.0419015} & \cellcolor{gray!6}{0.1712400} & \cellcolor{gray!6}{0.0388233}\\
+22. Non-mixture cure Log-logistic & 0.0321761 & 0.0482523 & 0.0010967 & 0.0024492 & 0.0073855 & 0.0377612 & 0.1712106 & 0.0351424\\
 \bottomrule
 \end{tabular}}
 \end{table}
 
-\begin{flushleft}\includegraphics[height=0.29\textheight]{Images/validate_extrapolation2-5} \end{flushleft}
+\begin{flushleft}\includegraphics[height=0.29\textheight]{Images/validate_extrapolation2-7} \end{flushleft}
 
-\begin{flushleft}\includegraphics[height=0.29\textheight]{Images/validate_extrapolation2-6} \end{flushleft}
+\begin{flushleft}\includegraphics[height=0.29\textheight]{Images/validate_extrapolation2-8} \end{flushleft}
+
+\begin{flushleft}\includegraphics[height=0.29\textheight]{Images/validate_extrapolation2-9} \end{flushleft}
 
 \newpage
 
@@ -726,6 +913,8 @@ data.
 \begin{flushleft}\includegraphics[height=0.29\textheight]{Images/validate_extrapolation3-1} \end{flushleft}
 
 \begin{flushleft}\includegraphics[height=0.29\textheight]{Images/validate_extrapolation3-2} \end{flushleft}
+
+\begin{flushleft}\includegraphics[height=0.29\textheight]{Images/validate_extrapolation3-3} \end{flushleft}
 
 \begin{table}
 
@@ -742,19 +931,30 @@ data.
 \cellcolor{gray!6}{5. Log-logistic} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{0.819} & \cellcolor{gray!6}{0.568} & \cellcolor{gray!6}{0.389} & \cellcolor{gray!6}{0.275} & \cellcolor{gray!6}{0.203} & \cellcolor{gray!6}{0.069} & \cellcolor{gray!6}{0.034} & \cellcolor{gray!6}{0.021} & \cellcolor{gray!6}{0.014} & \cellcolor{gray!6}{0.010} & \cellcolor{gray!6}{0.008}\\
 6. Gamma & 1 & 0.829 & 0.605 & 0.420 & 0.283 & 0.187 & 0.020 & 0.002 & 0.000 & 0.000 & 0.000 & 0.000\\
 \cellcolor{gray!6}{7. Generalised Gamma} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{0.810} & \cellcolor{gray!6}{0.555} & \cellcolor{gray!6}{0.399} & \cellcolor{gray!6}{0.302} & \cellcolor{gray!6}{0.237} & \cellcolor{gray!6}{0.100} & \cellcolor{gray!6}{0.057} & \cellcolor{gray!6}{0.037} & \cellcolor{gray!6}{0.026} & \cellcolor{gray!6}{0.019} & \cellcolor{gray!6}{0.015}\\
-17. Mixture cure Weibull & 1 & 0.819 & 0.585 & 0.403 & 0.290 & 0.229 & 0.179 & 0.179 & 0.179 & 0.179 & 0.179 & 0.179\\
-\cellcolor{gray!6}{18. Non-mixture cure Weibull} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{0.820} & \cellcolor{gray!6}{0.570} & \cellcolor{gray!6}{0.391} & \cellcolor{gray!6}{0.285} & \cellcolor{gray!6}{0.228} & \cellcolor{gray!6}{0.169} & \cellcolor{gray!6}{0.168} & \cellcolor{gray!6}{0.168} & \cellcolor{gray!6}{0.168} & \cellcolor{gray!6}{0.168} & \cellcolor{gray!6}{0.168}\\
-19. Mixture cure Log-normal & 1 & 0.818 & 0.558 & 0.394 & 0.295 & 0.235 & 0.134 & 0.116 & 0.111 & 0.109 & 0.108 & 0.108\\
-\cellcolor{gray!6}{20. Non-mixture cure Log-normal} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{0.818} & \cellcolor{gray!6}{0.551} & \cellcolor{gray!6}{0.390} & \cellcolor{gray!6}{0.297} & \cellcolor{gray!6}{0.241} & \cellcolor{gray!6}{0.143} & \cellcolor{gray!6}{0.118} & \cellcolor{gray!6}{0.109} & \cellcolor{gray!6}{0.105} & \cellcolor{gray!6}{0.103} & \cellcolor{gray!6}{0.101}\\
-21. Mixture cure Log-logistic & 1 & 0.822 & 0.549 & 0.381 & 0.290 & 0.240 & 0.163 & 0.148 & 0.143 & 0.140 & 0.139 & 0.138\\
-\cellcolor{gray!6}{22. Non-mixture cure Log-logistic} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{0.823} & \cellcolor{gray!6}{0.549} & \cellcolor{gray!6}{0.380} & \cellcolor{gray!6}{0.293} & \cellcolor{gray!6}{0.246} & \cellcolor{gray!6}{0.178} & \cellcolor{gray!6}{0.165} & \cellcolor{gray!6}{0.161} & \cellcolor{gray!6}{0.158} & \cellcolor{gray!6}{0.157} & \cellcolor{gray!6}{0.157}\\
+8. Spline 1 knot hazard & 1 & 0.822 & 0.545 & 0.390 & 0.301 & 0.244 & 0.109 & 0.056 & 0.031 & 0.018 & 0.011 & 0.007\\
+\cellcolor{gray!6}{9. Spline 2 knots hazard} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{0.817} & \cellcolor{gray!6}{0.546} & \cellcolor{gray!6}{0.396} & \cellcolor{gray!6}{0.305} & \cellcolor{gray!6}{0.243} & \cellcolor{gray!6}{0.096} & \cellcolor{gray!6}{0.043} & \cellcolor{gray!6}{0.021} & \cellcolor{gray!6}{0.010} & \cellcolor{gray!6}{0.005} & \cellcolor{gray!6}{0.003}\\
+10. Spline 3 knots hazard & 1 & 0.819 & 0.540 & 0.400 & 0.310 & 0.243 & 0.081 & 0.030 & 0.012 & 0.005 & 0.002 & 0.001\\
+\cellcolor{gray!6}{11. Spline 1 knot odds} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{0.820} & \cellcolor{gray!6}{0.542} & \cellcolor{gray!6}{0.390} & \cellcolor{gray!6}{0.303} & \cellcolor{gray!6}{0.248} & \cellcolor{gray!6}{0.127} & \cellcolor{gray!6}{0.082} & \cellcolor{gray!6}{0.060} & \cellcolor{gray!6}{0.047} & \cellcolor{gray!6}{0.038} & \cellcolor{gray!6}{0.032}\\
+12. Spline 2 knots odds & 1 & 0.817 & 0.544 & 0.393 & 0.304 & 0.246 & 0.120 & 0.075 & 0.054 & 0.041 & 0.033 & 0.027\\
+\cellcolor{gray!6}{13. Spline 3 knots odds} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{0.818} & \cellcolor{gray!6}{0.542} & \cellcolor{gray!6}{0.398} & \cellcolor{gray!6}{0.308} & \cellcolor{gray!6}{0.246} & \cellcolor{gray!6}{0.110} & \cellcolor{gray!6}{0.065} & \cellcolor{gray!6}{0.044} & \cellcolor{gray!6}{0.033} & \cellcolor{gray!6}{0.026} & \cellcolor{gray!6}{0.021}\\
+14. Spline 1 knot normal & 1 & 0.811 & 0.549 & 0.398 & 0.305 & 0.242 & 0.102 & 0.054 & 0.033 & 0.021 & 0.015 & 0.011\\
+\cellcolor{gray!6}{15. Spline 2 knots normal} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{0.815} & \cellcolor{gray!6}{0.546} & \cellcolor{gray!6}{0.392} & \cellcolor{gray!6}{0.303} & \cellcolor{gray!6}{0.245} & \cellcolor{gray!6}{0.113} & \cellcolor{gray!6}{0.065} & \cellcolor{gray!6}{0.042} & \cellcolor{gray!6}{0.029} & \cellcolor{gray!6}{0.021} & \cellcolor{gray!6}{0.016}\\
+16. Spline 3 knots normal & 1 & 0.818 & 0.541 & 0.398 & 0.308 & 0.244 & 0.100 & 0.051 & 0.030 & 0.019 & 0.013 & 0.009\\
+\cellcolor{gray!6}{17. Mixture cure Weibull} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{0.819} & \cellcolor{gray!6}{0.585} & \cellcolor{gray!6}{0.403} & \cellcolor{gray!6}{0.290} & \cellcolor{gray!6}{0.229} & \cellcolor{gray!6}{0.179} & \cellcolor{gray!6}{0.179} & \cellcolor{gray!6}{0.179} & \cellcolor{gray!6}{0.179} & \cellcolor{gray!6}{0.179} & \cellcolor{gray!6}{0.179}\\
+18. Non-mixture cure Weibull & 1 & 0.820 & 0.570 & 0.391 & 0.285 & 0.228 & 0.169 & 0.168 & 0.168 & 0.168 & 0.168 & 0.168\\
+\cellcolor{gray!6}{19. Mixture cure Log-normal} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{0.818} & \cellcolor{gray!6}{0.558} & \cellcolor{gray!6}{0.394} & \cellcolor{gray!6}{0.295} & \cellcolor{gray!6}{0.235} & \cellcolor{gray!6}{0.134} & \cellcolor{gray!6}{0.116} & \cellcolor{gray!6}{0.111} & \cellcolor{gray!6}{0.109} & \cellcolor{gray!6}{0.108} & \cellcolor{gray!6}{0.108}\\
+20. Non-mixture cure Log-normal & 1 & 0.818 & 0.551 & 0.390 & 0.297 & 0.241 & 0.143 & 0.118 & 0.109 & 0.105 & 0.103 & 0.101\\
+\cellcolor{gray!6}{21. Mixture cure Log-logistic} & \cellcolor{gray!6}{1} & \cellcolor{gray!6}{0.822} & \cellcolor{gray!6}{0.549} & \cellcolor{gray!6}{0.381} & \cellcolor{gray!6}{0.290} & \cellcolor{gray!6}{0.240} & \cellcolor{gray!6}{0.163} & \cellcolor{gray!6}{0.148} & \cellcolor{gray!6}{0.143} & \cellcolor{gray!6}{0.140} & \cellcolor{gray!6}{0.139} & \cellcolor{gray!6}{0.138}\\
+22. Non-mixture cure Log-logistic & 1 & 0.823 & 0.549 & 0.380 & 0.293 & 0.246 & 0.178 & 0.165 & 0.161 & 0.158 & 0.157 & 0.157\\
 \bottomrule
 \end{tabular}}
 \end{table}
 
-\begin{flushleft}\includegraphics[height=0.29\textheight]{Images/validate_extrapolation3-3} \end{flushleft}
-
 \begin{flushleft}\includegraphics[height=0.29\textheight]{Images/validate_extrapolation3-4} \end{flushleft}
+
+\begin{flushleft}\includegraphics[height=0.29\textheight]{Images/validate_extrapolation3-5} \end{flushleft}
+
+\begin{flushleft}\includegraphics[height=0.29\textheight]{Images/validate_extrapolation3-6} \end{flushleft}
 
 \begin{table}
 
@@ -771,19 +971,30 @@ data.
 \cellcolor{gray!6}{5. Log-logistic} & \cellcolor{gray!6}{0.1158111} & \cellcolor{gray!6}{0.0780753} & \cellcolor{gray!6}{0.0305143} & \cellcolor{gray!6}{0.0571627} & \cellcolor{gray!6}{0.0832145} & \cellcolor{gray!6}{0.1494462} & \cellcolor{gray!6}{0.3207417} & \cellcolor{gray!6}{0.0920005}\\
 6. Gamma & 0.3702654 & 0.0421058 & 0.0471845 & 0.3701940 & 0.3852535 & 0.3907371 & 0.3935697 & 0.0204764\\
 \cellcolor{gray!6}{7. Generalised Gamma} & \cellcolor{gray!6}{0.1013639} & \cellcolor{gray!6}{0.0706160} & \cellcolor{gray!6}{0.0000317} & \cellcolor{gray!6}{0.0518395} & \cellcolor{gray!6}{0.0728961} & \cellcolor{gray!6}{0.1237607} & \cellcolor{gray!6}{0.3222943} & \cellcolor{gray!6}{0.0717062}\\
-17. Mixture cure Weibull & 0.0374953 & 0.0871122 & 0.0000000 & 0.0000000 & 0.0000000 & 0.0019526 & 0.3124571 & 0.0019062\\
-\cellcolor{gray!6}{18. Non-mixture cure Weibull} & \cellcolor{gray!6}{0.0389260} & \cellcolor{gray!6}{0.0878954} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0058137} & \cellcolor{gray!6}{0.3224039} & \cellcolor{gray!6}{0.0057065}\\
-19. Mixture cure Log-normal & 0.0496395 & 0.0871508 & 0.0002039 & 0.0008353 & 0.0048810 & 0.0495432 & 0.3220204 & 0.0484359\\
-\cellcolor{gray!6}{20. Non-mixture cure Log-normal} & \cellcolor{gray!6}{0.0514956} & \cellcolor{gray!6}{0.0842490} & \cellcolor{gray!6}{0.0012590} & \cellcolor{gray!6}{0.0032428} & \cellcolor{gray!6}{0.0107457} & \cellcolor{gray!6}{0.0537620} & \cellcolor{gray!6}{0.3323853} & \cellcolor{gray!6}{0.0503940}\\
-21. Mixture cure Log-logistic & 0.0439682 & 0.0847543 & 0.0005930 & 0.0014141 & 0.0047437 & 0.0321531 & 0.3414361 & 0.0305649\\
-\cellcolor{gray!6}{22. Non-mixture cure Log-logistic} & \cellcolor{gray!6}{0.0410716} & \cellcolor{gray!6}{0.0836704} & \cellcolor{gray!6}{0.0004619} & \cellcolor{gray!6}{0.0010900} & \cellcolor{gray!6}{0.0036280} & \cellcolor{gray!6}{0.0253772} & \cellcolor{gray!6}{0.3434417} & \cellcolor{gray!6}{0.0241440}\\
+8. Spline 1 knot hazard & 0.1254303 & 0.0555367 & 0.0048605 & 0.0929348 & 0.1060806 & 0.1322263 & 0.3462113 & 0.0391837\\
+\cellcolor{gray!6}{9. Spline 2 knots hazard} & \cellcolor{gray!6}{0.1469155} & \cellcolor{gray!6}{0.0485978} & \cellcolor{gray!6}{0.0027621} & \cellcolor{gray!6}{0.1183362} & \cellcolor{gray!6}{0.1309295} & \cellcolor{gray!6}{0.1552006} & \cellcolor{gray!6}{0.3471134} & \cellcolor{gray!6}{0.0367658}\\
+10. Spline 3 knots hazard & 0.1787527 & 0.0386871 & 0.0031604 & 0.1581132 & 0.1681704 & 0.1865373 & 0.3590229 & 0.0283502\\
+\cellcolor{gray!6}{11. Spline 1 knot odds} & \cellcolor{gray!6}{0.0828358} & \cellcolor{gray!6}{0.0722684} & \cellcolor{gray!6}{0.0040186} & \cellcolor{gray!6}{0.0370407} & \cellcolor{gray!6}{0.0534928} & \cellcolor{gray!6}{0.0956147} & \cellcolor{gray!6}{0.3493116} & \cellcolor{gray!6}{0.0583932}\\
+12. Spline 2 knots odds & 0.0867603 & 0.0720369 & 0.0029239 & 0.0397013 & 0.0573770 & 0.1025038 & 0.3469030 & 0.0626095\\
+\cellcolor{gray!6}{13. Spline 3 knots odds} & \cellcolor{gray!6}{0.0933644} & \cellcolor{gray!6}{0.0716684} & \cellcolor{gray!6}{0.0031346} & \cellcolor{gray!6}{0.0443526} & \cellcolor{gray!6}{0.0641665} & \cellcolor{gray!6}{0.1145082} & \cellcolor{gray!6}{0.3547245} & \cellcolor{gray!6}{0.0699417}\\
+14. Spline 1 knot normal & 0.1114168 & 0.0648053 & 0.0001727 & 0.0667705 & 0.0870224 & 0.1315769 & 0.3327152 & 0.0646236\\
+\cellcolor{gray!6}{15. Spline 2 knots normal} & \cellcolor{gray!6}{0.1011547} & \cellcolor{gray!6}{0.0666094} & \cellcolor{gray!6}{0.0003302} & \cellcolor{gray!6}{0.0575542} & \cellcolor{gray!6}{0.0758377} & \cellcolor{gray!6}{0.1164719} & \cellcolor{gray!6}{0.3361441} & \cellcolor{gray!6}{0.0587484}\\
+16. Spline 3 knots normal & 0.1148143 & 0.0640431 & 0.0005575 & 0.0702242 & 0.0912163 & 0.1362709 & 0.3562720 & 0.0658618\\
+\cellcolor{gray!6}{17. Mixture cure Weibull} & \cellcolor{gray!6}{0.0374953} & \cellcolor{gray!6}{0.0871122} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0000000} & \cellcolor{gray!6}{0.0019526} & \cellcolor{gray!6}{0.3124571} & \cellcolor{gray!6}{0.0019062}\\
+18. Non-mixture cure Weibull & 0.0389260 & 0.0878954 & 0.0000000 & 0.0000000 & 0.0000000 & 0.0058137 & 0.3224039 & 0.0057065\\
+\cellcolor{gray!6}{19. Mixture cure Log-normal} & \cellcolor{gray!6}{0.0496395} & \cellcolor{gray!6}{0.0871508} & \cellcolor{gray!6}{0.0002039} & \cellcolor{gray!6}{0.0008353} & \cellcolor{gray!6}{0.0048810} & \cellcolor{gray!6}{0.0495432} & \cellcolor{gray!6}{0.3220204} & \cellcolor{gray!6}{0.0484359}\\
+20. Non-mixture cure Log-normal & 0.0514956 & 0.0842490 & 0.0012590 & 0.0032428 & 0.0107457 & 0.0537620 & 0.3323853 & 0.0503940\\
+\cellcolor{gray!6}{21. Mixture cure Log-logistic} & \cellcolor{gray!6}{0.0439682} & \cellcolor{gray!6}{0.0847543} & \cellcolor{gray!6}{0.0005930} & \cellcolor{gray!6}{0.0014141} & \cellcolor{gray!6}{0.0047437} & \cellcolor{gray!6}{0.0321531} & \cellcolor{gray!6}{0.3414361} & \cellcolor{gray!6}{0.0305649}\\
+22. Non-mixture cure Log-logistic & 0.0410716 & 0.0836704 & 0.0004619 & 0.0010900 & 0.0036280 & 0.0253772 & 0.3434417 & 0.0241440\\
 \bottomrule
 \end{tabular}}
 \end{table}
 
-\begin{flushleft}\includegraphics[height=0.29\textheight]{Images/validate_extrapolation3-5} \end{flushleft}
+\begin{flushleft}\includegraphics[height=0.29\textheight]{Images/validate_extrapolation3-7} \end{flushleft}
 
-\begin{flushleft}\includegraphics[height=0.29\textheight]{Images/validate_extrapolation3-6} \end{flushleft}
+\begin{flushleft}\includegraphics[height=0.29\textheight]{Images/validate_extrapolation3-8} \end{flushleft}
+
+\begin{flushleft}\includegraphics[height=0.29\textheight]{Images/validate_extrapolation3-9} \end{flushleft}
 
 \newpage
 
@@ -797,7 +1008,7 @@ data.
 ##   ..$ status              : num [1:686] 0 0 0 0 0 0 0 1 0 0 ...
 ##   ..$ group               : Factor w/ 3 levels "Good","Medium",..: 1 1 1 1 1 1 1 1 1 1 ...
 ##   ..$ strata              : logi TRUE
-##   ..$ spline_mod          : logi FALSE
+##   ..$ spline_mod          : logi TRUE
 ##   ..$ cure_mod            : logi TRUE
 ##   ..$ cure_link           : chr "logistic"
 ##   ..$ time_unit           : num 0.0833
@@ -813,7 +1024,7 @@ data.
 ##   ..$ tp      :List of 4
 ##   ..$ cox_reg :List of 21
 ##   .. ..- attr(*, "class")= chr "coxph"
-##  $ surv_model:List of 16
+##  $ surv_model:List of 26
 ##   ..$ expo           :List of 28
 ##   .. ..- attr(*, "class")= chr "flexsurvreg"
 ##   ..$ weib           :List of 28
@@ -829,6 +1040,25 @@ data.
 ##   ..$ ggam           :List of 28
 ##   .. ..- attr(*, "class")= chr "flexsurvreg"
 ##   ..$ IC             :'data.frame':  7 obs. of  3 variables:
+##   ..$ spl_hazard1    :List of 31
+##   .. ..- attr(*, "class")= chr "flexsurvreg"
+##   ..$ spl_hazard2    :List of 31
+##   .. ..- attr(*, "class")= chr "flexsurvreg"
+##   ..$ spl_hazard3    :List of 31
+##   .. ..- attr(*, "class")= chr "flexsurvreg"
+##   ..$ spl_odds1      :List of 31
+##   .. ..- attr(*, "class")= chr "flexsurvreg"
+##   ..$ spl_odds2      :List of 31
+##   .. ..- attr(*, "class")= chr "flexsurvreg"
+##   ..$ spl_odds3      :List of 31
+##   .. ..- attr(*, "class")= chr "flexsurvreg"
+##   ..$ spl_normal1    :List of 31
+##   .. ..- attr(*, "class")= chr "flexsurvreg"
+##   ..$ spl_normal2    :List of 31
+##   .. ..- attr(*, "class")= chr "flexsurvreg"
+##   ..$ spl_normal3    :List of 31
+##   .. ..- attr(*, "class")= chr "flexsurvreg"
+##   ..$ IC_spl         :'data.frame':  9 obs. of  3 variables:
 ##   ..$ cure_weib_mix  :List of 3
 ##   ..$ cure_weib_nmix :List of 3
 ##   ..$ cure_lnorm_mix :List of 3
@@ -836,21 +1066,22 @@ data.
 ##   ..$ cure_llog_mix  :List of 3
 ##   ..$ cure_llog_nmix :List of 3
 ##   ..$ IC_cure        :'data.frame':  6 obs. of  5 variables:
-##   ..$ survmod        : chr [1:21, 1:42] "1. Exponential" "rate" "-2.80703426596042" "-3.08148409638671" ...
+##   ..$ survmod        : chr [1:21, 1:105] "1. Exponential" "rate" "-2.80703426596042" "-3.08148409638671" ...
 ##   .. ..- attr(*, "dimnames")=List of 2
 ##  $ surv_pred :List of 3
-##   ..$ model:List of 26
+##   ..$ model:List of 44
 ##   ..$ gr   :List of 3
 ##   ..$ tp_gr:List of 3
-##  $ misc      :List of 7
+##  $ misc      :List of 8
 ##   ..$ form       :Class 'formula'  language Surv(years, status) ~ group
-##   .. .. ..- attr(*, ".Environment")=<environment: 0x00000000251cc620> 
+##   .. .. ..- attr(*, ".Environment")=<environment: 0x0000000024054fd0> 
 ##   ..$ group_names: chr [1:3] "Good" "Medium" "Poor"
 ##   ..$ ngroups    : int 3
-##   ..$ lbls_all   : chr [1:14] "time" " 1. Exponential" " 2. Weibull" " 3. Gompertz" ...
+##   ..$ lbls_all   : chr [1:23] "time" " 1. Exponential" " 2. Weibull" " 3. Gompertz" ...
 ##   ..$ lbls       : chr [1:7] " 1. Exponential" " 2. Weibull" " 3. Gompertz" " 4. Log-normal" ...
+##   ..$ lbls_spline: chr [1:9] " 8. Spline 1 knot hazard" " 9. Spline 2 knots hazard" "10. Spline 3 knots hazard" "11. Spline 1 knot odds" ...
 ##   ..$ lbls_cure  : chr [1:6] "17. Mixture cure Weibull" "18. Non-mixture cure Weibull" "19. Mixture cure Log-normal" "20. Non-mixture cure Log-normal" ...
-##   ..$ cols_tp    : num 14
+##   ..$ cols_tp    : num 23
 ## NULL
 \end{verbatim}
 
