@@ -39,7 +39,7 @@ load(paste0(getwd(),"/PERSUADE.RData"))
 [Link to PERSUADE GitHub page](https://github.com/Bram-R/PERSUADE)
 \newpage
 
-# Kaplan-Meier  
+# 1. Kaplan-Meier  
 
 ```{r plot_KM, echo=FALSE, fig.height=8, fig.width=7}
 evalq({
@@ -61,7 +61,7 @@ kable_styling(kable(summary(PERSUADE$surv_obs$km)$table, format = "latex",
 
 \newpage
 
-# Proportional hazards assumption  
+# 2. Proportional hazards assumption  
 
 Should stratified parametric survival models be used? 
 
@@ -105,7 +105,7 @@ evalq({
 
 \newpage
 
-# Hazard function  
+# 3. Hazard function  
 ## Shape of the observed smoothed hazard function  
 
 The hazard function, or the instantaneous rate at which an event occurs at a specific time point given survival until that time point. The hazard function can take a variety of shapes depending on the distribution/parametric survival model considered. The plausibility of different shapes for the hazard function should be considered given the observed hazard function (considered below) and/or external data (not considered below).
@@ -366,7 +366,7 @@ evalq({
 
 \newpage
 
-# Standard parametric models  
+# 4.1 Standard parametric models  
 The circle displays the colours that are attributed to each parametric survival model in the graphs on the following pages.  
 The Table below displays the goodness-of-fit statistics for each parametric survival model, ordered from 'best' fitting to less well fitting based on the Akaike Information Criterion (AIC). The AIC and Bayesian Information Criterion (BIC) provide a measure of the relative fit of each model to the data, while penalising for the number of parameter included in the fitted models. The lower the AIC or BIC, the better the relative fit of a model compared to other fitted models.  
 
@@ -1085,7 +1085,7 @@ evalq({
 
 \newpage
 
-# Parametric natural cubic spline models
+# 4.2 Parametric natural cubic spline models
 If standard parametric models do not provide a satisfactory fit to the data based on previous observations, do spline-based models provide a more satisfactory fit to the data? An explanation concerning these natural cubic spline models, henceforth spline-based models, is provided in [Royston and Pamar - 2002](https://doi.org/10.1002/sim.1203).  
 
 Similar plots are provided as provided (and explained) in the previous section. As highlighted above, spline-based models using the hazard scale, odds scale and normal scale are extensions of the standard parametric survival models using the Weibull, log-logistic and log-normal distribution respectively. 
@@ -2146,7 +2146,7 @@ evalq({
 
 \newpage
 
-# Parametric (non-)mixture cure models 
+# 4.3 Parametric (non-)mixture cure models 
 If standard parametric models do not provide a satisfactory fit to the data based on previous observations, do cure models provide a more satisfactory fit to the data?  
 ADD SIMILAR AS SPLINE AND EXPLAIN DIFFERENCE (NON)MXITURE CURE MODELS #####
 mixture cure models: $$S × (1 - theta) + theta × 1$$
@@ -2810,7 +2810,7 @@ evalq({
 
 \newpage
 
-# Long-term extrapolation
+# 5. Long-term extrapolation
 
 The plausibility of the estimated survival beyond the oberseved data period should be considered and is typically an influential aspect of health economic models. This includes considering model(s) is/are more appropriate/plausible for long-term extrapolation when compared to external data (including general population mortality)?  
 In this section, the estimated survival probabilities for the period of time within and beyond data collection, i.e. the extrapolation are presented (can be specified by the user). This is done by 1) plotting the survival curves (Figures A, B and C), 2) displaying the survival probabilities at multiple time points (first Table), 3) ploting annual transition probabilities (Figures D, E and F), 4) ploting the smoothed hazard functions (Figures G, H and I), and providing the summary statistics of the estimated annual transition probabilities (second Table). This information is provided for each group separately.  
