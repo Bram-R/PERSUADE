@@ -113,14 +113,14 @@ The hazard function, or the instantaneous rate at which an event occurs at a spe
 See below for an overview of the potential shapes for the hazard function for standard parametric survival models:
 
 No | Distribution |	Hazard function shape 
--- | ---------------- | ---------------- 
+-- | -------------------------------- | -------------------------------- 
 1 | Exponential | constant hazard 
-2 | Weibull	| monotonically increasing and decreasing hazards 
-3 | Gompertz  | monotonically increasing and decreasing hazards  
-4 | Log-normal | arc-shaped and monotonically decreasing hazards 
-5 | Log-logistic | arc-shaped and monotonically decreasing hazards
-6 | Gamma | monotonically increasing and decreasing hazards  
-7 | Generalised Gamma | arc-shaped, bathtub-shaped, monotonically increasing, and monotonically decreasing hazards
+2 | Weibull	| monotonically increasing or decreasing hazards 
+3 | Gompertz  | monotonically increasing or decreasing hazards  
+4 | Log-normal | arc-shaped or monotonically decreasing hazards 
+5 | Log-logistic | arc-shaped or monotonically decreasing hazards
+6 | Gamma | monotonically increasing or decreasing hazards  
+7 | Generalised Gamma | arc-shaped, bathtub-shaped, monotonically increasing or monotonically decreasing hazards
 
 as the spline-based and (non-)mixture cure models are based on the standard parametric models, the assumed hazard functions can be derived from the Table above as well. For spline-based models using the hazard scale, the Weibull distribution (thus monotonically increasing and decreasing hazards) is used and the hazard function can differ for the different segments (i.e. between the knot locations). Similarly for spline-based models using the odds (log-logistic distribution) and normal scale (log-normal distribution) as well as the distributions used for the (non-)mixture cure models (different hazard functions are potentially estimated for the (non-)cure fraction). More information and visualisation of the shape of the hazard function that can be estimated by the different parametric survival models can be found [here](https://devinincerti.com/2019/06/18/parametric_survival.html).  
 
@@ -2148,10 +2148,10 @@ evalq({
 
 # Parametric (non-)mixture cure models 
 If standard parametric models do not provide a satisfactory fit to the data based on previous observations, do cure models provide a more satisfactory fit to the data?  
-
-mixture cure models: S * (1 - theta) + theta * 1 
+ADD SIMILAR AS SPLINE AND EXPLAIN DIFFERENCE (NON)MXITURE CURE MODELS #####
+mixture cure models: $$S × (1 - theta) + theta × 1$$
 (theta * 1 assumes that the cure fraction has 100% survival)
-non-mixture cure models: exp((1-S) * log(theta))
+non-mixture cure models: $$exp((1-S) × log(theta))$$
 
 ```{r cure, echo=FALSE, eval = PERSUADE$input$cure_mod}
 evalq({
@@ -2813,7 +2813,7 @@ evalq({
 # Long-term extrapolation
 
 The plausibility of the estimated survival beyond the oberseved data period should be considered and is typically an influential aspect of health economic models. This includes considering model(s) is/are more appropriate/plausible for long-term extrapolation when compared to external data (including general population mortality)?  
-In this section, the estimated survival probabilities for the period of time within and beyond data collection, i.e. the extrapolation are presented (can be specified by the user). This is done by 1) plotting the survival curves (Figures A, B and C), 2) displaying the survival probabilities at multiple time points (first Table), 3) ploting annual transition probabilities (Figures D, E and F), 3) ploting the smoothed hazard functions (Figures G, H and I), and providing the summary statistics of the estimated annual transition probabilities (second Table). This information is provided for each group separately.  
+In this section, the estimated survival probabilities for the period of time within and beyond data collection, i.e. the extrapolation are presented (can be specified by the user). This is done by 1) plotting the survival curves (Figures A, B and C), 2) displaying the survival probabilities at multiple time points (first Table), 3) ploting annual transition probabilities (Figures D, E and F), 4) ploting the smoothed hazard functions (Figures G, H and I), and providing the summary statistics of the estimated annual transition probabilities (second Table). This information is provided for each group separately.  
 One way to assess the plausibility of the extrapolated survival probabilities is to compare the estimated survival probabilities at different time points with external data (e.g. observational data and/or expert opinion). Another way to check for plausibility is to compare the annual transition probability with those observed in the general population (general population mortality can be obtained through national statistics). Parametric survival models annual conditional transition probabilities more favourable than those observed for the general population may not be plausible. This would require either to select an alternative parametric survival model or to adjust the selected parametric survival model for general population probabilities.  
 
 \newpage
