@@ -2810,7 +2810,7 @@ evalq({
 
 \newpage
 
-# 5. Long-term extrapolation
+# 5. Extrapolated survival
 
 The plausibility of the estimated survival beyond the oberseved data period should be considered and is typically an influential aspect of health economic models. This includes considering model(s) is/are more appropriate/plausible for long-term extrapolation when compared to external data (including general population mortality)?  
 In this section, the estimated survival probabilities for the period of time within and beyond data collection, i.e. the extrapolation are presented (can be specified by the user). This is done by 1) plotting the survival curves (Figures A, B and C), 2) displaying the survival probabilities at multiple time points (first Table), 3) ploting annual transition probabilities (Figures D, E and F), 4) ploting the smoothed hazard functions (Figures G, H and I), and providing the summary statistics of the estimated annual transition probabilities (second Table). This information is provided for each group separately.  

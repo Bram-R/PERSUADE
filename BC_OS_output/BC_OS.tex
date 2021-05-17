@@ -87,7 +87,7 @@
 
 \title{PERSUADE BC\_OS\_output}
 \author{}
-\date{\vspace{-2.5em}2021-03-26}
+\date{\vspace{-2.5em}2021-05-17}
 
 \begin{document}
 \maketitle
@@ -101,7 +101,7 @@
 \href{https://github.com/Bram-R/PERSUADE}{Link to PERSUADE GitHub page}
 \newpage
 
-\section{Kaplan-Meier}\label{kaplan-meier}
+\section{1. Kaplan-Meier}\label{kaplan-meier}
 
 \begin{flushleft}\includegraphics{Images/plot_KM-1} \end{flushleft}
 
@@ -121,7 +121,7 @@ group=Medium & 229 & 229 & 229 & 103 & 4.600852 & 0.1856699 & 5.254795 & 4.11506
 
 \newpage
 
-\section{Proportional hazards
+\section{2. Proportional hazards
 assumption}\label{proportional-hazards-assumption}
 
 Should stratified parametric survival models be used?
@@ -177,7 +177,7 @@ should consider this when interpreting the tail of the curves.
 
 \newpage
 
-\section{Hazard function}\label{hazard-function}
+\section{3. Hazard function}\label{hazard-function}
 
 \subsection{Shape of the observed smoothed hazard
 function}\label{shape-of-the-observed-smoothed-hazard-function}
@@ -197,61 +197,61 @@ function for standard parametric survival models:
 \toprule
 \begin{minipage}[b]{0.04\columnwidth}\raggedright\strut
 No\strut
-\end{minipage} & \begin{minipage}[b]{0.22\columnwidth}\raggedright\strut
+\end{minipage} & \begin{minipage}[b]{0.42\columnwidth}\raggedright\strut
 Distribution\strut
-\end{minipage} & \begin{minipage}[b]{0.22\columnwidth}\raggedright\strut
+\end{minipage} & \begin{minipage}[b]{0.42\columnwidth}\raggedright\strut
 Hazard function shape\strut
 \end{minipage}\tabularnewline
 \midrule
 \endhead
 \begin{minipage}[t]{0.04\columnwidth}\raggedright\strut
 1\strut
-\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\end{minipage} & \begin{minipage}[t]{0.42\columnwidth}\raggedright\strut
 Exponential\strut
-\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\end{minipage} & \begin{minipage}[t]{0.42\columnwidth}\raggedright\strut
 constant hazard\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.04\columnwidth}\raggedright\strut
 2\strut
-\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\end{minipage} & \begin{minipage}[t]{0.42\columnwidth}\raggedright\strut
 Weibull\strut
-\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
-monotonically increasing and decreasing hazards\strut
+\end{minipage} & \begin{minipage}[t]{0.42\columnwidth}\raggedright\strut
+monotonically increasing or decreasing hazards\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.04\columnwidth}\raggedright\strut
 3\strut
-\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\end{minipage} & \begin{minipage}[t]{0.42\columnwidth}\raggedright\strut
 Gompertz\strut
-\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
-monotonically increasing and decreasing hazards\strut
+\end{minipage} & \begin{minipage}[t]{0.42\columnwidth}\raggedright\strut
+monotonically increasing or decreasing hazards\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.04\columnwidth}\raggedright\strut
 4\strut
-\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\end{minipage} & \begin{minipage}[t]{0.42\columnwidth}\raggedright\strut
 Log-normal\strut
-\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
-arc-shaped and monotonically decreasing hazards\strut
+\end{minipage} & \begin{minipage}[t]{0.42\columnwidth}\raggedright\strut
+arc-shaped or monotonically decreasing hazards\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.04\columnwidth}\raggedright\strut
 5\strut
-\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\end{minipage} & \begin{minipage}[t]{0.42\columnwidth}\raggedright\strut
 Log-logistic\strut
-\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
-arc-shaped and monotonically decreasing hazards\strut
+\end{minipage} & \begin{minipage}[t]{0.42\columnwidth}\raggedright\strut
+arc-shaped or monotonically decreasing hazards\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.04\columnwidth}\raggedright\strut
 6\strut
-\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\end{minipage} & \begin{minipage}[t]{0.42\columnwidth}\raggedright\strut
 Gamma\strut
-\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
-monotonically increasing and decreasing hazards\strut
+\end{minipage} & \begin{minipage}[t]{0.42\columnwidth}\raggedright\strut
+monotonically increasing or decreasing hazards\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.04\columnwidth}\raggedright\strut
 7\strut
-\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\end{minipage} & \begin{minipage}[t]{0.42\columnwidth}\raggedright\strut
 Generalised Gamma\strut
-\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
-arc-shaped, bathtub-shaped, monotonically increasing, and monotonically
+\end{minipage} & \begin{minipage}[t]{0.42\columnwidth}\raggedright\strut
+arc-shaped, bathtub-shaped, monotonically increasing or monotonically
 decreasing hazards\strut
 \end{minipage}\tabularnewline
 \bottomrule
@@ -307,7 +307,8 @@ different parametric survival models.
 
 \newpage
 
-\section{Standard parametric models}\label{standard-parametric-models}
+\section{4.1 Standard parametric
+models}\label{standard-parametric-models}
 
 The circle displays the colours that are attributed to each parametric
 survival model in the graphs on the following pages.\\
@@ -439,7 +440,7 @@ Model & AIC & BIC\\
 
 \newpage
 
-\section{Parametric natural cubic spline
+\section{4.2 Parametric natural cubic spline
 models}\label{parametric-natural-cubic-spline-models}
 
 If standard parametric models do not provide a satisfactory fit to the
@@ -581,16 +582,16 @@ Model & AIC & BIC\\
 
 \newpage
 
-\section{Parametric (non-)mixture cure
+\section{4.3 Parametric (non-)mixture cure
 models}\label{parametric-non-mixture-cure-models}
 
 If standard parametric models do not provide a satisfactory fit to the
 data based on previous observations, do cure models provide a more
-satisfactory fit to the data?
-
-mixture cure models: S * (1 - theta) + theta * 1 (theta * 1 assumes that
-the cure fraction has 100\% survival) non-mixture cure models: exp((1-S)
-* log(theta))
+satisfactory fit to the data?\\
+ADD SIMILAR AS SPLINE AND EXPLAIN DIFFERENCE (NON)MXITURE CURE MODELS
+\#\#\#\#\# mixture cure models: \[S × (1 - theta) + theta × 1\] (theta *
+1 assumes that the cure fraction has 100\% survival) non-mixture cure
+models: \[exp((1-S) × log(theta))\]
 
 \begin{flushleft}\includegraphics{Images/cure-1} \end{flushleft}
 
@@ -698,7 +699,7 @@ Log-logistic}\label{non-mixture-cure-log-logistic}
 
 \newpage
 
-\section{Long-term extrapolation}\label{long-term-extrapolation}
+\section{5. Extrapolated survival}\label{extrapolated-survival}
 
 The plausibility of the estimated survival beyond the oberseved data
 period should be considered and is typically an influential aspect of
@@ -710,7 +711,7 @@ time within and beyond data collection, i.e.~the extrapolation are
 presented (can be specified by the user). This is done by 1) plotting
 the survival curves (Figures A, B and C), 2) displaying the survival
 probabilities at multiple time points (first Table), 3) ploting annual
-transition probabilities (Figures D, E and F), 3) ploting the smoothed
+transition probabilities (Figures D, E and F), 4) ploting the smoothed
 hazard functions (Figures G, H and I), and providing the summary
 statistics of the estimated annual transition probabilities (second
 Table). This information is provided for each group separately.\\
@@ -1074,7 +1075,7 @@ selected parametric survival model for general population probabilities.
 ##   ..$ tp_gr:List of 3
 ##  $ misc      :List of 8
 ##   ..$ form       :Class 'formula'  language Surv(years, status) ~ group
-##   .. .. ..- attr(*, ".Environment")=<environment: 0x0000000024054fd0> 
+##   .. .. ..- attr(*, ".Environment")=<environment: 0x00000000241ac8d8> 
 ##   ..$ group_names: chr [1:3] "Good" "Medium" "Poor"
 ##   ..$ ngroups    : int 3
 ##   ..$ lbls_all   : chr [1:23] "time" " 1. Exponential" " 2. Weibull" " 3. Gompertz" ...
