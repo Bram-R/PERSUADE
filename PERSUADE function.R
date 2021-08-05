@@ -1,4 +1,5 @@
 # code is formatted using formatR::tidy_source(width.cutoff = 100)
+
 f_PERSUADE <- function(name = "no_name", years, status, group, 
                        strata = FALSE, spline_mod = FALSE, cure_mod = FALSE, cure_link = "logistic",
                        time_unit, time_horizon, time_pred_surv_table) {
