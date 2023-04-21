@@ -64,22 +64,22 @@ f_PERSUADE <- function(name = "no_name", years, status, group,
   surv_model_excel <- f_surv_model_excel(ngroups = ngroups, strata = strata, surv_model = surv_model, spline_mod = spline_mod, cure_mod = cure_mod) 
   
   # output
-  input <- list(years = years, status = status, group = group, strata = strata, spline_mod = spline_mod, 
-                cure_mod = cure_mod, cure_link = cure_link, time_unit = time_unit, time_horizon = time_horizon, 
-                time_pred_surv_table = time_pred_surv_table, time_pred = time_pred)
-  
-  surv_obs <- list(km = km, km_names = km_names, cum_haz = cum_haz, haz = haz, tp = tp, cox_reg = cox_reg)
-  
-  surv_pred <- list(model = surv_model_pred, gr = surv_model_pred_gr, tp_gr = surv_model_pred_tp_gr)
-  
-  misc <- c(list(form = form, group_names = group_names, ngroups = ngroups, lbls = surv_model$IC[,1]), 
-            if (spline_mod == TRUE) {list(lbls_spline = surv_model$IC_spl[,1])}, 
-            if (cure_mod == TRUE) {list(lbls_cure = surv_model$IC_cure[,1])}, 
-            list(cols_tp = cols_tp))
-  
-  output <- list(name = name, input = input, surv_obs = surv_obs, surv_model = surv_model, surv_pred = surv_pred, surv_model_excel = surv_model_excel, misc = misc)
-  
-  return(output) 
+  return(
+    list(
+      name = name, 
+      input = list(years = years, status = status, group = group, strata = strata, spline_mod = spline_mod, 
+                   cure_mod = cure_mod, cure_link = cure_link, time_unit = time_unit, time_horizon = time_horizon, 
+                   time_pred_surv_table = time_pred_surv_table, time_pred = time_pred), 
+      surv_obs = list(km = km, km_names = km_names, cum_haz = cum_haz, haz = haz, tp = tp, cox_reg = cox_reg),
+      surv_model = surv_model, 
+      surv_pred = list(model = surv_model_pred, gr = surv_model_pred_gr, tp_gr = surv_model_pred_tp_gr), 
+      surv_model_excel = surv_model_excel, 
+      misc = c(list(form = form, group_names = group_names, ngroups = ngroups, lbls = surv_model$IC[,1]),
+               if (spline_mod == TRUE) {list(lbls_spline = surv_model$IC_spl[,1])},
+               if (cure_mod == TRUE) {list(lbls_cure = surv_model$IC_cure[,1])},
+               list(cols_tp = cols_tp))
+    )
+  ) 
 }
 
 ## functions used in the main PERSUADE function
