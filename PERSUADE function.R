@@ -148,31 +148,24 @@ f_tp <- function(ngroups, cum_haz) {
                                        if (ngroups > 2) {c(NA, loess(tp_lower[cum_haz$group == 3] ~ cum_haz$time[cum_haz$group == 3])$fitted)})))
   
   km_tp_gr_1 <- data.frame(
-    time = cum_haz$time[cum_haz$group==1],
-    smooth = tp_smooth[cum_haz$group==1],
-    smooth_lower = tp_lower_smooth[cum_haz$group==1],
-    smooth_upper = tp_upper_smooth[cum_haz$group==1]
+    time = cum_haz$time[cum_haz$group==1], smooth = tp_smooth[cum_haz$group==1],
+    smooth_lower = tp_lower_smooth[cum_haz$group==1], smooth_upper = tp_upper_smooth[cum_haz$group==1]
   )
   
   if (ngroups > 1) {
     km_tp_gr_2 <- data.frame(
-      time = cum_haz$time[cum_haz$group==2],
-      smooth = tp_smooth[cum_haz$group==2],
-      smooth_lower = tp_lower_smooth[cum_haz$group==2],
-      smooth_upper = tp_upper_smooth[cum_haz$group==2]
+      time = cum_haz$time[cum_haz$group==2], smooth = tp_smooth[cum_haz$group==2],
+      smooth_lower = tp_lower_smooth[cum_haz$group==2], smooth_upper = tp_upper_smooth[cum_haz$group==2]
     )
   }
   if (ngroups > 2) {
     km_tp_gr_3 <- data.frame(
-      time = cum_haz$time[cum_haz$group==3],
-      smooth = tp_smooth[cum_haz$group==3],
-      smooth_lower = tp_lower_smooth[cum_haz$group==3],
-      smooth_upper = tp_upper_smooth[cum_haz$group==3]
+      time = cum_haz$time[cum_haz$group==3], smooth = tp_smooth[cum_haz$group==3],
+      smooth_lower = tp_lower_smooth[cum_haz$group==3], smooth_upper = tp_upper_smooth[cum_haz$group==3]
     )
   }
   
-  km_tp_max <- max(c(km_tp_gr_1$smooth_upper, 
-                     if (ngroups > 1) {km_tp_gr_2$smooth_upper}, 
+  km_tp_max <- max(c(km_tp_gr_1$smooth_upper, if (ngroups > 1) {km_tp_gr_2$smooth_upper}, 
                      if (ngroups > 2) {km_tp_gr_3$smooth_upper}), 
                    na.rm = TRUE)
   
@@ -213,8 +206,7 @@ f_surv_model <- function(years, status, group, strata, ngroups, form, spline_mod
       flexsurvreg(form, anc = list(sigma = ~group, Q = ~group), dist = "gengamma")
     }
   
-  lbls <- c(" 1. Exponential", " 2. Weibull", " 3. Gompertz", " 4. Log-normal", " 5. Log-logistic", " 6. Gamma", 
-            " 7. Generalised Gamma")
+  lbls <- c(" 1. Exponential", " 2. Weibull", " 3. Gompertz", " 4. Log-normal", " 5. Log-logistic", " 6. Gamma", " 7. Generalised Gamma")
   
   # calculate AIC and BIC
   AIC <- c(expo$AIC, weib$AIC, gom$AIC, lnorm$AIC, llog$AIC, gam$AIC, ggam$AIC)
@@ -296,9 +288,8 @@ f_surv_model <- function(years, status, group, strata, ngroups, form, spline_mod
                    link = cure_link, dist = "llogis", mixture = FALSE)
     )
     
-    lbls_cure <- c("17. Mixture cure Weibull", "18. Non-mixture cure Weibull", 
-                   "19. Mixture cure Log-normal", "20. Non-mixture cure Log-normal", 
-                   "21. Mixture cure Log-logistic", "22. Non-mixture cure Log-logistic") 
+    lbls_cure <- c("17. Mixture cure Weibull", "18. Non-mixture cure Weibull", "19. Mixture cure Log-normal", 
+                   "20. Non-mixture cure Log-normal", "21. Mixture cure Log-logistic", "22. Non-mixture cure Log-logistic") 
     
     # calculate AIC 
     AIC_cure <- c(sum(sapply(c(1:ngroups), function(x) cure_weib_mix[[x]]$AIC)),

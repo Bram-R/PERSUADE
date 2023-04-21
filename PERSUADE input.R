@@ -33,9 +33,6 @@ PERSUADE <- f_PERSUADE(name = name, years = years, status = status, group = grou
 dir.create(paste0(name, "_output"), showWarnings = FALSE) # create output directory
 save(PERSUADE, file = paste0(name, "_output/PERSUADE.RData"))  # save PERSUADE in output directory (so it can be loaded in the RMD script)
 
-#waldo::compare(PERSUADE[[3]], PERSUADE_old[[3]])
-
-
 xfun::Rscript_call( #Rscript_call renders the Rmd document in a new R session (similar to clicking the Knit button in RStudio)
   rmarkdown::render,
   list(input = "PERSUADE output.Rmd", output_file = paste0(name, ".pdf"), output_dir = paste0(name, "_output"), 
@@ -46,6 +43,4 @@ xfun::Rscript_call( #Rscript_call renders the Rmd document in a new R session (s
 write.table(PERSUADE$surv_model_excel, "clipboard-128", sep = "\t")
 write.csv(PERSUADE$surv_model_excel, paste0(name, "_output/PERSUADE_Time-to-event_models_parameters_comma.csv"))
 write.csv2(PERSUADE$surv_model_excel, paste0(name, "_output/PERSUADE_Time-to-event_models_parameters_semicolon.csv"))
-
-
 
