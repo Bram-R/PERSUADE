@@ -86,9 +86,9 @@ f_PERSUADE <- function(name = "no_name", years, status, group,
 
 # function to obtain hazard
 f_hazard <- function(years, status, group, ngroups) {
-  haz <- c(list(smooth_gr1 = muhaz(years, status, group == levels(group)[1])),
-           if (ngroups > 1) {list(smooth_gr2 = muhaz(years, status, group == levels(group)[2]))},
-           if (ngroups > 2) {list(smooth_gr3 = muhaz(years, status, group == levels(group)[3]))})
+  haz <- c(list(smooth_gr1 = muhaz(years, status, group == levels(group)[1], max.time = max(years))),
+           if (ngroups > 1) {list(smooth_gr2 = muhaz(years, status, group == levels(group)[2], max.time = max(years)))},
+           if (ngroups > 2) {list(smooth_gr3 = muhaz(years, status, group == levels(group)[3], max.time = max(years)))})
   haz_names <- c(rep(1, length(haz$smooth_gr1$est.grid)), 
                  if (ngroups > 1) {rep(2, length(haz$smooth_gr2$est.grid))} else {NA}, 
                  if (ngroups > 2) {rep(3, length(haz$smooth_gr3$est.grid))})
