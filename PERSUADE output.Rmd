@@ -37,7 +37,7 @@ load(paste0(getwd(),"/PERSUADE.RData"))
 \
 
 [Link to PERSUADE GitHub page](https://github.com/Bram-R/PERSUADE)
-\newpage
+\clearpage
 
 # 1. Kaplan-Meier  
 
@@ -59,7 +59,7 @@ kable_styling(kable(summary(PERSUADE$surv_obs$km)$table, format = "latex",
                     row.names = TRUE, booktabs = TRUE, linesep = ""), latex_options = c("scale_down", "striped"))
 ```
 
-\newpage
+\clearpage
 
 # 2. Proportional hazards assumption  
 
@@ -71,7 +71,7 @@ Another indication that the PH assumption does not hold is when the lines from d
 
 **CAUTION**: These plots apply to the observed data period and do not allow to make inferences about the proportional hazard function assumption beyond this period. Additionally, the end of the observed data period may be affected by the low number of observations. One should consider this when interpreting the tail of the curves. 
 
-\newpage
+\clearpage
 
 ```{r PH_assumption, echo=FALSE, eval=if (PERSUADE$misc$ngroups>1) {TRUE} else {FALSE}, out.height = "29%", fig.width=11}
 evalq({
@@ -103,7 +103,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-\newpage
+\clearpage
 
 # 3. Hazard function  
 ## Shape of the observed smoothed hazard function  
@@ -144,7 +144,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-\newpage
+\clearpage
 
 ## Shape of the predicted hazard function  
 The following plots dislay how the hazard rates is estimated using the different parametric survival models.  
@@ -364,7 +364,7 @@ evalq({
 
 ```
 
-\newpage
+\clearpage
 
 # 4.1 Standard parametric models  
 The circle displays the colours that are attributed to each parametric survival model in the graphs on the following pages.  
@@ -385,7 +385,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-\newpage
+\clearpage
 
 ## Exponential
 ```{r expo, echo=FALSE, out.height = "25%", fig.width=11}
@@ -482,7 +482,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-\newpage  
+\clearpage  
 
 ## Weibull
 ```{r weib, echo=FALSE, out.height = "25%", fig.width=11}
@@ -577,7 +577,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-\newpage 
+\clearpage 
 
 ## Gompertz
 ```{r gom, echo=FALSE, out.height = "25%", fig.width=11}
@@ -679,7 +679,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-\newpage 
+\clearpage 
 
 ## Log-normal
 ```{r lnorm, echo=FALSE, out.height = "25%", fig.width=11}
@@ -783,7 +783,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-\newpage 
+\clearpage 
 
 ## Log-logistic
 ```{r llog, echo=FALSE, out.height = "25%", fig.width=11}
@@ -888,7 +888,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-\newpage 
+\clearpage 
 
 ## Gamma
 ```{r gam, echo=FALSE, out.height = "25%", fig.width=11}
@@ -985,7 +985,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-\newpage 
+\clearpage 
 
 ## Generalised Gamma 
 ```{r ggam, echo=FALSE, out.height = "25%", fig.width=11}
@@ -1083,7 +1083,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-\newpage
+\clearpage
 
 # 4.2 Parametric natural cubic spline models
 If standard parametric models do not provide a satisfactory fit to the data based on previous observations, do spline-based models provide a more satisfactory fit to the data? An explanation concerning these natural cubic spline models, henceforth spline-based models, is provided in [Royston and Pamar - 2002](https://doi.org/10.1002/sim.1203).  
@@ -1110,7 +1110,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-`r if(PERSUADE$input$spline_mod == TRUE) {return("\\newpage")}`
+`r if(PERSUADE$input$spline_mod == TRUE) {return("\\clearpage")}`
 
 ## Spline 1 knot hazard
 ```{r spline_hazard1, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$spline_mod}
@@ -1220,7 +1220,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-`r if(PERSUADE$input$spline_mod == TRUE) {return("\\newpage")}`
+`r if(PERSUADE$input$spline_mod == TRUE) {return("\\clearpage")}`
 
 ## Spline 2 knots hazard
 ```{r spline_hazard2, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$spline_mod}
@@ -1333,7 +1333,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-`r if(PERSUADE$input$spline_mod == TRUE) {return("\\newpage")}`
+`r if(PERSUADE$input$spline_mod == TRUE) {return("\\clearpage")}`
 
 ## Spline 3 knots hazard 
 ```{r spline_hazard3, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$spline_mod}
@@ -1449,7 +1449,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-`r if(PERSUADE$input$spline_mod == TRUE) {return("\\newpage")}`
+`r if(PERSUADE$input$spline_mod == TRUE) {return("\\clearpage")}`
 
 ## Spline 1 knot odds 
 ```{r spline_odds1, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$spline_mod}
@@ -1561,7 +1561,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-`r if(PERSUADE$input$spline_mod == TRUE) {return("\\newpage")}`
+`r if(PERSUADE$input$spline_mod == TRUE) {return("\\clearpage")}`
 
 ## Spline 2 knots odds 
 ```{r spline_odds2, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$spline_mod}
@@ -1676,7 +1676,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-`r if(PERSUADE$input$spline_mod == TRUE) {return("\\newpage")}`
+`r if(PERSUADE$input$spline_mod == TRUE) {return("\\clearpage")}`
 
 ## Spline 3 knots odds 
 ```{r spline_odds3, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$spline_mod}
@@ -1794,7 +1794,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-`r if(PERSUADE$input$spline_mod == TRUE) {return("\\newpage")}`
+`r if(PERSUADE$input$spline_mod == TRUE) {return("\\clearpage")}`
 
 ## Spline 1 knot normal 
 ```{r spline_norm1, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$spline_mod}
@@ -1907,7 +1907,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-`r if(PERSUADE$input$spline_mod == TRUE) {return("\\newpage")}`
+`r if(PERSUADE$input$spline_mod == TRUE) {return("\\clearpage")}`
 
 ## Spline 2 knots normal 
 ```{r spline_norm2, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$spline_mod}
@@ -2024,7 +2024,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-`r if(PERSUADE$input$spline_mod == TRUE) {return("\\newpage")}`
+`r if(PERSUADE$input$spline_mod == TRUE) {return("\\clearpage")}`
 
 ## Spline 3 knots normal 
 ```{r spline_norm3, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$spline_mod}
@@ -2144,7 +2144,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-\newpage
+\clearpage
 
 # 4.3 Parametric (non-)mixture cure models 
 If standard parametric models do not provide a satisfactory fit to the data based on previous observations, do cure models provide a more satisfactory fit to the data?  
@@ -2172,7 +2172,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-`r if(PERSUADE$input$cure_mod == TRUE) {return("\\newpage")}`
+`r if(PERSUADE$input$cure_mod == TRUE) {return("\\clearpage")}`
 
 ## Mixture cure Weibull
 ```{r cure_weib_mix, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$cure_mod}
@@ -2276,7 +2276,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-`r if(PERSUADE$input$cure_mod == TRUE) {return("\\newpage")}`
+`r if(PERSUADE$input$cure_mod == TRUE) {return("\\clearpage")}`
 
 ## Non-mixture cure Weibull
 ```{r cure_weib_nmix, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$cure_mod}
@@ -2380,7 +2380,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-`r if(PERSUADE$input$cure_mod == TRUE) {return("\\newpage")}`
+`r if(PERSUADE$input$cure_mod == TRUE) {return("\\clearpage")}`
 
 ## Mixture cure Log-normal
 ```{r cure_lnorm_mix, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$cure_mod}
@@ -2486,7 +2486,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-`r if(PERSUADE$input$cure_mod == TRUE) {return("\\newpage")}`
+`r if(PERSUADE$input$cure_mod == TRUE) {return("\\clearpage")}`
 
 ## Non-mixture cure Log-normal
 ```{r cure_lnorm_nmix, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$cure_mod}
@@ -2592,7 +2592,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-`r if(PERSUADE$input$cure_mod == TRUE) {return("\\newpage")}`
+`r if(PERSUADE$input$cure_mod == TRUE) {return("\\clearpage")}`
 
 ## Mixture cure Log-logistic
 ```{r cure_llog_mix, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$cure_mod}
@@ -2699,7 +2699,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-`r if(PERSUADE$input$cure_mod == TRUE) {return("\\newpage")}`
+`r if(PERSUADE$input$cure_mod == TRUE) {return("\\clearpage")}`
 
 ## Non-mixture cure Log-logistic
 ```{r cure_llog_nmix, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$cure_mod}
@@ -2808,7 +2808,7 @@ evalq({
 
 
 
-\newpage
+\clearpage
 
 # 5. Extrapolated survival
 
@@ -2816,7 +2816,7 @@ The plausibility of the estimated survival beyond the oberseved data period shou
 In this section, the estimated survival probabilities for the period of time within and beyond data collection, i.e. the extrapolation are presented (can be specified by the user). This is done by 1) plotting the survival curves (Figures A, B and C), 2) displaying the survival probabilities at multiple time points (first Table), 3) ploting annual transition probabilities (Figures D, E and F), 4) ploting the smoothed hazard functions (Figures G, H and I), and providing the summary statistics of the estimated annual transition probabilities (second Table). This information is provided for each group separately.  
 One way to assess the plausibility of the extrapolated survival probabilities is to compare the estimated survival probabilities at different time points with external data (e.g. observational data and/or expert opinion). Another way to check for plausibility is to compare the annual transition probability with those observed in the general population (general population mortality can be obtained through national statistics). Parametric survival models annual conditional transition probabilities more favourable than those observed for the general population may not be plausible. This would require either to select an alternative parametric survival model or to adjust the selected parametric survival model for general population probabilities.  
 
-\newpage
+\clearpage
 
 ## `r paste("Group", PERSUADE$misc$group_names[1])`
 ```{r validate_extrapolation1, echo=FALSE, out.height = "29%", fig.width=11, comment=NA}
@@ -3006,7 +3006,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-\newpage
+\clearpage
 
 ## `r paste("Group", PERSUADE$misc$group_names[2])`
 ```{r validate_extrapolation2, echo=FALSE, out.height = "29%", fig.width=11, eval=if (PERSUADE$misc$ngroups>1) {TRUE} else {FALSE}, comment=NA}
@@ -3193,7 +3193,7 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-\newpage
+\clearpage
 
 ## `r paste("Group", PERSUADE$misc$group_names[3])`
 ```{r validate_extrapolation3, echo=FALSE, out.height = "29%", fig.width=11, eval=if (PERSUADE$misc$ngroups>2) {TRUE} else {FALSE}, comment=NA}
@@ -3382,14 +3382,14 @@ evalq({
 
 ```
 
-\newpage
+\clearpage
 
 # PERSUADE object information
 ```{r oi, echo=FALSE}
 print(str(PERSUADE, max.level = 2))
 ```
 
-\newpage
+\clearpage
 
 # Session information
 ```{r si, echo=FALSE}
