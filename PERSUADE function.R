@@ -548,68 +548,164 @@ f_surv_model_excel <- function(ngroups, strata, surv_model, spline_mod, cure_mod
   
   # distributions names
   distnames <- if (spline_mod == TRUE) {
-    c(rep("1. Exponential", nrow(surv_model$expo$res.t)), rep("2. Weibull", nrow(surv_model$weib$res.t)), rep("3. Gompertz", nrow(surv_model$gom$res.t)), 
-      rep("4. Log-normal", nrow(surv_model$lnorm$res.t)), rep("5. Log-logistic", nrow(surv_model$llog$res.t)), rep("6. Gamma", nrow(surv_model$gam$res.t)), 
-      rep("7. Generalisedgamma", nrow(surv_model$ggam$res.t)), rep("8. 1-knot spline hazard", nrow(surv_model$spl_hazard1$res.t)), 
-      rep("9. 1-knot spline odds", nrow(surv_model$spl_odds1$res.t)), rep("10. 1-knot spline normal", nrow(surv_model$spl_normal1$res.t)), 
-      rep("11. 2-knot spline hazard", nrow(surv_model$spl_hazard2$res.t)), rep("12. 2-knot spline odds", nrow(surv_model$spl_odds2$res.t)), 
-      rep("13. 2-knot spline normal", nrow(surv_model$spl_normal2$res.t)))} else { ##XP: overwegen 'else' op nieuwe lijn te zetten zodat het zichtbaarder is, ik moest even zoeken
-        c(rep("1. Exponential", nrow(surv_model$expo$res.t)), rep("2. Weibull", nrow(surv_model$weib$res.t)), rep("3. Gompertz", nrow(surv_model$gom$res.t)), 
-          rep("4. Log-normal", nrow(surv_model$lnorm$res.t)), rep("5. Log-logistic", nrow(surv_model$llog$res.t)), rep("6. Gamma", nrow(surv_model$gam$res.t)), 
-          rep("7. Generalisedgamma", nrow(surv_model$ggam$res.t)))
-      }
+    c(
+      rep("1. Exponential", nrow(surv_model$expo$res.t)),
+      rep("2. Weibull", nrow(surv_model$weib$res.t)),
+      rep("3. Gompertz", nrow(surv_model$gom$res.t)),
+      rep("4. Log-normal", nrow(surv_model$lnorm$res.t)),
+      rep("5. Log-logistic", nrow(surv_model$llog$res.t)),
+      rep("6. Gamma", nrow(surv_model$gam$res.t)),
+      rep("7. Generalisedgamma", nrow(surv_model$ggam$res.t)),
+      rep("8. 1-knot spline hazard", nrow(surv_model$spl_hazard1$res.t)),
+      rep("9. 1-knot spline odds", nrow(surv_model$spl_odds1$res.t)),
+      rep("10. 1-knot spline normal", nrow(surv_model$spl_normal1$res.t)),
+      rep("11. 2-knot spline hazard", nrow(surv_model$spl_hazard2$res.t)),
+      rep("12. 2-knot spline odds", nrow(surv_model$spl_odds2$res.t)),
+      rep("13. 2-knot spline normal", nrow(surv_model$spl_normal2$res.t)),
+      rep("14. 3-knot spline hazard", nrow(surv_model$spl_hazard3$res.t)),
+      rep("15. 3-knot spline odds", nrow(surv_model$spl_odds3$res.t)),
+      rep("16. 3-knot spline normal", nrow(surv_model$spl_normal3$res.t))
+    )} else {
+      c(
+        rep("1. Exponential", nrow(surv_model$expo$res.t)),
+        rep("2. Weibull", nrow(surv_model$weib$res.t)),
+        rep("3. Gompertz", nrow(surv_model$gom$res.t)),
+        rep("4. Log-normal", nrow(surv_model$lnorm$res.t)),
+        rep("5. Log-logistic", nrow(surv_model$llog$res.t)),
+        rep("6. Gamma", nrow(surv_model$gam$res.t)),
+        rep("7. Generalisedgamma", nrow(surv_model$ggam$res.t))
+      )
+    }
   
   # parameters' names
   parnames <- if (spline_mod == TRUE) {
-    c(rownames(surv_model$expo$res.t), rownames(surv_model$weib$res.t), rownames(surv_model$gom$res.t), rownames(surv_model$lnorm$res.t), rownames(surv_model$llog$res.t), 
-      rownames(surv_model$gam$res.t), rownames(surv_model$ggam$res.t), rownames(surv_model$spl_hazard1$res.t), rownames(surv_model$spl_odds1$res.t), 
-      rownames(surv_model$spl_normal1$res.t), rownames(surv_model$spl_hazard2$res.t), rownames(surv_model$spl_odds2$res.t), rownames(surv_model$spl_normal2$res.t))} else { ##XP: idem
-        c(rownames(surv_model$expo$res.t), rownames(surv_model$weib$res.t), rownames(surv_model$gom$res.t), rownames(surv_model$lnorm$res.t), rownames(surv_model$llog$res.t), 
-          rownames(surv_model$gam$res.t), rownames(surv_model$ggam$res.t))
+    
+    c(
+      rownames(surv_model$expo$res.t),
+      rownames(surv_model$weib$res.t),
+      rownames(surv_model$gom$res.t),
+      rownames(surv_model$lnorm$res.t),
+      rownames(surv_model$llog$res.t),
+      rownames(surv_model$gam$res.t),
+      rownames(surv_model$ggam$res.t),
+      rownames(surv_model$spl_hazard1$res.t),
+      rownames(surv_model$spl_odds1$res.t),
+      rownames(surv_model$spl_normal1$res.t),
+      rownames(surv_model$spl_hazard2$res.t),
+      rownames(surv_model$spl_odds2$res.t),
+      rownames(surv_model$spl_normal2$res.t),
+      rownames(surv_model$spl_hazard3$res.t),
+      rownames(surv_model$spl_odds3$res.t),
+      rownames(surv_model$spl_normal3$res.t)
+    )} else {
+      c(
+        rownames(surv_model$expo$res.t),
+        rownames(surv_model$weib$res.t),
+        rownames(surv_model$gom$res.t),
+        rownames(surv_model$lnorm$res.t),
+        rownames(surv_model$llog$res.t),
+        rownames(surv_model$gam$res.t),
+        rownames(surv_model$ggam$res.t)
+        
+      )
       }
   
   # extract parameters for each distribution
   res <- if (spline_mod == TRUE) {
-    rbind(surv_model$expo$res.t, surv_model$weib$res.t, surv_model$gom$res.t, surv_model$lnorm$res.t, surv_model$llog$res.t, surv_model$gam$res.t, surv_model$ggam$res.t, surv_model$spl_hazard1$res.t, 
-          surv_model$spl_odds1$res.t, surv_model$spl_normal1$res.t, surv_model$spl_hazard2$res.t, surv_model$spl_odds2$res.t, surv_model$spl_normal2$res.t)} else { ##XP: idem
-            rbind(surv_model$expo$res.t, surv_model$weib$res.t, surv_model$gom$res.t, surv_model$lnorm$res.t, surv_model$llog$res.t, surv_model$gam$res.t, surv_model$ggam$res.t)
-          }
-  
+    rbind(
+      surv_model$expo$res.t,
+      surv_model$weib$res.t,
+      surv_model$gom$res.t,
+      surv_model$lnorm$res.t,
+      surv_model$llog$res.t,
+      surv_model$gam$res.t,
+      surv_model$ggam$res.t,
+      surv_model$spl_hazard1$res.t,
+      surv_model$spl_odds1$res.t,
+      surv_model$spl_normal1$res.t,
+      surv_model$spl_hazard2$res.t,
+      surv_model$spl_odds2$res.t,
+      surv_model$spl_normal2$res.t,
+      surv_model$spl_hazard3$res.t,
+      surv_model$spl_odds3$res.t,
+      surv_model$spl_normal3$res.t
+    )} else {
+      rbind(
+        surv_model$expo$res.t,
+        surv_model$weib$res.t,
+        surv_model$gom$res.t,
+        surv_model$lnorm$res.t,
+        surv_model$llog$res.t,
+        surv_model$gam$res.t,
+        surv_model$ggam$res.t
+      )
+    }
   empty <- rep("", nrow(res))  # create vector of length of the parameters in order to separate the parameters from other outputs
   
   # compute number of additional rows
-  addrows <- if (strata == FALSE) {1} else {ifelse(ngroups == 2, 2, 3)} ##XP: kan dit geautomatiseerd worden als we nog meer modellen willen toevoegen?
+  addrows <- if (strata == FALSE) {1} else {ifelse(ngroups == 2, 2, 3)} ## XP: to automate in case we add more groups
   addcols <- if (strata == FALSE) {1} else {ifelse(ngroups == 2, 2, 3)}
-  
+ 
   # create covariance matrices of equal lengths
-  cov <- if (spline_mod == TRUE) { ##XP: hier nog splines met 3 knots toevoegen?
-    rbind(cbind(surv_model$expo$cov, 
-                matrix(0, nrow = ngroups, ncol = if (strata == FALSE) {3} else {ifelse(ngroups == 2, 6, 9)})), 
-          cbind(surv_model$weib$cov, matrix(0, nrow = ngroups + 1 * addrows, ncol = 2 * addcols)), 
-          cbind(surv_model$gom$cov, matrix(0, nrow = ngroups + 1 * addrows, ncol = 2 * addcols)), 
-          cbind(surv_model$lnorm$cov, matrix(0, nrow = ngroups + 1 * addrows, ncol = 2 * addcols)), 
-          cbind(surv_model$llog$cov, matrix(0, nrow = ngroups + 1 * addrows, ncol = 2 * addcols)), 
-          cbind(surv_model$gam$cov, matrix(0, nrow = ngroups + 1 * addrows, ncol = 2 * addcols)), 
-          cbind(surv_model$ggam$cov, matrix(0, nrow = ngroups + 2 * addrows, ncol = 1 * addcols)), 
-          cbind(surv_model$spl_hazard1$cov, matrix(0, nrow = ngroups + 2 * addrows, ncol = 1 * addcols)), 
-          cbind(surv_model$spl_odds1$cov, matrix(0, nrow = ngroups + 2 * addrows, ncol = 1 * addcols)), 
-          cbind(surv_model$spl_normal1$cov, matrix(0, nrow = ngroups + 2 * addrows, ncol = 1 * addcols)), 
-          surv_model$spl_hazard2$cov, surv_model$spl_odds2$cov, surv_model$spl_normal2$cov)} else {
-            rbind(cbind(surv_model$expo$cov, matrix(0, nrow = ngroups, ncol = if (strata == FALSE) {3} else {
-              ifelse(ngroups == 2, 6, 9)})), 
-              cbind(surv_model$weib$cov, matrix(0, nrow = ngroups + 1 * addrows, ncol = 2 * addcols)), 
-              cbind(surv_model$gom$cov, matrix(0, nrow = ngroups + 1 * addrows, ncol = 2 * addcols)), 
-              cbind(surv_model$lnorm$cov, matrix(0, nrow = ngroups + 1 * addrows, ncol = 2 * addcols)), 
-              cbind(surv_model$llog$cov, matrix(0, nrow = ngroups + 1 * addrows, ncol = 2 * addcols)), 
-              cbind(surv_model$gam$cov, matrix(0, nrow = ngroups + 1 * addrows, ncol = 2 * addcols)), 
-              cbind(surv_model$ggam$cov, matrix(0, nrow = ngroups + 2 * addrows, ncol = 1 * addcols)))
+  if (spline_mod == TRUE) {
+    n_cols <- ncol(surv_model$spl_hazard3$cov)
+    surv_mod_spline <- surv_model[c(
+      "expo",
+      "weib",
+      "gom",
+      "lnorm",
+      "llog",
+      "gam",
+      "ggam",
+      "spl_hazard1",
+      "spl_odds1",
+      "spl_normal1",
+      "spl_hazard2",
+      "spl_odds2",
+      "spl_normal2",
+      "spl_hazard3",
+      "spl_odds3",
+      "spl_normal3"
+    )]
+    cov <- do.call(rbind, lapply(surv_mod_spline, function(x){
+      if(x$dlist$name == "survspline" &
+         length(x$dlist$pars) == 5) {
+        x$cov
+        } else{
+          cbind(x$cov,
+                matrix(0,
+                       nrow = nrow(x$cov),
+                       ncol = n_cols - ncol(x$cov)))
+        }
+      }))
+    } else {
+      n_cols <- ncol(surv_model$ggam$cov)
+      surv_mod_simple <- surv_model[c(
+        "expo",
+        "weib",
+        "gom",
+        "lnorm",
+        "llog",
+        "gam",
+        "ggam"
+      )]
+      cov <- do.call(rbind, lapply(surv_mod_simple, function(x){
+        if(x$dlist$name == "gengamma") {
+          x$cov
+        } else{
+          cbind(x$cov,
+                matrix(0,
+                       nrow = nrow(x$cov),
+                       ncol = n_cols - ncol(x$cov)))
           }
+      }))
+    }
   
   survmod <- cbind(distnames, parnames, res, empty, empty, empty, cov)
   
   # rename the columns and transpose it
   colnames(survmod) <- c("Distnames", "Parnames", colnames(surv_model$expo$res.t), "", "Knots", "Cov_matrix", 
-                         c(1:if (spline_mod == TRUE) {ncol(surv_model$spl_hazard2$cov)} else {
+                         c(1:if (spline_mod == TRUE) {ncol(surv_model$spl_hazard3$cov)} else {
                            abs(ncol(surv_model$ggam$cov) + 
                                  abs(length(colnames(survmod)) - 
                                        length(c("Distnames", "Parnames", colnames(surv_model$expo$res.t), "", "Knots", "Cov_matrix", c(1:ncol(surv_model$ggam$cov))))))
@@ -624,46 +720,89 @@ f_surv_model_excel <- function(ngroups, strata, surv_model, spline_mod, cure_mod
             which((survmod[which(rownames(survmod) == "Distnames"), ] == "8. 1-knot spline hazard" | 
                      survmod[which(rownames(survmod) == "Distnames"), ] == "9. 1-knot spline odds" | 
                      survmod[which(rownames(survmod) == "Distnames"), ] == "10. 1-knot spline normal") & 
-                    survmod[which(rownames(survmod) == "Parnames"), ] == "gamma0")] <- c(surv_model$spl_hazard1$knots[1], surv_model$spl_odds1$knots[1], 
+                    survmod[which(rownames(survmod) == "Parnames"), ] == "gamma0")] <- c(surv_model$spl_hazard1$knots[1], 
+                                                                                         surv_model$spl_odds1$knots[1], 
                                                                                          surv_model$spl_normal1$knots[1])
     survmod[which(rownames(survmod) == "Knots"), 
             which((survmod[which(rownames(survmod) == "Distnames"), ] == "8. 1-knot spline hazard" | 
                      survmod[which(rownames(survmod) == "Distnames"), ] == "9. 1-knot spline odds" |
                      survmod[which(rownames(survmod) == "Distnames"), ] == "10. 1-knot spline normal") & 
-                    survmod[which(rownames(survmod) == "Parnames"), ] == "gamma1")] <- c(surv_model$spl_hazard1$knots[2], surv_model$spl_odds1$knots[2], 
+                    survmod[which(rownames(survmod) == "Parnames"), ] == "gamma1")] <- c(surv_model$spl_hazard1$knots[2], 
+                                                                                         surv_model$spl_odds1$knots[2], 
                                                                                          surv_model$spl_normal1$knots[2])
     
     survmod[which(rownames(survmod) == "Knots"), 
             which((survmod[which(rownames(survmod) == "Distnames"), ] == "8. 1-knot spline hazard" |
                      survmod[which(rownames(survmod) == "Distnames"), ] == "9. 1-knot spline odds" | 
                      survmod[which(rownames(survmod) == "Distnames"), ] == "10. 1-knot spline normal") &
-                    survmod[which(rownames(survmod) == "Parnames"), ] == "gamma2")] <- c(surv_model$spl_hazard1$knots[3], surv_model$spl_odds1$knots[3], 
+                    survmod[which(rownames(survmod) == "Parnames"), ] == "gamma2")] <- c(surv_model$spl_hazard1$knots[3], 
+                                                                                         surv_model$spl_odds1$knots[3], 
                                                                                          surv_model$spl_normal1$knots[3])
     # 2-knot splines
     survmod[which(rownames(survmod) == "Knots"), 
             which((survmod[which(rownames(survmod) == "Distnames"), ] == "11. 2-knot spline hazard" | 
                      survmod[which(rownames(survmod) == "Distnames"), ] == "12. 2-knot spline odds" | 
                      survmod[which(rownames(survmod) == "Distnames"), ] == "13. 2-knot spline normal") & 
-                    survmod[which(rownames(survmod) == "Parnames"), ] == "gamma0")] <- c(surv_model$spl_hazard2$knots[1], surv_model$spl_odds2$knots[1], 
+                    survmod[which(rownames(survmod) == "Parnames"), ] == "gamma0")] <- c(surv_model$spl_hazard2$knots[1], 
+                                                                                         surv_model$spl_odds2$knots[1], 
                                                                                          surv_model$spl_normal2$knots[1])
     survmod[which(rownames(survmod) == "Knots"), 
             which((survmod[which(rownames(survmod) == "Distnames"), ] == "11. 2-knot spline hazard" |
                      survmod[which(rownames(survmod) == "Distnames"), ] == "12. 2-knot spline odds" | 
                      survmod[which(rownames(survmod) == "Distnames"), ] == "13. 2-knot spline normal") & 
-                    survmod[which(rownames(survmod) == "Parnames"), ] == "gamma1")] <- c(surv_model$spl_hazard2$knots[2], surv_model$spl_odds2$knots[2], 
+                    survmod[which(rownames(survmod) == "Parnames"), ] == "gamma1")] <- c(surv_model$spl_hazard2$knots[2], 
+                                                                                         surv_model$spl_odds2$knots[2], 
                                                                                          surv_model$spl_normal2$knots[2])
     survmod[which(rownames(survmod) == "Knots"), 
             which((survmod[which(rownames(survmod) == "Distnames"), ] == "11. 2-knot spline hazard" | 
                      survmod[which(rownames(survmod) == "Distnames"), ] == "12. 2-knot spline odds" | 
                      survmod[which(rownames(survmod) == "Distnames"), ] == "13. 2-knot spline normal") & 
-                    survmod[which(rownames(survmod) == "Parnames"), ] == "gamma2")] <- c(surv_model$spl_hazard2$knots[3], surv_model$spl_odds2$knots[3], 
+                    survmod[which(rownames(survmod) == "Parnames"), ] == "gamma2")] <- c(surv_model$spl_hazard2$knots[3], 
+                                                                                         surv_model$spl_odds2$knots[3], 
                                                                                          surv_model$spl_normal2$knots[3])
     survmod[which(rownames(survmod) == "Knots"), 
             which((survmod[which(rownames(survmod) == "Distnames"), ] == "11. 2-knot spline hazard" | 
                      survmod[which(rownames(survmod) == "Distnames"), ] == "12. 2-knot spline odds" | 
                      survmod[which(rownames(survmod) == "Distnames"), ] == "13. 2-knot spline normal") &
-                    survmod[which(rownames(survmod) == "Parnames"), ] == "gamma3")] <- c(surv_model$spl_hazard2$knots[4], surv_model$spl_odds2$knots[4], 
+                    survmod[which(rownames(survmod) == "Parnames"), ] == "gamma3")] <- c(surv_model$spl_hazard2$knots[4], 
+                                                                                         surv_model$spl_odds2$knots[4], 
                                                                                          surv_model$spl_normal2$knots[4])
+    # 3-knot splines
+    survmod[which(rownames(survmod) == "Knots"), 
+            which((survmod[which(rownames(survmod) == "Distnames"), ] == "14. 3-knot spline hazard" | 
+                     survmod[which(rownames(survmod) == "Distnames"), ] == "15. 3-knot spline odds" | 
+                     survmod[which(rownames(survmod) == "Distnames"), ] == "16. 3-knot spline normal") & 
+                    survmod[which(rownames(survmod) == "Parnames"), ] == "gamma0")] <- c(surv_model$spl_hazard3$knots[1], 
+                                                                                         surv_model$spl_odds3$knots[1], 
+                                                                                         surv_model$spl_normal3$knots[1])
+    survmod[which(rownames(survmod) == "Knots"), 
+            which((survmod[which(rownames(survmod) == "Distnames"), ] == "14. 3-knot spline hazard" |
+                     survmod[which(rownames(survmod) == "Distnames"), ] == "15. 3-knot spline odds" | 
+                     survmod[which(rownames(survmod) == "Distnames"), ] == "16. 3-knot spline normal") & 
+                    survmod[which(rownames(survmod) == "Parnames"), ] == "gamma1")] <- c(surv_model$spl_hazard3$knots[2], 
+                                                                                         surv_model$spl_odds3$knots[2], 
+                                                                                         surv_model$spl_normal3$knots[2])
+    survmod[which(rownames(survmod) == "Knots"), 
+            which((survmod[which(rownames(survmod) == "Distnames"), ] == "14. 3-knot spline hazard" | 
+                     survmod[which(rownames(survmod) == "Distnames"), ] == "15. 3-knot spline odds" | 
+                     survmod[which(rownames(survmod) == "Distnames"), ] == "16. 3-knot spline normal") & 
+                    survmod[which(rownames(survmod) == "Parnames"), ] == "gamma2")] <- c(surv_model$spl_hazard3$knots[3], 
+                                                                                         surv_model$spl_odds3$knots[3], 
+                                                                                         surv_model$spl_normal3$knots[3])
+    survmod[which(rownames(survmod) == "Knots"), 
+            which((survmod[which(rownames(survmod) == "Distnames"), ] == "14. 3-knot spline hazard" | 
+                     survmod[which(rownames(survmod) == "Distnames"), ] == "15. 3-knot spline odds" | 
+                     survmod[which(rownames(survmod) == "Distnames"), ] == "16. 3-knot spline normal") &
+                    survmod[which(rownames(survmod) == "Parnames"), ] == "gamma3")] <- c(surv_model$spl_hazard3$knots[4], 
+                                                                                         surv_model$spl_odds3$knots[4], 
+                                                                                         surv_model$spl_normal3$knots[4])
+    survmod[which(rownames(survmod) == "Knots"), 
+            which((survmod[which(rownames(survmod) == "Distnames"), ] == "14. 3-knot spline hazard" | 
+                     survmod[which(rownames(survmod) == "Distnames"), ] == "15. 3-knot spline odds" | 
+                     survmod[which(rownames(survmod) == "Distnames"), ] == "16. 3-knot spline normal") &
+                    survmod[which(rownames(survmod) == "Parnames"), ] == "gamma4")] <- c(surv_model$spl_hazard3$knots[5], 
+                                                                                         surv_model$spl_odds3$knots[5], 
+                                                                                         surv_model$spl_normal3$knots[5])
   }
   
   # remove column names
