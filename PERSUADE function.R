@@ -543,7 +543,7 @@ f_surv_model_pred_tp_gr <- function(ngroups, time_pred, time_unit, surv_model_pr
            if (ngroups > 2) {list(gr_3 = tp_gr_3)}))
 }
 
-# function tocreate output dataframe for use in MS Excel 
+# function to create output dataframe for use in MS Excel 
 f_surv_model_excel <- function(ngroups, strata, surv_model, spline_mod, cure_mod) { # BR wellicht bestaande labels gebruiken? (surv_model$IC[,1] surv_model$IC_spl[,1] surv_model$IC_cure[,1])
   
   # distributions names

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.4.20)  8 MAY 2023 14:16
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.4.20)  10 NOV 2023 13:42
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -93,7 +93,17 @@ Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
 LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
 LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 (Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
-)) (c:/Users/g10028783/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/lmodern.sty
+)) (c:/Users/g10028783/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/iftex/iftex.sty
+Package: iftex 2022/02/03 v1.0f TeX engine tests
+) (c:/Users/g10028783/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/base/fontenc.sty
+Package: fontenc 2021/04/29 v2.0v Standard LaTeX package
+) (c:/Users/g10028783/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/base/inputenc.sty
+Package: inputenc 2021/02/14 v1.3d Input encoding file
+\inpenc@prehook=\toks21
+\inpenc@posthook=\toks22
+) (c:/Users/g10028783/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/base/textcomp.sty
+Package: textcomp 2020/02/02 v2.0n Standard LaTeX package
+) (c:/Users/g10028783/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/lmodern.sty
 Package: lmodern 2015/05/01 v1.6.1 Latin Modern Fonts
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
 (Font)                  OT1/cmr/m/n --> OT1/lmr/m/n on input line 22.
@@ -127,19 +137,6 @@ LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
 (Font)                  OT1/cmr/bx/it --> OT1/lmr/bx/it on input line 37.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
 (Font)                  OT1/cmtt/m/n --> OT1/lmtt/m/n on input line 38.
-) (c:/Users/g10028783/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/iftex/iftex.sty
-Package: iftex 2022/02/03 v1.0f TeX engine tests
-) (c:/Users/g10028783/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/base/fontenc.sty
-Package: fontenc 2021/04/29 v2.0v Standard LaTeX package
-LaTeX Font Info:    Trying to load font information for T1+lmr on input line 112.
-(c:/Users/g10028783/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/t1lmr.fd
-File: t1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-)) (c:/Users/g10028783/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/base/inputenc.sty
-Package: inputenc 2021/02/14 v1.3d Input encoding file
-\inpenc@prehook=\toks21
-\inpenc@posthook=\toks22
-) (c:/Users/g10028783/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/base/textcomp.sty
-Package: textcomp 2020/02/02 v2.0n Standard LaTeX package
 ) (c:/Users/g10028783/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/xcolor/xcolor.sty
 Package: xcolor 2022/06/12 v2.14 LaTeX color extensions (UK)
 (c:/Users/g10028783/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/graphics-cfg/color.cfg
@@ -462,8 +459,11 @@ Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 28
 )
 \Hy@SectionHShift=\skip68
 )
-Package hyperref Info: Option `colorlinks' set `true' on input line 92.
-(c:/Users/g10028783/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
+Package hyperref Info: Option `colorlinks' set `true' on input line 95.
+LaTeX Font Info:    Trying to load font information for T1+lmr on input line 101.
+(c:/Users/g10028783/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/t1lmr.fd
+File: t1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+) (c:/Users/g10028783/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2023-04-19 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count311
 \l__pdf_internal_box=\box73
@@ -480,24 +480,24 @@ LaTeX Warning: Label `tab:validate_extrapolation3' multiply defined.
 )
 \openout1 = `BC_OS.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 98.
-LaTeX Font Info:    ... okay on input line 98.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 98.
-LaTeX Font Info:    ... okay on input line 98.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 98.
-LaTeX Font Info:    ... okay on input line 98.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 98.
-LaTeX Font Info:    ... okay on input line 98.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 98.
-LaTeX Font Info:    ... okay on input line 98.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 98.
-LaTeX Font Info:    ... okay on input line 98.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 98.
-LaTeX Font Info:    ... okay on input line 98.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 98.
-LaTeX Font Info:    ... okay on input line 98.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 98.
-LaTeX Font Info:    ... okay on input line 98.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 101.
+LaTeX Font Info:    ... okay on input line 101.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 101.
+LaTeX Font Info:    ... okay on input line 101.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 101.
+LaTeX Font Info:    ... okay on input line 101.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 101.
+LaTeX Font Info:    ... okay on input line 101.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 101.
+LaTeX Font Info:    ... okay on input line 101.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 101.
+LaTeX Font Info:    ... okay on input line 101.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 101.
+LaTeX Font Info:    ... okay on input line 101.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 101.
+LaTeX Font Info:    ... okay on input line 101.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 101.
+LaTeX Font Info:    ... okay on input line 101.
 (c:/Users/g10028783/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 485.
@@ -538,38 +538,38 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-Package hyperref Info: Link coloring ON on input line 98.
+Package hyperref Info: Link coloring ON on input line 101.
 (./BC_OS.out) (./BC_OS.out)
 \@outlinefile=\write3
 \openout3 = `BC_OS.out'.
 
-LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 100.
+LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 103.
 (c:/Users/g10028783/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/ot1lmr.fd
 File: ot1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for OML+lmm on input line 100.
+LaTeX Font Info:    Trying to load font information for OML+lmm on input line 103.
 (c:/Users/g10028783/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/omllmm.fd
 File: omllmm.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 100.
+LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 103.
 (c:/Users/g10028783/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/omslmsy.fd
 File: omslmsy.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 100.
+LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 103.
 (c:/Users/g10028783/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/omxlmex.fd
 File: omxlmex.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <12> on input line 100.
+(Font)              <12> on input line 103.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 100.
+(Font)              <8> on input line 103.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 100.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 100.
+(Font)              <6> on input line 103.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 103.
 (c:/Users/g10028783/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 100.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 103.
 (c:/Users/g10028783/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) (./BC_OS.toc
@@ -586,7 +586,7 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 \openout4 = `BC_OS.toc'.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 106--107
+Underfull \hbox (badness 10000) in paragraph at lines 109--110
 
  []
 
@@ -594,7 +594,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 106--107
 <Images/plot_KM-1.pdf, id=201, 505.89pt x 578.16pt>
 File: Images/plot_KM-1.pdf Graphic file (type pdf)
 <use Images/plot_KM-1.pdf>
-Package pdftex.def Info: Images/plot_KM-1.pdf  used on input line 114.
+Package pdftex.def Info: Images/plot_KM-1.pdf  used on input line 117.
 (pdftex.def)             Requested size: 469.76265pt x 536.87161pt.
 [3
 
@@ -604,17 +604,17 @@ Package pdftex.def Info: Images/plot_KM-1.pdf  used on input line 114.
 <Images/PH_assumption-1.pdf, id=227, 794.97pt x 325.215pt>
 File: Images/PH_assumption-1.pdf Graphic file (type pdf)
 <use Images/PH_assumption-1.pdf>
-Package pdftex.def Info: Images/PH_assumption-1.pdf  used on input line 181.
+Package pdftex.def Info: Images/PH_assumption-1.pdf  used on input line 184.
 (pdftex.def)             Requested size: 461.08293pt x 188.62483pt.
 <Images/PH_assumption-2.pdf, id=228, 794.97pt x 325.215pt>
 File: Images/PH_assumption-2.pdf Graphic file (type pdf)
 <use Images/PH_assumption-2.pdf>
-Package pdftex.def Info: Images/PH_assumption-2.pdf  used on input line 183.
+Package pdftex.def Info: Images/PH_assumption-2.pdf  used on input line 186.
 (pdftex.def)             Requested size: 461.08293pt x 188.62483pt.
 <Images/PH_assumption-3.pdf, id=229, 794.97pt x 325.215pt>
 File: Images/PH_assumption-3.pdf Graphic file (type pdf)
 <use Images/PH_assumption-3.pdf>
-Package pdftex.def Info: Images/PH_assumption-3.pdf  used on input line 185.
+Package pdftex.def Info: Images/PH_assumption-3.pdf  used on input line 188.
 (pdftex.def)             Requested size: 461.08293pt x 188.62483pt.
 [6
 
@@ -622,7 +622,7 @@ Package pdftex.def Info: Images/PH_assumption-3.pdf  used on input line 185.
 <Images/plot_hr-1.pdf, id=253, 469.755pt x 325.215pt>
 File: Images/plot_hr-1.pdf Graphic file (type pdf)
 <use Images/plot_hr-1.pdf>
-Package pdftex.def Info: Images/plot_hr-1.pdf  used on input line 252.
+Package pdftex.def Info: Images/plot_hr-1.pdf  used on input line 256.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [7
 
@@ -630,22 +630,22 @@ Package pdftex.def Info: Images/plot_hr-1.pdf  used on input line 252.
 <Images/plot_haz_pred-1.pdf, id=271, 794.97pt x 325.215pt>
 File: Images/plot_haz_pred-1.pdf Graphic file (type pdf)
 <use Images/plot_haz_pred-1.pdf>
-Package pdftex.def Info: Images/plot_haz_pred-1.pdf  used on input line 263.
+Package pdftex.def Info: Images/plot_haz_pred-1.pdf  used on input line 267.
 (pdftex.def)             Requested size: 461.08293pt x 188.62483pt.
 <Images/plot_haz_pred-2.pdf, id=272, 794.97pt x 325.215pt>
 File: Images/plot_haz_pred-2.pdf Graphic file (type pdf)
 <use Images/plot_haz_pred-2.pdf>
-Package pdftex.def Info: Images/plot_haz_pred-2.pdf  used on input line 265.
+Package pdftex.def Info: Images/plot_haz_pred-2.pdf  used on input line 269.
 (pdftex.def)             Requested size: 461.08293pt x 188.62483pt.
 <Images/plot_haz_pred-3.pdf, id=273, 794.97pt x 325.215pt>
 File: Images/plot_haz_pred-3.pdf Graphic file (type pdf)
 <use Images/plot_haz_pred-3.pdf>
-Package pdftex.def Info: Images/plot_haz_pred-3.pdf  used on input line 267.
+Package pdftex.def Info: Images/plot_haz_pred-3.pdf  used on input line 271.
 (pdftex.def)             Requested size: 461.08293pt x 188.62483pt.
 <Images/plot_haz_pred-4.pdf, id=274, 794.97pt x 325.215pt>
 File: Images/plot_haz_pred-4.pdf Graphic file (type pdf)
 <use Images/plot_haz_pred-4.pdf>
-Package pdftex.def Info: Images/plot_haz_pred-4.pdf  used on input line 269.
+Package pdftex.def Info: Images/plot_haz_pred-4.pdf  used on input line 273.
 (pdftex.def)             Requested size: 461.08293pt x 188.62483pt.
 [9
 
@@ -653,34 +653,34 @@ Package pdftex.def Info: Images/plot_haz_pred-4.pdf  used on input line 269.
 <Images/plot_haz_pred-5.pdf, id=298, 794.97pt x 325.215pt>
 File: Images/plot_haz_pred-5.pdf Graphic file (type pdf)
 <use Images/plot_haz_pred-5.pdf>
-Package pdftex.def Info: Images/plot_haz_pred-5.pdf  used on input line 271.
+Package pdftex.def Info: Images/plot_haz_pred-5.pdf  used on input line 275.
 (pdftex.def)             Requested size: 461.08293pt x 188.62483pt.
 <Images/plot_haz_pred-6.pdf, id=299, 794.97pt x 325.215pt>
 File: Images/plot_haz_pred-6.pdf Graphic file (type pdf)
 <use Images/plot_haz_pred-6.pdf>
-Package pdftex.def Info: Images/plot_haz_pred-6.pdf  used on input line 273.
+Package pdftex.def Info: Images/plot_haz_pred-6.pdf  used on input line 277.
 (pdftex.def)             Requested size: 461.08293pt x 188.62483pt.
 <Images/plot_haz_pred-7.pdf, id=300, 794.97pt x 325.215pt>
 File: Images/plot_haz_pred-7.pdf Graphic file (type pdf)
 <use Images/plot_haz_pred-7.pdf>
-Package pdftex.def Info: Images/plot_haz_pred-7.pdf  used on input line 275.
+Package pdftex.def Info: Images/plot_haz_pred-7.pdf  used on input line 279.
 (pdftex.def)             Requested size: 461.08293pt x 188.62483pt.
 [10 <./images/plot_haz_pred-4.pdf> <./images/plot_haz_pred-5.pdf> <./images/plot_haz_pred-6.pdf>]
 <Images/plot_haz_pred-8.pdf, id=324, 794.97pt x 325.215pt>
 File: Images/plot_haz_pred-8.pdf Graphic file (type pdf)
 <use Images/plot_haz_pred-8.pdf>
-Package pdftex.def Info: Images/plot_haz_pred-8.pdf  used on input line 277.
+Package pdftex.def Info: Images/plot_haz_pred-8.pdf  used on input line 281.
 (pdftex.def)             Requested size: 461.08293pt x 188.62483pt.
 <Images/plot_haz_pred-9.pdf, id=325, 794.97pt x 325.215pt>
 File: Images/plot_haz_pred-9.pdf Graphic file (type pdf)
 <use Images/plot_haz_pred-9.pdf>
-Package pdftex.def Info: Images/plot_haz_pred-9.pdf  used on input line 279.
+Package pdftex.def Info: Images/plot_haz_pred-9.pdf  used on input line 283.
 (pdftex.def)             Requested size: 461.08293pt x 188.62483pt.
 [11 <./images/plot_haz_pred-7.pdf> <./images/plot_haz_pred-8.pdf> <./images/plot_haz_pred-9.pdf>]
 <Images/plot_parametric-1.pdf, id=350, 469.755pt x 325.215pt>
 File: Images/plot_parametric-1.pdf Graphic file (type pdf)
 <use Images/plot_parametric-1.pdf>
-Package pdftex.def Info: Images/plot_parametric-1.pdf  used on input line 326.
+Package pdftex.def Info: Images/plot_parametric-1.pdf  used on input line 330.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [12
 
@@ -688,17 +688,17 @@ Package pdftex.def Info: Images/plot_parametric-1.pdf  used on input line 326.
 <Images/expo-1.pdf, id=366, 794.97pt x 325.215pt>
 File: Images/expo-1.pdf Graphic file (type pdf)
 <use Images/expo-1.pdf>
-Package pdftex.def Info: Images/expo-1.pdf  used on input line 350.
+Package pdftex.def Info: Images/expo-1.pdf  used on input line 354.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/expo-2.pdf, id=367, 794.97pt x 325.215pt>
 File: Images/expo-2.pdf Graphic file (type pdf)
 <use Images/expo-2.pdf>
-Package pdftex.def Info: Images/expo-2.pdf  used on input line 352.
+Package pdftex.def Info: Images/expo-2.pdf  used on input line 356.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/expo-3.pdf, id=368, 794.97pt x 325.215pt>
 File: Images/expo-3.pdf Graphic file (type pdf)
 <use Images/expo-3.pdf>
-Package pdftex.def Info: Images/expo-3.pdf  used on input line 354.
+Package pdftex.def Info: Images/expo-3.pdf  used on input line 358.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 [14
 
@@ -706,17 +706,17 @@ Package pdftex.def Info: Images/expo-3.pdf  used on input line 354.
 <Images/weib-1.pdf, id=398, 794.97pt x 325.215pt>
 File: Images/weib-1.pdf Graphic file (type pdf)
 <use Images/weib-1.pdf>
-Package pdftex.def Info: Images/weib-1.pdf  used on input line 361.
+Package pdftex.def Info: Images/weib-1.pdf  used on input line 365.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/weib-2.pdf, id=399, 794.97pt x 325.215pt>
 File: Images/weib-2.pdf Graphic file (type pdf)
 <use Images/weib-2.pdf>
-Package pdftex.def Info: Images/weib-2.pdf  used on input line 363.
+Package pdftex.def Info: Images/weib-2.pdf  used on input line 367.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/weib-3.pdf, id=400, 794.97pt x 325.215pt>
 File: Images/weib-3.pdf Graphic file (type pdf)
 <use Images/weib-3.pdf>
-Package pdftex.def Info: Images/weib-3.pdf  used on input line 365.
+Package pdftex.def Info: Images/weib-3.pdf  used on input line 369.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 [15
 
@@ -724,17 +724,17 @@ Package pdftex.def Info: Images/weib-3.pdf  used on input line 365.
 <Images/gom-1.pdf, id=430, 794.97pt x 325.215pt>
 File: Images/gom-1.pdf Graphic file (type pdf)
 <use Images/gom-1.pdf>
-Package pdftex.def Info: Images/gom-1.pdf  used on input line 372.
+Package pdftex.def Info: Images/gom-1.pdf  used on input line 376.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/gom-2.pdf, id=431, 794.97pt x 325.215pt>
 File: Images/gom-2.pdf Graphic file (type pdf)
 <use Images/gom-2.pdf>
-Package pdftex.def Info: Images/gom-2.pdf  used on input line 374.
+Package pdftex.def Info: Images/gom-2.pdf  used on input line 378.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/gom-3.pdf, id=432, 794.97pt x 325.215pt>
 File: Images/gom-3.pdf Graphic file (type pdf)
 <use Images/gom-3.pdf>
-Package pdftex.def Info: Images/gom-3.pdf  used on input line 376.
+Package pdftex.def Info: Images/gom-3.pdf  used on input line 380.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 [16
 
@@ -742,17 +742,17 @@ Package pdftex.def Info: Images/gom-3.pdf  used on input line 376.
 <Images/lnorm-1.pdf, id=463, 794.97pt x 325.215pt>
 File: Images/lnorm-1.pdf Graphic file (type pdf)
 <use Images/lnorm-1.pdf>
-Package pdftex.def Info: Images/lnorm-1.pdf  used on input line 383.
+Package pdftex.def Info: Images/lnorm-1.pdf  used on input line 387.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/lnorm-2.pdf, id=464, 794.97pt x 325.215pt>
 File: Images/lnorm-2.pdf Graphic file (type pdf)
 <use Images/lnorm-2.pdf>
-Package pdftex.def Info: Images/lnorm-2.pdf  used on input line 385.
+Package pdftex.def Info: Images/lnorm-2.pdf  used on input line 389.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/lnorm-3.pdf, id=465, 794.97pt x 325.215pt>
 File: Images/lnorm-3.pdf Graphic file (type pdf)
 <use Images/lnorm-3.pdf>
-Package pdftex.def Info: Images/lnorm-3.pdf  used on input line 387.
+Package pdftex.def Info: Images/lnorm-3.pdf  used on input line 391.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 [17
 
@@ -760,17 +760,17 @@ Package pdftex.def Info: Images/lnorm-3.pdf  used on input line 387.
 <Images/llog-1.pdf, id=495, 794.97pt x 325.215pt>
 File: Images/llog-1.pdf Graphic file (type pdf)
 <use Images/llog-1.pdf>
-Package pdftex.def Info: Images/llog-1.pdf  used on input line 394.
+Package pdftex.def Info: Images/llog-1.pdf  used on input line 398.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/llog-2.pdf, id=496, 794.97pt x 325.215pt>
 File: Images/llog-2.pdf Graphic file (type pdf)
 <use Images/llog-2.pdf>
-Package pdftex.def Info: Images/llog-2.pdf  used on input line 396.
+Package pdftex.def Info: Images/llog-2.pdf  used on input line 400.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/llog-3.pdf, id=497, 794.97pt x 325.215pt>
 File: Images/llog-3.pdf Graphic file (type pdf)
 <use Images/llog-3.pdf>
-Package pdftex.def Info: Images/llog-3.pdf  used on input line 398.
+Package pdftex.def Info: Images/llog-3.pdf  used on input line 402.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 [18
 
@@ -778,17 +778,17 @@ Package pdftex.def Info: Images/llog-3.pdf  used on input line 398.
 <Images/gam-1.pdf, id=527, 794.97pt x 325.215pt>
 File: Images/gam-1.pdf Graphic file (type pdf)
 <use Images/gam-1.pdf>
-Package pdftex.def Info: Images/gam-1.pdf  used on input line 405.
+Package pdftex.def Info: Images/gam-1.pdf  used on input line 409.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/gam-2.pdf, id=528, 794.97pt x 325.215pt>
 File: Images/gam-2.pdf Graphic file (type pdf)
 <use Images/gam-2.pdf>
-Package pdftex.def Info: Images/gam-2.pdf  used on input line 407.
+Package pdftex.def Info: Images/gam-2.pdf  used on input line 411.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/gam-3.pdf, id=529, 794.97pt x 325.215pt>
 File: Images/gam-3.pdf Graphic file (type pdf)
 <use Images/gam-3.pdf>
-Package pdftex.def Info: Images/gam-3.pdf  used on input line 409.
+Package pdftex.def Info: Images/gam-3.pdf  used on input line 413.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 [19
 
@@ -796,17 +796,17 @@ Package pdftex.def Info: Images/gam-3.pdf  used on input line 409.
 <Images/ggam-1.pdf, id=561, 794.97pt x 325.215pt>
 File: Images/ggam-1.pdf Graphic file (type pdf)
 <use Images/ggam-1.pdf>
-Package pdftex.def Info: Images/ggam-1.pdf  used on input line 416.
+Package pdftex.def Info: Images/ggam-1.pdf  used on input line 420.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/ggam-2.pdf, id=562, 794.97pt x 325.215pt>
 File: Images/ggam-2.pdf Graphic file (type pdf)
 <use Images/ggam-2.pdf>
-Package pdftex.def Info: Images/ggam-2.pdf  used on input line 418.
+Package pdftex.def Info: Images/ggam-2.pdf  used on input line 422.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/ggam-3.pdf, id=563, 794.97pt x 325.215pt>
 File: Images/ggam-3.pdf Graphic file (type pdf)
 <use Images/ggam-3.pdf>
-Package pdftex.def Info: Images/ggam-3.pdf  used on input line 420.
+Package pdftex.def Info: Images/ggam-3.pdf  used on input line 424.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 [20
 
@@ -814,7 +814,7 @@ Package pdftex.def Info: Images/ggam-3.pdf  used on input line 420.
 <Images/spline-1.pdf, id=594, 469.755pt x 325.215pt>
 File: Images/spline-1.pdf Graphic file (type pdf)
 <use Images/spline-1.pdf>
-Package pdftex.def Info: Images/spline-1.pdf  used on input line 447.
+Package pdftex.def Info: Images/spline-1.pdf  used on input line 451.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [21
 
@@ -822,17 +822,17 @@ Package pdftex.def Info: Images/spline-1.pdf  used on input line 447.
 <Images/spline_hazard1-1.pdf, id=609, 794.97pt x 325.215pt>
 File: Images/spline_hazard1-1.pdf Graphic file (type pdf)
 <use Images/spline_hazard1-1.pdf>
-Package pdftex.def Info: Images/spline_hazard1-1.pdf  used on input line 480.
+Package pdftex.def Info: Images/spline_hazard1-1.pdf  used on input line 484.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/spline_hazard1-2.pdf, id=610, 794.97pt x 325.215pt>
 File: Images/spline_hazard1-2.pdf Graphic file (type pdf)
 <use Images/spline_hazard1-2.pdf>
-Package pdftex.def Info: Images/spline_hazard1-2.pdf  used on input line 482.
+Package pdftex.def Info: Images/spline_hazard1-2.pdf  used on input line 486.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/spline_hazard1-3.pdf, id=611, 794.97pt x 325.215pt>
 File: Images/spline_hazard1-3.pdf Graphic file (type pdf)
 <use Images/spline_hazard1-3.pdf>
-Package pdftex.def Info: Images/spline_hazard1-3.pdf  used on input line 484.
+Package pdftex.def Info: Images/spline_hazard1-3.pdf  used on input line 488.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 [23
 
@@ -840,17 +840,17 @@ Package pdftex.def Info: Images/spline_hazard1-3.pdf  used on input line 484.
 <Images/spline_hazard2-1.pdf, id=641, 794.97pt x 325.215pt>
 File: Images/spline_hazard2-1.pdf Graphic file (type pdf)
 <use Images/spline_hazard2-1.pdf>
-Package pdftex.def Info: Images/spline_hazard2-1.pdf  used on input line 491.
+Package pdftex.def Info: Images/spline_hazard2-1.pdf  used on input line 495.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/spline_hazard2-2.pdf, id=642, 794.97pt x 325.215pt>
 File: Images/spline_hazard2-2.pdf Graphic file (type pdf)
 <use Images/spline_hazard2-2.pdf>
-Package pdftex.def Info: Images/spline_hazard2-2.pdf  used on input line 493.
+Package pdftex.def Info: Images/spline_hazard2-2.pdf  used on input line 497.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/spline_hazard2-3.pdf, id=643, 794.97pt x 325.215pt>
 File: Images/spline_hazard2-3.pdf Graphic file (type pdf)
 <use Images/spline_hazard2-3.pdf>
-Package pdftex.def Info: Images/spline_hazard2-3.pdf  used on input line 495.
+Package pdftex.def Info: Images/spline_hazard2-3.pdf  used on input line 499.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 [24
 
@@ -858,17 +858,17 @@ Package pdftex.def Info: Images/spline_hazard2-3.pdf  used on input line 495.
 <Images/spline_hazard3-1.pdf, id=673, 794.97pt x 325.215pt>
 File: Images/spline_hazard3-1.pdf Graphic file (type pdf)
 <use Images/spline_hazard3-1.pdf>
-Package pdftex.def Info: Images/spline_hazard3-1.pdf  used on input line 502.
+Package pdftex.def Info: Images/spline_hazard3-1.pdf  used on input line 506.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/spline_hazard3-2.pdf, id=674, 794.97pt x 325.215pt>
 File: Images/spline_hazard3-2.pdf Graphic file (type pdf)
 <use Images/spline_hazard3-2.pdf>
-Package pdftex.def Info: Images/spline_hazard3-2.pdf  used on input line 504.
+Package pdftex.def Info: Images/spline_hazard3-2.pdf  used on input line 508.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/spline_hazard3-3.pdf, id=675, 794.97pt x 325.215pt>
 File: Images/spline_hazard3-3.pdf Graphic file (type pdf)
 <use Images/spline_hazard3-3.pdf>
-Package pdftex.def Info: Images/spline_hazard3-3.pdf  used on input line 506.
+Package pdftex.def Info: Images/spline_hazard3-3.pdf  used on input line 510.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 [25
 
@@ -876,17 +876,17 @@ Package pdftex.def Info: Images/spline_hazard3-3.pdf  used on input line 506.
 <Images/spline_odds1-1.pdf, id=707, 794.97pt x 325.215pt>
 File: Images/spline_odds1-1.pdf Graphic file (type pdf)
 <use Images/spline_odds1-1.pdf>
-Package pdftex.def Info: Images/spline_odds1-1.pdf  used on input line 513.
+Package pdftex.def Info: Images/spline_odds1-1.pdf  used on input line 517.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/spline_odds1-2.pdf, id=708, 794.97pt x 325.215pt>
 File: Images/spline_odds1-2.pdf Graphic file (type pdf)
 <use Images/spline_odds1-2.pdf>
-Package pdftex.def Info: Images/spline_odds1-2.pdf  used on input line 515.
+Package pdftex.def Info: Images/spline_odds1-2.pdf  used on input line 519.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/spline_odds1-3.pdf, id=709, 794.97pt x 325.215pt>
 File: Images/spline_odds1-3.pdf Graphic file (type pdf)
 <use Images/spline_odds1-3.pdf>
-Package pdftex.def Info: Images/spline_odds1-3.pdf  used on input line 517.
+Package pdftex.def Info: Images/spline_odds1-3.pdf  used on input line 521.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 [26
 
@@ -894,17 +894,17 @@ Package pdftex.def Info: Images/spline_odds1-3.pdf  used on input line 517.
 <Images/spline_odds2-1.pdf, id=739, 794.97pt x 325.215pt>
 File: Images/spline_odds2-1.pdf Graphic file (type pdf)
 <use Images/spline_odds2-1.pdf>
-Package pdftex.def Info: Images/spline_odds2-1.pdf  used on input line 524.
+Package pdftex.def Info: Images/spline_odds2-1.pdf  used on input line 528.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/spline_odds2-2.pdf, id=740, 794.97pt x 325.215pt>
 File: Images/spline_odds2-2.pdf Graphic file (type pdf)
 <use Images/spline_odds2-2.pdf>
-Package pdftex.def Info: Images/spline_odds2-2.pdf  used on input line 526.
+Package pdftex.def Info: Images/spline_odds2-2.pdf  used on input line 530.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/spline_odds2-3.pdf, id=741, 794.97pt x 325.215pt>
 File: Images/spline_odds2-3.pdf Graphic file (type pdf)
 <use Images/spline_odds2-3.pdf>
-Package pdftex.def Info: Images/spline_odds2-3.pdf  used on input line 528.
+Package pdftex.def Info: Images/spline_odds2-3.pdf  used on input line 532.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 [27
 
@@ -912,17 +912,17 @@ Package pdftex.def Info: Images/spline_odds2-3.pdf  used on input line 528.
 <Images/spline_odds3-1.pdf, id=771, 794.97pt x 325.215pt>
 File: Images/spline_odds3-1.pdf Graphic file (type pdf)
 <use Images/spline_odds3-1.pdf>
-Package pdftex.def Info: Images/spline_odds3-1.pdf  used on input line 535.
+Package pdftex.def Info: Images/spline_odds3-1.pdf  used on input line 539.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/spline_odds3-2.pdf, id=772, 794.97pt x 325.215pt>
 File: Images/spline_odds3-2.pdf Graphic file (type pdf)
 <use Images/spline_odds3-2.pdf>
-Package pdftex.def Info: Images/spline_odds3-2.pdf  used on input line 537.
+Package pdftex.def Info: Images/spline_odds3-2.pdf  used on input line 541.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/spline_odds3-3.pdf, id=773, 794.97pt x 325.215pt>
 File: Images/spline_odds3-3.pdf Graphic file (type pdf)
 <use Images/spline_odds3-3.pdf>
-Package pdftex.def Info: Images/spline_odds3-3.pdf  used on input line 539.
+Package pdftex.def Info: Images/spline_odds3-3.pdf  used on input line 543.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 [28
 
@@ -930,17 +930,17 @@ Package pdftex.def Info: Images/spline_odds3-3.pdf  used on input line 539.
 <Images/spline_norm1-1.pdf, id=803, 794.97pt x 325.215pt>
 File: Images/spline_norm1-1.pdf Graphic file (type pdf)
 <use Images/spline_norm1-1.pdf>
-Package pdftex.def Info: Images/spline_norm1-1.pdf  used on input line 546.
+Package pdftex.def Info: Images/spline_norm1-1.pdf  used on input line 550.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/spline_norm1-2.pdf, id=804, 794.97pt x 325.215pt>
 File: Images/spline_norm1-2.pdf Graphic file (type pdf)
 <use Images/spline_norm1-2.pdf>
-Package pdftex.def Info: Images/spline_norm1-2.pdf  used on input line 548.
+Package pdftex.def Info: Images/spline_norm1-2.pdf  used on input line 552.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/spline_norm1-3.pdf, id=805, 794.97pt x 325.215pt>
 File: Images/spline_norm1-3.pdf Graphic file (type pdf)
 <use Images/spline_norm1-3.pdf>
-Package pdftex.def Info: Images/spline_norm1-3.pdf  used on input line 550.
+Package pdftex.def Info: Images/spline_norm1-3.pdf  used on input line 554.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 [29
 
@@ -948,17 +948,17 @@ Package pdftex.def Info: Images/spline_norm1-3.pdf  used on input line 550.
 <Images/spline_norm2-1.pdf, id=836, 794.97pt x 325.215pt>
 File: Images/spline_norm2-1.pdf Graphic file (type pdf)
 <use Images/spline_norm2-1.pdf>
-Package pdftex.def Info: Images/spline_norm2-1.pdf  used on input line 557.
+Package pdftex.def Info: Images/spline_norm2-1.pdf  used on input line 561.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/spline_norm2-2.pdf, id=837, 794.97pt x 325.215pt>
 File: Images/spline_norm2-2.pdf Graphic file (type pdf)
 <use Images/spline_norm2-2.pdf>
-Package pdftex.def Info: Images/spline_norm2-2.pdf  used on input line 559.
+Package pdftex.def Info: Images/spline_norm2-2.pdf  used on input line 563.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/spline_norm2-3.pdf, id=838, 794.97pt x 325.215pt>
 File: Images/spline_norm2-3.pdf Graphic file (type pdf)
 <use Images/spline_norm2-3.pdf>
-Package pdftex.def Info: Images/spline_norm2-3.pdf  used on input line 561.
+Package pdftex.def Info: Images/spline_norm2-3.pdf  used on input line 565.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 [30
 
@@ -966,47 +966,47 @@ Package pdftex.def Info: Images/spline_norm2-3.pdf  used on input line 561.
 <Images/spline_norm3-1.pdf, id=868, 794.97pt x 325.215pt>
 File: Images/spline_norm3-1.pdf Graphic file (type pdf)
 <use Images/spline_norm3-1.pdf>
-Package pdftex.def Info: Images/spline_norm3-1.pdf  used on input line 568.
+Package pdftex.def Info: Images/spline_norm3-1.pdf  used on input line 572.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/spline_norm3-2.pdf, id=869, 794.97pt x 325.215pt>
 File: Images/spline_norm3-2.pdf Graphic file (type pdf)
 <use Images/spline_norm3-2.pdf>
-Package pdftex.def Info: Images/spline_norm3-2.pdf  used on input line 570.
+Package pdftex.def Info: Images/spline_norm3-2.pdf  used on input line 574.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/spline_norm3-3.pdf, id=870, 794.97pt x 325.215pt>
 File: Images/spline_norm3-3.pdf Graphic file (type pdf)
 <use Images/spline_norm3-3.pdf>
-Package pdftex.def Info: Images/spline_norm3-3.pdf  used on input line 572.
+Package pdftex.def Info: Images/spline_norm3-3.pdf  used on input line 576.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 [31
 
  <./images/spline_norm3-1.pdf> <./images/spline_norm3-2.pdf> <./images/spline_norm3-3.pdf>]
 
-LaTeX Warning: Command \texttimes invalid in math mode on input line 584.
+LaTeX Warning: Command \texttimes invalid in math mode on input line 588.
 
-LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 584.
+LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 588.
 (c:/Users/g10028783/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 
-LaTeX Warning: Command \texttimes invalid in math mode on input line 584.
+LaTeX Warning: Command \texttimes invalid in math mode on input line 588.
 
 
-LaTeX Warning: Command \texttimes invalid in math mode on input line 584.
+LaTeX Warning: Command \texttimes invalid in math mode on input line 588.
 
 
-LaTeX Warning: Command \texttimes invalid in math mode on input line 584.
+LaTeX Warning: Command \texttimes invalid in math mode on input line 588.
 
 
-LaTeX Warning: Command \texttimes invalid in math mode on input line 586.
+LaTeX Warning: Command \texttimes invalid in math mode on input line 590.
 
 
-LaTeX Warning: Command \texttimes invalid in math mode on input line 586.
+LaTeX Warning: Command \texttimes invalid in math mode on input line 590.
 
 <Images/cure-1.pdf, id=901, 469.755pt x 325.215pt>
 File: Images/cure-1.pdf Graphic file (type pdf)
 <use Images/cure-1.pdf>
-Package pdftex.def Info: Images/cure-1.pdf  used on input line 588.
+Package pdftex.def Info: Images/cure-1.pdf  used on input line 592.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [32
 
@@ -1014,17 +1014,17 @@ Package pdftex.def Info: Images/cure-1.pdf  used on input line 588.
 <Images/cure_weib_mix-1.pdf, id=919, 794.97pt x 325.215pt>
 File: Images/cure_weib_mix-1.pdf Graphic file (type pdf)
 <use Images/cure_weib_mix-1.pdf>
-Package pdftex.def Info: Images/cure_weib_mix-1.pdf  used on input line 635.
+Package pdftex.def Info: Images/cure_weib_mix-1.pdf  used on input line 639.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/cure_weib_mix-2.pdf, id=920, 794.97pt x 325.215pt>
 File: Images/cure_weib_mix-2.pdf Graphic file (type pdf)
 <use Images/cure_weib_mix-2.pdf>
-Package pdftex.def Info: Images/cure_weib_mix-2.pdf  used on input line 637.
+Package pdftex.def Info: Images/cure_weib_mix-2.pdf  used on input line 641.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/cure_weib_mix-3.pdf, id=921, 794.97pt x 325.215pt>
 File: Images/cure_weib_mix-3.pdf Graphic file (type pdf)
 <use Images/cure_weib_mix-3.pdf>
-Package pdftex.def Info: Images/cure_weib_mix-3.pdf  used on input line 639.
+Package pdftex.def Info: Images/cure_weib_mix-3.pdf  used on input line 643.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 [34
 
@@ -1032,17 +1032,17 @@ Package pdftex.def Info: Images/cure_weib_mix-3.pdf  used on input line 639.
 <Images/cure_weib_nmix-1.pdf, id=952, 794.97pt x 325.215pt>
 File: Images/cure_weib_nmix-1.pdf Graphic file (type pdf)
 <use Images/cure_weib_nmix-1.pdf>
-Package pdftex.def Info: Images/cure_weib_nmix-1.pdf  used on input line 646.
+Package pdftex.def Info: Images/cure_weib_nmix-1.pdf  used on input line 650.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/cure_weib_nmix-2.pdf, id=953, 794.97pt x 325.215pt>
 File: Images/cure_weib_nmix-2.pdf Graphic file (type pdf)
 <use Images/cure_weib_nmix-2.pdf>
-Package pdftex.def Info: Images/cure_weib_nmix-2.pdf  used on input line 648.
+Package pdftex.def Info: Images/cure_weib_nmix-2.pdf  used on input line 652.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/cure_weib_nmix-3.pdf, id=954, 794.97pt x 325.215pt>
 File: Images/cure_weib_nmix-3.pdf Graphic file (type pdf)
 <use Images/cure_weib_nmix-3.pdf>
-Package pdftex.def Info: Images/cure_weib_nmix-3.pdf  used on input line 650.
+Package pdftex.def Info: Images/cure_weib_nmix-3.pdf  used on input line 654.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 [35
 
@@ -1050,17 +1050,17 @@ Package pdftex.def Info: Images/cure_weib_nmix-3.pdf  used on input line 650.
 <Images/cure_lnorm_mix-1.pdf, id=984, 794.97pt x 325.215pt>
 File: Images/cure_lnorm_mix-1.pdf Graphic file (type pdf)
 <use Images/cure_lnorm_mix-1.pdf>
-Package pdftex.def Info: Images/cure_lnorm_mix-1.pdf  used on input line 657.
+Package pdftex.def Info: Images/cure_lnorm_mix-1.pdf  used on input line 661.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/cure_lnorm_mix-2.pdf, id=985, 794.97pt x 325.215pt>
 File: Images/cure_lnorm_mix-2.pdf Graphic file (type pdf)
 <use Images/cure_lnorm_mix-2.pdf>
-Package pdftex.def Info: Images/cure_lnorm_mix-2.pdf  used on input line 659.
+Package pdftex.def Info: Images/cure_lnorm_mix-2.pdf  used on input line 663.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/cure_lnorm_mix-3.pdf, id=986, 794.97pt x 325.215pt>
 File: Images/cure_lnorm_mix-3.pdf Graphic file (type pdf)
 <use Images/cure_lnorm_mix-3.pdf>
-Package pdftex.def Info: Images/cure_lnorm_mix-3.pdf  used on input line 661.
+Package pdftex.def Info: Images/cure_lnorm_mix-3.pdf  used on input line 665.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 [36
 
@@ -1068,17 +1068,17 @@ Package pdftex.def Info: Images/cure_lnorm_mix-3.pdf  used on input line 661.
 <Images/cure_lnorm_nmix-1.pdf, id=1016, 794.97pt x 325.215pt>
 File: Images/cure_lnorm_nmix-1.pdf Graphic file (type pdf)
 <use Images/cure_lnorm_nmix-1.pdf>
-Package pdftex.def Info: Images/cure_lnorm_nmix-1.pdf  used on input line 669.
+Package pdftex.def Info: Images/cure_lnorm_nmix-1.pdf  used on input line 673.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/cure_lnorm_nmix-2.pdf, id=1017, 794.97pt x 325.215pt>
 File: Images/cure_lnorm_nmix-2.pdf Graphic file (type pdf)
 <use Images/cure_lnorm_nmix-2.pdf>
-Package pdftex.def Info: Images/cure_lnorm_nmix-2.pdf  used on input line 671.
+Package pdftex.def Info: Images/cure_lnorm_nmix-2.pdf  used on input line 675.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/cure_lnorm_nmix-3.pdf, id=1018, 794.97pt x 325.215pt>
 File: Images/cure_lnorm_nmix-3.pdf Graphic file (type pdf)
 <use Images/cure_lnorm_nmix-3.pdf>
-Package pdftex.def Info: Images/cure_lnorm_nmix-3.pdf  used on input line 673.
+Package pdftex.def Info: Images/cure_lnorm_nmix-3.pdf  used on input line 677.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 [37
 
@@ -1086,17 +1086,17 @@ Package pdftex.def Info: Images/cure_lnorm_nmix-3.pdf  used on input line 673.
 <Images/cure_llog_mix-1.pdf, id=1049, 794.97pt x 325.215pt>
 File: Images/cure_llog_mix-1.pdf Graphic file (type pdf)
 <use Images/cure_llog_mix-1.pdf>
-Package pdftex.def Info: Images/cure_llog_mix-1.pdf  used on input line 680.
+Package pdftex.def Info: Images/cure_llog_mix-1.pdf  used on input line 684.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/cure_llog_mix-2.pdf, id=1050, 794.97pt x 325.215pt>
 File: Images/cure_llog_mix-2.pdf Graphic file (type pdf)
 <use Images/cure_llog_mix-2.pdf>
-Package pdftex.def Info: Images/cure_llog_mix-2.pdf  used on input line 682.
+Package pdftex.def Info: Images/cure_llog_mix-2.pdf  used on input line 686.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/cure_llog_mix-3.pdf, id=1051, 794.97pt x 325.215pt>
 File: Images/cure_llog_mix-3.pdf Graphic file (type pdf)
 <use Images/cure_llog_mix-3.pdf>
-Package pdftex.def Info: Images/cure_llog_mix-3.pdf  used on input line 684.
+Package pdftex.def Info: Images/cure_llog_mix-3.pdf  used on input line 688.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 [38
 
@@ -1104,17 +1104,17 @@ Package pdftex.def Info: Images/cure_llog_mix-3.pdf  used on input line 684.
 <Images/cure_llog_nmix-1.pdf, id=1082, 794.97pt x 325.215pt>
 File: Images/cure_llog_nmix-1.pdf Graphic file (type pdf)
 <use Images/cure_llog_nmix-1.pdf>
-Package pdftex.def Info: Images/cure_llog_nmix-1.pdf  used on input line 692.
+Package pdftex.def Info: Images/cure_llog_nmix-1.pdf  used on input line 696.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/cure_llog_nmix-2.pdf, id=1083, 794.97pt x 325.215pt>
 File: Images/cure_llog_nmix-2.pdf Graphic file (type pdf)
 <use Images/cure_llog_nmix-2.pdf>
-Package pdftex.def Info: Images/cure_llog_nmix-2.pdf  used on input line 694.
+Package pdftex.def Info: Images/cure_llog_nmix-2.pdf  used on input line 698.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 <Images/cure_llog_nmix-3.pdf, id=1084, 794.97pt x 325.215pt>
 File: Images/cure_llog_nmix-3.pdf Graphic file (type pdf)
 <use Images/cure_llog_nmix-3.pdf>
-Package pdftex.def Info: Images/cure_llog_nmix-3.pdf  used on input line 696.
+Package pdftex.def Info: Images/cure_llog_nmix-3.pdf  used on input line 700.
 (pdftex.def)             Requested size: 397.49615pt x 162.61206pt.
 [39
 
@@ -1124,22 +1124,22 @@ Package pdftex.def Info: Images/cure_llog_nmix-3.pdf  used on input line 696.
 <Images/validate_extrapolation1-1.pdf, id=1119, 794.97pt x 325.215pt>
 File: Images/validate_extrapolation1-1.pdf Graphic file (type pdf)
 <use Images/validate_extrapolation1-1.pdf>
-Package pdftex.def Info: Images/validate_extrapolation1-1.pdf  used on input line 734.
+Package pdftex.def Info: Images/validate_extrapolation1-1.pdf  used on input line 738.
 (pdftex.def)             Requested size: 461.08293pt x 188.62483pt.
 <Images/validate_extrapolation1-2.pdf, id=1120, 794.97pt x 325.215pt>
 File: Images/validate_extrapolation1-2.pdf Graphic file (type pdf)
 <use Images/validate_extrapolation1-2.pdf>
-Package pdftex.def Info: Images/validate_extrapolation1-2.pdf  used on input line 736.
+Package pdftex.def Info: Images/validate_extrapolation1-2.pdf  used on input line 740.
 (pdftex.def)             Requested size: 461.08293pt x 188.62483pt.
 <Images/validate_extrapolation1-3.pdf, id=1121, 794.97pt x 325.215pt>
 File: Images/validate_extrapolation1-3.pdf Graphic file (type pdf)
 <use Images/validate_extrapolation1-3.pdf>
-Package pdftex.def Info: Images/validate_extrapolation1-3.pdf  used on input line 738.
+Package pdftex.def Info: Images/validate_extrapolation1-3.pdf  used on input line 742.
 (pdftex.def)             Requested size: 461.08293pt x 188.62483pt.
 <Images/validate_extrapolation1-4.pdf, id=1122, 794.97pt x 325.215pt>
 File: Images/validate_extrapolation1-4.pdf Graphic file (type pdf)
 <use Images/validate_extrapolation1-4.pdf>
-Package pdftex.def Info: Images/validate_extrapolation1-4.pdf  used on input line 774.
+Package pdftex.def Info: Images/validate_extrapolation1-4.pdf  used on input line 778.
 (pdftex.def)             Requested size: 461.08293pt x 188.62483pt.
 [41
 
@@ -1147,50 +1147,50 @@ Package pdftex.def Info: Images/validate_extrapolation1-4.pdf  used on input lin
 <Images/validate_extrapolation1-5.pdf, id=1146, 794.97pt x 325.215pt>
 File: Images/validate_extrapolation1-5.pdf Graphic file (type pdf)
 <use Images/validate_extrapolation1-5.pdf>
-Package pdftex.def Info: Images/validate_extrapolation1-5.pdf  used on input line 776.
+Package pdftex.def Info: Images/validate_extrapolation1-5.pdf  used on input line 780.
 (pdftex.def)             Requested size: 461.08293pt x 188.62483pt.
 [42 <./images/validate_extrapolation1-4.pdf>]
 <Images/validate_extrapolation1-6.pdf, id=1158, 794.97pt x 325.215pt>
 File: Images/validate_extrapolation1-6.pdf Graphic file (type pdf)
 <use Images/validate_extrapolation1-6.pdf>
-Package pdftex.def Info: Images/validate_extrapolation1-6.pdf  used on input line 778.
+Package pdftex.def Info: Images/validate_extrapolation1-6.pdf  used on input line 782.
 (pdftex.def)             Requested size: 461.08293pt x 188.62483pt.
 <Images/validate_extrapolation1-7.pdf, id=1159, 794.97pt x 325.215pt>
 File: Images/validate_extrapolation1-7.pdf Graphic file (type pdf)
 <use Images/validate_extrapolation1-7.pdf>
-Package pdftex.def Info: Images/validate_extrapolation1-7.pdf  used on input line 814.
+Package pdftex.def Info: Images/validate_extrapolation1-7.pdf  used on input line 818.
 (pdftex.def)             Requested size: 461.08293pt x 188.62483pt.
 <Images/validate_extrapolation1-8.pdf, id=1160, 794.97pt x 325.215pt>
 File: Images/validate_extrapolation1-8.pdf Graphic file (type pdf)
 <use Images/validate_extrapolation1-8.pdf>
-Package pdftex.def Info: Images/validate_extrapolation1-8.pdf  used on input line 816.
+Package pdftex.def Info: Images/validate_extrapolation1-8.pdf  used on input line 820.
 (pdftex.def)             Requested size: 461.08293pt x 188.62483pt.
 [43 <./images/validate_extrapolation1-5.pdf> <./images/validate_extrapolation1-6.pdf> <./images/validate_extrapolation1-7.pdf>]
 <Images/validate_extrapolation1-9.pdf, id=1184, 794.97pt x 325.215pt>
 File: Images/validate_extrapolation1-9.pdf Graphic file (type pdf)
 <use Images/validate_extrapolation1-9.pdf>
-Package pdftex.def Info: Images/validate_extrapolation1-9.pdf  used on input line 818.
+Package pdftex.def Info: Images/validate_extrapolation1-9.pdf  used on input line 822.
 (pdftex.def)             Requested size: 461.08293pt x 188.62483pt.
 [44 <./images/validate_extrapolation1-8.pdf>] [45 <./images/validate_extrapolation1-9.pdf>]
 <Images/validate_extrapolation2-1.pdf, id=1207, 794.97pt x 325.215pt>
 File: Images/validate_extrapolation2-1.pdf Graphic file (type pdf)
 <use Images/validate_extrapolation2-1.pdf>
-Package pdftex.def Info: Images/validate_extrapolation2-1.pdf  used on input line 825.
+Package pdftex.def Info: Images/validate_extrapolation2-1.pdf  used on input line 829.
 (pdftex.def)             Requested size: 461.08293pt x 188.62483pt.
 <Images/validate_extrapolation2-2.pdf, id=1208, 794.97pt x 325.215pt>
 File: Images/validate_extrapolation2-2.pdf Graphic file (type pdf)
 <use Images/validate_extrapolation2-2.pdf>
-Package pdftex.def Info: Images/validate_extrapolation2-2.pdf  used on input line 827.
+Package pdftex.def Info: Images/validate_extrapolation2-2.pdf  used on input line 831.
 (pdftex.def)             Requested size: 461.08293pt x 188.62483pt.
 <Images/validate_extrapolation2-3.pdf, id=1209, 794.97pt x 325.215pt>
 File: Images/validate_extrapolation2-3.pdf Graphic file (type pdf)
 <use Images/validate_extrapolation2-3.pdf>
-Package pdftex.def Info: Images/validate_extrapolation2-3.pdf  used on input line 829.
+Package pdftex.def Info: Images/validate_extrapolation2-3.pdf  used on input line 833.
 (pdftex.def)             Requested size: 461.08293pt x 188.62483pt.
 <Images/validate_extrapolation2-4.pdf, id=1210, 794.97pt x 325.215pt>
 File: Images/validate_extrapolation2-4.pdf Graphic file (type pdf)
 <use Images/validate_extrapolation2-4.pdf>
-Package pdftex.def Info: Images/validate_extrapolation2-4.pdf  used on input line 865.
+Package pdftex.def Info: Images/validate_extrapolation2-4.pdf  used on input line 869.
 (pdftex.def)             Requested size: 461.08293pt x 188.62483pt.
 [46
 
@@ -1198,50 +1198,50 @@ Package pdftex.def Info: Images/validate_extrapolation2-4.pdf  used on input lin
 <Images/validate_extrapolation2-5.pdf, id=1234, 794.97pt x 325.215pt>
 File: Images/validate_extrapolation2-5.pdf Graphic file (type pdf)
 <use Images/validate_extrapolation2-5.pdf>
-Package pdftex.def Info: Images/validate_extrapolation2-5.pdf  used on input line 867.
+Package pdftex.def Info: Images/validate_extrapolation2-5.pdf  used on input line 871.
 (pdftex.def)             Requested size: 461.08293pt x 188.62483pt.
 [47 <./images/validate_extrapolation2-4.pdf>]
 <Images/validate_extrapolation2-6.pdf, id=1246, 794.97pt x 325.215pt>
 File: Images/validate_extrapolation2-6.pdf Graphic file (type pdf)
 <use Images/validate_extrapolation2-6.pdf>
-Package pdftex.def Info: Images/validate_extrapolation2-6.pdf  used on input line 869.
+Package pdftex.def Info: Images/validate_extrapolation2-6.pdf  used on input line 873.
 (pdftex.def)             Requested size: 461.08293pt x 188.62483pt.
 <Images/validate_extrapolation2-7.pdf, id=1247, 794.97pt x 325.215pt>
 File: Images/validate_extrapolation2-7.pdf Graphic file (type pdf)
 <use Images/validate_extrapolation2-7.pdf>
-Package pdftex.def Info: Images/validate_extrapolation2-7.pdf  used on input line 905.
+Package pdftex.def Info: Images/validate_extrapolation2-7.pdf  used on input line 909.
 (pdftex.def)             Requested size: 461.08293pt x 188.62483pt.
 <Images/validate_extrapolation2-8.pdf, id=1248, 794.97pt x 325.215pt>
 File: Images/validate_extrapolation2-8.pdf Graphic file (type pdf)
 <use Images/validate_extrapolation2-8.pdf>
-Package pdftex.def Info: Images/validate_extrapolation2-8.pdf  used on input line 907.
+Package pdftex.def Info: Images/validate_extrapolation2-8.pdf  used on input line 911.
 (pdftex.def)             Requested size: 461.08293pt x 188.62483pt.
 [48 <./images/validate_extrapolation2-5.pdf> <./images/validate_extrapolation2-6.pdf> <./images/validate_extrapolation2-7.pdf>]
 <Images/validate_extrapolation2-9.pdf, id=1271, 794.97pt x 325.215pt>
 File: Images/validate_extrapolation2-9.pdf Graphic file (type pdf)
 <use Images/validate_extrapolation2-9.pdf>
-Package pdftex.def Info: Images/validate_extrapolation2-9.pdf  used on input line 909.
+Package pdftex.def Info: Images/validate_extrapolation2-9.pdf  used on input line 913.
 (pdftex.def)             Requested size: 461.08293pt x 188.62483pt.
 [49 <./images/validate_extrapolation2-8.pdf>] [50 <./images/validate_extrapolation2-9.pdf>]
 <Images/validate_extrapolation3-1.pdf, id=1294, 794.97pt x 325.215pt>
 File: Images/validate_extrapolation3-1.pdf Graphic file (type pdf)
 <use Images/validate_extrapolation3-1.pdf>
-Package pdftex.def Info: Images/validate_extrapolation3-1.pdf  used on input line 916.
+Package pdftex.def Info: Images/validate_extrapolation3-1.pdf  used on input line 920.
 (pdftex.def)             Requested size: 461.08293pt x 188.62483pt.
 <Images/validate_extrapolation3-2.pdf, id=1295, 794.97pt x 325.215pt>
 File: Images/validate_extrapolation3-2.pdf Graphic file (type pdf)
 <use Images/validate_extrapolation3-2.pdf>
-Package pdftex.def Info: Images/validate_extrapolation3-2.pdf  used on input line 918.
+Package pdftex.def Info: Images/validate_extrapolation3-2.pdf  used on input line 922.
 (pdftex.def)             Requested size: 461.08293pt x 188.62483pt.
 <Images/validate_extrapolation3-3.pdf, id=1296, 794.97pt x 325.215pt>
 File: Images/validate_extrapolation3-3.pdf Graphic file (type pdf)
 <use Images/validate_extrapolation3-3.pdf>
-Package pdftex.def Info: Images/validate_extrapolation3-3.pdf  used on input line 920.
+Package pdftex.def Info: Images/validate_extrapolation3-3.pdf  used on input line 924.
 (pdftex.def)             Requested size: 461.08293pt x 188.62483pt.
 <Images/validate_extrapolation3-4.pdf, id=1297, 794.97pt x 325.215pt>
 File: Images/validate_extrapolation3-4.pdf Graphic file (type pdf)
 <use Images/validate_extrapolation3-4.pdf>
-Package pdftex.def Info: Images/validate_extrapolation3-4.pdf  used on input line 956.
+Package pdftex.def Info: Images/validate_extrapolation3-4.pdf  used on input line 960.
 (pdftex.def)             Requested size: 461.08293pt x 188.62483pt.
 [51
 
@@ -1249,58 +1249,58 @@ Package pdftex.def Info: Images/validate_extrapolation3-4.pdf  used on input lin
 <Images/validate_extrapolation3-5.pdf, id=1321, 794.97pt x 325.215pt>
 File: Images/validate_extrapolation3-5.pdf Graphic file (type pdf)
 <use Images/validate_extrapolation3-5.pdf>
-Package pdftex.def Info: Images/validate_extrapolation3-5.pdf  used on input line 958.
+Package pdftex.def Info: Images/validate_extrapolation3-5.pdf  used on input line 962.
 (pdftex.def)             Requested size: 461.08293pt x 188.62483pt.
 [52 <./images/validate_extrapolation3-4.pdf>]
 <Images/validate_extrapolation3-6.pdf, id=1334, 794.97pt x 325.215pt>
 File: Images/validate_extrapolation3-6.pdf Graphic file (type pdf)
 <use Images/validate_extrapolation3-6.pdf>
-Package pdftex.def Info: Images/validate_extrapolation3-6.pdf  used on input line 960.
+Package pdftex.def Info: Images/validate_extrapolation3-6.pdf  used on input line 964.
 (pdftex.def)             Requested size: 461.08293pt x 188.62483pt.
 <Images/validate_extrapolation3-7.pdf, id=1335, 794.97pt x 325.215pt>
 File: Images/validate_extrapolation3-7.pdf Graphic file (type pdf)
 <use Images/validate_extrapolation3-7.pdf>
-Package pdftex.def Info: Images/validate_extrapolation3-7.pdf  used on input line 996.
+Package pdftex.def Info: Images/validate_extrapolation3-7.pdf  used on input line 1000.
 (pdftex.def)             Requested size: 461.08293pt x 188.62483pt.
 <Images/validate_extrapolation3-8.pdf, id=1336, 794.97pt x 325.215pt>
 File: Images/validate_extrapolation3-8.pdf Graphic file (type pdf)
 <use Images/validate_extrapolation3-8.pdf>
-Package pdftex.def Info: Images/validate_extrapolation3-8.pdf  used on input line 998.
+Package pdftex.def Info: Images/validate_extrapolation3-8.pdf  used on input line 1002.
 (pdftex.def)             Requested size: 461.08293pt x 188.62483pt.
 [53 <./images/validate_extrapolation3-5.pdf> <./images/validate_extrapolation3-6.pdf> <./images/validate_extrapolation3-7.pdf>]
 <Images/validate_extrapolation3-9.pdf, id=1359, 794.97pt x 325.215pt>
 File: Images/validate_extrapolation3-9.pdf Graphic file (type pdf)
 <use Images/validate_extrapolation3-9.pdf>
-Package pdftex.def Info: Images/validate_extrapolation3-9.pdf  used on input line 1000.
+Package pdftex.def Info: Images/validate_extrapolation3-9.pdf  used on input line 1004.
 (pdftex.def)             Requested size: 461.08293pt x 188.62483pt.
 [54 <./images/validate_extrapolation3-8.pdf>] [55 <./images/validate_extrapolation3-9.pdf>]
-LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 1008.
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 1012.
 (c:/Users/g10028783/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-Overfull \hbox (18.49356pt too wide) in paragraph at lines 1090--1090
+Overfull \hbox (18.49356pt too wide) in paragraph at lines 1094--1094
 []\T1/lmtt/m/n/10 ##   ..$ group               : Factor w/ 3 levels "Good","Medium",..: 1 1 1 1 1 1 1 1 1 1 ...[] 
  []
 
 [56
 
 ]
-Overfull \hbox (102.49332pt too wide) in paragraph at lines 1090--1090
-[]\T1/lmtt/m/n/10 ##  $ surv_model_excel: chr [1:21, 1:105] "1. Exponential" "rate" "-2.80703426596042" "-3.08148409638671" ...[] 
+Overfull \hbox (102.49332pt too wide) in paragraph at lines 1094--1094
+[]\T1/lmtt/m/n/10 ##  $ surv_model_excel: chr [1:24, 1:150] "1. Exponential" "rate" "-2.80703426596042" "-3.08148409638671" ...[] 
  []
 
 
-Overfull \hbox (49.99347pt too wide) in paragraph at lines 1090--1090
+Overfull \hbox (49.99347pt too wide) in paragraph at lines 1094--1094
 []\T1/lmtt/m/n/10 ##   ..$ lbls       : chr [1:7] " 1. Exponential" " 2. Weibull" " 3. Gompertz" " 4. Log-normal" ...[] 
  []
 
 
-Overfull \hbox (280.9928pt too wide) in paragraph at lines 1090--1090
+Overfull \hbox (280.9928pt too wide) in paragraph at lines 1094--1094
 []\T1/lmtt/m/n/10 ##   ..$ lbls_spline: chr [1:9] " 8. Spline 1 knot hazard" " 9. Spline 2 knots hazard" "10. Spline 3 knots hazard" "11. Spline 1 knot odds" ...[] 
  []
 
 
-Overfull \hbox (354.49258pt too wide) in paragraph at lines 1090--1090
+Overfull \hbox (354.49258pt too wide) in paragraph at lines 1094--1094
 []\T1/lmtt/m/n/10 ##   ..$ lbls_cure  : chr [1:6] "17. Mixture cure Weibull" "18. Non-mixture cure Weibull" "19. Mixture cure Log-normal" "20. Non-mixture cure Log-normal" ...[] 
  []
 
@@ -1314,15 +1314,15 @@ Package rerunfilecheck Info: File `BC_OS.out' has not changed.
 (rerunfilecheck)             Checksum: D9F26F08B2B5BF67815BA8945FA37B3D;5979.
  ) 
 Here is how much of TeX's memory you used:
- 14478 strings out of 477961
- 247922 string characters out of 5836594
+ 14480 strings out of 477961
+ 247943 string characters out of 5836594
  1889068 words of memory out of 5000000
- 34183 multiletter control sequences out of 15000+600000
- 558362 words of font info for 73 fonts, out of 8000000 for 9000
+ 34184 multiletter control sequences out of 15000+600000
+ 559125 words of font info for 74 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  75i,10n,76p,446b,585s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <c:/Users/g10028783/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb><c:/Users/g10028783/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb><c:/Users/g10028783/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb><c:/Users/g10028783/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb><c:/Users/g10028783/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb><c:/Users/g10028783/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb><c:/Users/g10028783/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb><c:/Users/g10028783/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb>
-Output written on BC_OS.pdf (59 pages, 2921838 bytes).
+Output written on BC_OS.pdf (59 pages, 2902390 bytes).
 PDF statistics:
  1476 PDF objects out of 1728 (max. 8388607)
  1166 compressed objects within 12 object streams
