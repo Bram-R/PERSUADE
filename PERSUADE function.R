@@ -1,812 +1,786 @@
-## main PERSUADE function
+#### Main PERSUADE function ----
+
+#' Main PERSUADE Function
+#'
+#' Executes the PERSUADE workflow for parametric survival analysis, producing outputs for visualization,
+#' prediction, and Excel export.
+#'
+#' @param name Character, name identifier for the analysis (default: "no_name").
+#' @param years Numeric vector of time-to-event data.
+#' @param status Numeric vector indicating event occurrence (1 for event, 0 for censoring).
+#' @param group Factor indicating group membership.
+#' @param strata Logical, whether to stratify models by group.
+#' @param spline_mod Logical, whether spline models are included.
+#' @param cure_mod Logical, whether cure models are included.
+#' @param cure_link Character string specifying the link function for cure models (default: "logistic").
+#' @param time_unit Numeric, the unit of time for annualization.
+#' @param time_horizon Numeric, the time horizon for predictions.
+#' @param time_pred_surv_table Numeric vector, time points for survival table predictions.
+#'
+#' @return A list of results including survival observations, model predictions, and Excel-ready data.
+#'
+#' @examples
+#' \dontrun{
+#' f_PERSUADE(
+#'   name = "Example",
+#'   years = c(1, 2, 3),
+#'   status = c(1, 0, 1),
+#'   group = factor(c("A", "A", "B")),
+#'   strata = FALSE,
+#'   spline_mod = TRUE,
+#'   cure_mod = FALSE,
+#'   cure_link = "logistic",
+#'   time_unit = 1,
+#'   time_horizon = 10,
+#'   time_pred_surv_table = seq(1, 10, 1)
+#' )
+#' }
+#' @export
 f_PERSUADE <- function(name = "no_name", years, status, group, 
-                       strata = FALSE, spline_mod = FALSE, cure_mod = FALSE, cure_link = "logistic",
-                       time_unit, time_horizon, time_pred_surv_table) {
+                       strata = FALSE, spline_mod = FALSE, cure_mod = FALSE, 
+                       cure_link = "logistic", time_unit, time_horizon, 
+                       time_pred_surv_table) {
+  # Validate inputs
+  if (!is.numeric(years) || !is.numeric(status)) stop("`years` and `status` must be numeric vectors.")
+  if (!is.factor(group)) stop("`group` must be a factor.")
+  if (!is.numeric(time_unit) || time_unit <= 0) stop("`time_unit` must be a positive numeric value.")
+  if (!is.numeric(time_horizon) || time_horizon <= 0) stop("`time_horizon` must be a positive numeric value.")
   
   # strata <- TRUE # for validation purposes
   # spline_mod <- TRUE # for validation purposes
   # cure_mod <- TRUE # for validation purposes
   # cure_link = "logistic" # for validation purposes
   
-  #input
-  years <- as.numeric(years)  # time variable should be numeric
-  status <- as.numeric(status)  # status / event variable should be numeric
-  group <- as.factor(group)  # group variable should be a factor 
-  if (cure_mod == FALSE) {cure_link <- NA}
+  # Process inputs
+  years <- as.numeric(years)
+  status <- as.numeric(status)
+  group <- droplevels(as.factor(group))
+  if (!cure_mod) cure_link <- NA
   
-  # number of groups
-  group <- droplevels(group)  # drop unused levels
-  ngroups <- length(levels(group))  # number of groups
-  group_names <- levels(group)  # name groups
-  if (ngroups == 1) {strata <- FALSE}
-  
-  # time variables
+  # Determine groups and time variables
+  ngroups <- nlevels(group)
+  group_names <- levels(group)
+  if (ngroups == 1) strata <- FALSE
   time_horizon <- max(time_pred_surv_table, time_horizon)
-  time_pred_surv_table <- time_pred_surv_table/time_unit
-  time_pred <- seq(from = 0, to = time_horizon, by = time_unit)
+  time_pred_surv_table <- time_pred_surv_table / time_unit
+  time_pred <- seq(0, time_horizon, by = time_unit)
   
-  # form
-  if (ngroups == 1) {form <- as.formula(Surv(years, status) ~ 1)} else {
-    form <- as.formula(Surv(years, status) ~ group)}
+  # Define survival formula
+  form <- if (ngroups == 1) as.formula(Surv(years, status) ~ 1) else as.formula(Surv(years, status) ~ group)
   
-  # km
+  # Step 1: Observed data
   km <- npsurv(form)
-  km_names <- if (ngroups == 1) {rep(1, length(km$time))} else {
-    if (ngroups > 1) {c(rep(1, km$strata[1]), rep(2, km$strata[2]), if (ngroups == 3) {rep(3, km$strata[3])})}
+  km_names <- if (ngroups == 1) {
+    rep(1, length(km$time))
+  } else {
+    unlist(lapply(seq_len(ngroups), function(i) rep(i, km$strata[i])))
   }
   
-  # hazard rate
-  haz <- f_hazard(years = years, status = status, group = group, ngroups = ngroups)
-  
-  # cumulative hazard
-  cum_haz <- f_cum_hazard(years = years, status = status, group = group, ngroups = ngroups, time_pred = time_pred, time_unit = time_unit)
-  
-  # annual transition probability based on observed data (km) 
-  tp <- f_tp(ngroups = ngroups, cum_haz = cum_haz)
-  
-  # cox (for Scaled Schoenfeld residuals)
+  haz <- f_hazard(years, status, group, ngroups)
+  cum_haz <- f_cum_hazard(years, status, group, ngroups, time_pred, time_unit)
+  tp <- f_tp(ngroups, cum_haz, time_unit)
   cox_reg <- coxph(form)
   
-  # fit parameteric models
-  surv_model <- f_surv_model(years = years, status = status, group = group, ngroups = ngroups, form = form, strata = strata, spline_mod = spline_mod, cure_mod = cure_mod, cure_link = cure_link, group_names = group_names)
+  # Step 2: Parametric models
+  surv_model <- f_surv_model(
+    years, status, group, strata, ngroups, form, spline_mod, cure_mod, cure_link, group_names
+  )
   
-  # predicted values parametric models
-  surv_model_pred <- f_surv_model_pred(ngroups = ngroups, time_pred = time_pred, surv_model = surv_model, spline_mod = spline_mod, cure_mod = cure_mod, group_names = group_names) 
+  surv_model_pred <- f_surv_model_pred(
+    ngroups, time_pred, surv_model, spline_mod, cure_mod, group_names
+  )
   
-  # predicted values parametric models per group
-  surv_model_pred_gr <- f_surv_model_pred_gr(ngroups = ngroups, surv_model = surv_model, surv_model_pred = surv_model_pred, spline_mod = spline_mod, cure_mod = cure_mod) 
+  surv_model_pred_gr <- f_surv_model_pred_gr(
+    ngroups, surv_model, surv_model_pred, spline_mod, cure_mod
+  )
   
-  # predicted annual transition probability based on parametric survival models
-  cols_tp <- 8 + (if (spline_mod == TRUE) {9} else {0}) + (if (cure_mod == TRUE) {6} else {0})
-  surv_model_pred_tp_gr <- f_surv_model_pred_tp_gr(ngroups = ngroups, time_pred = time_pred, time_unit = time_unit, surv_model_pred_gr = surv_model_pred_gr, cols_tp = cols_tp)
+  cols_tp <- 8 + if (spline_mod) 9 else 0 + if (cure_mod) 6 else 0
   
-  # create output dataframe for use in MS Excel 
-  surv_model_excel <- f_surv_model_excel(ngroups = ngroups, strata = strata, surv_model = surv_model, spline_mod = spline_mod, cure_mod = cure_mod) 
+  surv_model_pred_tp_gr <- f_surv_model_pred_tp_gr(
+    ngroups, time_pred, time_unit, surv_model_pred_gr, cols_tp
+  )
   
-  # output
-  return(
-    list(
-      name = name, 
-      input = list(years = years, status = status, group = group, strata = strata, spline_mod = spline_mod, 
-                   cure_mod = cure_mod, cure_link = cure_link, time_unit = time_unit, time_horizon = time_horizon, 
-                   time_pred_surv_table = time_pred_surv_table, time_pred = time_pred), 
-      surv_obs = list(km = km, km_names = km_names, cum_haz = cum_haz, haz = haz, tp = tp, cox_reg = cox_reg),
-      surv_model = surv_model, 
-      surv_pred = list(model = surv_model_pred, gr = surv_model_pred_gr, tp_gr = surv_model_pred_tp_gr), 
-      surv_model_excel = surv_model_excel, 
-      misc = c(list(form = form, group_names = group_names, ngroups = ngroups, lbls = surv_model$IC[,1]),
-               if (spline_mod == TRUE) {list(lbls_spline = surv_model$IC_spl[,1])},
-               if (cure_mod == TRUE) {list(lbls_cure = surv_model$IC_cure[,1])},
-               list(cols_tp = cols_tp))
+  surv_model_excel <- f_surv_model_excel(
+    ngroups, strata, surv_model, spline_mod, cure_mod
+  )
+  
+  # Output
+  list(
+    name = name,
+    input = list(
+      years = years,
+      status = status,
+      group = group,
+      strata = strata,
+      spline_mod = spline_mod,
+      cure_mod = cure_mod,
+      cure_link = cure_link,
+      time_unit = time_unit,
+      time_horizon = time_horizon,
+      time_pred_surv_table = time_pred_surv_table,
+      time_pred = time_pred
+    ),
+    surv_obs = list(
+      km = km,
+      km_names = km_names,
+      cum_haz = cum_haz,
+      haz = haz,
+      tp = tp,
+      cox_reg = cox_reg
+    ),
+    surv_model = surv_model,
+    surv_pred = list(
+      model = surv_model_pred,
+      gr = surv_model_pred_gr,
+      tp_gr = surv_model_pred_tp_gr
+    ),
+    surv_model_excel = surv_model_excel,
+    misc = c(
+      list(
+        form = form,
+        group_names = group_names,
+        ngroups = ngroups,
+        lbls = surv_model$param_ic$Model
+      ),
+      if (spline_mod) list(lbls_spline = surv_model$spline_ic$Model),
+      if (cure_mod) list(lbls_cure = surv_model$cure_ic$Model),
+      list(cols_tp = cols_tp)
     )
-  ) 
+  )
 }
 
-## functions used in the main PERSUADE function
+#### Functions used in the main PERSUADE function ----
 
-# function to obtain hazard
+#' Calculate Smoothed Hazard Estimates for Groups
+#'
+#' This function computes smoothed hazard estimates for up to three groups 
+#' using the `muhaz` package and returns a consolidated list of results.
+#'
+#' @param years Numeric vector of times to event or censoring.
+#' @param status Numeric vector indicating event occurrence (1 for event, 0 for censoring).
+#' @param group Factor indicating the group each observation belongs to.
+#' @param ngroups Integer specifying the number of groups to analyze (up to 3).
+#'
+#' @return A list containing smoothed hazard estimates for each group, 
+#'         a vector of group identifiers, and the maximum observed hazard values.
+#'         The list includes:
+#'         - `smooth_grX`: Smoothed hazard results for each group.
+#'         - `names`: Vector indicating group membership of hazard values.
+#'         - `max`: Data frame with the maximum time and hazard values.
+#'
+#' @importFrom muhaz muhaz
+#' @examples
+#' \dontrun{
+#' f_hazard(years = c(1, 2, 3), status = c(1, 0, 1), 
+#'          group = factor(c("A", "A", "B")), ngroups = 2)
+#' }
+#' @export
 f_hazard <- function(years, status, group, ngroups) {
-  haz <- c(list(smooth_gr1 = muhaz(years, status, group == levels(group)[1], max.time = max(years))),
-           if (ngroups > 1) {list(smooth_gr2 = muhaz(years, status, group == levels(group)[2], max.time = max(years)))},
-           if (ngroups > 2) {list(smooth_gr3 = muhaz(years, status, group == levels(group)[3], max.time = max(years)))})
-  haz_names <- c(rep(1, length(haz$smooth_gr1$est.grid)), 
-                 if (ngroups > 1) {rep(2, length(haz$smooth_gr2$est.grid))} else {NA}, 
-                 if (ngroups > 2) {rep(3, length(haz$smooth_gr3$est.grid))})
-  haz_max <- data.frame(time = ceiling(max(haz$smooth_gr1$est.grid, 
-                                           if (ngroups > 1) {haz$smooth_gr2$est.grid} else {NA}, 
-                                           if (ngroups > 2) {haz$smooth_gr3$est.grid} else {NA}, na.rm = TRUE)), 
-                        smooth = ceiling(max(haz$smooth_gr1$haz.est, 
-                                             if (ngroups > 1) {haz$smooth_gr2$haz.est} else {NA}, 
-                                             if (ngroups > 2) {haz$smooth_gr3$haz.est} else {NA}, na.rm = TRUE)))
+  if (!is.numeric(years) || !is.numeric(status)) {
+    stop("`years` and `status` must be numeric vectors.")
+  }
+  if (!is.factor(group)) {
+    stop("`group` must be a factor.")
+  }
+  if (!is.integer(ngroups) || ngroups < 1 || ngroups > 3) {
+    stop("`ngroups` must be an integer between 1 and 3.")
+  }
   
-  return(c(haz, list(names = haz_names, max = haz_max))) 
+  # Helper function to compute smoothed hazard for a group
+  compute_hazard <- function(gr_idx) {
+    if (gr_idx <= ngroups) {
+      return(muhaz::muhaz(years, status, group == levels(group)[gr_idx], max.time = max(years)))
+    }
+    NULL
+  }
+  
+  # Compute hazards for each group
+  hazards <- lapply(1:3, compute_hazard)
+  names(hazards) <- paste0("smooth_gr", 1:3)
+  
+  # Construct group names and maximum values
+  haz_names <- unlist(
+    lapply(seq_len(ngroups), function(i) rep(i, length(hazards[[i]]$est.grid))),
+    use.names = FALSE
+  )
+  haz_max <- data.frame(
+    time = ceiling(do.call(max, lapply(hazards, function(h) h$est.grid))),
+    smooth = ceiling(do.call(max, lapply(hazards, function(h) h$haz.est)))
+  )
+  
+  list(hazards = hazards, names = haz_names, max = haz_max)
 }
 
-# function to obtain cumulative hazard
+#' Calculate Cumulative Hazard Estimates for Groups
+#'
+#' This function computes cumulative hazard estimates for up to three groups
+#' along with variance and confidence intervals using the `estimateNAH` package.
+#'
+#' @param years Numeric vector of times to event or censoring.
+#' @param status Numeric vector indicating event occurrence (1 for event, 0 for censoring).
+#' @param group Factor indicating the group each observation belongs to.
+#' @param ngroups Integer specifying the number of groups to analyze (up to 3).
+#' @param time_pred Numeric vector of prediction times for cumulative hazard calculation.
+#' @param time_unit Numeric vector specifying the time unit length.
+#'
+#' @return A data frame containing:
+#'         - `group`: Group identifier for each observation.
+#'         - `time`: Prediction times.
+#'         - `H`: Cumulative hazard values.
+#'         - `var`: Variance of cumulative hazard.
+#'         - `H_upper`: Upper bound of the confidence interval.
+#'         - `H_lower`: Lower bound of the confidence interval.
+#'         - `H_delta`: Differences in cumulative hazard values (lagged).
+#'         - `H_upper_delta`: Differences in upper confidence bound (lagged).
+#'         - `H_lower_delta`: Differences in lower confidence bound (lagged).
+#'
+#' @importFrom estimateNAH estimateNAH
+#' @importFrom stats qnorm
+#' @examples
+#' \dontrun{
+#' f_cum_hazard(years = c(1, 2, 3), status = c(1, 0, 1),
+#'              group = factor(c("A", "A", "B")), ngroups = 2,
+#'              time_pred = seq(0, 5, by = 0.5), time_unit = "years")
+#' }
+#' @export
 f_cum_hazard <- function(years, status, group, ngroups, time_pred, time_unit) {
-  cum_haz <- data.frame(group = c(rep(1, length(time_pred[time_pred <= max(years[group == levels(group)[1]])])), 
-                                  if (ngroups > 1) {rep(2, length(time_pred[time_pred <= max(years[group == levels(group)[2]])]))}, 
-                                  if (ngroups > 2) {rep(3, length(time_pred[time_pred <= max(years[group == levels(group)[3]])]))}))
-  cum_haz$time <- c(time_pred[0:length(cum_haz$group[cum_haz$group == 1])], 
-                    if (ngroups > 1) {time_pred[0:length(cum_haz$group[cum_haz$group == 2])]}, 
-                    if (ngroups > 2) {time_pred[0:length(cum_haz$group[cum_haz$group == 3])]})
-  cum_haz$H <- c(estimateNAH(years[group == levels(group)[1]], status[group == levels(group)[1]])$H(cum_haz$time[cum_haz$group == 1]), 
-                 if (ngroups > 1) {estimateNAH(years[group == levels(group)[2]], status[group == levels(group)[2]])$H(cum_haz$time[cum_haz$group == 2])}, 
-                 if (ngroups > 2) {estimateNAH(years[group == levels(group)[3]], status[group == levels(group)[3]])$H(cum_haz$time[cum_haz$group == 3])})
-  cum_haz$var <- c(estimateNAH(years[group == levels(group)[1]], status[group == levels(group)[1]])$Var(cum_haz$time[cum_haz$group == 1]), 
-                   if (ngroups > 1) {estimateNAH(years[group == levels(group)[2]], status[group == levels(group)[2]])$Var(cum_haz$time[cum_haz$group == 2])}, 
-                   if (ngroups > 2) {estimateNAH(years[group == levels(group)[3]], status[group == levels(group)[3]])$Var(cum_haz$time[cum_haz$group == 3])})
-  cum_haz$H_upper <- pmax(0, cum_haz$H + sqrt(cum_haz$var) * qnorm(p = 0.975))
-  cum_haz$H_lower <- pmax(0, cum_haz$H - sqrt(cum_haz$var) * qnorm(p = 0.975))
-  cum_haz$H_delta <- c(shift(cum_haz$H[cum_haz$group == 1], 1L, type = "lag") - cum_haz$H[cum_haz$group == 1], 
-                       if (ngroups > 1) {shift(cum_haz$H[cum_haz$group == 2], 1L, type = "lag") - cum_haz$H[cum_haz$group == 2]}, 
-                       if (ngroups > 2) {shift(cum_haz$H[cum_haz$group == 3], 1L, type = "lag") - cum_haz$H[cum_haz$group == 3]})
-  cum_haz$H_upper_delta <- c(shift(cum_haz$H_upper[cum_haz$group == 1], 1L, type = "lag") - cum_haz$H_upper[cum_haz$group == 1], 
-                             if (ngroups > 1) {shift(cum_haz$H_upper[cum_haz$group == 2], 1L, type = "lag") - cum_haz$H_upper[cum_haz$group == 2]}, 
-                             if (ngroups > 2) {shift(cum_haz$H_upper[cum_haz$group == 3], 1L, type = "lag") - cum_haz$H_upper[cum_haz$group == 3]})
-  cum_haz$H_lower_delta <- c(shift(cum_haz$H_lower[cum_haz$group == 1], 1L, type = "lag") - cum_haz$H_lower[cum_haz$group == 1], 
-                             if (ngroups > 1) {shift(cum_haz$H_lower[cum_haz$group == 2], 1L, type = "lag") - cum_haz$H_lower[cum_haz$group == 2]},
-                             if (ngroups > 2) {shift(cum_haz$H_lower[cum_haz$group == 3], 1L, type = "lag") - cum_haz$H_lower[cum_haz$group == 3]})
-  
-  return(cum_haz) 
-}
-
-# function to obtain annual transition probability based on observed data (km)
-f_tp <- function(ngroups, cum_haz) { 
-  
-  tp <- 1 - exp(cum_haz$H_delta)^(1/time_unit)
-  tp_upper <- 1 - exp(cum_haz$H_upper_delta)^(1/time_unit)
-  tp_lower <- 1 - exp(cum_haz$H_lower_delta)^(1/time_unit)
-  tp_smooth <- pmax(0, pmin(1, c(NA, loess(tp[cum_haz$group == 1] ~ cum_haz$time[cum_haz$group ==  1])$fitted, 
-                                 if (ngroups > 1) {c(NA, loess(tp[cum_haz$group == 2] ~ cum_haz$time[cum_haz$group == 2])$fitted)},
-                                 if (ngroups > 2) {c(NA, loess(tp[cum_haz$group == 3] ~ cum_haz$time[cum_haz$group == 3])$fitted)})))
-  tp_upper_smooth <- pmax(0, pmin(1, c(NA, loess(tp_upper[cum_haz$group == 1] ~ cum_haz$time[cum_haz$group == 1])$fitted, 
-                                       if (ngroups > 1) {c(NA, loess(tp_upper[cum_haz$group == 2] ~ cum_haz$time[cum_haz$group == 2])$fitted)},
-                                       if (ngroups > 2) {c(NA, loess(tp_upper[cum_haz$group == 3] ~ cum_haz$time[cum_haz$group == 3])$fitted)})))
-  tp_lower_smooth <- pmax(0, pmin(1, c(NA, loess(tp_lower[cum_haz$group == 1] ~ cum_haz$time[cum_haz$group == 1])$fitted, 
-                                       if (ngroups > 1) {c(NA, loess(tp_lower[cum_haz$group == 2] ~ cum_haz$time[cum_haz$group == 2])$fitted)}, 
-                                       if (ngroups > 2) {c(NA, loess(tp_lower[cum_haz$group == 3] ~ cum_haz$time[cum_haz$group == 3])$fitted)})))
-  
-  km_tp_gr_1 <- data.frame(
-    time = cum_haz$time[cum_haz$group==1], smooth = tp_smooth[cum_haz$group==1],
-    smooth_lower = tp_lower_smooth[cum_haz$group==1], smooth_upper = tp_upper_smooth[cum_haz$group==1]
-  )
-  
-  if (ngroups > 1) {
-    km_tp_gr_2 <- data.frame(
-      time = cum_haz$time[cum_haz$group==2], smooth = tp_smooth[cum_haz$group==2],
-      smooth_lower = tp_lower_smooth[cum_haz$group==2], smooth_upper = tp_upper_smooth[cum_haz$group==2]
-    )
+  if (!is.numeric(years) || !is.numeric(status)) {
+    stop("`years` and `status` must be numeric vectors.")
   }
-  if (ngroups > 2) {
-    km_tp_gr_3 <- data.frame(
-      time = cum_haz$time[cum_haz$group==3], smooth = tp_smooth[cum_haz$group==3],
-      smooth_lower = tp_lower_smooth[cum_haz$group==3], smooth_upper = tp_upper_smooth[cum_haz$group==3]
+  if (!is.factor(group)) {
+    stop("`group` must be a factor.")
+  }
+  if (!is.integer(ngroups) || ngroups < 1 || ngroups > 3) {
+    stop("`ngroups` must be an integer between 1 and 3.")
+  }
+  if (!is.numeric(time_pred) || !is.numeric(time_unit)) {
+    stop("`time_pred` and `time_unit` must be a numeric vectors")
+  }
+  
+  # Helper function to calculate hazard for a specific group
+  calculate_group_hazard <- function(gr_idx) {
+    valid_times <- time_pred[time_pred <= max(years[group == levels(group)[gr_idx]])]
+    estimate <- estimateNAH(years[group == levels(group)[gr_idx]], 
+                            status[group == levels(group)[gr_idx]])
+    data.frame(
+      time = valid_times,
+      H = estimate$H(valid_times),
+      var = estimate$Var(valid_times)
     )
   }
   
-  km_tp_max <- max(c(km_tp_gr_1$smooth_upper, if (ngroups > 1) {km_tp_gr_2$smooth_upper}, 
-                     if (ngroups > 2) {km_tp_gr_3$smooth_upper}), 
-                   na.rm = TRUE)
+  # Generate cumulative hazard data for each group
+  group_data <- lapply(1:ngroups, calculate_group_hazard)
+  group_labels <- unlist(lapply(seq_len(ngroups), function(i) rep(i, nrow(group_data[[i]]))), 
+                         use.names = FALSE)
+  cumulative_data <- do.call(rbind, group_data)
+  cumulative_data$group <- group_labels
   
-  return(c(list(gr_1 = km_tp_gr_1), 
-           if (ngroups > 1) {list(gr_2 = km_tp_gr_2)}, 
-           if (ngroups > 2) {list(gr_3 = km_tp_gr_3)}, 
-           list(max = km_tp_max)))
+  # Calculate confidence intervals and deltas
+  cumulative_data$H_upper <- pmax(0, cumulative_data$H + sqrt(cumulative_data$var) * qnorm(0.975))
+  cumulative_data$H_lower <- pmax(0, cumulative_data$H - sqrt(cumulative_data$var) * qnorm(0.975))
+  
+  calculate_deltas <- function(column, group_col) {
+    unlist(lapply(split(column, group_col), function(x) c(NA, diff(x))), use.names = FALSE)
+  }
+  
+  cumulative_data$H_delta <- -calculate_deltas(cumulative_data$H, cumulative_data$group)
+  cumulative_data$H_upper_delta <- -calculate_deltas(cumulative_data$H_upper, cumulative_data$group)
+  cumulative_data$H_lower_delta <- -calculate_deltas(cumulative_data$H_lower, cumulative_data$group)
+  
+  return(cumulative_data)
 }
 
+#' Calculate Annual Transition Probabilities from Observed Data
+#'
+#' This function calculates annual transition probabilities and their confidence intervals 
+#' for up to three groups based on cumulative hazard data. The probabilities are smoothed 
+#' using LOESS regression for each group.
+#'
+#' @param ngroups Integer specifying the number of groups to analyze (up to 3).
+#' @param cum_haz Data frame containing cumulative hazard data. Must include columns:
+#'        `group`, `time`, `H_delta`, `H_upper_delta`, `H_lower_delta`.
+#' @param time_unit Numeric specifying the time unit for annualization (e.g., 1 for years).
+#'
+#' @return A list containing:
+#'         - `gr_1`, `gr_2`, `gr_3`: Data frames for each group with columns:
+#'           `time`, `smooth` (smoothed transition probability),
+#'           `smooth_lower` (lower confidence bound),
+#'           `smooth_upper` (upper confidence bound).
+#'         - `max`: Maximum smoothed upper bound across all groups.
+#'
+#' @importFrom stats loess
+#' @examples
+#' \dontrun{
+#' f_tp(ngroups = 2, cum_haz = example_data, time_unit = 1)
+#' }
+#' @export
+f_tp <- function(ngroups, cum_haz, time_unit) {
+  if (!is.integer(ngroups) || ngroups < 1 || ngroups > 3) {
+    stop("`ngroups` must be an integer between 1 and 3.")
+  }
+  if (!all(c("group", "time", "H_delta", "H_upper_delta", "H_lower_delta") %in% names(cum_haz))) {
+    stop("`cum_haz` must contain columns: group, time, H_delta, H_upper_delta, H_lower_delta.")
+  }
+  if (!is.numeric(time_unit) || time_unit <= 0) {
+    stop("`time_unit` must be a positive numeric value.")
+  }
+  
+  # Helper function to calculate transition probabilities for a group
+  calculate_tp_group <- function(group_id) {
+    group_data <- cum_haz[cum_haz$group == group_id, ]
+    tp <- 1 - exp(group_data$H_delta / time_unit)
+    tp_upper <- 1 - exp(group_data$H_upper_delta / time_unit)
+    tp_lower <- 1 - exp(group_data$H_lower_delta / time_unit)
+    
+    # Smooth probabilities using LOESS
+    smooth_tp <- loess(tp ~ group_data$time)$fitted
+    smooth_tp_upper <- loess(tp_upper ~ group_data$time)$fitted
+    smooth_tp_lower <- loess(tp_lower ~ group_data$time)$fitted
+    
+    data.frame(
+      time = group_data$time,
+      smooth = c(NA, pmax(0, pmin(1, smooth_tp))),
+      smooth_lower = c(NA, pmax(0, pmin(1, smooth_tp_lower))),
+      smooth_upper = c(NA, pmax(0, pmin(1, smooth_tp_upper)))
+    )
+  }
+  
+  # Calculate transition probabilities for each group
+  results <- list()
+  for (i in seq_len(ngroups)) {
+    results[[paste0("gr_", i)]] <- calculate_tp_group(i)
+  }
+  
+  # Find the maximum smoothed upper bound across all groups
+  max_upper <- max(unlist(lapply(results, function(gr) gr$smooth_upper)), na.rm = TRUE)
+  results$max <- max_upper
+  
+  return(results)
+}
 
-# function to obtain parametric survival models
+#' Fit Parametric Survival Models
+#'
+#' This function fits a variety of parametric survival models, including spline and cure models,
+#' and computes AIC and BIC for model comparison.
+#'
+#' @param years Numeric vector of survival times.
+#' @param status Numeric vector indicating event occurrence (1 for event, 0 for censoring).
+#' @param group Factor indicating the group each observation belongs to.
+#' @param strata Logical indicating whether to use stratified models.
+#' @param ngroups Integer specifying the number of groups.
+#' @param form Formula specifying the survival model.
+#' @param spline_mod Logical, whether to fit spline models.
+#' @param cure_mod Logical, whether to fit cure models.
+#' @param cure_link Character string specifying the link function for cure models.
+#' @param group_names Character vector of group names for cure fraction output.
+#'
+#' @return A list containing fitted models, information criteria (AIC/BIC), and cure fractions.
+#'
+#' @importFrom flexsurv flexsurvreg flexsurvspline flexsurvcure
+#' @importFrom stats BIC
+#' @examples
+#' \dontrun{
+#' f_surv_model(years = c(1, 2, 3), status = c(1, 0, 1),
+#'              group = factor(c("A", "A", "B")), strata = FALSE,
+#'              ngroups = 2, form = Surv(years, status) ~ 1,
+#'              spline_mod = TRUE, cure_mod = TRUE,
+#'              cure_link = "logit", group_names = c("Group A", "Group B"))
+#' }
+#' @export
 f_surv_model <- function(years, status, group, strata, ngroups, form, spline_mod, cure_mod, cure_link, group_names) {
-  
-  # fit parameteric models
-  expo <- flexsurvreg(form, dist = "exp")
-  weib <- if (strata == FALSE) 
-    flexsurvreg(form, dist = "weibull") else {
-      flexsurvreg(form, anc = list(shape = ~group), dist = "weibull")
-    }
-  gom <- if (strata == FALSE) 
-    flexsurvreg(form, dist = "gompertz") else {
-      flexsurvreg(form, anc = list(shape = ~group), dist = "gompertz")
-    }
-  lnorm <- if (strata == FALSE) 
-    flexsurvreg(form, dist = "lnorm") else {
-      flexsurvreg(form, anc = list(sdlog = ~group), dist = "lnorm")
-    }
-  llog <- if (strata == FALSE) 
-    flexsurvreg(form, dist = "llogis") else {
-      flexsurvreg(form, anc = list(shape = ~group), dist = "llogis")
-    }
-  gam <- if (strata == FALSE) 
-    flexsurvreg(form, dist = "gamma") else {
-      flexsurvreg(form, anc = list(shape = ~group), dist = "gamma")
-    }
-  ggam <- if (strata == FALSE) 
-    flexsurvreg(form, dist = "gengamma") else {
-      flexsurvreg(form, anc = list(sigma = ~group, Q = ~group), dist = "gengamma")
-    }
-  
-  lbls <- c(" 1. Exponential", " 2. Weibull", " 3. Gompertz", " 4. Log-normal", " 5. Log-logistic", " 6. Gamma", " 7. Generalised Gamma")
-  
-  # calculate AIC and BIC
-  AIC <- c(expo$AIC, weib$AIC, gom$AIC, lnorm$AIC, llog$AIC, gam$AIC, ggam$AIC)
-  BIC <- BIC(expo, weib, gom, lnorm, llog, gam, ggam)[2]
-  IC <- data.frame(lbls, AIC, BIC, row.names = NULL)
-  colnames(IC) <- c("Model", "AIC", "BIC")
-  
-  # fit spline models
-  if (spline_mod == TRUE) {
-    k <- 1  #number of knots
-    spl_hazard1 <- if (strata == FALSE) {flexsurvspline(form, k = k, scale = "hazard")} else {
-      flexsurvspline(form, k = k, scale = "hazard", anc = list(gamma1 = ~group, gamma2 = ~group))
-    }
-    spl_odds1 <- if (strata == FALSE) {flexsurvspline(form, k = k, scale = "odds")} else {
-      flexsurvspline(form, k = k, scale = "odds", anc = list(gamma1 = ~group, gamma2 = ~group))
-    }
-    spl_normal1 <- if (strata == FALSE) {flexsurvspline(form, k = k, scale = "normal")} else {
-      flexsurvspline(form, k = k, scale = "normal", anc = list(gamma1 = ~group, gamma2 = ~group))
-    }
-    
-    k <- 2  #number of knots
-    spl_hazard2 <- if (strata == FALSE) {flexsurvspline(form, k = k, scale = "hazard")} else {
-      flexsurvspline(form, k = k, scale = "hazard", anc = list(gamma1 = ~group, gamma2 = ~group, gamma3 = ~group))
-    }
-    spl_odds2 <- if (strata == FALSE) {flexsurvspline(form, k = k, scale = "odds")} else {
-      flexsurvspline(form, k = k, scale = "odds", anc = list(gamma1 = ~group, gamma2 = ~group, gamma3 = ~group))
-    }
-    spl_normal2 <- if (strata == FALSE) {flexsurvspline(form, k = k, scale = "normal")} else {
-      flexsurvspline(form, k = k, scale = "normal", anc = list(gamma1 = ~group, gamma2 = ~group, gamma3 = ~group))
-    }
-    
-    k <- 3  #number of knots
-    spl_hazard3 <- if (strata == FALSE) {flexsurvspline(form, k = k, scale = "hazard")} else {
-      flexsurvspline(form, k = k, scale = "hazard", anc = list(gamma1 = ~group, gamma2 = ~group, gamma3 = ~group, gamma4 = ~group))
-    }
-    spl_odds3 <- if (strata == FALSE) {flexsurvspline(form, k = k, scale = "odds")} else {
-      flexsurvspline(form, k = k, scale = "odds", anc = list(gamma1 = ~group, gamma2 = ~group, gamma3 = ~group, gamma4 = ~group))
-    }
-    spl_normal3 <- if (strata == FALSE) {flexsurvspline(form, k = k, scale = "normal")} else {
-      flexsurvspline(form, k = k, scale = "normal", anc = list(gamma1 = ~group, gamma2 = ~group, gamma3 = ~group, gamma4 = ~group))
-    }
-    
-    lbls_spline <- c(" 8. Spline 1 knot hazard", " 9. Spline 2 knots hazard", "10. Spline 3 knots hazard", "11. Spline 1 knot odds", 
-                     "12. Spline 2 knots odds", "13. Spline 3 knots odds", "14. Spline 1 knot normal", "15. Spline 2 knots normal", 
-                     "16. Spline 3 knots normal")
-    
-    # calculate AIC and BIC
-    AIC_spl <- c(spl_hazard1$AIC, spl_hazard2$AIC, spl_hazard3$AIC, spl_odds1$AIC, spl_odds2$AIC, spl_odds3$AIC, spl_normal1$AIC, 
-                 spl_normal2$AIC, spl_normal3$AIC)
-    BIC_spl <- BIC(spl_hazard1, spl_hazard2, spl_hazard3, spl_odds1, spl_odds2, spl_odds3, spl_normal1, spl_normal2, spl_normal3)[2]
-    IC_spl <- data.frame(lbls_spline, AIC_spl, BIC_spl)
-    colnames(IC_spl) <- c("Model", "AIC", "BIC")
+  if (!is.numeric(years) || !is.numeric(status)) {
+    stop("`years` and `status` must be numeric vectors.")
+  }
+  if (!is.factor(group)) {
+    stop("`group` must be a factor.")
+  }
+  if (!is.integer(ngroups) || ngroups < 1) {
+    stop("`ngroups` must be a positive integer.")
   }
   
-  # fit cure models
-  if (cure_mod == TRUE) {
-    cure_weib_mix <- lapply(c(1:ngroups), function(x)
-      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
-                   link = cure_link, dist = "weibull", mixture = TRUE)
-    )
-    cure_weib_nmix <- lapply(c(1:ngroups), function(x)
-      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
-                   link = cure_link, dist = "weibull", mixture = FALSE)
-    )
-    cure_lnorm_mix <- lapply(c(1:ngroups), function(x)
-      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
-                   link = cure_link, dist = "lnorm", mixture = TRUE)
-    )
-    cure_lnorm_nmix <- lapply(c(1:ngroups), function(x)
-      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
-                   link = cure_link, dist = "lnorm", mixture = FALSE)
-    )
-    cure_llog_mix <- lapply(c(1:ngroups), function(x)
-      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
-                   link = cure_link, dist = "llogis", mixture = TRUE)
-    )
-    cure_llog_nmix <- lapply(c(1:ngroups), function(x)
-      flexsurvcure(Surv(years, status) ~ 1, data = data.frame(years, status)[group == levels(group)[x],], 
-                   link = cure_link, dist = "llogis", mixture = FALSE)
-    )
-    
-    lbls_cure <- c("17. Mixture cure Weibull", "18. Non-mixture cure Weibull", "19. Mixture cure Log-normal", 
-                   "20. Non-mixture cure Log-normal", "21. Mixture cure Log-logistic", "22. Non-mixture cure Log-logistic") 
-    
-    # calculate AIC 
-    AIC_cure <- c(sum(sapply(c(1:ngroups), function(x) cure_weib_mix[[x]]$AIC)),
-                  sum(sapply(c(1:ngroups), function(x) cure_weib_nmix[[x]]$AIC)),
-                  sum(sapply(c(1:ngroups), function(x) cure_lnorm_mix[[x]]$AIC)),
-                  sum(sapply(c(1:ngroups), function(x) cure_lnorm_nmix[[x]]$AIC)),
-                  sum(sapply(c(1:ngroups), function(x) cure_llog_mix[[x]]$AIC)),
-                  sum(sapply(c(1:ngroups), function(x) cure_llog_nmix[[x]]$AIC)))
-    cure_fraction <- rbind(sapply(c(1:ngroups), function(x) cure_weib_mix[[x]]$res[1,1:3]),
-                           sapply(c(1:ngroups), function(x) cure_weib_nmix[[x]]$res[1,1:3]),
-                           sapply(c(1:ngroups), function(x) cure_lnorm_mix[[x]]$res[1,1:3]),
-                           sapply(c(1:ngroups), function(x) cure_lnorm_nmix[[x]]$res[1,1:3]),
-                           sapply(c(1:ngroups), function(x) cure_llog_mix[[x]]$res[1,1:3]),
-                           sapply(c(1:ngroups), function(x) cure_llog_nmix[[x]]$res[1,1:3])) 
-    
-    cure_fraction <- matrix(ncol = ngroups, data = 
-                              sapply(c(1:ngroups), function(x) 
-                                sapply(seq(1, 18, by = 3), function(y) 
-                                  paste0(round(cure_fraction[y, x],3)*100, "% (",round(cure_fraction[y + 1, x],3)*100,"% - ",round(cure_fraction[y + 2, x],3)*100,"%)")
-                                )
-                              )
-    )
-    IC_cure <- data.frame(lbls_cure, AIC_cure, cure_fraction)
-    colnames(IC_cure) <- c("Model", "AIC", paste0("Cure fraction ", group_names))
+  # Helper function to fit parametric models
+  fit_parametric_model <- function(dist, anc = NULL) {
+    flexsurvreg(form, dist = dist, anc = anc)
   }
   
-  return(c(list(expo = expo, weib = weib, gom = gom, lnorm = lnorm, llog = llog, gam = gam, ggam = ggam, IC = IC), 
-           if (spline_mod == TRUE) {list(spl_hazard1 = spl_hazard1, spl_hazard2 = spl_hazard2, spl_hazard3 = spl_hazard3, 
-                                         spl_odds1 = spl_odds1, spl_odds2 = spl_odds2,  spl_odds3 = spl_odds3, 
-                                         spl_normal1 = spl_normal1, spl_normal2 = spl_normal2, spl_normal3 = spl_normal3, 
-                                         IC_spl = IC_spl)}, 
-           if (cure_mod == TRUE) {list(cure_weib_mix = cure_weib_mix, cure_weib_nmix = cure_weib_nmix, 
-                                       cure_lnorm_mix = cure_lnorm_mix, cure_lnorm_nmix = cure_lnorm_nmix, 
-                                       cure_llog_mix = cure_llog_mix,  cure_llog_nmix = cure_llog_nmix, 
-                                       IC_cure = IC_cure)})) 
-}
-
-# function to obtain predicted values from parametric survival models
-f_surv_model_pred <- function(ngroups, time_pred, surv_model, spline_mod, cure_mod, group_names) { 
-  
-  column_names <- c("Time", group_names)
-  
-  expo_est <- summary(surv_model$expo, t = time_pred)
-  weib_est <- summary(surv_model$weib, t = time_pred)
-  gom_est <- summary(surv_model$gom, t = time_pred)
-  lnorm_est <- summary(surv_model$lnorm, t = time_pred)
-  llog_est <- summary(surv_model$llog, t = time_pred)
-  gam_est <- summary(surv_model$gam, t = time_pred)
-  ggam_est <- summary(surv_model$ggam, t = time_pred)
-  
-  expo_pred_h <- summary(surv_model$expo, t = time_pred, type = "hazard")
-  weib_pred_h <- summary(surv_model$weib, t = time_pred, type = "hazard")
-  gom_pred_h <- summary(surv_model$gom, t = time_pred, type = "hazard")
-  lnorm_pred_h <- summary(surv_model$lnorm, t = time_pred, type = "hazard")
-  llog_pred_h <- summary(surv_model$llog, t = time_pred, type = "hazard")
-  gam_pred_h <- summary(surv_model$gam, t = time_pred, type = "hazard")
-  ggam_pred_h <- summary(surv_model$ggam, t = time_pred, type = "hazard")
-  
-  if (ngroups == 1) {
-    names(expo_est) <- names(weib_est) <- names(gom_est) <- names(lnorm_est) <- names(llog_est) <- 
-      names(gam_est) <- names(ggam_est) <- paste("group=", group_names, sep = "")
-  } # name has to be changed if there is only one group
-  
-  # extract prediction for each group
-  expo_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-    expo_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est)) 
-  weib_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-    weib_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
-  gom_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-    gom_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
-  lnorm_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-    lnorm_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
-  llog_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-    llog_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
-  gam_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-    gam_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
-  ggam_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-    ggam_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
-  
-  gom_pred[, -1][gom_pred[, -1] < 1e-15] <- 0  # prevent rounding errors for predicted transition probabilities
-  
-  colnames(expo_pred) <- colnames(weib_pred) <- colnames(gom_pred) <- colnames(lnorm_pred) <- colnames(llog_pred) <- colnames(gam_pred) <- 
-    colnames(ggam_pred) <- column_names
-  
-  if (spline_mod == TRUE) {
-    spl_hazard1_est <- summary(surv_model$spl_hazard1, t = time_pred)
-    spl_hazard2_est <- summary(surv_model$spl_hazard2, t = time_pred)
-    spl_hazard3_est <- summary(surv_model$spl_hazard3, t = time_pred)
-    spl_odds1_est <- summary(surv_model$spl_odds1, t = time_pred)
-    spl_odds2_est <- summary(surv_model$spl_odds2, t = time_pred)
-    spl_odds3_est <- summary(surv_model$spl_odds3, t = time_pred)
-    spl_normal1_est <- summary(surv_model$spl_normal1, t = time_pred)
-    spl_normal2_est <- summary(surv_model$spl_normal2, t = time_pred)
-    spl_normal3_est <- summary(surv_model$spl_normal3, t = time_pred)
-    
-    spl_hazard1_pred_h <- summary(surv_model$spl_hazard1, t = time_pred, type = "hazard")
-    spl_hazard2_pred_h <- summary(surv_model$spl_hazard2, t = time_pred, type = "hazard")
-    spl_hazard3_pred_h <- summary(surv_model$spl_hazard3, t = time_pred, type = "hazard")
-    spl_odds1_pred_h <- summary(surv_model$spl_odds1, t = time_pred, type = "hazard")
-    spl_odds2_pred_h <- summary(surv_model$spl_odds2, t = time_pred, type = "hazard")
-    spl_odds3_pred_h <- summary(surv_model$spl_odds3, t = time_pred, type = "hazard")
-    spl_normal1_pred_h <- summary(surv_model$spl_normal1, t = time_pred, type = "hazard")
-    spl_normal2_pred_h <- summary(surv_model$spl_normal2, t = time_pred, type = "hazard")
-    spl_normal3_pred_h <- summary(surv_model$spl_normal3, t = time_pred, type = "hazard")
-    
-    if (ngroups == 1) {
-      names(spl_hazard1_est) <- names(spl_hazard2_est) <- names(spl_hazard3_est) <- 
-        names(spl_odds1_est) <- names(spl_odds2_est) <- names(spl_odds3_est) <- 
-        names(spl_normal1_est) <- names(spl_normal2_est) <- names(spl_normal3_est) <- paste("group=", group_names, sep = "")
-    } # name has to be changed if there is only one group
-    
-    # extract prediction for each group
-    spl_hazard1_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-      spl_hazard1_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
-    spl_hazard2_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-      spl_hazard2_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
-    spl_hazard3_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-      spl_hazard3_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
-    spl_odds1_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-      spl_odds1_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
-    spl_odds2_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-      spl_odds2_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
-    spl_odds3_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-      spl_odds3_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
-    spl_normal1_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-      spl_normal1_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
-    spl_normal2_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-      spl_normal2_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
-    spl_normal3_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-      spl_normal3_est[[which(names(expo_est) == paste("group=", group_names[x], sep = ""))]]$est))
-    
-    colnames(spl_hazard1_pred) <- colnames(spl_hazard2_pred) <- colnames(spl_hazard3_pred)<- colnames(spl_odds1_pred) <- 
-      colnames(spl_odds2_pred) <- colnames(spl_odds3_pred) <- colnames(spl_normal1_pred) <- colnames(spl_normal2_pred) <- 
-      colnames(spl_normal3_pred) <- column_names
-  }
-  
-  if (cure_mod == TRUE) {## BR do this similarly for the other models (1 instead of 2 steps)
-    cure_weib_mix_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-      data.frame(summary(surv_model$cure_weib_mix[[x]], t = time_pred))[,2]))
-    cure_weib_nmix_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-      data.frame(summary(surv_model$cure_weib_nmix[[x]], t = time_pred))[,2]))
-    cure_lnorm_mix_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-      data.frame(summary(surv_model$cure_lnorm_mix[[x]], t = time_pred))[,2]))
-    cure_lnorm_nmix_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-      data.frame(summary(surv_model$cure_lnorm_nmix[[x]], t = time_pred))[,2]))
-    cure_llog_mix_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-      data.frame(summary(surv_model$cure_llog_mix[[x]], t = time_pred))[,2]))
-    cure_llog_nmix_pred <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-      data.frame(summary(surv_model$cure_llog_nmix[[x]], t = time_pred))[,2]))
-    
-    cure_weib_mix_pred_h <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-      data.frame(summary(surv_model$cure_weib_mix[[x]], t = time_pred, type = "hazard"))[,2]))
-    cure_weib_nmix_pred_h <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-      data.frame(summary(surv_model$cure_weib_nmix[[x]], t = time_pred, type = "hazard"))[,2]))
-    cure_lnorm_mix_pred_h <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-      data.frame(summary(surv_model$cure_lnorm_mix[[x]], t = time_pred, type = "hazard"))[,2]))
-    cure_lnorm_nmix_pred_h <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-      data.frame(summary(surv_model$cure_lnorm_nmix[[x]], t = time_pred, type = "hazard"))[,2]))
-    cure_llog_mix_pred_h <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-      data.frame(summary(surv_model$cure_llog_mix[[x]], t = time_pred, type = "hazard"))[,2]))
-    cure_llog_nmix_pred_h <- cbind(time_pred, sapply(c(1:ngroups), function(x) 
-      data.frame(summary(surv_model$cure_llog_nmix[[x]], t = time_pred, type = "hazard"))[,2]))
-    
-    if (ngroups == 1) {
-      names(cure_weib_mix_pred) <- names(cure_weib_nmix_pred) <- names(cure_lnorm_mix_pred) <- 
-        names(cure_lnorm_nmix_pred) <- names(cure_llog_mix_pred) <- names(cure_llog_nmix_pred) <- 
-        names(cure_weib_mix_pred_h) <- names(cure_weib_nmix_pred_h) <- names(cure_lnorm_mix_pred_h) <- 
-        names(cure_lnorm_nmix_pred_h) <- names(cure_llog_mix_pred_h) <- names(cure_llog_nmix_pred_h) <- 
-        paste("group=", group_names, sep = "")
-    } # name has to be changed if there is only one group
-    
-    colnames(cure_weib_mix_pred) <- colnames(cure_weib_nmix_pred) <- colnames(cure_lnorm_mix_pred) <- 
-      colnames(cure_lnorm_nmix_pred) <- colnames(cure_llog_mix_pred) <- colnames(cure_llog_nmix_pred) <- 
-      colnames(cure_weib_mix_pred_h) <- colnames(cure_weib_nmix_pred_h) <- colnames(cure_lnorm_mix_pred_h) <- 
-      colnames(cure_lnorm_nmix_pred_h) <- colnames(cure_llog_mix_pred_h) <- colnames(cure_llog_nmix_pred_h) <- 
-      column_names
-  }
-  
-  return(c(list(expo = expo_pred, weib = weib_pred, gom = gom_pred, lnorm = lnorm_pred, llog = llog_pred, 
-                gam = gam_pred, ggam = ggam_pred, expo_h = expo_pred_h, weib_h = weib_pred_h, 
-                gom_h = gom_pred_h, lnorm_h = lnorm_pred_h, llog_h = llog_pred_h, gam_h = gam_pred_h, 
-                ggam_h = ggam_pred_h), 
-           if (spline_mod == TRUE) {list(spl_hazard1 = spl_hazard1_pred, spl_hazard2 = spl_hazard2_pred, spl_hazard3 = spl_hazard3_pred, 
-                                         spl_odds1 = spl_odds1_pred, spl_odds2 = spl_odds2_pred, spl_odds3 = spl_odds3_pred, 
-                                         spl_normal1 = spl_normal1_pred, spl_normal2 = spl_normal2_pred, spl_normal3 = spl_normal3_pred, 
-                                         spl_hazard1_h = spl_hazard1_pred_h, spl_hazard2_h = spl_hazard2_pred_h, spl_hazard3_h = spl_hazard3_pred_h, 
-                                         spl_odds1_h = spl_odds1_pred_h, spl_odds2_h = spl_odds2_pred_h, spl_odds3_h = spl_odds3_pred_h,
-                                         spl_normal1_h = spl_normal1_pred_h, spl_normal2_h = spl_normal2_pred_h, spl_normal3_h = spl_normal3_pred_h)},
-           if (cure_mod == TRUE) {list(cure_weib_mix = cure_weib_mix_pred, cure_weib_nmix = cure_weib_nmix_pred, 
-                                       cure_lnorm_mix = cure_lnorm_mix_pred, cure_lnorm_nmix = cure_lnorm_nmix_pred, 
-                                       cure_llog_mix = cure_llog_mix_pred,  cure_llog_nmix = cure_llog_nmix_pred,
-                                       cure_weib_mix_h = cure_weib_mix_pred_h, cure_weib_nmix_h = cure_weib_nmix_pred_h, 
-                                       cure_lnorm_mix_h = cure_lnorm_mix_pred_h, cure_lnorm_nmix_h = cure_lnorm_nmix_pred_h, 
-                                       cure_llog_mix_h = cure_llog_mix_pred_h,  cure_llog_nmix_h = cure_llog_nmix_pred_h)}))
-}
-
-# function to obtain predicted values from parametric survival models
-f_surv_model_pred_gr <- function(ngroups, surv_model, surv_model_pred, spline_mod, cure_mod) { 
-  
-  surv_gr_1 <- cbind(surv_model_pred[[1]][,1],
-                     sapply(c(1:7), function(x) surv_model_pred[[x]][,2]),
-                     if (spline_mod == TRUE) {sapply(c(15:23), function(x) surv_model_pred[[x]][,2])},
-                     if (cure_mod == TRUE) {sapply(c(33:38), function(x) surv_model_pred[[x]][,2])}
+  # Fit standard parametric models
+  param_models <- list(
+    expo = fit_parametric_model("exp"),
+    weib = if (strata) fit_parametric_model("weibull", anc = list(shape = ~group)) else fit_parametric_model("weibull"),
+    gom = if (strata) fit_parametric_model("gompertz", anc = list(shape = ~group)) else fit_parametric_model("gompertz"),
+    lnorm = if (strata) fit_parametric_model("lnorm", anc = list(sdlog = ~group)) else fit_parametric_model("lnorm"),
+    llog = if (strata) fit_parametric_model("llogis", anc = list(shape = ~group)) else fit_parametric_model("llogis"),
+    gam = if (strata) fit_parametric_model("gamma", anc = list(shape = ~group)) else fit_parametric_model("gamma"),
+    ggam = if (strata) fit_parametric_model("gengamma", anc = list(sigma = ~group, Q = ~group)) else fit_parametric_model("gengamma")
   )
   
-  if (ngroups > 1) {
-    surv_gr_2 <- cbind(surv_model_pred[[1]][,1],
-                       sapply(c(1:7), function(x) surv_model_pred[[x]][,3]),
-                       if (spline_mod == TRUE) {sapply(c(15:23), function(x) surv_model_pred[[x]][,3])},
-                       if (cure_mod == TRUE) {sapply(c(33:38), function(x) surv_model_pred[[x]][,3])}
-    )
-  }
+  # Compile information criteria for parametric models
+  param_labels <- c("Exponential", "Weibull", "Gompertz", "Log-normal", "Log-logistic", "Gamma", "Generalised Gamma")
+  param_ic <- data.frame(
+    Model = param_labels,
+    AIC = sapply(param_models, function(model) model$AIC),
+    BIC = sapply(param_models, function(model) BIC(model))
+  )
   
-  if (ngroups > 2) {
-    surv_gr_3 <- cbind(surv_model_pred[[1]][,1],
-                       sapply(c(1:7), function(x) surv_model_pred[[x]][,4]),
-                       if (spline_mod == TRUE) {sapply(c(15:23), function(x) surv_model_pred[[x]][,4])},
-                       if (cure_mod == TRUE) {sapply(c(33:38), function(x) surv_model_pred[[x]][,4])}
-    )
-  }
-  
-  lbls_all <- c("time", surv_model$IC$Model, if (spline_mod == TRUE) {surv_model$IC_spl$Model}, if (cure_mod == TRUE) {surv_model$IC_cure$Model})
-  
-  colnames(surv_gr_1) <- lbls_all
-  if (ngroups > 1) {colnames(surv_gr_2) <- lbls_all}
-  if (ngroups > 2) {colnames(surv_gr_3) <- lbls_all}
-  
-  return(c(list(gr_1 = surv_gr_1), 
-           if (ngroups > 1) {list(gr_2 = surv_gr_2)}, 
-           if (ngroups > 2) {list(gr_3 = surv_gr_3)}))
-}
-
-# function to obtain predicted annual transition probability based on parametric survival models
-f_surv_model_pred_tp_gr <- function(ngroups, time_pred, time_unit, surv_model_pred_gr, cols_tp) { 
-  
-  tp_gr_1 <- cbind(time_pred, 1 - (1 - (shift(surv_model_pred_gr$gr_1[, 2:cols_tp], 1L, type = "lag") - surv_model_pred_gr$gr_1[, 2:cols_tp])/
-                                     shift(surv_model_pred_gr$gr_1[, 2:cols_tp], 1L, type = "lag"))^(1/time_unit))[-1, ]
-  
-  if (ngroups > 1) {
-    tp_gr_2 <- cbind(time_pred, 1 - (1 - (shift(surv_model_pred_gr$gr_2[, 2:cols_tp], 1L, type = "lag") - surv_model_pred_gr$gr_2[, 2:cols_tp])/
-                                       shift(surv_model_pred_gr$gr_2[, 2:cols_tp], 1L, type = "lag"))^(1/time_unit))[-1, ]
-  }
-  
-  if (ngroups > 2) {
-    tp_gr_3 <- cbind(time_pred, 1 - (1 - (shift(surv_model_pred_gr$gr_3[, 2:cols_tp], 1L, type = "lag") - surv_model_pred_gr$gr_3[, 2:cols_tp])/
-                                       shift(surv_model_pred_gr$gr_3[, 2:cols_tp], 1L, type = "lag"))^(1/time_unit))[-1, ]
-  }
-  
-  return(c(list(gr_1 = tp_gr_1), 
-           if (ngroups > 1) {list(gr_2 = tp_gr_2)}, 
-           if (ngroups > 2) {list(gr_3 = tp_gr_3)}))
-}
-
-# function to create output dataframe for use in MS Excel 
-f_surv_model_excel <- function(ngroups, strata, surv_model, spline_mod, cure_mod) { # BR wellicht bestaande labels gebruiken? (surv_model$IC[,1] surv_model$IC_spl[,1] surv_model$IC_cure[,1])
-  
-  # distributions names
-  distnames <- if (spline_mod == TRUE) {
-    c(
-      rep("1. Exponential", nrow(surv_model$expo$res.t)),
-      rep("2. Weibull", nrow(surv_model$weib$res.t)),
-      rep("3. Gompertz", nrow(surv_model$gom$res.t)),
-      rep("4. Log-normal", nrow(surv_model$lnorm$res.t)),
-      rep("5. Log-logistic", nrow(surv_model$llog$res.t)),
-      rep("6. Gamma", nrow(surv_model$gam$res.t)),
-      rep("7. Generalisedgamma", nrow(surv_model$ggam$res.t)),
-      rep("8. 1-knot spline hazard", nrow(surv_model$spl_hazard1$res.t)),
-      rep("9. 1-knot spline odds", nrow(surv_model$spl_odds1$res.t)),
-      rep("10. 1-knot spline normal", nrow(surv_model$spl_normal1$res.t)),
-      rep("11. 2-knot spline hazard", nrow(surv_model$spl_hazard2$res.t)),
-      rep("12. 2-knot spline odds", nrow(surv_model$spl_odds2$res.t)),
-      rep("13. 2-knot spline normal", nrow(surv_model$spl_normal2$res.t)),
-      rep("14. 3-knot spline hazard", nrow(surv_model$spl_hazard3$res.t)),
-      rep("15. 3-knot spline odds", nrow(surv_model$spl_odds3$res.t)),
-      rep("16. 3-knot spline normal", nrow(surv_model$spl_normal3$res.t))
-    )} else {
-      c(
-        rep("1. Exponential", nrow(surv_model$expo$res.t)),
-        rep("2. Weibull", nrow(surv_model$weib$res.t)),
-        rep("3. Gompertz", nrow(surv_model$gom$res.t)),
-        rep("4. Log-normal", nrow(surv_model$lnorm$res.t)),
-        rep("5. Log-logistic", nrow(surv_model$llog$res.t)),
-        rep("6. Gamma", nrow(surv_model$gam$res.t)),
-        rep("7. Generalisedgamma", nrow(surv_model$ggam$res.t))
-      )
-    }
-  
-  # parameters' names
-  parnames <- if (spline_mod == TRUE) {
-    
-    c(
-      rownames(surv_model$expo$res.t),
-      rownames(surv_model$weib$res.t),
-      rownames(surv_model$gom$res.t),
-      rownames(surv_model$lnorm$res.t),
-      rownames(surv_model$llog$res.t),
-      rownames(surv_model$gam$res.t),
-      rownames(surv_model$ggam$res.t),
-      rownames(surv_model$spl_hazard1$res.t),
-      rownames(surv_model$spl_odds1$res.t),
-      rownames(surv_model$spl_normal1$res.t),
-      rownames(surv_model$spl_hazard2$res.t),
-      rownames(surv_model$spl_odds2$res.t),
-      rownames(surv_model$spl_normal2$res.t),
-      rownames(surv_model$spl_hazard3$res.t),
-      rownames(surv_model$spl_odds3$res.t),
-      rownames(surv_model$spl_normal3$res.t)
-    )} else {
-      c(
-        rownames(surv_model$expo$res.t),
-        rownames(surv_model$weib$res.t),
-        rownames(surv_model$gom$res.t),
-        rownames(surv_model$lnorm$res.t),
-        rownames(surv_model$llog$res.t),
-        rownames(surv_model$gam$res.t),
-        rownames(surv_model$ggam$res.t)
-        
-      )
-      }
-  
-  # extract parameters for each distribution
-  res <- if (spline_mod == TRUE) {
-    rbind(
-      surv_model$expo$res.t,
-      surv_model$weib$res.t,
-      surv_model$gom$res.t,
-      surv_model$lnorm$res.t,
-      surv_model$llog$res.t,
-      surv_model$gam$res.t,
-      surv_model$ggam$res.t,
-      surv_model$spl_hazard1$res.t,
-      surv_model$spl_odds1$res.t,
-      surv_model$spl_normal1$res.t,
-      surv_model$spl_hazard2$res.t,
-      surv_model$spl_odds2$res.t,
-      surv_model$spl_normal2$res.t,
-      surv_model$spl_hazard3$res.t,
-      surv_model$spl_odds3$res.t,
-      surv_model$spl_normal3$res.t
-    )} else {
-      rbind(
-        surv_model$expo$res.t,
-        surv_model$weib$res.t,
-        surv_model$gom$res.t,
-        surv_model$lnorm$res.t,
-        surv_model$llog$res.t,
-        surv_model$gam$res.t,
-        surv_model$ggam$res.t
-      )
-    }
-  empty <- rep("", nrow(res))  # create vector of length of the parameters in order to separate the parameters from other outputs
-  
-  # compute number of additional rows
-  addrows <- if (strata == FALSE) {1} else {ifelse(ngroups == 2, 2, 3)} ## XP: to automate in case we add more groups
-  addcols <- if (strata == FALSE) {1} else {ifelse(ngroups == 2, 2, 3)}
- 
-  # create covariance matrices of equal lengths
-  if (spline_mod == TRUE) {
-    n_cols <- ncol(surv_model$spl_hazard3$cov)
-    surv_mod_spline <- surv_model[c(
-      "expo",
-      "weib",
-      "gom",
-      "lnorm",
-      "llog",
-      "gam",
-      "ggam",
-      "spl_hazard1",
-      "spl_odds1",
-      "spl_normal1",
-      "spl_hazard2",
-      "spl_odds2",
-      "spl_normal2",
-      "spl_hazard3",
-      "spl_odds3",
-      "spl_normal3"
-    )]
-    cov <- do.call(rbind, lapply(surv_mod_spline, function(x){
-      if(x$dlist$name == "survspline" &
-         length(x$dlist$pars) == 5) {
-        x$cov
-        } else{
-          cbind(x$cov,
-                matrix(0,
-                       nrow = nrow(x$cov),
-                       ncol = n_cols - ncol(x$cov)))
+  # Fit spline models if requested
+  spline_models <- list()
+  spline_ic <- NULL
+  if (spline_mod) {
+    for (k in 1:3) {
+      anc_list <- if (strata) {
+        if (k >= 3) {
+          list(gamma1 = ~group, gamma2 = ~group, gamma3 = ~group, gamma4 = ~group)
+        } else if (k >= 2) {
+          list(gamma1 = ~group, gamma2 = ~group, gamma3 = ~group)
+        } else {
+          list(gamma1 = ~group, gamma2 = ~group)
         }
-      }))
-    } else {
-      n_cols <- ncol(surv_model$ggam$cov)
-      surv_mod_simple <- surv_model[c(
-        "expo",
-        "weib",
-        "gom",
-        "lnorm",
-        "llog",
-        "gam",
-        "ggam"
-      )]
-      cov <- do.call(rbind, lapply(surv_mod_simple, function(x){
-        if(x$dlist$name == "gengamma") {
-          x$cov
-        } else{
-          cbind(x$cov,
-                matrix(0,
-                       nrow = nrow(x$cov),
-                       ncol = n_cols - ncol(x$cov)))
-          }
-      }))
+      } else {
+        NULL
+      }
+      for (scale in c("hazard", "odds", "normal")) {
+        spline_models[[paste0("spl_", scale, "_", k)]] <- flexsurvspline(
+          form, k = k, scale = scale, anc = anc_list
+        )
+      }
     }
-  
-  survmod <- cbind(distnames, parnames, res, empty, empty, empty, cov)
-  
-  # rename the columns and transpose it
-  colnames(survmod) <- c("Distnames", "Parnames", colnames(surv_model$expo$res.t), "", "Knots", "Cov_matrix", 
-                         c(1:if (spline_mod == TRUE) {ncol(surv_model$spl_hazard3$cov)} else {
-                           abs(ncol(surv_model$ggam$cov) + 
-                                 abs(length(colnames(survmod)) - 
-                                       length(c("Distnames", "Parnames", colnames(surv_model$expo$res.t), "", "Knots", "Cov_matrix", c(1:ncol(surv_model$ggam$cov))))))
-                         }))
-  
-  survmod <- t(survmod)
-  
-  # add the knots
-  if (spline_mod == TRUE) {##XP: hier nog splines met 3 knots toevoegen?
-    # 1-knot splines
-    survmod[which(rownames(survmod) == "Knots"), 
-            which((survmod[which(rownames(survmod) == "Distnames"), ] == "8. 1-knot spline hazard" | 
-                     survmod[which(rownames(survmod) == "Distnames"), ] == "9. 1-knot spline odds" | 
-                     survmod[which(rownames(survmod) == "Distnames"), ] == "10. 1-knot spline normal") & 
-                    survmod[which(rownames(survmod) == "Parnames"), ] == "gamma0")] <- c(surv_model$spl_hazard1$knots[1], 
-                                                                                         surv_model$spl_odds1$knots[1], 
-                                                                                         surv_model$spl_normal1$knots[1])
-    survmod[which(rownames(survmod) == "Knots"), 
-            which((survmod[which(rownames(survmod) == "Distnames"), ] == "8. 1-knot spline hazard" | 
-                     survmod[which(rownames(survmod) == "Distnames"), ] == "9. 1-knot spline odds" |
-                     survmod[which(rownames(survmod) == "Distnames"), ] == "10. 1-knot spline normal") & 
-                    survmod[which(rownames(survmod) == "Parnames"), ] == "gamma1")] <- c(surv_model$spl_hazard1$knots[2], 
-                                                                                         surv_model$spl_odds1$knots[2], 
-                                                                                         surv_model$spl_normal1$knots[2])
-    
-    survmod[which(rownames(survmod) == "Knots"), 
-            which((survmod[which(rownames(survmod) == "Distnames"), ] == "8. 1-knot spline hazard" |
-                     survmod[which(rownames(survmod) == "Distnames"), ] == "9. 1-knot spline odds" | 
-                     survmod[which(rownames(survmod) == "Distnames"), ] == "10. 1-knot spline normal") &
-                    survmod[which(rownames(survmod) == "Parnames"), ] == "gamma2")] <- c(surv_model$spl_hazard1$knots[3], 
-                                                                                         surv_model$spl_odds1$knots[3], 
-                                                                                         surv_model$spl_normal1$knots[3])
-    # 2-knot splines
-    survmod[which(rownames(survmod) == "Knots"), 
-            which((survmod[which(rownames(survmod) == "Distnames"), ] == "11. 2-knot spline hazard" | 
-                     survmod[which(rownames(survmod) == "Distnames"), ] == "12. 2-knot spline odds" | 
-                     survmod[which(rownames(survmod) == "Distnames"), ] == "13. 2-knot spline normal") & 
-                    survmod[which(rownames(survmod) == "Parnames"), ] == "gamma0")] <- c(surv_model$spl_hazard2$knots[1], 
-                                                                                         surv_model$spl_odds2$knots[1], 
-                                                                                         surv_model$spl_normal2$knots[1])
-    survmod[which(rownames(survmod) == "Knots"), 
-            which((survmod[which(rownames(survmod) == "Distnames"), ] == "11. 2-knot spline hazard" |
-                     survmod[which(rownames(survmod) == "Distnames"), ] == "12. 2-knot spline odds" | 
-                     survmod[which(rownames(survmod) == "Distnames"), ] == "13. 2-knot spline normal") & 
-                    survmod[which(rownames(survmod) == "Parnames"), ] == "gamma1")] <- c(surv_model$spl_hazard2$knots[2], 
-                                                                                         surv_model$spl_odds2$knots[2], 
-                                                                                         surv_model$spl_normal2$knots[2])
-    survmod[which(rownames(survmod) == "Knots"), 
-            which((survmod[which(rownames(survmod) == "Distnames"), ] == "11. 2-knot spline hazard" | 
-                     survmod[which(rownames(survmod) == "Distnames"), ] == "12. 2-knot spline odds" | 
-                     survmod[which(rownames(survmod) == "Distnames"), ] == "13. 2-knot spline normal") & 
-                    survmod[which(rownames(survmod) == "Parnames"), ] == "gamma2")] <- c(surv_model$spl_hazard2$knots[3], 
-                                                                                         surv_model$spl_odds2$knots[3], 
-                                                                                         surv_model$spl_normal2$knots[3])
-    survmod[which(rownames(survmod) == "Knots"), 
-            which((survmod[which(rownames(survmod) == "Distnames"), ] == "11. 2-knot spline hazard" | 
-                     survmod[which(rownames(survmod) == "Distnames"), ] == "12. 2-knot spline odds" | 
-                     survmod[which(rownames(survmod) == "Distnames"), ] == "13. 2-knot spline normal") &
-                    survmod[which(rownames(survmod) == "Parnames"), ] == "gamma3")] <- c(surv_model$spl_hazard2$knots[4], 
-                                                                                         surv_model$spl_odds2$knots[4], 
-                                                                                         surv_model$spl_normal2$knots[4])
-    # 3-knot splines
-    survmod[which(rownames(survmod) == "Knots"), 
-            which((survmod[which(rownames(survmod) == "Distnames"), ] == "14. 3-knot spline hazard" | 
-                     survmod[which(rownames(survmod) == "Distnames"), ] == "15. 3-knot spline odds" | 
-                     survmod[which(rownames(survmod) == "Distnames"), ] == "16. 3-knot spline normal") & 
-                    survmod[which(rownames(survmod) == "Parnames"), ] == "gamma0")] <- c(surv_model$spl_hazard3$knots[1], 
-                                                                                         surv_model$spl_odds3$knots[1], 
-                                                                                         surv_model$spl_normal3$knots[1])
-    survmod[which(rownames(survmod) == "Knots"), 
-            which((survmod[which(rownames(survmod) == "Distnames"), ] == "14. 3-knot spline hazard" |
-                     survmod[which(rownames(survmod) == "Distnames"), ] == "15. 3-knot spline odds" | 
-                     survmod[which(rownames(survmod) == "Distnames"), ] == "16. 3-knot spline normal") & 
-                    survmod[which(rownames(survmod) == "Parnames"), ] == "gamma1")] <- c(surv_model$spl_hazard3$knots[2], 
-                                                                                         surv_model$spl_odds3$knots[2], 
-                                                                                         surv_model$spl_normal3$knots[2])
-    survmod[which(rownames(survmod) == "Knots"), 
-            which((survmod[which(rownames(survmod) == "Distnames"), ] == "14. 3-knot spline hazard" | 
-                     survmod[which(rownames(survmod) == "Distnames"), ] == "15. 3-knot spline odds" | 
-                     survmod[which(rownames(survmod) == "Distnames"), ] == "16. 3-knot spline normal") & 
-                    survmod[which(rownames(survmod) == "Parnames"), ] == "gamma2")] <- c(surv_model$spl_hazard3$knots[3], 
-                                                                                         surv_model$spl_odds3$knots[3], 
-                                                                                         surv_model$spl_normal3$knots[3])
-    survmod[which(rownames(survmod) == "Knots"), 
-            which((survmod[which(rownames(survmod) == "Distnames"), ] == "14. 3-knot spline hazard" | 
-                     survmod[which(rownames(survmod) == "Distnames"), ] == "15. 3-knot spline odds" | 
-                     survmod[which(rownames(survmod) == "Distnames"), ] == "16. 3-knot spline normal") &
-                    survmod[which(rownames(survmod) == "Parnames"), ] == "gamma3")] <- c(surv_model$spl_hazard3$knots[4], 
-                                                                                         surv_model$spl_odds3$knots[4], 
-                                                                                         surv_model$spl_normal3$knots[4])
-    survmod[which(rownames(survmod) == "Knots"), 
-            which((survmod[which(rownames(survmod) == "Distnames"), ] == "14. 3-knot spline hazard" | 
-                     survmod[which(rownames(survmod) == "Distnames"), ] == "15. 3-knot spline odds" | 
-                     survmod[which(rownames(survmod) == "Distnames"), ] == "16. 3-knot spline normal") &
-                    survmod[which(rownames(survmod) == "Parnames"), ] == "gamma4")] <- c(surv_model$spl_hazard3$knots[5], 
-                                                                                         surv_model$spl_odds3$knots[5], 
-                                                                                         surv_model$spl_normal3$knots[5])
+    spline_labels <- expand.grid(k = 1:3, scale = c("hazard", "odds", "normal"))
+    spline_labels <- apply(spline_labels, 1, function(x) paste(x[2], x[1], "knots"))
+    spline_ic <- data.frame(
+      Model = spline_labels,
+      AIC = sapply(spline_models, function(model) model$AIC),
+      BIC = sapply(spline_models, function(model) BIC(model))
+    )
   }
   
-  # remove column names
-  colnames(survmod) <- c("Time-to-event models parameters", rep("", abs(ncol(survmod)) - 1))
+  # Fit cure models if requested
+  cure_models <- list()
+  cure_ic <- NULL
+  cure_fraction <- NULL
+  if (cure_mod) {
+    cure_dists <- c("weibull", "lnorm", "llogis")
+    for (dist in cure_dists) {
+      for (mixture in c(TRUE, FALSE)) {
+        cure_models[[paste0("cure_", dist, "_", ifelse(mixture, "mix", "nmix"))]] <- lapply(seq_len(ngroups), function(i) {
+          flexsurvcure(
+            Surv(years, status) ~ 1,
+            data = data.frame(years, status)[group == levels(group)[i], ],
+            link = cure_link,
+            dist = dist,
+            mixture = mixture
+          )
+        })
+      }
+    }
+    cure_labels <- expand.grid(dist = cure_dists, type = c("Mixture", "Non-Mixture"))
+    cure_labels <- apply(cure_labels, 1, paste, collapse = " cure ")
+    cure_ic <- data.frame(
+      Model = cure_labels,
+      AIC = sapply(cure_models, function(models) sum(sapply(models, function(model) model$AIC))),
+      CureFraction = t(sapply(cure_models, function(models) {
+        sapply(models, function(model) paste0(round(model$res[1, 1], 3) * 100, "%"))
+      }))
+    )
+  }
   
-  return(survmod)
+  # Combine and return results
+  results <- list(
+    param_models = param_models,
+    param_ic = param_ic
+  )
+  if (spline_mod) results$spline_models <- spline_models
+  if (spline_mod) results$spline_ic <- spline_ic
+  if (cure_mod) results$cure_models <- cure_models
+  if (cure_mod) results$cure_ic <- cure_ic
+  return(results)
+}
+
+#' Predict Values from Parametric Survival Models (Including Cure Models)
+#'
+#' Generates predictions (survival and hazard) for parametric survival models,
+#' spline models, and cure models.
+#'
+#' @param ngroups Integer specifying the number of groups.
+#' @param time_pred Numeric vector of prediction times.
+#' @param surv_model List of fitted survival models.
+#' @param spline_mod Logical, whether spline models were fitted.
+#' @param cure_mod Logical, whether cure models were fitted.
+#' @param group_names Character vector of group names.
+#'
+#' @return A list of predicted survival probabilities and hazards for all models.
+#'
+#' @importFrom stats summary
+#' @examples
+#' \dontrun{
+#' f_surv_model_pred(
+#'   ngroups = 2,
+#'   time_pred = seq(0, 5, 0.1),
+#'   surv_model = example_models,
+#'   spline_mod = TRUE,
+#'   cure_mod = TRUE,
+#'   group_names = c("Group A", "Group B")
+#' )
+#' }
+#' @export
+f_surv_model_pred <- function(ngroups, time_pred, surv_model, spline_mod, cure_mod, group_names) {
+  if (!is.numeric(time_pred)) stop("`time_pred` must be a numeric vector.")
+  if (!is.list(surv_model)) stop("`surv_model` must be a list of fitted models.")
+  if (!is.character(group_names)) stop("`group_names` must be a character vector.")
+  
+  # Helper to get predictions
+  extract_predictions <- function(model, time, ngroups, type = "survival") {
+    est <- summary(model, t = time, type = type)
+    if (ngroups == 1) names(est) <- paste("group=", group_names, sep = "")
+    cbind(time, sapply(seq_len(ngroups), function(x) est[[paste("group=", group_names[x], sep = "")]]$est))
+  }
+  
+  # Parametric models predictions
+  param_models <- c("expo", "weib", "gom", "lnorm", "llog", "gam", "ggam")
+  predictions <- lapply(param_models, function(model) {
+    list(
+      surv = extract_predictions(surv_model$param_models[[model]], time_pred, ngroups),
+      hazard = extract_predictions(surv_model$param_models[[model]], time_pred, ngroups, type = "hazard")
+    )
+  })
+  
+  names(predictions) <- param_models
+  
+  # Spline models
+  if (spline_mod) {
+    spline_models <- c("spl_hazard_1", "spl_hazard_2", "spl_hazard_3",
+                       "spl_odds_1", "spl_odds_2", "spl_odds_3",
+                       "spl_normal_1", "spl_normal_2", "spl_normal_3")
+    predictions$spline <- lapply(spline_models, function(model) {
+      list(
+        surv = extract_predictions(surv_model$spline_models[[model]], time_pred, ngroups),
+        hazard = extract_predictions(surv_model$spline_models[[model]], time_pred, ngroups, type = "hazard")
+      )
+    })
+    names(predictions$spline) <- spline_models
+  }
+  
+  # Cure models
+  if (cure_mod) {
+    cure_models <- c("cure_weibull_mix", "cure_weibull_nmix", "cure_lnorm_mix", 
+                     "cure_lnorm_nmix", "cure_llogis_mix", "cure_llogis_nmix")
+    predictions$cure <- lapply(cure_models, function(model) {
+      list(
+        surv = cbind(time_pred, sapply(seq_len(ngroups), function(x) {
+          data.frame(summary(surv_model$cure_models[[model]][[x]], t = time_pred))[, 2]
+        })),
+        hazard = cbind(time_pred, sapply(seq_len(ngroups), function(x) {
+          data.frame(summary(surv_model$cure_models[[model]][[x]], t = time_pred, type = "hazard"))[, 2]
+        }))
+      )
+    })
+    names(predictions$cure) <- cure_models
+  }
+  
+  return(predictions)
+}
+
+#' Grouped Predictions from Parametric Survival Models
+#'
+#' Organizes predictions for each group into a consolidated data frame.
+#'
+#' @param ngroups Integer specifying the number of groups.
+#' @param surv_model List of survival models.
+#' @param surv_model_pred List of predictions from `f_surv_model_pred`.
+#' @param spline_mod Logical, whether spline models were fitted.
+#' @param cure_mod Logical, whether cure models were fitted.
+#'
+#' @return A list of grouped predictions.
+#'
+#' @examples
+#' \dontrun{
+#' f_surv_model_pred_gr(ngroups = 2, surv_model = example_models,
+#'                      surv_model_pred = predictions, spline_mod = TRUE, cure_mod = TRUE)
+#' }
+#' @export
+f_surv_model_pred_gr <- function(ngroups, surv_model, surv_model_pred, spline_mod, cure_mod) {
+  if (!is.list(surv_model_pred)) stop("`surv_model_pred` must be a list.")
+  
+  # Helper to extract group data
+  extract_group_data <- function(group_idx) {
+    cbind(
+      surv_model_pred[[1]][[1]][, 1],
+      sapply(1:7, function(x) surv_model_pred[[x]][[1]][, group_idx + 1]),
+      if (spline_mod) sapply(1:9, function(x) surv_model_pred$spline[[x]][[1]][, group_idx + 1]),
+      if (cure_mod) sapply(1:6, function(x) surv_model_pred$cure[[x]][[1]][, group_idx + 1])
+    )
+  }
+  
+  groups <- lapply(seq_len(ngroups), extract_group_data)
+  names(groups) <- paste0("gr_", seq_len(ngroups))
+  
+  # Add column labels
+  lbls_all <- c("time", surv_model$param_ic$Model,
+                if (spline_mod) surv_model$spline_ic$Model,
+                if (cure_mod) surv_model$cure_ic$Model)
+  lapply(groups, function(gr) {
+    colnames(gr) <- lbls_all
+    gr
+  })
+}
+
+#' Compute Annual Transition Probabilities from Survival Model Predictions
+#'
+#' Computes annual transition probabilities for each group based on survival model predictions.
+#'
+#' @param ngroups Integer specifying the number of groups.
+#' @param time_pred Numeric vector of prediction times.
+#' @param time_unit Numeric, time unit for annualization.
+#' @param surv_model_pred_gr List of grouped survival model predictions.
+#' @param cols_tp Integer, number of transition probability columns.
+#'
+#' @return A list of grouped transition probabilities.
+#'
+#' @importFrom data.table shift
+#' @examples
+#' \dontrun{
+#' f_surv_model_pred_tp_gr(
+#'   ngroups = 2,
+#'   time_pred = seq(0, 5, 0.1),
+#'   time_unit = 1,
+#'   surv_model_pred_gr = grouped_predictions,
+#'   cols_tp = 10
+#' )
+#' }
+#' @export
+f_surv_model_pred_tp_gr <- function(ngroups, time_pred, time_unit, surv_model_pred_gr, cols_tp) {
+  if (!is.numeric(time_pred)) stop("`time_pred` must be numeric.")
+  if (!is.list(surv_model_pred_gr)) stop("`surv_model_pred_gr` must be a list.")
+  
+  # Helper function to compute transition probabilities for a single group
+  compute_tp <- function(group) {
+    # Convert to data.table for proper handling with shift
+    dt <- as.data.table(group)
+    tp <- 1 - (1 - (shift(dt[, 2:cols_tp], 1L, type = "lag") - dt[, 2:cols_tp]) /
+                 shift(dt[, 2:cols_tp], 1L, type = "lag"))^(1 / time_unit)
+    tp <- cbind(Time = dt[-1, 1], tp[-1])  # Remove the first row and attach the time column
+    return(tp)
+  }
+  
+  # Compute transition probabilities for each group
+  groups <- lapply(seq_len(ngroups), function(i) {
+    compute_tp(surv_model_pred_gr[[paste0("gr_", i)]])
+  })
+  
+  # Assign names to groups
+  names(groups) <- paste0("gr_", seq_len(ngroups))
+  
+  return(groups)
+}
+
+#' Generate Output Dataframe for MS Excel (with Knot Values for All Splines)
+#'
+#' Creates a structured dataframe of survival model parameters, including knot values
+#' for spline models, to be exported to Excel.
+#'
+#' @param ngroups Integer specifying the number of groups.
+#' @param strata Logical, whether stratified models are used.
+#' @param surv_model List of fitted survival models.
+#' @param spline_mod Logical, whether spline models are included.
+#' @param cure_mod Logical, whether cure models are included.
+#'
+#' @return A dataframe formatted for MS Excel export, including spline knot values.
+#'
+#' @export
+f_surv_model_excel <- function(ngroups, strata, surv_model, spline_mod, cure_mod) {
+  # Helper function: Pad covariance matrices for consistent dimensions
+  pad_matrix <- function(matrix, nrows, ncols) {
+    matrix <- as.matrix(matrix)
+    if (ncol(matrix) < ncols) {
+      matrix <- cbind(matrix, matrix(0, nrow = nrow(matrix), ncol = ncols - ncol(matrix)))
+    }
+    matrix
+  }
+  
+  # Collect all model names and categorize them
+  param_models <- c("expo", "weib", "gom", "lnorm", "llog", "gam", "ggam")
+  spline_models <- c(
+    "spl_hazard_1", "spl_odds_1", "spl_normal_1",
+    "spl_hazard_2", "spl_odds_2", "spl_normal_2",
+    "spl_hazard_3", "spl_odds_3", "spl_normal_3"
+  )
+  
+  # Combine models based on whether spline_mod is TRUE
+  names_models_combined <- c(param_models, if (spline_mod) spline_models)
+  surv_models_combined <- c(surv_model$param_models, if (spline_mod) surv_model$spline_models)
+  
+  # Prepare data: Distributions and parameters
+  distnames <- unlist(lapply(names_models_combined, function(model) {
+    if (!is.null(surv_models_combined[[model]])) {
+      rep(model, nrow(surv_models_combined[[model]]$res.t))
+    } else {
+      NULL
+    }
+  }))
+  
+  parnames <- unlist(lapply(names_models_combined, function(model) {
+    if (!is.null(surv_models_combined[[model]])) {
+      rownames(surv_models_combined[[model]]$res.t)
+    } else {
+      NULL
+    }
+  }))
+  
+  # Collect model results
+  res <- do.call(rbind, lapply(names_models_combined, function(model) {
+    if (!is.null(surv_models_combined[[model]])) surv_models_combined[[model]]$res.t else NULL
+  }))
+  
+  # Determine maximum covariance matrix size
+  max_cols <- max(sapply(names_models_combined, function(model) {
+    if (!is.null(surv_models_combined[[model]])) ncol(surv_models_combined[[model]]$cov) else 0
+  }))
+  
+  # Collect and pad covariance matrices
+  cov <- do.call(rbind, lapply(names_models_combined, function(model) {
+    if (!is.null(surv_models_combined[[model]])) {
+      pad_matrix(surv_models_combined[[model]]$cov, nrow(surv_models_combined[[model]]$cov), max_cols)
+    } else {
+      NULL
+    }
+  }))
+  
+  # Initialize output with blank "Knots" column
+  empty <- rep("", nrow(res))
+  knots <- empty
+  
+  # Add knots for spline models
+  if (spline_mod) {
+    for (spline_model in spline_models) {
+      if (!is.null(surv_model$spline_models[[spline_model]]$knots)) {
+        spline_knots <- surv_model$spline_models[[spline_model]]$knots
+        for (i in seq_along(spline_knots)) {
+          row_idx <- which(
+            distnames == spline_model & parnames == paste0("gamma", i - 1)
+          )
+          if (length(row_idx) > 0) {
+            knots[row_idx] <- spline_knots[i]
+          }
+        }
+      }
+    }
+  }
+  
+  # Assemble the final dataframe
+  survmod <- cbind(
+    Distnames = distnames,
+    Parnames = parnames,
+    res,
+    Knots = knots,
+    Cov_Matrix = cov
+  )
+  
+  # Rename columns for clarity
+  colnames(survmod) <- c(
+    "Distnames", "Parnames", colnames(res), "Knots",
+    paste0("Cov_", seq_len(ncol(cov)))
+  )
+  
+  # Transpose for Excel-friendly format
+  return(as.data.frame(t(survmod), stringsAsFactors = FALSE))
 }
