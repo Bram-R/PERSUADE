@@ -1,46 +1,76 @@
-rm(list = setdiff(ls(), lsf.str()))  #remove all objects except functions
+options(scipen = 999) # setting for scientific notation
+options(max.print = 10000) # setting for maximum output to display
+options(digits = 4) # setting number of digits to display
 
-####### LOAD AND INSTALL PACKAGES AND FUNCTIONS #######
-packages <- c("rms", "survival", "flexsurv", "muhaz", "survminer", "ggplot2", "data.table", "summarytools", 
-              "knitr", "kableExtra", "sft", "flexsurvcure")
-new.packages <- packages[!(packages %in% installed.packages()[, "Package"])]  #check for new packages
-if (length(new.packages)) install.packages(new.packages)  #install new packages (if needed)
-suppressPackageStartupMessages(lapply(packages, require, character.only = TRUE))  #load packages
+# Clear all objects except functions
+rm(list = setdiff(ls(), lsf.str()))
 
-source("PERSUADE function.R")
-
-####### INPUT DATA ####### (**please adjust to add your input data**)
-name <- "BC_OS"  #name (will be printed on PDF as well as used to name output directory and PDF file)
-#bc <- bc[bc$group==levels(bc$group)[1],] # used for validation purposes
-#bc <- bc[bc$group==levels(bc$group)[-1],] # used for validation purposes
-years <- bc$recyrs  #time in years
-status <- bc$censrec  #status / event variable
-group <- bc$group  #grouping variable (with a maximum of 3 levels), please amend the names of the groups here if you wish
-
-# INPUT TIME POINTS FOR PREDICTED SURVIVAL TABLE
-time_pred_surv_table <- c(0, 1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 35)  #time points (in years) for predicted survival Table
-time_unit <- 1/12  #time unit (in years) for predicted survival Figures
-time_horizon <- 40  #time horizon (in years) for predicted survival Figures
-
-####### PERSUADE ####### 
-# PERSUADE FUNCTION (**please adjust TRUE/ FALSE if necessary**)
-PERSUADE <- f_PERSUADE(name = name, years = years, status = status, group = group, 
-                       strata = TRUE, spline_mod = TRUE, cure_mod = TRUE, cure_link = "logistic", # link can either be "logistic", "loglog", "identity" or "probit"
-                       time_unit = time_unit, time_horizon = time_horizon,
-                       time_pred_surv_table = time_pred_surv_table)
-
-# PERSUADE RMARKDOWN (create PDF file and images) 
-dir.create(paste0(name, "_output"), showWarnings = FALSE) # create output directory
-save(PERSUADE, file = paste0(name, "_output/PERSUADE.RData"))  # save PERSUADE in output directory (so it can be loaded in the RMD script)
-
-xfun::Rscript_call( #Rscript_call renders the Rmd document in a new R session (similar to clicking the Knit button in RStudio)
-  rmarkdown::render,
-  list(input = "PERSUADE output.Rmd", output_file = paste0(name, ".pdf"), output_dir = paste0(name, "_output"), 
-       intermediates_dir = paste0(name, "_output"))
+####### LOAD AND INSTALL PACKAGES #######
+required_packages <- c(
+  "rms", "survival", "flexsurv", "muhaz", "survminer", "ggplot2", 
+  "data.table", "summarytools", "knitr", "kableExtra", "sft", "flexsurvcure"
 )
 
-# export parametric survival models to clipboard and .csv (e.g. for use in accompanying Excel file)
-write.table(PERSUADE$surv_model_excel, "clipboard-128", sep = "\t")
-write.csv(PERSUADE$surv_model_excel, paste0(name, "_output/PERSUADE_Time-to-event_models_parameters_comma.csv"))
-write.csv2(PERSUADE$surv_model_excel, paste0(name, "_output/PERSUADE_Time-to-event_models_parameters_semicolon.csv"))
+# Install missing packages
+new_packages <- required_packages[!(required_packages %in% installed.packages()[, "Package"])]
+if (length(new_packages)) install.packages(new_packages)
 
+# Load packages
+suppressPackageStartupMessages(lapply(required_packages, require, character.only = TRUE))
+
+####### LOAD PERSUADE FUNCTION #######
+if (!file.exists("PERSUADE function.R")) stop("The file 'PERSUADE function.R' was not found.")
+source("PERSUADE function.R")
+
+####### INPUT DATA ####### 
+name <- "BC_OS" # Analysis name
+
+# Input variables
+years <- bc$recyrs  # Time to event
+status <- bc$censrec  # Event status
+group <- bc$group  # Grouping variable (max 3 levels)
+
+# Predicted survival table times (in years)
+time_pred_surv_table <- c(0, 1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 35)
+time_unit <- 1 / 12  # Time unit in years (monthly)
+time_horizon <- 40  # Time horizon in years
+
+####### RUN PERSUADE ####### 
+PERSUADE <- f_PERSUADE(
+  name = name, 
+  years = years, 
+  status = status, 
+  group = group, 
+  strata = TRUE, 
+  spline_mod = TRUE, 
+  cure_mod = TRUE, 
+  cure_link = "logistic",  # Link options: "logistic", "loglog", "identity", "probit"
+  time_unit = time_unit, 
+  time_horizon = time_horizon, 
+  time_pred_surv_table = time_pred_surv_table
+)
+
+####### EXPORT RESULTS ####### 
+# Create output directory
+output_dir <- paste0(name, "_output")
+dir.create(output_dir, showWarnings = FALSE)
+
+# Save PERSUADE object
+save(PERSUADE, file = file.path(output_dir, "PERSUADE.RData"))
+
+# Generate PDF report using R Markdown
+if (!file.exists("PERSUADE output.Rmd")) stop("The file 'PERSUADE output.Rmd' was not found.")
+xfun::Rscript_call(
+  rmarkdown::render,
+  list(
+    input = "PERSUADE output.Rmd",
+    output_file = paste0(name, ".pdf"),
+    output_dir = output_dir,
+    intermediates_dir = output_dir
+  )
+)
+
+# Export parametric survival models to clipboard and CSV files
+write.table(PERSUADE$surv_model_excel, "clipboard-128", sep = "\t", col.names = FALSE)
+write.csv(PERSUADE$surv_model_excel, file.path(output_dir, "PERSUADE_Time-to-event_models_parameters_comma.csv"), col.names = FALSE)
+write.csv2(PERSUADE$surv_model_excel, file.path(output_dir, "PERSUADE_Time-to-event_models_parameters_semicolon.csv"), col.names = FALSE)
