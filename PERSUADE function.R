@@ -21,19 +21,19 @@
 #'
 #' @examples
 #' \dontrun{
-#' f_PERSUADE(
-#'   name = "Example",
-#'   years = c(1, 2, 3),
-#'   status = c(1, 0, 1),
-#'   group = factor(c("A", "A", "B")),
-#'   strata = FALSE,
-#'   spline_mod = TRUE,
-#'   cure_mod = FALSE,
-#'   cure_link = "logistic",
-#'   time_unit = 1,
-#'   time_horizon = 10,
-#'   time_pred_surv_table = seq(1, 10, 1)
-#' )
+# f_PERSUADE(
+#   name = "Example",
+#   years = bc$recyrs,
+#   status = bc$censrec,
+#   group = factor(bc$group),
+#   strata = FALSE,
+#   spline_mod = TRUE,
+#   cure_mod = FALSE,
+#   cure_link = "logistic",
+#   time_unit = 1,
+#   time_horizon = 10,
+#   time_pred_surv_table = seq(1, 10, 1)
+# )
 #' }
 #' @export
 f_PERSUADE <- function(name = "no_name", years, status, group, 
@@ -171,8 +171,8 @@ f_PERSUADE <- function(name = "no_name", years, status, group,
 #' @importFrom muhaz muhaz
 #' @examples
 #' \dontrun{
-#' f_hazard(years = c(1, 2, 3), status = c(1, 0, 1), 
-#'          group = factor(c("A", "A", "B")), ngroups = 2)
+#' f_hazard(years = bc$recyrs, status = bc$censrec,
+#'          group = factor(bc$group), ngroups = nlevels(bc$group))
 #' }
 #' @export
 f_hazard <- function(years, status, group, ngroups) {
@@ -182,7 +182,7 @@ f_hazard <- function(years, status, group, ngroups) {
   if (!is.factor(group)) {
     stop("`group` must be a factor.")
   }
-  if (!is.integer(ngroups) || ngroups < 1 || ngroups > 3) {
+  if (!is.numeric(ngroups) || ngroups < 1 || ngroups > 3) {
     stop("`ngroups` must be an integer between 1 and 3.")
   }
   
@@ -238,9 +238,9 @@ f_hazard <- function(years, status, group, ngroups) {
 #' @importFrom stats qnorm
 #' @examples
 #' \dontrun{
-#' f_cum_hazard(years = c(1, 2, 3), status = c(1, 0, 1),
-#'              group = factor(c("A", "A", "B")), ngroups = 2,
-#'              time_pred = seq(0, 5, by = 0.5), time_unit = "years")
+#' f_cum_hazard(years = bc$recyrs, status = bc$censrec,
+#'              group =  factor(bc$group), ngroups = nlevels(bc$group),
+#'              time_pred = seq(0, 5, by = 1/12), time_unit = 1/12)
 #' }
 #' @export
 f_cum_hazard <- function(years, status, group, ngroups, time_pred, time_unit) {
@@ -250,7 +250,7 @@ f_cum_hazard <- function(years, status, group, ngroups, time_pred, time_unit) {
   if (!is.factor(group)) {
     stop("`group` must be a factor.")
   }
-  if (!is.integer(ngroups) || ngroups < 1 || ngroups > 3) {
+  if (!is.numeric(ngroups) || ngroups < 1 || ngroups > 3) {
     stop("`ngroups` must be an integer between 1 and 3.")
   }
   if (!is.numeric(time_pred) || !is.numeric(time_unit)) {
@@ -312,7 +312,7 @@ f_cum_hazard <- function(years, status, group, ngroups, time_pred, time_unit) {
 #' @importFrom stats loess
 #' @examples
 #' \dontrun{
-#' f_tp(ngroups = 2, cum_haz = example_data, time_unit = 1)
+#' f_tp(ngroups = nlevels(bc$group), cum_haz = f_cum_hazard() output, time_unit = 1/12)
 #' }
 #' @export
 f_tp <- function(ngroups, cum_haz, time_unit) {
@@ -381,11 +381,11 @@ f_tp <- function(ngroups, cum_haz, time_unit) {
 #' @importFrom stats BIC
 #' @examples
 #' \dontrun{
-#' f_surv_model(years = c(1, 2, 3), status = c(1, 0, 1),
-#'              group = factor(c("A", "A", "B")), strata = FALSE,
-#'              ngroups = 2, form = Surv(years, status) ~ 1,
-#'              spline_mod = TRUE, cure_mod = TRUE,
-#'              cure_link = "logit", group_names = c("Group A", "Group B"))
+#' f_surv_model(years = bc$recyrs, status = bc$censrec,
+#'              group = factor(bc$group), strata = FALSE,
+#'              ngroups = nlevels(bc$group), form = as.formula(Surv(years, status) ~ group),
+#'              spline_mod = TRUE, cure_mod = FALSE,
+#'              cure_link = "logit", group_names = levels(bc$group))
 #' }
 #' @export
 f_surv_model <- function(years, status, group, strata, ngroups, form, spline_mod, cure_mod, cure_link, group_names) {
@@ -514,12 +514,12 @@ f_surv_model <- function(years, status, group, strata, ngroups, form, spline_mod
 #' @examples
 #' \dontrun{
 #' f_surv_model_pred(
-#'   ngroups = 2,
-#'   time_pred = seq(0, 5, 0.1),
-#'   surv_model = example_models,
+#'   ngroups = nlevels(bc$group),
+#'   time_pred = seq(0, 5, 1/12),
+#'   surv_model = f_surv_model() output,
 #'   spline_mod = TRUE,
-#'   cure_mod = TRUE,
-#'   group_names = c("Group A", "Group B")
+#'   cure_mod = FALSE,
+#'   group_names = levels(bc$group)
 #' )
 #' }
 #' @export
@@ -594,8 +594,8 @@ f_surv_model_pred <- function(ngroups, time_pred, surv_model, spline_mod, cure_m
 #'
 #' @examples
 #' \dontrun{
-#' f_surv_model_pred_gr(ngroups = 2, surv_model = example_models,
-#'                      surv_model_pred = predictions, spline_mod = TRUE, cure_mod = TRUE)
+#' f_surv_model_pred_gr(ngroups = nlevels(bc$group), surv_model = f_surv_model() output,
+#'                      surv_model_pred = f_surv_model_pred() output, spline_mod = TRUE, cure_mod = FALSE)
 #' }
 #' @export
 f_surv_model_pred_gr <- function(ngroups, surv_model, surv_model_pred, spline_mod, cure_mod) {
@@ -640,10 +640,10 @@ f_surv_model_pred_gr <- function(ngroups, surv_model, surv_model_pred, spline_mo
 #' @examples
 #' \dontrun{
 #' f_surv_model_pred_tp_gr(
-#'   ngroups = 2,
-#'   time_pred = seq(0, 5, 0.1),
-#'   time_unit = 1,
-#'   surv_model_pred_gr = grouped_predictions,
+#'   ngroups = nlevels(bc$group),
+#'   time_pred = seq(0, 5, 1/12),
+#'   time_unit = 1/12,
+#'   surv_model_pred_gr = surv_model_pred_gr() output,
 #'   cols_tp = 10
 #' )
 #' }
