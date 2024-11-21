@@ -771,16 +771,19 @@ f_surv_model_excel <- function(ngroups, strata, surv_model, spline_mod, cure_mod
     Distnames = distnames,
     Parnames = parnames,
     res,
+    empty = empty,
     Knots = knots,
+    empty = empty,
     Cov_Matrix = cov
   )
   
   # Rename columns for clarity
   colnames(survmod) <- c(
-    "Distnames", "Parnames", colnames(res), "Knots",
+    "Distnames", "Parnames", colnames(res), "", "Knots", "",
     paste0("Cov_", seq_len(ncol(cov)))
   )
   
   # Transpose for Excel-friendly format
   return(as.data.frame(t(survmod), stringsAsFactors = FALSE))
 }
+                            
