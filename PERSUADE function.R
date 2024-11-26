@@ -1,45 +1,45 @@
 #### Main PERSUADE function ----
-
-#' Main PERSUADE Function
-#'
-#' Executes the PERSUADE workflow for parametric survival analysis, producing outputs for visualization,
-#' prediction, and Excel export.
-#'
-#' @param name Character, name identifier for the analysis (default: "no_name").
-#' @param years Numeric vector of time-to-event data.
-#' @param status Numeric vector indicating event occurrence (1 for event, 0 for censoring).
-#' @param group Factor indicating group membership.
-#' @param strata Logical, whether to stratify models by group.
-#' @param spline_mod Logical, whether spline models are included.
-#' @param cure_mod Logical, whether cure models are included.
-#' @param cure_link Character string specifying the link function for cure models (default: "logistic").
-#' @param time_unit Numeric, the unit of time for annualization.
-#' @param time_horizon Numeric, the time horizon for predictions.
-#' @param time_pred_surv_table Numeric vector, time points for survival table predictions.
-#'
-#' @return A list of results including survival observations, model predictions, and Excel-ready data.
-#'
-#' @examples
-#' \dontrun{
-# f_PERSUADE(
-#   name = "Example",
-#   years = bc$recyrs,
-#   status = bc$censrec,
-#   group = factor(bc$group),
-#   strata = FALSE,
-#   spline_mod = TRUE,
-#   cure_mod = FALSE,
-#   cure_link = "logistic",
-#   time_unit = 1,
-#   time_horizon = 10,
-#   time_pred_surv_table = seq(1, 10, 1)
-# )
-#' }
-#' @export
 f_PERSUADE <- function(name = "no_name", years, status, group, 
                        strata = FALSE, spline_mod = FALSE, cure_mod = FALSE, 
                        cure_link = "logistic", time_unit, time_horizon, 
                        time_pred_surv_table) {
+  #' Main PERSUADE Function
+  #'
+  #' Executes the PERSUADE workflow for parametric survival analysis, producing outputs for visualization,
+  #' prediction, and Excel export.
+  #'
+  #' @param name Character, name identifier for the analysis (default: "no_name").
+  #' @param years Numeric vector of time-to-event data.
+  #' @param status Numeric vector indicating event occurrence (1 for event, 0 for censoring).
+  #' @param group Factor indicating group membership.
+  #' @param strata Logical, whether to stratify models by group.
+  #' @param spline_mod Logical, whether spline models are included.
+  #' @param cure_mod Logical, whether cure models are included.
+  #' @param cure_link Character string specifying the link function for cure models (default: "logistic").
+  #' @param time_unit Numeric, the unit of time for annualization.
+  #' @param time_horizon Numeric, the time horizon for predictions.
+  #' @param time_pred_surv_table Numeric vector, time points for survival table predictions.
+  #'
+  #' @return A list of results including survival observations, model predictions, and Excel-ready data.
+  #'
+  #' @examples
+  #' \dontrun{
+  # f_PERSUADE(
+  #   name = "Example",
+  #   years = bc$recyrs,
+  #   status = bc$censrec,
+  #   group = factor(bc$group),
+  #   strata = FALSE,
+  #   spline_mod = TRUE,
+  #   cure_mod = FALSE,
+  #   cure_link = "logistic",
+  #   time_unit = 1,
+  #   time_horizon = 10,
+  #   time_pred_surv_table = seq(1, 10, 1)
+  # )
+  #' }
+  #' @export
+  
   # Validate inputs
   if (!is.numeric(years) || !is.numeric(status)) stop("`years` and `status` must be numeric vectors.")
   if (!is.factor(group)) stop("`group` must be a factor.")
@@ -151,31 +151,32 @@ f_PERSUADE <- function(name = "no_name", years, status, group,
 
 #### Functions used in the main PERSUADE function ----
 
-#' Calculate Smoothed Hazard Estimates for Groups
-#'
-#' This function computes smoothed hazard estimates for up to three groups 
-#' using the `muhaz` package and returns a consolidated list of results.
-#'
-#' @param years Numeric vector of times to event or censoring.
-#' @param status Numeric vector indicating event occurrence (1 for event, 0 for censoring).
-#' @param group Factor indicating the group each observation belongs to.
-#' @param ngroups Integer specifying the number of groups to analyze (up to 3).
-#'
-#' @return A list containing smoothed hazard estimates for each group, 
-#'         a vector of group identifiers, and the maximum observed hazard values.
-#'         The list includes:
-#'         - `smooth_grX`: Smoothed hazard results for each group.
-#'         - `names`: Vector indicating group membership of hazard values.
-#'         - `max`: Data frame with the maximum time and hazard values.
-#'
-#' @importFrom muhaz muhaz
-#' @examples
-#' \dontrun{
-#' f_hazard(years = bc$recyrs, status = bc$censrec,
-#'          group = factor(bc$group), ngroups = nlevels(bc$group))
-#' }
-#' @export
 f_hazard <- function(years, status, group, ngroups) {
+  #' Calculate Smoothed Hazard Estimates for Groups
+  #'
+  #' This function computes smoothed hazard estimates for up to three groups 
+  #' using the `muhaz` package and returns a consolidated list of results.
+  #'
+  #' @param years Numeric vector of times to event or censoring.
+  #' @param status Numeric vector indicating event occurrence (1 for event, 0 for censoring).
+  #' @param group Factor indicating the group each observation belongs to.
+  #' @param ngroups Integer specifying the number of groups to analyze (up to 3).
+  #'
+  #' @return A list containing smoothed hazard estimates for each group, 
+  #'         a vector of group identifiers, and the maximum observed hazard values.
+  #'         The list includes:
+  #'         - `smooth_grX`: Smoothed hazard results for each group.
+  #'         - `names`: Vector indicating group membership of hazard values.
+  #'         - `max`: Data frame with the maximum time and hazard values.
+  #'
+  #' @importFrom muhaz muhaz
+  #' @examples
+  #' \dontrun{
+  #' f_hazard(years = bc$recyrs, status = bc$censrec,
+  #'          group = factor(bc$group), ngroups = nlevels(bc$group))
+  #' }
+  #' @export
+  
   if (!is.numeric(years) || !is.numeric(status)) {
     stop("`years` and `status` must be numeric vectors.")
   }
@@ -211,39 +212,40 @@ f_hazard <- function(years, status, group, ngroups) {
   list(hazards = hazards, names = haz_names, max = haz_max)
 }
 
-#' Calculate Cumulative Hazard Estimates for Groups
-#'
-#' This function computes cumulative hazard estimates for up to three groups
-#' along with variance and confidence intervals using the `estimateNAH` package.
-#'
-#' @param years Numeric vector of times to event or censoring.
-#' @param status Numeric vector indicating event occurrence (1 for event, 0 for censoring).
-#' @param group Factor indicating the group each observation belongs to.
-#' @param ngroups Integer specifying the number of groups to analyze (up to 3).
-#' @param time_pred Numeric vector of prediction times for cumulative hazard calculation.
-#' @param time_unit Numeric vector specifying the time unit length.
-#'
-#' @return A data frame containing:
-#'         - `group`: Group identifier for each observation.
-#'         - `time`: Prediction times.
-#'         - `H`: Cumulative hazard values.
-#'         - `var`: Variance of cumulative hazard.
-#'         - `H_upper`: Upper bound of the confidence interval.
-#'         - `H_lower`: Lower bound of the confidence interval.
-#'         - `H_delta`: Differences in cumulative hazard values (lagged).
-#'         - `H_upper_delta`: Differences in upper confidence bound (lagged).
-#'         - `H_lower_delta`: Differences in lower confidence bound (lagged).
-#'
-#' @importFrom estimateNAH estimateNAH
-#' @importFrom stats qnorm
-#' @examples
-#' \dontrun{
-#' f_cum_hazard(years = bc$recyrs, status = bc$censrec,
-#'              group =  factor(bc$group), ngroups = nlevels(bc$group),
-#'              time_pred = seq(0, 5, by = 1/12), time_unit = 1/12)
-#' }
-#' @export
 f_cum_hazard <- function(years, status, group, ngroups, time_pred, time_unit) {
+  #' Calculate Cumulative Hazard Estimates for Groups
+  #'
+  #' This function computes cumulative hazard estimates for up to three groups
+  #' along with variance and confidence intervals using the `estimateNAH` package.
+  #'
+  #' @param years Numeric vector of times to event or censoring.
+  #' @param status Numeric vector indicating event occurrence (1 for event, 0 for censoring).
+  #' @param group Factor indicating the group each observation belongs to.
+  #' @param ngroups Integer specifying the number of groups to analyze (up to 3).
+  #' @param time_pred Numeric vector of prediction times for cumulative hazard calculation.
+  #' @param time_unit Numeric vector specifying the time unit length.
+  #'
+  #' @return A data frame containing:
+  #'         - `group`: Group identifier for each observation.
+  #'         - `time`: Prediction times.
+  #'         - `H`: Cumulative hazard values.
+  #'         - `var`: Variance of cumulative hazard.
+  #'         - `H_upper`: Upper bound of the confidence interval.
+  #'         - `H_lower`: Lower bound of the confidence interval.
+  #'         - `H_delta`: Differences in cumulative hazard values (lagged).
+  #'         - `H_upper_delta`: Differences in upper confidence bound (lagged).
+  #'         - `H_lower_delta`: Differences in lower confidence bound (lagged).
+  #'
+  #' @importFrom estimateNAH estimateNAH
+  #' @importFrom stats qnorm
+  #' @examples
+  #' \dontrun{
+  #' f_cum_hazard(years = bc$recyrs, status = bc$censrec,
+  #'              group =  factor(bc$group), ngroups = nlevels(bc$group),
+  #'              time_pred = seq(0, 5, by = 1/12), time_unit = 1/12)
+  #' }
+  #' @export
+  
   if (!is.numeric(years) || !is.numeric(status)) {
     stop("`years` and `status` must be numeric vectors.")
   }
@@ -291,31 +293,32 @@ f_cum_hazard <- function(years, status, group, ngroups, time_pred, time_unit) {
   return(cumulative_data)
 }
 
-#' Calculate Annual Transition Probabilities from Observed Data
-#'
-#' This function calculates annual transition probabilities and their confidence intervals 
-#' for up to three groups based on cumulative hazard data. The probabilities are smoothed 
-#' using LOESS regression for each group.
-#'
-#' @param ngroups Integer specifying the number of groups to analyze (up to 3).
-#' @param cum_haz Data frame containing cumulative hazard data. Must include columns:
-#'        `group`, `time`, `H_delta`, `H_upper_delta`, `H_lower_delta`.
-#' @param time_unit Numeric specifying the time unit for annualization (e.g., 1 for years).
-#'
-#' @return A list containing:
-#'         - `gr_1`, `gr_2`, `gr_3`: Data frames for each group with columns:
-#'           `time`, `smooth` (smoothed transition probability),
-#'           `smooth_lower` (lower confidence bound),
-#'           `smooth_upper` (upper confidence bound).
-#'         - `max`: Maximum smoothed upper bound across all groups.
-#'
-#' @importFrom stats loess
-#' @examples
-#' \dontrun{
-#' f_tp(ngroups = nlevels(bc$group), cum_haz = f_cum_hazard() output, time_unit = 1/12)
-#' }
-#' @export
 f_tp <- function(ngroups, cum_haz, time_unit) {
+  #' Calculate Annual Transition Probabilities from Observed Data
+  #'
+  #' This function calculates annual transition probabilities and their confidence intervals 
+  #' for up to three groups based on cumulative hazard data. The probabilities are smoothed 
+  #' using LOESS regression for each group.
+  #'
+  #' @param ngroups Integer specifying the number of groups to analyze (up to 3).
+  #' @param cum_haz Data frame containing cumulative hazard data. Must include columns:
+  #'        `group`, `time`, `H_delta`, `H_upper_delta`, `H_lower_delta`.
+  #' @param time_unit Numeric specifying the time unit for annualization (e.g., 1 for years).
+  #'
+  #' @return A list containing:
+  #'         - `gr_1`, `gr_2`, `gr_3`: Data frames for each group with columns:
+  #'           `time`, `smooth` (smoothed transition probability),
+  #'           `smooth_lower` (lower confidence bound),
+  #'           `smooth_upper` (upper confidence bound).
+  #'         - `max`: Maximum smoothed upper bound across all groups.
+  #'
+  #' @importFrom stats loess
+  #' @examples
+  #' \dontrun{
+  #' f_tp(ngroups = nlevels(bc$group), cum_haz = f_cum_hazard() output, time_unit = 1/12)
+  #' }
+  #' @export
+  
   if (!is.integer(ngroups) || ngroups < 1 || ngroups > 3) {
     stop("`ngroups` must be an integer between 1 and 3.")
   }
@@ -359,36 +362,37 @@ f_tp <- function(ngroups, cum_haz, time_unit) {
   return(results)
 }
 
-#' Fit Parametric Survival Models
-#'
-#' This function fits a variety of parametric survival models, including spline and cure models,
-#' and computes AIC and BIC for model comparison.
-#'
-#' @param years Numeric vector of survival times.
-#' @param status Numeric vector indicating event occurrence (1 for event, 0 for censoring).
-#' @param group Factor indicating the group each observation belongs to.
-#' @param strata Logical indicating whether to use stratified models.
-#' @param ngroups Integer specifying the number of groups.
-#' @param form Formula specifying the survival model.
-#' @param spline_mod Logical, whether to fit spline models.
-#' @param cure_mod Logical, whether to fit cure models.
-#' @param cure_link Character string specifying the link function for cure models.
-#' @param group_names Character vector of group names for cure fraction output.
-#'
-#' @return A list containing fitted models, information criteria (AIC/BIC), and cure fractions.
-#'
-#' @importFrom flexsurv flexsurvreg flexsurvspline flexsurvcure
-#' @importFrom stats BIC
-#' @examples
-#' \dontrun{
-#' f_surv_model(years = bc$recyrs, status = bc$censrec,
-#'              group = factor(bc$group), strata = FALSE,
-#'              ngroups = nlevels(bc$group), form = as.formula(Surv(years, status) ~ group),
-#'              spline_mod = TRUE, cure_mod = FALSE,
-#'              cure_link = "logit", group_names = levels(bc$group))
-#' }
-#' @export
 f_surv_model <- function(years, status, group, strata, ngroups, form, spline_mod, cure_mod, cure_link, group_names) {
+  #' Fit Parametric Survival Models
+  #'
+  #' This function fits a variety of parametric survival models, including spline and cure models,
+  #' and computes AIC and BIC for model comparison.
+  #'
+  #' @param years Numeric vector of survival times.
+  #' @param status Numeric vector indicating event occurrence (1 for event, 0 for censoring).
+  #' @param group Factor indicating the group each observation belongs to.
+  #' @param strata Logical indicating whether to use stratified models.
+  #' @param ngroups Integer specifying the number of groups.
+  #' @param form Formula specifying the survival model.
+  #' @param spline_mod Logical, whether to fit spline models.
+  #' @param cure_mod Logical, whether to fit cure models.
+  #' @param cure_link Character string specifying the link function for cure models.
+  #' @param group_names Character vector of group names for cure fraction output.
+  #'
+  #' @return A list containing fitted models, information criteria (AIC/BIC), and cure fractions.
+  #'
+  #' @importFrom flexsurv flexsurvreg flexsurvspline flexsurvcure
+  #' @importFrom stats BIC
+  #' @examples
+  #' \dontrun{
+  #' f_surv_model(years = bc$recyrs, status = bc$censrec,
+  #'              group = factor(bc$group), strata = FALSE,
+  #'              ngroups = nlevels(bc$group), form = as.formula(Surv(bc$recyrs, bc$censrec) ~ factor(bc$group)),
+  #'              spline_mod = TRUE, cure_mod = FALSE,
+  #'              cure_link = "logit", group_names = levels(bc$group))
+  #' }
+  #' @export
+  
   if (!is.numeric(years) || !is.numeric(status)) {
     stop("`years` and `status` must be numeric vectors.")
   }
@@ -496,34 +500,35 @@ f_surv_model <- function(years, status, group, strata, ngroups, form, spline_mod
   return(results)
 }
 
-#' Predict Values from Parametric Survival Models (Including Cure Models)
-#'
-#' Generates predictions (survival and hazard) for parametric survival models,
-#' spline models, and cure models.
-#'
-#' @param ngroups Integer specifying the number of groups.
-#' @param time_pred Numeric vector of prediction times.
-#' @param surv_model List of fitted survival models.
-#' @param spline_mod Logical, whether spline models were fitted.
-#' @param cure_mod Logical, whether cure models were fitted.
-#' @param group_names Character vector of group names.
-#'
-#' @return A list of predicted survival probabilities and hazards for all models.
-#'
-#' @importFrom stats summary
-#' @examples
-#' \dontrun{
-#' f_surv_model_pred(
-#'   ngroups = nlevels(bc$group),
-#'   time_pred = seq(0, 5, 1/12),
-#'   surv_model = f_surv_model() output,
-#'   spline_mod = TRUE,
-#'   cure_mod = FALSE,
-#'   group_names = levels(bc$group)
-#' )
-#' }
-#' @export
 f_surv_model_pred <- function(ngroups, time_pred, surv_model, spline_mod, cure_mod, group_names) {
+  #' Predict Values from Parametric Survival Models (Including Cure Models)
+  #'
+  #' Generates predictions (survival and hazard) for parametric survival models,
+  #' spline models, and cure models.
+  #'
+  #' @param ngroups Integer specifying the number of groups.
+  #' @param time_pred Numeric vector of prediction times.
+  #' @param surv_model List of fitted survival models.
+  #' @param spline_mod Logical, whether spline models were fitted.
+  #' @param cure_mod Logical, whether cure models were fitted.
+  #' @param group_names Character vector of group names.
+  #'
+  #' @return A list of predicted survival probabilities and hazards for all models.
+  #'
+  #' @importFrom stats summary
+  #' @examples
+  #' \dontrun{
+  #' f_surv_model_pred(
+  #'   ngroups = nlevels(bc$group),
+  #'   time_pred = seq(0, 5, 1/12),
+  #'   surv_model = f_surv_model() output,
+  #'   spline_mod = TRUE,
+  #'   cure_mod = FALSE,
+  #'   group_names = levels(bc$group)
+  #' )
+  #' }
+  #' @export
+  
   if (!is.numeric(time_pred)) stop("`time_pred` must be a numeric vector.")
   if (!is.list(surv_model)) stop("`surv_model` must be a list of fitted models.")
   if (!is.character(group_names)) stop("`group_names` must be a character vector.")
@@ -580,25 +585,26 @@ f_surv_model_pred <- function(ngroups, time_pred, surv_model, spline_mod, cure_m
   return(predictions)
 }
 
-#' Grouped Predictions from Parametric Survival Models
-#'
-#' Organizes predictions for each group into a consolidated data frame.
-#'
-#' @param ngroups Integer specifying the number of groups.
-#' @param surv_model List of survival models.
-#' @param surv_model_pred List of predictions from `f_surv_model_pred`.
-#' @param spline_mod Logical, whether spline models were fitted.
-#' @param cure_mod Logical, whether cure models were fitted.
-#'
-#' @return A list of grouped predictions.
-#'
-#' @examples
-#' \dontrun{
-#' f_surv_model_pred_gr(ngroups = nlevels(bc$group), surv_model = f_surv_model() output,
-#'                      surv_model_pred = f_surv_model_pred() output, spline_mod = TRUE, cure_mod = FALSE)
-#' }
-#' @export
 f_surv_model_pred_gr <- function(ngroups, surv_model, surv_model_pred, spline_mod, cure_mod) {
+  #' Grouped Predictions from Parametric Survival Models
+  #'
+  #' Organizes predictions for each group into a consolidated data frame.
+  #'
+  #' @param ngroups Integer specifying the number of groups.
+  #' @param surv_model List of survival models.
+  #' @param surv_model_pred List of predictions from `f_surv_model_pred`.
+  #' @param spline_mod Logical, whether spline models were fitted.
+  #' @param cure_mod Logical, whether cure models were fitted.
+  #'
+  #' @return A list of grouped predictions.
+  #'
+  #' @examples
+  #' \dontrun{
+  #' f_surv_model_pred_gr(ngroups = nlevels(bc$group), surv_model = f_surv_model() output,
+  #'                      surv_model_pred = f_surv_model_pred() output, spline_mod = TRUE, cure_mod = FALSE)
+  #' }
+  #' @export
+  
   if (!is.list(surv_model_pred)) stop("`surv_model_pred` must be a list.")
   
   # Helper to extract group data
@@ -624,31 +630,32 @@ f_surv_model_pred_gr <- function(ngroups, surv_model, surv_model_pred, spline_mo
   })
 }
 
-#' Compute Annual Transition Probabilities from Survival Model Predictions
-#'
-#' Computes annual transition probabilities for each group based on survival model predictions.
-#'
-#' @param ngroups Integer specifying the number of groups.
-#' @param time_pred Numeric vector of prediction times.
-#' @param time_unit Numeric, time unit for annualization.
-#' @param surv_model_pred_gr List of grouped survival model predictions.
-#' @param cols_tp Integer, number of transition probability columns.
-#'
-#' @return A list of grouped transition probabilities.
-#'
-#' @importFrom data.table shift
-#' @examples
-#' \dontrun{
-#' f_surv_model_pred_tp_gr(
-#'   ngroups = nlevels(bc$group),
-#'   time_pred = seq(0, 5, 1/12),
-#'   time_unit = 1/12,
-#'   surv_model_pred_gr = surv_model_pred_gr() output,
-#'   cols_tp = 10
-#' )
-#' }
-#' @export
 f_surv_model_pred_tp_gr <- function(ngroups, time_pred, time_unit, surv_model_pred_gr, cols_tp) {
+  #' Compute Annual Transition Probabilities from Survival Model Predictions
+  #'
+  #' Computes annual transition probabilities for each group based on survival model predictions.
+  #'
+  #' @param ngroups Integer specifying the number of groups.
+  #' @param time_pred Numeric vector of prediction times.
+  #' @param time_unit Numeric, time unit for annualization.
+  #' @param surv_model_pred_gr List of grouped survival model predictions.
+  #' @param cols_tp Integer, number of transition probability columns.
+  #'
+  #' @return A list of grouped transition probabilities.
+  #'
+  #' @importFrom data.table shift
+  #' @examples
+  #' \dontrun{
+  #' f_surv_model_pred_tp_gr(
+  #'   ngroups = nlevels(bc$group),
+  #'   time_pred = seq(0, 5, 1/12),
+  #'   time_unit = 1/12,
+  #'   surv_model_pred_gr = surv_model_pred_gr() output,
+  #'   cols_tp = 10
+  #' )
+  #' }
+  #' @export
+  
   if (!is.numeric(time_pred)) stop("`time_pred` must be numeric.")
   if (!is.list(surv_model_pred_gr)) stop("`surv_model_pred_gr` must be a list.")
   
@@ -673,21 +680,22 @@ f_surv_model_pred_tp_gr <- function(ngroups, time_pred, time_unit, surv_model_pr
   return(groups)
 }
 
-#' Generate Output Dataframe for MS Excel (with Knot Values for All Splines)
-#'
-#' Creates a structured dataframe of survival model parameters, including knot values
-#' for spline models, to be exported to Excel.
-#'
-#' @param ngroups Integer specifying the number of groups.
-#' @param strata Logical, whether stratified models are used.
-#' @param surv_model List of fitted survival models.
-#' @param spline_mod Logical, whether spline models are included.
-#' @param cure_mod Logical, whether cure models are included.
-#'
-#' @return A dataframe formatted for MS Excel export, including spline knot values.
-#'
-#' @export
 f_surv_model_excel <- function(ngroups, strata, surv_model, spline_mod, cure_mod) {
+  #' Generate Output Dataframe for MS Excel 
+  #'
+  #' Creates a structured dataframe of survival model parameters, including knot values
+  #' for spline models, to be exported to Excel.
+  #'
+  #' @param ngroups Integer specifying the number of groups.
+  #' @param strata Logical, whether stratified models are used.
+  #' @param surv_model List of fitted survival models.
+  #' @param spline_mod Logical, whether spline models are included.
+  #' @param cure_mod Logical, whether cure models are included.
+  #'
+  #' @return A dataframe formatted for MS Excel export, including spline knot values.
+  #'
+  #' @export
+  
   # Helper function: Pad covariance matrices for consistent dimensions
   pad_matrix <- function(matrix, nrows, ncols) {
     matrix <- as.matrix(matrix)
@@ -786,4 +794,4 @@ f_surv_model_excel <- function(ngroups, strata, surv_model, spline_mod, cure_mod
   # Transpose for Excel-friendly format
   return(as.data.frame(t(survmod), stringsAsFactors = FALSE))
 }
-                            
+

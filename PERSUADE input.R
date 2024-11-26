@@ -8,7 +8,8 @@ rm(list = setdiff(ls(), lsf.str()))
 ####### LOAD AND INSTALL PACKAGES #######
 required_packages <- c(
   "rms", "survival", "flexsurv", "muhaz", "survminer", "ggplot2", 
-  "data.table", "summarytools", "knitr", "kableExtra", "sft", "flexsurvcure"
+  "data.table", "summarytools", "knitr", "kableExtra", "sft", 
+  "flexsurvcure", "docstring"
 )
 
 # Install missing packages
@@ -21,6 +22,15 @@ suppressPackageStartupMessages(lapply(required_packages, require, character.only
 ####### LOAD PERSUADE FUNCTION #######
 if (!file.exists("PERSUADE function.R")) stop("The file 'PERSUADE function.R' was not found.")
 source("PERSUADE function.R")
+
+docstring(f_PERSUADE)
+docstring(f_cum_hazard)
+docstring(f_tp)
+docstring(f_surv_model)
+docstring(f_surv_model_pred)
+docstring(f_surv_model_pred_gr)
+docstring(f_surv_model_pred_tp_gr)
+docstring(f_surv_model_excel)
 
 ####### INPUT DATA ####### 
 name <- "BC_OS" # Analysis name
@@ -72,5 +82,5 @@ xfun::Rscript_call(
 
 # Export parametric survival models to clipboard and CSV files
 write.table(PERSUADE$surv_model_excel, "clipboard-128", sep = "\t", col.names = FALSE)
-write.csv(PERSUADE$surv_model_excel, file.path(output_dir, "PERSUADE_Time-to-event_models_parameters_comma.csv"), col.names = FALSE)
-write.csv2(PERSUADE$surv_model_excel, file.path(output_dir, "PERSUADE_Time-to-event_models_parameters_semicolon.csv"), col.names = FALSE)
+write.csv(PERSUADE$surv_model_excel, file.path(output_dir, "PERSUADE_Time-to-event_models_parameters_comma.csv"))
+write.csv2(PERSUADE$surv_model_excel, file.path(output_dir, "PERSUADE_Time-to-event_models_parameters_semicolon.csv"))
