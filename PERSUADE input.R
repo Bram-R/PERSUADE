@@ -1,28 +1,28 @@
-options(scipen = 999) # setting for scientific notation
-options(max.print = 10000) # setting for maximum output to display
-options(digits = 4) # setting number of digits to display
+#### Description: The ParamEtRic SUrvivAl moDel sElection (PERSUADE) template ####
+#### This is a standardised survival analysis template to support the selection of parametric survival models and their implementation in decision analytic models. ####
 
-# Clear all objects except functions
-rm(list = setdiff(ls(), lsf.str()))
+# General settings
+options(scipen = 999, max.print = 10000, digits = 4)
 
-####### LOAD AND INSTALL PACKAGES #######
+# Load and install necessary libraries
 required_packages <- c(
   "rms", "survival", "flexsurv", "muhaz", "survminer", "ggplot2", 
   "data.table", "summarytools", "knitr", "kableExtra", "sft", 
   "flexsurvcure", "docstring"
 )
 
-# Install missing packages
 new_packages <- required_packages[!(required_packages %in% installed.packages()[, "Package"])]
-if (length(new_packages)) install.packages(new_packages)
-
-# Load packages
+if (length(new_packages)) install.packages(new_packages) 
 suppressPackageStartupMessages(lapply(required_packages, require, character.only = TRUE))
 
-####### LOAD PERSUADE FUNCTION #######
+# Clear workspace
+rm(list = ls())
+
+#### LOAD PERSUADE FUNCTIONS ----
 if (!file.exists("PERSUADE function.R")) stop("The file 'PERSUADE function.R' was not found.")
 source("PERSUADE function.R")
 
+# check function using docstring()
 docstring(f_PERSUADE)
 docstring(f_cum_hazard)
 docstring(f_tp)
@@ -32,7 +32,7 @@ docstring(f_surv_model_pred_gr)
 docstring(f_surv_model_pred_tp_gr)
 docstring(f_surv_model_excel)
 
-####### INPUT DATA ####### 
+#### INPUT DATA ----
 name <- "BC_OS" # Analysis name
 
 # Input variables
@@ -45,7 +45,7 @@ time_pred_surv_table <- c(0, 1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 35)
 time_unit <- 1 / 12  # Time unit in years (monthly)
 time_horizon <- 40  # Time horizon in years
 
-####### RUN PERSUADE ####### 
+#### RUN PERSUADE ----
 PERSUADE <- f_PERSUADE(
   name = name, 
   years = years, 
@@ -60,7 +60,7 @@ PERSUADE <- f_PERSUADE(
   time_pred_surv_table = time_pred_surv_table
 )
 
-####### EXPORT RESULTS ####### 
+#### EXPORT RESULTS ----
 # Create output directory
 output_dir <- paste0(name, "_output")
 dir.create(output_dir, showWarnings = FALSE)
