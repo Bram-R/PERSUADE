@@ -1,4 +1,4 @@
-plot_km_survival <- function(PERSUADE, size = 0.5, legend_position = "top") {
+f_plot_km_survival <- function(PERSUADE, size = 0.5, legend_position = "top") {
   #' Plot Kaplan-Meier Survival Curves from PERSUADE Object
   #'
   #' Generates Kaplan-Meier survival plots using ggsurvplot, adapting automatically 

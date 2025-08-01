@@ -43,7 +43,7 @@ load(paste0(getwd(),"/PERSUADE.RData"))
 
 ```{r plot_KM, echo=FALSE, fig.height=8, fig.width=7}
 
-plot_km_survival(PERSUADE)
+f_plot_km_survival(PERSUADE)
 summary(PERSUADE$surv_obs$km)$table
 
 ```

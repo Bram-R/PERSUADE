@@ -21,8 +21,9 @@ rm(list = ls())
 #### LOAD PERSUADE FUNCTIONS ----
 if (!file.exists("PERSUADE function.R")) stop("The file 'PERSUADE function.R' was not found.")
 source("PERSUADE function.R")
+source("PERSUADE figures.R")
 
-# check function using docstring()
+# check PERSUADE functions using docstring()
 docstring(f_PERSUADE)
 docstring(f_cum_hazard)
 docstring(f_tp)
@@ -31,6 +32,9 @@ docstring(f_surv_model_pred)
 docstring(f_surv_model_pred_gr)
 docstring(f_surv_model_pred_tp_gr)
 docstring(f_surv_model_excel)
+
+# check Figure functions using docstring()
+docstring(f_plot_km_survival)
 
 #### INPUT DATA ----
 name <- "BC_OS" # Analysis name
