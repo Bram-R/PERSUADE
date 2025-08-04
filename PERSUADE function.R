@@ -449,7 +449,7 @@ f_surv_model <- function(years, status, group, strata, ngroups, form, spline_mod
         )
       }
     }
-    spline_labels <- expand.grid(k = 1:3, scale = c("hazard", "odds", "normal"))
+    spline_labels <- expand.grid(k = 1:3, scale = c("Hazard", "Odds", "Normal"))
     spline_labels <- apply(spline_labels, 1, function(x) paste(x[2], x[1], "knots"))
     spline_ic <- data.frame(
       Model = spline_labels,
@@ -477,7 +477,7 @@ f_surv_model <- function(years, status, group, strata, ngroups, form, spline_mod
         })
       }
     }
-    cure_labels <- expand.grid(dist = cure_dists, type = c("Mixture", "Non-Mixture"))
+    cure_labels <- expand.grid(type = c("Mixture", "Non-mixture"), dist = c("Weibull", "Log−normal", "Log−logistic"))
     cure_labels <- apply(cure_labels, 1, paste, collapse = " cure ")
     cure_ic <- data.frame(
       Model = cure_labels,

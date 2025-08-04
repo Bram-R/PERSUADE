@@ -1,0 +1,80 @@
+---
+output:
+  pdf_document:
+    toc: yes
+    keep_tex: TRUE
+urlcolor: blue
+---
+
+---
+title: "PERSUADE `r basename(getwd())`"
+date: "`r Sys.Date()`"
+---
+
+```{r setup, include=FALSE}
+#code is formatted using formatR::tidy_source(width.cutoff = 80)
+knitr::opts_chunk$set(echo = TRUE, fig.align = "left", fig.path = "Images/", dev = c('pdf', 'png'), dpi=300)
+options(warn=-1) # prevent warnings from being printed (options(warn=0) to turn warning back on)
+```
+
+```{r preparation, echo=FALSE, warning = FALSE, message = FALSE, results = "hide"}
+packages <- c("ggplot2", "knitr",
+              "survminer", "survival", "summarytools")
+new.packages <- packages[!(packages %in% installed.packages()[, "Package"])]  #check for new packages
+if (length(new.packages)) install.packages(new.packages)  #install new packages (if needed)
+suppressPackageStartupMessages(lapply(packages, require, character.only = TRUE))  #load packages
+
+# COLOUR PALETTE
+n <- 9  #number of different colors (to be used for palette)
+palette(rainbow(n = n, s = 1, v = 1, start = 0, end = max(1, n - 1)/n, alpha = 1))
+```
+
+```{r input, echo=FALSE, warning = FALSE, message = FALSE, results = "hide"}
+# INPUT DATA
+load(paste0(getwd(), "/PERSUADE.RData"))
+
+# Figure functions
+source(paste0(getwd(), "/PERSUADE figures.R"))
+
+```
+
+\
+
+[Link to PERSUADE GitHub page](https://github.com/Bram-R/PERSUADE)
+
+\clearpage
+# 1. Kaplan-Meier  
+```{r plot_KM, echo=FALSE, fig.height=7, fig.width=7}
+f_plot_km_survival(PERSUADE)
+kable(summary(PERSUADE$surv_obs$km)$table)
+```
+
+\clearpage
+# 2. Proportional hazards assumption  
+```{r PH_assumption, echo=FALSE, eval=if (PERSUADE$misc$ngroups>1) {TRUE} else {FALSE}, out.height = "29%", fig.width=11}
+f_plot_log_cumhaz(PERSUADE)
+f_plot_schoenfeld_residuals(PERSUADE)
+```
+
+\clearpage
+# 3. Hazard function  
+## Shape of the observed smoothed hazard function  
+```{r plot_hr, echo=FALSE}
+f_plot_smoothed_hazard(PERSUADE)
+```
+
+\clearpage
+## Shape of the predicted hazard function  
+```{r plot_haz_pred, out.height = "29%", fig.width=11, echo=FALSE}
+f_plot_hazard_with_models(PERSUADE)
+```
+
+\clearpage
+
+# 4.1 Standard parametric models  
+```{r plot_parametric, echo=FALSE}
+pie(rep(1, n), labels = PERSUADE$misc$lbls, col = rainbow(n = n, s = 1, v = 1, start = 0, 
+                                                 end = max(1, n - 1)/n, alpha = 1))
+
+kable(PERSUADE$surv_model$param_ic[order(PERSUADE$surv_model$param_ic$AIC), ])
+```

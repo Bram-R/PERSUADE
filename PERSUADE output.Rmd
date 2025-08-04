@@ -14,11 +14,12 @@ date: "`r Sys.Date()`"
 ```{r setup, include=FALSE}
 #code is formatted using formatR::tidy_source(width.cutoff = 80)
 knitr::opts_chunk$set(echo = TRUE, fig.align = "left", fig.path = "Images/", dev = c('pdf', 'png'), dpi=300)
+options(warn=-1) # prevent warnings from being printed (options(warn=0) to turn warning back on)
 ```
 
 ```{r preparation, echo=FALSE, warning = FALSE, message = FALSE, results = "hide"}
-packages <- c("rms", "survival", "flexsurv", "muhaz", "survminer", "ggplot2", "data.table",
-              "summarytools", "knitr", "kableExtra", "sft")
+packages <- c("ggplot2", "knitr",
+              "survminer", "survival", "summarytools")
 new.packages <- packages[!(packages %in% installed.packages()[, "Package"])]  #check for new packages
 if (length(new.packages)) install.packages(new.packages)  #install new packages (if needed)
 suppressPackageStartupMessages(lapply(packages, require, character.only = TRUE))  #load packages
@@ -30,10 +31,13 @@ palette(rainbow(n = n, s = 1, v = 1, start = 0, end = max(1, n - 1)/n, alpha = 1
 
 ```{r input, echo=FALSE, warning = FALSE, message = FALSE, results = "hide"}
 # INPUT DATA
-load(paste0(getwd(),"/PERSUADE.RData"))
+load(paste0(getwd(), "/PERSUADE.RData"))
+
+# Figure functions
+source(paste0(getwd(), "/PERSUADE figures.R"))
+
 ```
 
-\  
 \
 
 [Link to PERSUADE GitHub page](https://github.com/Bram-R/PERSUADE)
@@ -41,11 +45,9 @@ load(paste0(getwd(),"/PERSUADE.RData"))
 
 # 1. Kaplan-Meier  
 
-```{r plot_KM, echo=FALSE, fig.height=8, fig.width=7}
-
+```{r plot_KM, echo=FALSE, fig.height=7, fig.width=7}
 f_plot_km_survival(PERSUADE)
-summary(PERSUADE$surv_obs$km)$table
-
+kable(summary(PERSUADE$surv_obs$km)$table)
 ```
 
 \clearpage
@@ -63,33 +65,8 @@ Another indication that the PH assumption does not hold is when the lines from d
 \clearpage
 
 ```{r PH_assumption, echo=FALSE, eval=if (PERSUADE$misc$ngroups>1) {TRUE} else {FALSE}, out.height = "29%", fig.width=11}
-evalq({
-  plot(cbind(log(surv_obs$km$time), log(-log(surv_obs$km$surv))), main = "A: LN(cumulative hazard)", 
-       xlim = c(floor(min(log(surv_obs$km$time)[surv_obs$km$surv != 1])), ceiling(max(log(surv_obs$km$time)))), 
-       cex = 0.6, xlab = "LN(time)", ylab = "LN(cumulative hazard)", 
-       pch = c(1, 8, 9)[surv_obs$km_names], col = c("black", "lightgrey", "darkgrey")[surv_obs$km_names])
-  legend("topleft",                    # Add legend to plot
-         legend = levels(input$group),
-         col = c("black", "lightgrey", "darkgrey")[unique(surv_obs$km_names)],
-         lty = 1)
-  
-  plot(cox.zph(surv_obs$cox_reg, terms = FALSE)[1], col = "5", lwd = 2, xlab = "time", 
-       main = "B: Scaled Schoenfeld residuals", ylab = "Beta(t) for group 2 vs group 1")
-  abline(0, 0, lty = 3)
-  abline(lm(cox.zph(surv_obs$cox_reg, terms = FALSE)$y[, 1] ~ cox.zph(surv_obs$cox_reg)$x)$coefficients, 
-         col = "7", lty = 1, lwd = 2)
-  legend(0, -2, col = c("5", "7"), lty = 1, cex = 0.8, 
-         legend = c("smoothed line (natural spline with df = 4)", "regression line"))
-  if (misc$ngroups > 2) {
-    plot(cox.zph(surv_obs$cox_reg, terms = FALSE)[2], col = "5", lwd = 2, xlab = "time", 
-         main = "C: Scaled Schoenfeld residuals", ylab = "Beta(t) for group 3 vs group 1")
-    abline(0, 0, lty = 3)
-    abline(lm(cox.zph(surv_obs$cox_reg, terms = FALSE)$y[, 2] ~ cox.zph(surv_obs$cox_reg)$x)$coefficients, 
-           col = "7", lty = 1, lwd = 2)
-    legend(0, -2, col = c("5", "7"), lty = 1, cex = 0.8, 
-           legend = c("smoothed line (natural spline with df = 4)", "regression line"))
-  }
-}, envir = PERSUADE)
+f_plot_log_cumhaz(PERSUADE)
+f_plot_schoenfeld_residuals(PERSUADE)
 ```
 
 \clearpage
@@ -116,21 +93,7 @@ as the spline-based and (non-)mixture cure models are based on the standard para
 **CAUTION**: These plots apply to the observed data period and do not allow to make inferences about the shape of the hazard function beyond this period. Additionally, the end of the observed data period may be affected by the low number of observations. One should consider this when interpreting the tail of the curves.  
 
 ```{r plot_hr, echo=FALSE}
-evalq({
-  plot(cbind(surv_obs$haz$smooth_gr1$est.grid, surv_obs$haz$smooth_gr1$haz.est), 
-       type = "l", col = "red", lty = 1, lwd = 2, xlab = "time", ylab = "smoothed hazard rate", 
-       xlim = c(0, surv_obs$haz$max$time), ylim = c(0, surv_obs$haz$max$smooth))
-  if (misc$ngroups > 1) {
-    lines(cbind(surv_obs$haz$smooth_gr2$est.grid, surv_obs$haz$smooth_gr2$haz.est), 
-          col = "green", lty = "2222", lwd = 2)
-  }
-  if (misc$ngroups > 2) {
-    lines(cbind(surv_obs$haz$smooth_gr3$est.grid, surv_obs$haz$smooth_gr3$haz.est), 
-          col = "blue", lty = "5212", lwd = 2)
-  }
-  legend("topleft", legend = misc$group_names, col = c("red", "green", "blue"), 
-         lty = as.integer(c(1, "2222", "5212")), cex = 0.8)
-}, envir = PERSUADE)
+f_plot_smoothed_hazard(PERSUADE)
 ```
 
 \clearpage
@@ -139,218 +102,7 @@ evalq({
 The following plots dislay how the hazard rates is estimated using the different parametric survival models.  
 
 ```{r plot_haz_pred, out.height = "29%", fig.width=11, echo=FALSE}
-
-# GROUP 1
-evalq({
-  plot(cbind(surv_obs$haz$smooth_gr1$est.grid, surv_obs$haz$smooth_gr1$haz.est),
-       main = paste("Group", misc$group_names[1]),
-       type = "l", col = "black", lty = 1, lwd = 2, xlab = "time", ylab = "smoothed hazard rate", 
-       xlim = c(0, surv_obs$haz$max$time), ylim = c(0, surv_obs$haz$max$smooth))
-  lines(cbind(surv_pred$model$expo_h[[1]]$time, surv_pred$model$expo_h[[1]]$est), 
-        col = "1", lty = 1, lwd = 1)
-  lines(cbind(surv_pred$model$weib_h[[1]]$time, surv_pred$model$weib_h[[1]]$est), 
-        col = "2", lty = 1, lwd = 1)
-  lines(cbind(surv_pred$model$gom_h[[1]]$time, surv_pred$model$gom_h[[1]]$est), 
-        col = "3", lty = 1, lwd = 1)
-  lines(cbind(surv_pred$model$lnorm_h[[1]]$time, surv_pred$model$lnorm_h[[1]]$est), 
-        col = "4", lty = 1, lwd = 1)
-  lines(cbind(surv_pred$model$llog_h[[1]]$time, surv_pred$model$llog_h[[1]]$est), 
-        col = "5", lty = 1, lwd = 1)
-  lines(cbind(surv_pred$model$gam_h[[1]]$time, surv_pred$model$gam_h[[1]]$est), 
-        col = "6", lty = 1, lwd = 1)
-  lines(cbind(surv_pred$model$ggam_h[[1]]$time, surv_pred$model$ggam_h[[1]]$est), 
-        col = "7", lty = 1, lwd = 1)
-  legend("topleft", legend = misc$lbls, col = 1:7, lty = 1, cex = 0.8)
-  
-  if (input$spline_mod == TRUE) {
-    plot(cbind(surv_obs$haz$smooth_gr1$est.grid, surv_obs$haz$smooth_gr1$haz.est),
-         main = paste("Group", misc$group_names[1]),
-         type = "l", col = "black", lty = 1, lwd = 2, xlab = "time", ylab = "smoothed hazard rate", 
-         xlim = c(0, surv_obs$haz$max$time), ylim = c(0, surv_obs$haz$max$smooth))
-    lines(cbind(surv_pred$model$spl_hazard1_h[[1]]$time, surv_pred$model$spl_hazard1_h[[1]]$est), 
-          col = "1", lty = 1, lwd = 1)
-    lines(cbind(surv_pred$model$spl_hazard2_h[[1]]$time, surv_pred$model$spl_hazard2_h[[1]]$est), 
-          col = "2", lty = 1, lwd = 1)
-    lines(cbind(surv_pred$model$spl_hazard3_h[[1]]$time, surv_pred$model$spl_hazard3_h[[1]]$est), 
-          col = "3", lty = 1, lwd = 1)
-    lines(cbind(surv_pred$model$spl_odds1_h[[1]]$time, surv_pred$model$spl_odds1_h[[1]]$est), 
-          col = "4", lty = 1, lwd = 1)
-    lines(cbind(surv_pred$model$spl_odds2_h[[1]]$time, surv_pred$model$spl_odds2_h[[1]]$est), 
-          col = "5", lty = 1, lwd = 1)
-    lines(cbind(surv_pred$model$spl_odds3_h[[1]]$time, surv_pred$model$spl_odds3_h[[1]]$est), 
-          col = "6", lty = 1, lwd = 1)
-    lines(cbind(surv_pred$model$spl_normal1_h[[1]]$time, surv_pred$model$spl_normal1_h[[1]]$est), 
-          col = "7", lty = 1, lwd = 1)
-    lines(cbind(surv_pred$model$spl_normal2_h[[1]]$time, surv_pred$model$spl_normal2_h[[1]]$est), 
-          col = "8", lty = 1, lwd = 1)
-    lines(cbind(surv_pred$model$spl_normal3_h[[1]]$time, surv_pred$model$spl_normal3_h[[1]]$est), 
-          col = "9", lty = 1, lwd = 1)
-    legend("topleft", legend = misc$lbls_spline, col = 1:9, lty = 1, cex = 0.8)
-  }
-  
-  if (input$cure_mod == TRUE) {
-    plot(cbind(surv_obs$haz$smooth_gr1$est.grid, surv_obs$haz$smooth_gr1$haz.est),
-         main = paste("Group", misc$group_names[1]),
-         type = "l", col = "black", lty = 1, lwd = 2, xlab = "time", ylab = "smoothed hazard rate", 
-         xlim = c(0, surv_obs$haz$max$time), ylim = c(0, surv_obs$haz$max$smooth))
-    lines(cbind(surv_pred$model$cure_weib_mix_h[, 1], surv_pred$model$cure_weib_mix_h[,2]),
-          col = "1", lty = 1, lwd = 1)
-    lines(cbind(surv_pred$model$cure_weib_nmix_h[, 1], surv_pred$model$cure_weib_nmix_h[,2]),
-          col = "2", lty = 1, lwd = 1)
-    lines(cbind(surv_pred$model$cure_lnorm_mix_h[, 1], surv_pred$model$cure_lnorm_mix_h[,2]),
-          col = "3", lty = 1, lwd = 1)
-    lines(cbind(surv_pred$model$cure_lnorm_nmix_h[, 1], surv_pred$model$cure_lnorm_nmix_h[,2]),
-          col = "4", lty = 1, lwd = 1)
-    lines(cbind(surv_pred$model$cure_llog_mix_h[, 1], surv_pred$model$cure_llog_mix_h[,2]),
-          col = "5", lty = 1, lwd = 1)
-    lines(cbind(surv_pred$model$cure_llog_nmix_h[, 1], surv_pred$model$cure_llog_nmix_h[,2]),
-          col = "6", lty = 1, lwd = 1)
-    legend("topleft", legend = misc$lbls_cure, col = 1:6, lty = 1, cex = 0.8)
-  }
-}, envir = PERSUADE)
-
-# GROUP 2
-evalq({
-  if (misc$ngroups > 1) {
-    plot(cbind(surv_obs$haz$smooth_gr2$est.grid, surv_obs$haz$smooth_gr2$haz.est), 
-         main = paste("Group", misc$group_names[2]),
-         type = "l", col = "black", lty = "2222", lwd = 2, xlab = "time", ylab = "smoothed hazard rate", 
-         xlim = c(0, surv_obs$haz$max$time), ylim = c(0, surv_obs$haz$max$smooth))
-    lines(cbind(surv_pred$model$expo_h[[2]]$time, surv_pred$model$expo_h[[2]]$est), 
-          col = "1", lty = "2222", lwd = 1)
-    lines(cbind(surv_pred$model$weib_h[[2]]$time, surv_pred$model$weib_h[[2]]$est), 
-          col = "2", lty = "2222", lwd = 1)
-    lines(cbind(surv_pred$model$gom_h[[2]]$time, surv_pred$model$gom_h[[2]]$est), 
-          col = "3", lty = "2222", lwd = 1)
-    lines(cbind(surv_pred$model$lnorm_h[[2]]$time, surv_pred$model$lnorm_h[[2]]$est), 
-          col = "4", lty = "2222", lwd = 1)
-    lines(cbind(surv_pred$model$llog_h[[2]]$time, surv_pred$model$llog_h[[2]]$est), 
-          col = "5", lty = "2222", lwd = 1)
-    lines(cbind(surv_pred$model$gam_h[[2]]$time, surv_pred$model$gam_h[[2]]$est), 
-          col = "6", lty = "2222", lwd = 1)
-    lines(cbind(surv_pred$model$ggam_h[[2]]$time, surv_pred$model$ggam_h[[2]]$est), 
-          col = "7", lty = "2222", lwd = 1)
-    legend("topleft", legend = misc$lbls, col = 1:7, lty = "2222", cex = 0.8)
-    
-    if (input$spline_mod == TRUE) {
-      plot(cbind(surv_obs$haz$smooth_gr2$est.grid, surv_obs$haz$smooth_gr2$haz.est),
-           main = paste("Group", misc$group_names[2]),
-           type = "l", col = "black", lty = "2222", lwd = 2, xlab = "time", ylab = "smoothed hazard rate", 
-           xlim = c(0, surv_obs$haz$max$time), ylim = c(0, surv_obs$haz$max$smooth))
-      lines(cbind(surv_pred$model$spl_hazard1_h[[2]]$time, surv_pred$model$spl_hazard1_h[[2]]$est), 
-            col = "1", lty = "2222", lwd = 1)
-      lines(cbind(surv_pred$model$spl_hazard2_h[[2]]$time, surv_pred$model$spl_hazard2_h[[2]]$est), 
-            col = "2", lty = "2222", lwd = 1)
-      lines(cbind(surv_pred$model$spl_hazard3_h[[2]]$time, surv_pred$model$spl_hazard3_h[[2]]$est), 
-            col = "3", lty = "2222", lwd = 1)
-      lines(cbind(surv_pred$model$spl_odds1_h[[2]]$time, surv_pred$model$spl_odds1_h[[2]]$est), 
-            col = "4", lty = "2222", lwd = 1)
-      lines(cbind(surv_pred$model$spl_odds2_h[[2]]$time, surv_pred$model$spl_odds2_h[[2]]$est), 
-            col = "5", lty = "2222", lwd = 1)
-      lines(cbind(surv_pred$model$spl_odds3_h[[2]]$time, surv_pred$model$spl_odds3_h[[2]]$est), 
-            col = "6", lty = "2222", lwd = 1)
-      lines(cbind(surv_pred$model$spl_normal1_h[[2]]$time, surv_pred$model$spl_normal1_h[[2]]$est), 
-            col = "7", lty = "2222", lwd = 1)
-      lines(cbind(surv_pred$model$spl_normal2_h[[2]]$time, surv_pred$model$spl_normal2_h[[2]]$est), 
-            col = "8", lty = "2222", lwd = 1)
-      lines(cbind(surv_pred$model$spl_normal3_h[[2]]$time, surv_pred$model$spl_normal3_h[[2]]$est), 
-            col = "9", lty = "2222", lwd = 1)
-      legend("topleft", legend = misc$lbls_spline, col = 1:9, lty = "2222", cex = 0.8)
-    }
-    
-    if (input$cure_mod == TRUE) {
-      plot(cbind(surv_obs$haz$smooth_gr2$est.grid, surv_obs$haz$smooth_gr2$haz.est),
-           main = paste("Group", misc$group_names[2]),
-           type = "l", col = "black", lty = "2222", lwd = 2, xlab = "time", ylab = "smoothed hazard rate", 
-           xlim = c(0, surv_obs$haz$max$time), ylim = c(0, surv_obs$haz$max$smooth))
-      lines(cbind(surv_pred$model$cure_weib_mix_h[, 1], surv_pred$model$cure_weib_mix_h[,3]),
-            col = "1", lty = "2222", lwd = 1)
-      lines(cbind(surv_pred$model$cure_weib_nmix_h[, 1], surv_pred$model$cure_weib_nmix_h[,3]),
-            col = "2", lty = "2222", lwd = 1)
-      lines(cbind(surv_pred$model$cure_lnorm_mix_h[, 1], surv_pred$model$cure_lnorm_mix_h[,3]),
-            col = "3", lty = "2222", lwd = 1)
-      lines(cbind(surv_pred$model$cure_lnorm_nmix_h[, 1], surv_pred$model$cure_lnorm_nmix_h[,3]),
-            col = "4", lty = "2222", lwd = 1)
-      lines(cbind(surv_pred$model$cure_llog_mix_h[, 1], surv_pred$model$cure_llog_mix_h[,3]),
-            col = "5", lty = "2222", lwd = 1)
-      lines(cbind(surv_pred$model$cure_llog_nmix_h[, 1], surv_pred$model$cure_llog_nmix_h[,3]),
-            col = "6", lty = "2222", lwd = 1)
-      legend("topleft", legend = misc$lbls_cure, col = 1:6, lty = "2222", cex = 0.8)
-    }
-  }
-}, envir = PERSUADE)
-
-# GROUP 3
-evalq({
-  if (misc$ngroups > 2) {
-    plot(cbind(surv_obs$haz$smooth_gr3$est.grid, surv_obs$haz$smooth_gr3$haz.est), 
-         main = paste("Group", misc$group_names[3]),
-         type = "l", col = "black", lty = "5212", lwd = 2, xlab = "time", ylab = "smoothed hazard rate", 
-         xlim = c(0, surv_obs$haz$max$time), ylim = c(0, surv_obs$haz$max$smooth))
-    lines(cbind(surv_pred$model$expo_h[[3]]$time, surv_pred$model$expo_h[[3]]$est), 
-          col = "1", lty = "5212", lwd = 1)
-    lines(cbind(surv_pred$model$weib_h[[3]]$time, surv_pred$model$weib_h[[3]]$est), 
-          col = "2", lty = "5212", lwd = 1)
-    lines(cbind(surv_pred$model$gom_h[[3]]$time, surv_pred$model$gom_h[[3]]$est), 
-          col = "3", lty = "5212", lwd = 1)
-    lines(cbind(surv_pred$model$lnorm_h[[3]]$time, surv_pred$model$lnorm_h[[3]]$est), 
-          col = "4", lty = "5212", lwd = 1)
-    lines(cbind(surv_pred$model$llog_h[[3]]$time, surv_pred$model$llog_h[[3]]$est), 
-          col = "5", lty = "5212", lwd = 1)
-    lines(cbind(surv_pred$model$gam_h[[3]]$time, surv_pred$model$gam_h[[3]]$est), 
-          col = "6", lty = "5212", lwd = 1)
-    lines(cbind(surv_pred$model$ggam_h[[3]]$time, surv_pred$model$ggam_h[[3]]$est), 
-          col = "7", lty = "5212", lwd = 1)
-    legend("topleft", legend = misc$lbls, col = 1:7, lty = "5212", cex = 0.8)
-    
-    if (input$spline_mod == TRUE) {
-      plot(cbind(surv_obs$haz$smooth_gr3$est.grid, surv_obs$haz$smooth_gr3$haz.est), 
-           main = paste("Group", misc$group_names[3]),
-           type = "l", col = "black", lty = "5212", lwd = 2, xlab = "time", ylab = "smoothed hazard rate", 
-           xlim = c(0, surv_obs$haz$max$time), ylim = c(0, surv_obs$haz$max$smooth))
-      lines(cbind(surv_pred$model$spl_hazard1_h[[3]]$time, surv_pred$model$spl_hazard1_h[[3]]$est), 
-            col = "1", lty = "5212", lwd = 1)
-      lines(cbind(surv_pred$model$spl_hazard2_h[[3]]$time, surv_pred$model$spl_hazard2_h[[3]]$est), 
-            col = "2", lty = "5212", lwd = 1)
-      lines(cbind(surv_pred$model$spl_hazard3_h[[3]]$time, surv_pred$model$spl_hazard3_h[[3]]$est), 
-            col = "3", lty = "5212", lwd = 1)
-      lines(cbind(surv_pred$model$spl_odds1_h[[3]]$time, surv_pred$model$spl_odds1_h[[3]]$est), 
-            col = "4", lty = "5212", lwd = 1)
-      lines(cbind(surv_pred$model$spl_odds2_h[[3]]$time, surv_pred$model$spl_odds2_h[[3]]$est), 
-            col = "5", lty = "5212", lwd = 1)
-      lines(cbind(surv_pred$model$spl_odds3_h[[3]]$time, surv_pred$model$spl_odds3_h[[3]]$est), 
-            col = "6", lty = "5212", lwd = 1)
-      lines(cbind(surv_pred$model$spl_normal1_h[[3]]$time, surv_pred$model$spl_normal1_h[[3]]$est), 
-            col = "7", lty = "5212", lwd = 1)
-      lines(cbind(surv_pred$model$spl_normal2_h[[3]]$time, surv_pred$model$spl_normal2_h[[3]]$est), 
-            col = "8", lty = "5212", lwd = 1)
-      lines(cbind(surv_pred$model$spl_normal3_h[[3]]$time, surv_pred$model$spl_normal3_h[[3]]$est), 
-            col = "9", lty = "5212", lwd = 1)
-      legend("topleft", legend = misc$lbls_spline, col = 1:9, lty = "5212", cex = 0.8)
-    }
-    
-    if (input$cure_mod == TRUE) {
-      plot(cbind(surv_obs$haz$smooth_gr3$est.grid, surv_obs$haz$smooth_gr3$haz.est), 
-           main = paste("Group", misc$group_names[3]),
-           type = "l", col = "black", lty = "5212", lwd = 2, xlab = "time", ylab = "smoothed hazard rate", 
-           xlim = c(0, surv_obs$haz$max$time), ylim = c(0, surv_obs$haz$max$smooth))
-      lines(cbind(surv_pred$model$cure_weib_mix_h[, 1], surv_pred$model$cure_weib_mix_h[,4]),
-            col = "1", lty = "5212", lwd = 1)
-      lines(cbind(surv_pred$model$cure_weib_nmix_h[, 1], surv_pred$model$cure_weib_nmix_h[,4]),
-            col = "2", lty = "5212", lwd = 1)
-      lines(cbind(surv_pred$model$cure_lnorm_mix_h[, 1], surv_pred$model$cure_lnorm_mix_h[,4]),
-            col = "3", lty = "5212", lwd = 1)
-      lines(cbind(surv_pred$model$cure_lnorm_nmix_h[, 1], surv_pred$model$cure_lnorm_nmix_h[,4]),
-            col = "4", lty = "5212", lwd = 1)
-      lines(cbind(surv_pred$model$cure_llog_mix_h[, 1], surv_pred$model$cure_llog_mix_h[,4]),
-            col = "5", lty = "5212", lwd = 1)
-      lines(cbind(surv_pred$model$cure_llog_nmix_h[, 1], surv_pred$model$cure_llog_nmix_h[,4]),
-            col = "6", lty = "5212", lwd = 1)
-      legend("topleft", legend = misc$lbls_cure, col = 1:6, lty = "5212", cex = 0.8)
-    }
-  }
-}, envir = PERSUADE)
-
+f_plot_hazard_with_models(PERSUADE)
 ```
 
 \clearpage
@@ -366,12 +118,10 @@ Notably, the Weibull (shape = 1), Gompertz (shape = 0) and gamma (shape = 1) dis
 **CAUTION**: These goodness-of-fit statistics only apply to the observed data period and do not allow to issue statements about the suitability of the extrapolated survival by these fitted models beyond this period. Additionally, the end of the observed data period may be affected by the low number of observations. One should consider this when interpreting the tail of the curves.  
 
 ```{r plot_parametric, echo=FALSE}
-evalq({
-  pie(rep(1, n), labels = misc$lbls, col = rainbow(n = n, s = 1, v = 1, start = 0, 
-                                                   end = max(1, n - 1)/n, alpha = 1))
-  kable_styling(kable(surv_model$param_ic[order(surv_model$param_ic$AIC), ], format = "latex", 
-                      row.names = FALSE, booktabs = TRUE, linesep = ""), latex_options = "striped")
-}, envir = PERSUADE)
+pie(rep(1, n), labels = misc$lbls, col = rainbow(n = n, s = 1, v = 1, start = 0, 
+                                                 end = max(1, n - 1)/n, alpha = 1))
+
+kable(PERSUADE$surv_model$param_ic[order(PERSUADE$surv_model$param_ic$AIC), ])
 ```
 
 \clearpage
@@ -2148,7 +1898,7 @@ evalq({
       col = rainbow(n = n, s = 1, v = 1, start = 0, end = max(1, n - 1)/n, alpha = 1))
   
   kable_styling(kable(rbind(surv_model$param_ic[,1:2], surv_model$cure_ic[,1:2])[order(rbind(surv_model$param_ic[,1:2],
-                                                                                       surv_model$cure_ic[,1:2])$AIC), ], 
+                                                                                             surv_model$cure_ic[,1:2])$AIC), ], 
                       format = "latex", row.names = FALSE, booktabs = TRUE, 
                       linesep = ""), latex_options = "striped")
 }, envir = PERSUADE)

@@ -24,17 +24,17 @@ source("PERSUADE function.R")
 source("PERSUADE figures.R")
 
 # check PERSUADE functions using docstring()
-docstring(f_PERSUADE)
-docstring(f_cum_hazard)
-docstring(f_tp)
-docstring(f_surv_model)
-docstring(f_surv_model_pred)
-docstring(f_surv_model_pred_gr)
-docstring(f_surv_model_pred_tp_gr)
-docstring(f_surv_model_excel)
+# docstring(f_PERSUADE)
+# docstring(f_cum_hazard)
+# docstring(f_tp)
+# docstring(f_surv_model)
+# docstring(f_surv_model_pred)
+# docstring(f_surv_model_pred_gr)
+# docstring(f_surv_model_pred_tp_gr)
+# docstring(f_surv_model_excel)
 
 # check Figure functions using docstring()
-docstring(f_plot_km_survival)
+# docstring(f_plot_km_survival)
 
 #### INPUT DATA ----
 name <- "BC_OS" # Analysis name
@@ -70,7 +70,7 @@ output_dir <- paste0(name, "_output")
 dir.create(output_dir, showWarnings = FALSE)
 
 # Save PERSUADE object
-save(PERSUADE, file = file.path(output_dir, "PERSUADE.RData"))
+save(PERSUADE, file = file.path(getwd(), "PERSUADE.RData"))
 
 # Generate PDF report using R Markdown
 if (!file.exists("PERSUADE output.Rmd")) stop("The file 'PERSUADE output.Rmd' was not found.")
