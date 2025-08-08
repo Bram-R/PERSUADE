@@ -36,6 +36,10 @@ source("PERSUADE figures.R")
 # check Figure functions using docstring()
 # docstring(f_plot_km_survival)
 
+# Colour palette for Figures
+n <- 9  #number of different colors (to be used for palette)
+palette(rainbow(n = n, s = 1, v = 1, start = 0, end = max(1, n - 1)/n, alpha = 1))
+
 #### INPUT DATA ----
 name <- "BC_OS" # Analysis name
 

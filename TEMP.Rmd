@@ -72,9 +72,357 @@ f_plot_hazard_with_models(PERSUADE)
 \clearpage
 
 # 4.1 Standard parametric models  
-```{r plot_parametric, echo=FALSE}
-pie(rep(1, n), labels = PERSUADE$misc$lbls, col = rainbow(n = n, s = 1, v = 1, start = 0, 
-                                                 end = max(1, n - 1)/n, alpha = 1))
+```{r plot_parametric, echo=FALSE, out.height = "75%"}
+# plot.new()
+# legend("center", legend = PERSUADE$misc$lbls, cex = 0.9, bty = "n",
+#        fill = rainbow(n = n, s = 1, v = 1, start = 0, end = max(1, n - 1)/n, alpha = 1))
 
-kable(PERSUADE$surv_model$param_ic[order(PERSUADE$surv_model$param_ic$AIC), ])
+kable(PERSUADE$surv_model$param_ic[order(PERSUADE$surv_model$param_ic$AIC), ],
+      row.names = FALSE)
 ```
+
+\clearpage
+
+## Exponential
+```{r expo, echo=FALSE, out.height = "25%", fig.width=11}
+i <- 1
+f_plot_param_surv_model(PERSUADE, names(PERSUADE$surv_pred$model)[1:7][i], 
+                        PERSUADE$misc$lbls[i], i)
+f_plot_diag_param_surv_model(PERSUADE, names(PERSUADE$surv_pred$model)[1:7][i], 
+                             PERSUADE$misc$lbls[i], i)
+f_plot_tp_param_surv_model(PERSUADE, names(PERSUADE$surv_pred$model)[1:7][i], 
+                           PERSUADE$misc$lbls[i], i)
+```
+
+\clearpage  
+
+## Weibull
+```{r weib, echo=FALSE, out.height = "25%", fig.width=11}
+i <- i + 1
+f_plot_param_surv_model(PERSUADE, names(PERSUADE$surv_pred$model)[1:7][i], 
+                        PERSUADE$misc$lbls[i], i)
+f_plot_diag_param_surv_model(PERSUADE, names(PERSUADE$surv_pred$model)[1:7][i], 
+                             PERSUADE$misc$lbls[i], i)
+f_plot_tp_param_surv_model(PERSUADE, names(PERSUADE$surv_pred$model)[1:7][i], 
+                           PERSUADE$misc$lbls[i], i)
+```
+
+\clearpage 
+
+## Gompertz
+```{r gom, echo=FALSE, out.height = "25%", fig.width=11}
+i <- i + 1
+f_plot_param_surv_model(PERSUADE, names(PERSUADE$surv_pred$model)[1:7][i], 
+                        PERSUADE$misc$lbls[i], i)
+f_plot_diag_param_surv_model(PERSUADE, names(PERSUADE$surv_pred$model)[1:7][i], 
+                             PERSUADE$misc$lbls[i], i)
+f_plot_tp_param_surv_model(PERSUADE, names(PERSUADE$surv_pred$model)[1:7][i], 
+                           PERSUADE$misc$lbls[i], i)
+```
+
+\clearpage 
+
+## Log-normal
+```{r lnorm, echo=FALSE, out.height = "25%", fig.width=11}
+i <- i + 1
+f_plot_param_surv_model(PERSUADE, names(PERSUADE$surv_pred$model)[1:7][i], 
+                        PERSUADE$misc$lbls[i], i)
+f_plot_diag_param_surv_model(PERSUADE, names(PERSUADE$surv_pred$model)[1:7][i], 
+                             PERSUADE$misc$lbls[i], i)
+f_plot_tp_param_surv_model(PERSUADE, names(PERSUADE$surv_pred$model)[1:7][i], 
+                           PERSUADE$misc$lbls[i], i)
+```
+
+\clearpage 
+
+## Log-logistic
+```{r llog, echo=FALSE, out.height = "25%", fig.width=11}
+i <- i + 1
+f_plot_param_surv_model(PERSUADE, names(PERSUADE$surv_pred$model)[1:7][i], 
+                        PERSUADE$misc$lbls[i], i)
+f_plot_diag_param_surv_model(PERSUADE, names(PERSUADE$surv_pred$model)[1:7][i], 
+                             PERSUADE$misc$lbls[i], i)
+f_plot_tp_param_surv_model(PERSUADE, names(PERSUADE$surv_pred$model)[1:7][i], 
+                           PERSUADE$misc$lbls[i], i)
+```
+
+\clearpage 
+
+## Gamma
+```{r gam, echo=FALSE, out.height = "25%", fig.width=11}
+i <- i + 1
+f_plot_param_surv_model(PERSUADE, names(PERSUADE$surv_pred$model)[1:7][i], 
+                        PERSUADE$misc$lbls[i], i)
+f_plot_diag_param_surv_model(PERSUADE, names(PERSUADE$surv_pred$model)[1:7][i], 
+                             PERSUADE$misc$lbls[i], i)
+f_plot_tp_param_surv_model(PERSUADE, names(PERSUADE$surv_pred$model)[1:7][i], 
+                           PERSUADE$misc$lbls[i], i)
+```
+
+\clearpage 
+
+## Generalised Gamma 
+```{r ggam, echo=FALSE, out.height = "25%", fig.width=11}
+i <- i + 1
+f_plot_param_surv_model(PERSUADE, names(PERSUADE$surv_pred$model)[1:7][i], 
+                        PERSUADE$misc$lbls[i], i)
+f_plot_diag_param_surv_model(PERSUADE, names(PERSUADE$surv_pred$model)[1:7][i], 
+                             PERSUADE$misc$lbls[i], i)
+f_plot_tp_param_surv_model(PERSUADE, names(PERSUADE$surv_pred$model)[1:7][i], 
+                           PERSUADE$misc$lbls[i], i)
+```
+
+\clearpage
+
+# 4.2 Parametric natural cubic spline models
+```{r spline, echo=FALSE, out.height = "75%", eval = PERSUADE$input$spline_mod}
+# plot.new()
+# legend("center", legend = PERSUADE$misc$lbls_spline, cex = 0.9, bty = "n",
+#        fill = rainbow(n = n, s = 1, v = 1, start = 0, end = max(1, n - 1)/n, alpha = 1))
+
+kable(rbind(PERSUADE$surv_model$param_ic, PERSUADE$surv_model$spline_ic)[
+  order(rbind(PERSUADE$surv_model$param_ic, PERSUADE$surv_model$spline_ic)$AIC), ],
+  row.names = FALSE)
+```
+
+`r if(PERSUADE$input$spline_mod == TRUE) {return("\\clearpage")}`
+
+## Spline 1 knot hazard
+```{r spline_hazard1, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$spline_mod}
+i <- 1
+f_plot_spline_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$spline)[i], 
+                         PERSUADE$misc$lbls_spline[i], i)
+f_plot_diag_spline_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$spline)[i], 
+                              PERSUADE$misc$lbls_spline[i], i)
+f_plot_tp_spline_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$spline)[i], 
+                              PERSUADE$misc$lbls_spline[i], i)
+```
+
+`r if(PERSUADE$input$spline_mod == TRUE) {return("\\clearpage")}`
+
+## Spline 2 knots hazard
+```{r spline_hazard2, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$spline_mod}
+i <- i + 1
+f_plot_spline_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$spline)[i], 
+                         PERSUADE$misc$lbls_spline[i], i)
+f_plot_diag_spline_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$spline)[i], 
+                              PERSUADE$misc$lbls_spline[i], i)
+f_plot_tp_spline_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$spline)[i], 
+                              PERSUADE$misc$lbls_spline[i], i)
+```
+
+`r if(PERSUADE$input$spline_mod == TRUE) {return("\\clearpage")}`
+
+## Spline 3 knots hazard 
+```{r spline_hazard3, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$spline_mod}
+i <- i + 1
+f_plot_spline_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$spline)[i], 
+                         PERSUADE$misc$lbls_spline[i], i)
+f_plot_diag_spline_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$spline)[i], 
+                              PERSUADE$misc$lbls_spline[i], i)
+f_plot_tp_spline_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$spline)[i], 
+                              PERSUADE$misc$lbls_spline[i], i)
+```
+
+`r if(PERSUADE$input$spline_mod == TRUE) {return("\\clearpage")}`
+
+## Spline 1 knot odds 
+```{r spline_odds1, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$spline_mod}
+i <- i + 1
+f_plot_spline_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$spline)[i], 
+                         PERSUADE$misc$lbls_spline[i], i)
+f_plot_diag_spline_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$spline)[i], 
+                              PERSUADE$misc$lbls_spline[i], i)
+f_plot_tp_spline_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$spline)[i], 
+                              PERSUADE$misc$lbls_spline[i], i)
+```
+
+`r if(PERSUADE$input$spline_mod == TRUE) {return("\\clearpage")}`
+
+## Spline 2 knots odds 
+```{r spline_odds2, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$spline_mod}
+i <- i + 1
+f_plot_spline_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$spline)[i], 
+                         PERSUADE$misc$lbls_spline[i], i)
+f_plot_diag_spline_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$spline)[i], 
+                              PERSUADE$misc$lbls_spline[i], i)
+f_plot_tp_spline_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$spline)[i], 
+                              PERSUADE$misc$lbls_spline[i], i)
+```
+
+`r if(PERSUADE$input$spline_mod == TRUE) {return("\\clearpage")}`
+
+## Spline 3 knots odds 
+```{r spline_odds3, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$spline_mod}
+i <- i + 1
+f_plot_spline_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$spline)[i], 
+                         PERSUADE$misc$lbls_spline[i], i)
+f_plot_diag_spline_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$spline)[i], 
+                              PERSUADE$misc$lbls_spline[i], i)
+f_plot_tp_spline_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$spline)[i], 
+                              PERSUADE$misc$lbls_spline[i], i)
+```
+
+`r if(PERSUADE$input$spline_mod == TRUE) {return("\\clearpage")}`
+
+## Spline 1 knot normal 
+```{r spline_norm1, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$spline_mod}
+i <- i + 1
+f_plot_spline_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$spline)[i], 
+                         PERSUADE$misc$lbls_spline[i], i)
+f_plot_diag_spline_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$spline)[i], 
+                              PERSUADE$misc$lbls_spline[i], i)
+f_plot_tp_spline_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$spline)[i], 
+                              PERSUADE$misc$lbls_spline[i], i)
+```
+
+`r if(PERSUADE$input$spline_mod == TRUE) {return("\\clearpage")}`
+
+## Spline 2 knots normal 
+```{r spline_norm2, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$spline_mod}
+i <- i + 1
+f_plot_spline_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$spline)[i], 
+                         PERSUADE$misc$lbls_spline[i], i)
+f_plot_diag_spline_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$spline)[i], 
+                              PERSUADE$misc$lbls_spline[i], i)
+f_plot_tp_spline_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$spline)[i], 
+                              PERSUADE$misc$lbls_spline[i], i)
+```
+
+`r if(PERSUADE$input$spline_mod == TRUE) {return("\\clearpage")}`
+
+## Spline 3 knots normal 
+```{r spline_norm3, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$spline_mod}
+i <- i + 1
+f_plot_spline_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$spline)[i], 
+                         PERSUADE$misc$lbls_spline[i], i)
+f_plot_diag_spline_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$spline)[i], 
+                              PERSUADE$misc$lbls_spline[i], i)
+f_plot_tp_spline_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$spline)[i], 
+                              PERSUADE$misc$lbls_spline[i], i)
+```
+
+\clearpage
+
+# 4.3 Parametric (non-)mixture cure models 
+```{r cure, echo=FALSE, out.height = "75%", eval = PERSUADE$input$cure_mod}
+# plot.new()
+# legend("center", legend = PERSUADE$misc$lbls_cure, cex = 0.9, bty = "n",
+#        fill = rainbow(n = n, s = 1, v = 1, start = 0, end = max(1, n - 1)/n, alpha = 1))
+
+kable(rbind(PERSUADE$surv_model$param_ic[,1:2], PERSUADE$surv_model$cure_ic[,1:2])[
+  order(rbind(PERSUADE$surv_model$param_ic[,1:2], PERSUADE$surv_model$cure_ic[,1:2])$AIC), ],
+  row.names = FALSE)
+kable(PERSUADE$surv_model$cure_ic[,-2])
+```
+
+`r if(PERSUADE$input$cure_mod == TRUE) {return("\\clearpage")}`
+
+## Mixture cure Weibull
+```{r cure_weib_mix, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$cure_mod}
+i <- 1
+f_plot_cure_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$cure)[i], 
+                       PERSUADE$misc$lbls_cure[i], i)
+f_plot_diag_cure_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$cure)[i], 
+                            PERSUADE$misc$lbls_cure[i], i)
+f_plot_tp_cure_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$cure)[i], 
+                            PERSUADE$misc$lbls_cure[i], i)
+```
+
+`r if(PERSUADE$input$cure_mod == TRUE) {return("\\clearpage")}`
+
+## Non-mixture cure Weibull
+```{r cure_weib_nmix, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$cure_mod}
+i <- i + 1
+f_plot_cure_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$cure)[i], 
+                       PERSUADE$misc$lbls_cure[i], i)
+f_plot_diag_cure_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$cure)[i], 
+                            PERSUADE$misc$lbls_cure[i], i)
+f_plot_tp_cure_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$cure)[i], 
+                            PERSUADE$misc$lbls_cure[i], i)
+```
+
+`r if(PERSUADE$input$cure_mod == TRUE) {return("\\clearpage")}`
+
+## Mixture cure Log-normal
+```{r cure_lnorm_mix, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$cure_mod}
+i <- i + 1
+f_plot_cure_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$cure)[i], 
+                       PERSUADE$misc$lbls_cure[i], i)
+f_plot_diag_cure_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$cure)[i], 
+                            PERSUADE$misc$lbls_cure[i], i)
+f_plot_tp_cure_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$cure)[i], 
+                            PERSUADE$misc$lbls_cure[i], i)
+```
+
+`r if(PERSUADE$input$cure_mod == TRUE) {return("\\clearpage")}`
+
+## Non-mixture cure Log-normal
+```{r cure_lnorm_nmix, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$cure_mod}
+i <- i + 1
+f_plot_cure_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$cure)[i], 
+                       PERSUADE$misc$lbls_cure[i], i)
+f_plot_diag_cure_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$cure)[i], 
+                            PERSUADE$misc$lbls_cure[i], i)
+f_plot_tp_cure_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$cure)[i], 
+                            PERSUADE$misc$lbls_cure[i], i)
+```
+
+`r if(PERSUADE$input$cure_mod == TRUE) {return("\\clearpage")}`
+
+## Mixture cure Log-logistic
+```{r cure_llog_mix, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$cure_mod}
+i <- i + 1
+f_plot_cure_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$cure)[i], 
+                       PERSUADE$misc$lbls_cure[i], i)
+f_plot_diag_cure_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$cure)[i], 
+                            PERSUADE$misc$lbls_cure[i], i)
+f_plot_tp_cure_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$cure)[i], 
+                            PERSUADE$misc$lbls_cure[i], i)
+```
+
+`r if(PERSUADE$input$cure_mod == TRUE) {return("\\clearpage")}`
+
+## Non-mixture cure Log-logistic
+```{r cure_llog_nmix, echo=FALSE, out.height = "25%", fig.width=11, eval = PERSUADE$input$cure_mod}
+i <- i + 1
+f_plot_cure_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$cure)[i], 
+                       PERSUADE$misc$lbls_cure[i], i)
+f_plot_diag_cure_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$cure)[i], 
+                            PERSUADE$misc$lbls_cure[i], i)
+f_plot_tp_cure_surv_model(PERSUADE, names(PERSUADE$surv_pred$model$cure)[i], 
+                            PERSUADE$misc$lbls_cure[i], i)
+```
+
+\clearpage
+
+
+# 5. Extrapolated survival
+
+
+
+
+
+
+
+
+
+
+
+
+
+\clearpage
+
+# 6. PERSUADE object information
+```{r oi, echo=FALSE}
+print(str(PERSUADE, max.level = 2))
+```
+
+\clearpage
+
+# 7. Session information
+```{r si, echo=FALSE}
+print(sessionInfo(), RNG = TRUE, locale = FALSE)
+```
+
+

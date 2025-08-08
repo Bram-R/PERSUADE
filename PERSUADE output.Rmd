@@ -2544,9 +2544,6 @@ evalq({
 }, envir = PERSUADE)
 ```
 
-
-
-
 \clearpage
 
 # 5. Extrapolated survival

@@ -51,7 +51,7 @@ f_PERSUADE <- function(name = "no_name", years, status, group,
   # cure_mod <- TRUE # for validation purposes
   # cure_link = "logistic" # for validation purposes
   
-  # Process inputs
+  # Inputs
   years <- as.numeric(years)
   status <- as.numeric(status)
   group <- droplevels(as.factor(group))
@@ -95,6 +95,7 @@ f_PERSUADE <- function(name = "no_name", years, status, group,
   )
   
   cols_tp <- 8 + if (spline_mod) 9 else 0 + if (cure_mod) 6 else 0
+  cols_tp <- cols_tp + if (cure_mod) 6 else 0
   
   surv_model_pred_tp_gr <- f_surv_model_pred_tp_gr(
     ngroups, time_pred, time_unit, surv_model_pred_gr, cols_tp
@@ -477,13 +478,13 @@ f_surv_model <- function(years, status, group, strata, ngroups, form, spline_mod
         })
       }
     }
-    cure_labels <- expand.grid(type = c("Mixture", "Non-mixture"), dist = c("Weibull", "Log−normal", "Log−logistic"))
+    cure_labels <- expand.grid(type = c("Mixture", "Non-mixture"), dist = c("Weibull", "Log-normal", "Log-logistic"))
     cure_labels <- apply(cure_labels, 1, paste, collapse = " cure ")
     cure_ic <- data.frame(
       Model = cure_labels,
       AIC = sapply(cure_models, function(models) sum(sapply(models, function(model) model$AIC))),
       CureFraction = t(sapply(cure_models, function(models) {
-        sapply(models, function(model) paste0(round(model$res[1, 1], 3) * 100, "%"))
+        sapply(models, function(model) paste0(round(model$res[1, 1], 2) * 100, "%"))
       }))
     )
   }
