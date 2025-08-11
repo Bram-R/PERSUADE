@@ -264,7 +264,7 @@ f_plot_hazard_with_models <- function(PERSUADE) {
     
     plot(
       smooth_data$est.grid, smooth_data$haz.est,
-      main = group_label,
+      main = paste0("Standard parametric models, ", group_label),
       type = "l",
       col = haz_line_color[i],
       lty = line_type[i],
@@ -291,7 +291,7 @@ f_plot_hazard_with_models <- function(PERSUADE) {
     if (isTRUE(input$spline_mod)) {
       plot(
         smooth_data$est.grid, smooth_data$haz.est,
-        main = group_label,
+        main = paste0("Spline models, ", group_label),
         type = "l",
         col = haz_line_color[i],
         lty = line_type[i],
@@ -317,7 +317,7 @@ f_plot_hazard_with_models <- function(PERSUADE) {
     if (isTRUE(input$cure_mod)) {
       plot(
         smooth_data$est.grid, smooth_data$haz.est,
-        main = group_label,
+        main = paste0("Cure models, ", group_label),
         type = "l",
         col = haz_line_color[i],
         lty = line_type[i],
@@ -342,26 +342,28 @@ f_plot_hazard_with_models <- function(PERSUADE) {
   }
 }
 
-f_plot_param_surv_model <- function(PERSUADE, model_key = "expo", model_label = "Exponential", col_index = 1) {
+f_plot_param_surv_model <- function(PERSUADE, model_index = 1) {
   #' Plot Kaplan-Meier and Fitted Parametric Survival Model
   #'
   #' Dynamically overlays a parametric survival model on top of KM curves
   #' with shaded confidence bands per group.
   #'
   #' @param PERSUADE A PERSUADE object from `f_PERSUADE()`.
-  #' @param model_key Character. Name of the model as stored in `surv_pred$model`.
-  #' @param model_label Character. Main title of the plot.
-  #' @param col_index Integer. Base color index for fitted curves (1–9).
+  #' @param model_index Integer. Index for model selection.
   #'
   #' @return A base R plot.
   #' @export
   #' 
   #' @examples
-  #' f_plot_param_surv_model(PERSUADE, "weib", "Weibull", 2)
+  #' f_plot_param_surv_model(PERSUADE, 1)
   input <- PERSUADE$input
   misc <- PERSUADE$misc
   surv_obs <- PERSUADE$surv_obs
   surv_pred <- PERSUADE$surv_pred
+  
+  model_key = names(surv_pred$model)[model_index]
+  model_label = misc$lbls[model_index]
+  col_index = model_index
   
   ngroups <- misc$ngroups
   group_names <- misc$group_names
@@ -409,27 +411,29 @@ f_plot_param_surv_model <- function(PERSUADE, model_key = "expo", model_label = 
   )
 }
 
-f_plot_spline_surv_model <- function(PERSUADE, model_key, model_label, col_index = 1) {
+f_plot_spline_surv_model <- function(PERSUADE, model_index = 1) {
   #' Plot Kaplan-Meier and Fitted Spline-Based Survival Model
   #'
   #' Dynamically overlays a spline-based survival model on top of KM curves
   #' with shaded confidence bands per group, and vertical lines at knot locations.
   #'
   #' @param PERSUADE A PERSUADE object from `f_PERSUADE()`.
-  #' @param model_key Character. Name of the model as stored in `surv_pred$model` (e.g., "spl_hazard1").
-  #' @param model_label Character. Main title of the plot.
-  #' @param col_index Integer. Base color index for fitted curves (1–9).
+  #' @param model_index Integer. Index for model selection.
   #'
   #' @return A base R plot.
   #' @export
   #' 
   #' @examples
-  #' f_plot_spline_surv_model(PERSUADE, "spl_hazard_1", "Spline, 1 knot, hazard scale", 1)
+  #' f_plot_spline_surv_model(PERSUADE, 1)
   input <- PERSUADE$input
   misc <- PERSUADE$misc
   surv_obs <- PERSUADE$surv_obs
   surv_pred <- PERSUADE$surv_pred
   surv_model <- PERSUADE$surv_model
+  
+  model_key = names(surv_pred$model$spline)[model_index]
+  model_label = misc$lbls_spline[model_index]
+  col_index = model_index
   
   ngroups <- misc$ngroups
   group_names <- misc$group_names
@@ -487,26 +491,28 @@ f_plot_spline_surv_model <- function(PERSUADE, model_key, model_label, col_index
   )
 }
 
-f_plot_cure_surv_model <- function(PERSUADE, model_key, model_label, col_index = 1) {
+f_plot_cure_surv_model <- function(PERSUADE, model_index = 1) {
   #' Plot Kaplan-Meier and Fitted Cure-Based Survival Model
   #'
   #' Dynamically overlays a cure-based survival model on top of KM curves
   #' with shaded confidence bands per group.
   #'
   #' @param PERSUADE A PERSUADE object from `f_PERSUADE()`.
-  #' @param model_key Character. Name of the model as stored in `surv_pred$model$cure`.
-  #' @param model_label Character. Main title of the plot.
-  #' @param col_index Integer. Base color index for fitted curves (1–9).
+  #' @param model_index Integer. Index for model selection.
   #'
   #' @return A base R plot.
   #' @export
   #' 
   #' @examples
-  #' f_plot_cure_surv_model(PERSUADE, "cure_weibull_mix", "Weibull mixture cure", 1)
+  #' f_plot_cure_surv_model(PERSUADE, 1)
   input <- PERSUADE$input
   misc <- PERSUADE$misc
   surv_obs <- PERSUADE$surv_obs
   surv_pred <- PERSUADE$surv_pred
+  
+  model_key = names(surv_pred$model$cure)[model_index]
+  model_label = misc$lbls_cure[model_index]
+  col_index = model_index
   
   ngroups <- misc$ngroups
   group_names <- misc$group_names
@@ -554,26 +560,28 @@ f_plot_cure_surv_model <- function(PERSUADE, model_key, model_label, col_index =
   )
 }
 
-f_plot_diag_param_surv_model <- function(PERSUADE, model_key, model_label, col_index = 1) {
+f_plot_diag_param_surv_model <- function(PERSUADE, model_index = 1) {
   #' Plot Diagnostic Figures for Standard Parametric Survival Models
   #'
   #' Produces diagnostic plots for various parametric survival models,
   #' using transformations specific to each model family.
   #'
   #' @param PERSUADE A PERSUADE object from `f_PERSUADE()`.
-  #' @param model_key Character. Name of the model as stored in `surv_pred$model`.
-  #' @param model_label Character. Main title of the plot.
-  #' @param col_index Integer. Base color index for fitted curves (1–9).
+  #' @param model_index Integer. Index for model selection.
   #'
   #' @return A base R plot.
   #' @export
   #' 
   #' @examples
-  #' f_plot_diag_param_surv_model(PERSUADE, "weib", "Weibull", 2)
+  #' f_plot_diag_param_surv_model(PERSUADE, 1)
   input <- PERSUADE$input
   misc <- PERSUADE$misc
   surv_obs <- PERSUADE$surv_obs
   surv_pred <- PERSUADE$surv_pred
+  
+  model_key = names(surv_pred$model)[model_index]
+  model_label = misc$lbls[model_index]
+  col_index = model_index
   
   ngroups <- misc$ngroups
   group_names <- misc$group_names
@@ -689,27 +697,29 @@ f_plot_diag_param_surv_model <- function(PERSUADE, model_key, model_label, col_i
   )
 }
 
-f_plot_diag_spline_surv_model <- function(PERSUADE, model_key, model_label, col_index = 1) {
+f_plot_diag_spline_surv_model <- function(PERSUADE, model_index = 1) {
   #' Plot Diagnostic Figures for Spline-based Survival Models
   #'
   #' Produces diagnostic plots for spline-based survival models,
   #' with transformations depending on the spline scale (hazard, odds, normal).
   #'
   #' @param PERSUADE A PERSUADE object from `f_PERSUADE()`.
-  #' @param model_key Character. Name of the spline model in `surv_pred$model`.
-  #' @param model_label Character. Main title of the plot.
-  #' @param col_index Integer. Base color index for fitted curves (1–9).
+  #' @param model_index Integer. Index for model selection.
   #'
   #' @return A base R plot.
   #' @export
   #' 
   #' @examples
-  #' f_plot_diag_spline_surv_model(PERSUADE, "spl_hazard_1", "Spline, 1 knot, hazard scale", 1)
+  #' f_plot_diag_spline_surv_model(PERSUADE, 1)
   input <- PERSUADE$input
   misc <- PERSUADE$misc
   surv_obs <- PERSUADE$surv_obs
   surv_pred <- PERSUADE$surv_pred
   surv_model <- PERSUADE$surv_model
+  
+  model_key = names(surv_pred$model$spline)[model_index]
+  model_label = misc$lbls_spline[model_index]
+  col_index = model_index
   
   ngroups <- misc$ngroups
   group_names <- misc$group_names
@@ -806,26 +816,28 @@ f_plot_diag_spline_surv_model <- function(PERSUADE, model_key, model_label, col_
   )
 }
 
-f_plot_diag_cure_surv_model <- function(PERSUADE, model_key, model_label, col_index = 1) {
+f_plot_diag_cure_surv_model <- function(PERSUADE, model_index = 1) {
   #' Plot Diagnostic Figures for Cure Survival Models
   #'
   #' Produces diagnostic plots for mixture and non-mixture cure models,
   #' with transformations depending on the distribution (Weibull, log-normal, log-logistic).
   #'
   #' @param PERSUADE A PERSUADE object from `f_PERSUADE()`.
-  #' @param model_key Character. Name of the cure model in `surv_pred$model`.
-  #' @param model_label Character. Main title of the plot.
-  #' @param col_index Integer. Base color index for fitted curves (1–9).
+  #' @param model_index Integer. Index for model selection.
   #'
   #' @return A base R plot.
   #' @export
   #' 
   #' @examples
-  #' f_plot_diag_cure_surv_model(PERSUADE, "cure_weibull_mix", "Weibull mixture cure", 1)
+  #' f_plot_diag_cure_surv_model(PERSUADE, 1)
   input <- PERSUADE$input
   misc <- PERSUADE$misc
   surv_obs <- PERSUADE$surv_obs
   surv_pred <- PERSUADE$surv_pred
+  
+  model_key = names(surv_pred$model$cure)[model_index]
+  model_label = misc$lbls_cure[model_index]
+  col_index = model_index
   
   ngroups <- misc$ngroups
   group_names <- misc$group_names
@@ -909,26 +921,28 @@ f_plot_diag_cure_surv_model <- function(PERSUADE, model_key, model_label, col_in
   )
 }
 
-f_plot_tp_param_surv_model <- function(PERSUADE, model_key, model_label, col_index = 1) {
+f_plot_tp_param_surv_model <- function(PERSUADE, model_index = 1) {
   #' Plot Annual Transition Probabilities for Parametric Survival Models
   #'
   #' Plots smoothed observed annual transition probabilities alongside
   #' model-predicted probabilities for each group, with shaded confidence intervals.
   #'
   #' @param PERSUADE A PERSUADE object from `f_PERSUADE()`.
-  #' @param model_key Character. Name of the model as stored in `surv_pred$tp_gr`.
-  #' @param model_label Character. Main title of the plot.
-  #' @param col_index Integer. Base color index for fitted curves (1–9).
+  #' @param model_index Integer. Index for model selection.
   #'
   #' @return A base R plot.
   #' @export
   #' 
   #' @examples
-  #' f_plot_tp_param_surv_model(PERSUADE, "weib", "Weibull", 2)
+  #' f_plot_tp_param_surv_model(PERSUADE, 1)
   input <- PERSUADE$input
   misc <- PERSUADE$misc
   surv_obs <- PERSUADE$surv_obs
   surv_pred <- PERSUADE$surv_pred
+  
+  model_key = names(surv_pred$model)[model_index]
+  model_label = misc$lbls[model_index]
+  col_index = model_index
   
   ngroups <- misc$ngroups
   group_names <- misc$group_names
@@ -937,15 +951,8 @@ f_plot_tp_param_surv_model <- function(PERSUADE, model_key, model_label, col_ind
   km_line_color <- c("black", "lightgrey", "darkgrey")
   
   # Map model_key to column index in tp_gr predictions
-  model_map <- list(
-    expo  = 2,
-    weib  = 3,
-    gom   = 4,
-    lnorm = 5,
-    llog  = 6,
-    gam   = 7,
-    ggam  = 8
-  )
+  model_map <- setNames(as.list(2:8), names(PERSUADE$surv_model$param_models))
+  
   if (!model_key %in% names(model_map)) {
     stop("Model key not recognized in model_map")
   }
@@ -1006,28 +1013,29 @@ f_plot_tp_param_surv_model <- function(PERSUADE, model_key, model_label, col_ind
   )
 }
 
-f_plot_tp_spline_surv_model <- function(PERSUADE, model_key, model_label, col_index = 1, pred_col_index) {
+f_plot_tp_spline_surv_model <- function(PERSUADE, model_index = 1) {
   #' Plot Annual Transition Probabilities for Spline Survival Models
   #'
   #' Plots smoothed observed annual transition probabilities alongside
   #' spline model predictions, with shaded confidence intervals and knot lines.
   #'
   #' @param PERSUADE A PERSUADE object from `f_PERSUADE()`.
-  #' @param model_key Character. Name of the spline model in `surv_model` (e.g., "spl_hazard1").
-  #' @param model_label Character. Main title of the plot.
-  #' @param col_index Integer. Base colour index for fitted curves (1–9).
-  #' @param pred_col_index Integer. Column index in `surv_pred$tp_gr` with model predictions.
+  #' @param model_index Integer. Index for model selection.
   #'
   #' @return A base R plot.
   #' @export
   #'
   #' @examples
-  #' f_plot_tp_spline_surv_model(PERSUADE, "spl_hazard_1", "Spline, 1 knot, hazard scale", 1)
+  #' f_plot_tp_spline_surv_model(PERSUADE, 1)
   input      <- PERSUADE$input
   misc       <- PERSUADE$misc
   surv_obs   <- PERSUADE$surv_obs
   surv_pred  <- PERSUADE$surv_pred
   surv_model <- PERSUADE$surv_model
+  
+  model_key = names(surv_pred$model$spline)[model_index]
+  model_label = misc$lbls_spline[model_index]
+  col_index = model_index
   
   ngroups       <- misc$ngroups
   group_names   <- misc$group_names
@@ -1036,17 +1044,8 @@ f_plot_tp_spline_surv_model <- function(PERSUADE, model_key, model_label, col_in
   km_line_color <- c("black", "lightgrey", "darkgrey")
   
   # Map model_key to column index in tp_gr predictions
-  model_map <- list(
-    spl_hazard_1  = 9,
-    spl_hazard_2  = 10,
-    spl_hazard_3   = 11,
-    spl_odds_1 = 12,
-    spl_odds_2  = 13,
-    spl_odds_3   = 14,
-    spl_normal_1  = 15,
-    spl_normal_2  = 16,
-    spl_normal_3  = 17
-  )
+  model_map <- setNames(as.list(9:17), names(PERSUADE$surv_model$spline_models))
+  
   if (!model_key %in% names(model_map)) {
     stop("Model key not recognized in model_map")
   }
@@ -1121,42 +1120,38 @@ f_plot_tp_spline_surv_model <- function(PERSUADE, model_key, model_label, col_in
   )
 }
 
-f_plot_tp_cure_surv_model <- function(PERSUADE, model_key, model_label, col_index = 1) {
+f_plot_tp_cure_surv_model <- function(PERSUADE, model_index = 1) {
   #' Plot Annual Transition Probabilities for Cure Survival Models
   #'
   #' Produces smoothed observed annual transition probabilities with shaded CIs,
   #' overlaid with predictions from a cure survival model (mixture or non-mixture).
   #'
   #' @param PERSUADE A PERSUADE object from `f_PERSUADE()`.
-  #' @param model_key Character. Name of the cure model in `surv_model$cure`.
-  #' @param model_label Character. Main title of the plot.
-  #' @param col_index Integer. Base colour index for fitted curves (1–9).
+  #' @param model_index Integer. Index for model selection.
   #'
   #' @return A base R plot.
   #' @export
   #'
   #' @examples
-  #' f_plot_tp_cure_surv_model(PERSUADE, "cure_weibull_mix", "Weibull mixture cure", 1)
+  #' f_plot_tp_cure_surv_model(PERSUADE, 1)
   input     <- PERSUADE$input
   misc      <- PERSUADE$misc
   surv_obs  <- PERSUADE$surv_obs
   surv_pred <- PERSUADE$surv_pred
+  
+  model_key = names(surv_pred$model$cure)[model_index]
+  model_label = misc$lbls_cure[model_index]
+  col_index = model_index
   
   ngroups       <- misc$ngroups
   group_names   <- misc$group_names
   line_type     <- as.integer(c(1, "2222", "5212"))
   point_shape   <- c(1, 8, 9)
   km_line_color <- c("black", "lightgrey", "darkgrey")
-
+  
   # Map model_key to column index in tp_gr predictions
-  model_map <- list(
-    cure_weibull_mix  = 18,
-    cure_weibull_nmix  = 19,
-    cure_lnorm_mix   = 20,
-    cure_lnorm_nmix = 21,
-    cure_llogis_mix  = 22,
-    cure_llogis_nmix   = 23
-  )
+  model_map <- setNames(as.list(18:23), names(PERSUADE$surv_model$cure_models))
+  
   if (!model_key %in% names(model_map)) {
     stop("Model key not recognized in model_map")
   }
@@ -1221,3 +1216,423 @@ f_plot_tp_cure_surv_model <- function(PERSUADE, model_key, model_label, col_inde
     cex = 0.8, ncol = 2, bty = "n"
   )
 }
+
+f_plot_param_surv_extrap <- function(PERSUADE) {
+  #' Plot Extrapolated Parametric Survival Models per Group
+  #'
+  #' Produces Kaplan-Meier curves per group overlaid with fitted parametric
+  #' survival models, extrapolated up to the defined time horizon.
+  #' The models include: Exponential, Weibull, Gompertz, Log-normal,
+  #' Log-logistic, Gamma, and Generalized Gamma.
+  #'
+  #' @param PERSUADE A PERSUADE object from `f_PERSUADE()`.
+  #'
+  #' @return A base R plot per group.
+  #' @export
+  #'
+  #' @examples
+  #' f_plot_param_surv_extrap(PERSUADE)
+  input <- PERSUADE$input
+  misc <- PERSUADE$misc
+  surv_obs <- PERSUADE$surv_obs
+  surv_pred <- PERSUADE$surv_pred
+  model_names <- names(PERSUADE$surv_model$param_models)
+  
+  line_type <- as.integer(c(1, "2222", "5212"))
+  
+  for (i in seq_len(misc$ngroups)) {
+    plot(
+      surv_obs$km[i], lwd = 2, col = "black",
+      main = paste0("A: Kaplan-Meier (parametric curves), Group: ", misc$group_names[i]),
+      xlab = "time", ylab = "survival",
+      xlim = c(0, input$time_horizon)
+    )
+    
+    for (j in seq_along(model_names)) {
+      lines(
+        x = input$time_pred,
+        y = surv_pred$model[[model_names[j]]]$surv[, i + 1],
+        col = j,
+        lty = line_type[i],
+        lwd = 1
+      )
+    }
+    
+    legend("topright", legend = misc$lbls, col = 1:length(model_names),
+           lty = line_type[i], cex = 0.8)
+  }
+}
+
+f_plot_spline_surv_extrap <- function(PERSUADE) {
+  #' Plot Extrapolated Spline Survival Models per Group
+  #'
+  #' Produces Kaplan-Meier curves per group overlaid with fitted spline
+  #' survival models, extrapolated up to the defined time horizon.
+  #' Models include: spline hazard, odds, and normal forms.
+  #'
+  #' @param PERSUADE A PERSUADE object from `f_PERSUADE()`.
+  #'
+  #' @return A base R plot per group.
+  #' @export
+  #'
+  #' @examples
+  #' f_plot_spline_surv_extrap(PERSUADE)
+  if (!isTRUE(PERSUADE$input$spline_mod)) return(invisible())
+  
+  input <- PERSUADE$input
+  misc <- PERSUADE$misc
+  surv_obs <- PERSUADE$surv_obs
+  surv_pred <- PERSUADE$surv_pred
+  model_names <- names(PERSUADE$surv_model$spline_models)
+  
+  line_type <- as.integer(c(1, "2222", "5212"))
+  
+  for (i in seq_len(misc$ngroups)) {
+    plot(
+      surv_obs$km[i], lwd = 2, col = "black",
+      main = paste0("A: Kaplan-Meier (spline curves), Group: ", misc$group_names[i]),
+      xlab = "time", ylab = "survival",
+      xlim = c(0, input$time_horizon)
+    )
+    
+    for (j in seq_along(model_names)) {
+      lines(
+        x = input$time_pred,
+        y = surv_pred$model$spline[[model_names[j]]]$surv[, i + 1],
+        col = j,
+        lty = line_type[i],
+        lwd = 1
+      )
+    }
+    
+    legend("topright", legend = misc$lbls_spline, col = 1:length(model_names),
+           lty = line_type[i], cex = 0.8)
+  }
+}
+
+f_plot_cure_surv_extrap <- function(PERSUADE) {
+  #' Plot Extrapolated Cure Survival Models per Group
+  #'
+  #' Produces Kaplan-Meier curves per group overlaid with fitted cure
+  #' survival models, extrapolated up to the defined time horizon.
+  #' Models include: Weibull, Log-normal, and Log-logistic (mixture and non-mixture).
+  #'
+  #' @param PERSUADE A PERSUADE object from `f_PERSUADE()`.
+  #'
+  #' @return A base R plot per group.
+  #' @export
+  #'
+  #' @examples
+  #' f_plot_cure_surv_extrap(PERSUADE)
+  if (!isTRUE(PERSUADE$input$cure_mod)) return(invisible())
+  
+  input <- PERSUADE$input
+  misc <- PERSUADE$misc
+  surv_obs <- PERSUADE$surv_obs
+  surv_pred <- PERSUADE$surv_pred
+  model_names <- names(PERSUADE$surv_model$cure_models)
+  
+  line_type <- as.integer(c(1, "2222", "5212"))
+  
+  for (i in seq_len(misc$ngroups)) {
+    plot(
+      surv_obs$km[i], lwd = 2, col = "black",
+      main = paste0("A: Kaplan-Meier (cure curves), Group: ", misc$group_names[i]),
+      xlab = "time", ylab = "survival",
+      xlim = c(0, input$time_horizon)
+    )
+    
+    for (j in seq_along(model_names)) {
+      lines(
+        x = input$time_pred,
+        y = surv_pred$model$cure[[model_names[j]]]$surv[, i + 1],
+        col = j,
+        lty = line_type[i],
+        lwd = 1
+      )
+    }
+    
+    legend("topright", legend = misc$lbls_cure, col = 1:length(model_names),
+           lty = line_type[i], cex = 0.8)
+  }
+}
+
+f_plot_tp_param_surv_extrap <- function(PERSUADE) {
+  #' Plot Extrapolated Annual Transition Probabilities (Parametric Models)
+  #'
+  #' Produces smoothed observed annual transition probabilities with shaded CIs,
+  #' overlaid with predictions from parametric survival models.
+  #'
+  #' @param PERSUADE A PERSUADE object from `f_PERSUADE()`.
+  #'
+  #' @return A base R plot per group.
+  #' @export
+  #'
+  #' @examples
+  #' f_plot_tp_param_surv_extrap(PERSUADE)
+  input <- PERSUADE$input
+  misc <- PERSUADE$misc
+  surv_obs <- PERSUADE$surv_obs
+  surv_pred <- PERSUADE$surv_pred
+  
+  line_type <- as.integer(c(1, "2222", "5212"))
+  
+  for (i in seq_len(misc$ngroups)) {
+    tp_obs <- surv_obs$tp[[paste0("gr_", i)]]
+    tp_pred <- surv_pred$tp_gr[[paste0("gr_", i)]]
+    
+    plot(tp_obs$time, tp_obs$smooth,
+         main =  paste0("B: Annual transition probability (parametric curves), Group: ", misc$group_names[i]),
+         xlab = "time", ylab = "annual transition probability",
+         ylim = c(0, 1), xlim = c(0, input$time_horizon),
+         col = "black", type = "l", lwd = 2)
+    
+    lines(tp_obs$time, tp_obs$smooth_lower, col = "black", lty = 2, lwd = 2)
+    lines(tp_obs$time, tp_obs$smooth_upper, col = "black", lty = 2, lwd = 2)
+    
+    for (j in 2:8) {
+      lines(input$time_pred[-1], unlist(tp_pred[, ..j]), col = j - 1, lty = line_type[i], lwd = 1)
+    }
+    
+    legend("topleft", legend = misc$lbls, col = 1:7, lty = line_type[i], cex = 0.8)
+  }
+}
+
+f_plot_tp_spline_surv_extrap <- function(PERSUADE) {
+  #' Plot Extrapolated Annual Transition Probabilities (Spline Models)
+  #'
+  #' Produces smoothed observed annual transition probabilities with shaded CIs,
+  #' overlaid with predictions from spline survival models.
+  #'
+  #' @param PERSUADE A PERSUADE object from `f_PERSUADE()`.
+  #'
+  #' @return A base R plot per group.
+  #' @export
+  #'
+  #' @examples
+  #' f_plot_tp_spline_surv_extrap(PERSUADE)
+  if (!isTRUE(PERSUADE$input$spline_mod)) return(invisible())
+  
+  input <- PERSUADE$input
+  misc <- PERSUADE$misc
+  surv_obs <- PERSUADE$surv_obs
+  surv_pred <- PERSUADE$surv_pred
+  
+  line_type <- as.integer(c(1, "2222", "5212"))
+  
+  for (i in seq_len(misc$ngroups)) {
+    tp_obs <- surv_obs$tp[[paste0("gr_", i)]]
+    tp_pred <- surv_pred$tp_gr[[paste0("gr_", i)]]
+    
+    plot(tp_obs$time, tp_obs$smooth,
+         main =  paste0("B: Annual transition probability (spline curves), Group: ", misc$group_names[i]),
+         xlab = "time", ylab = "annual transition probability",
+         ylim = c(0, 1), xlim = c(0, input$time_horizon),
+         col = "black", type = "l", lwd = 2)
+    
+    lines(tp_obs$time, tp_obs$smooth_lower, col = "black", lty = 2, lwd = 2)
+    lines(tp_obs$time, tp_obs$smooth_upper, col = "black", lty = 2, lwd = 2)
+    
+    for (j in 9:17) {
+      lines(input$time_pred[-1], unlist(tp_pred[, ..j]), col = j - 8, lty = line_type[i], lwd = 1)
+    }
+    
+    legend("topleft", legend = misc$lbls_spline, col = 1:9, lty = line_type[i], cex = 0.8)
+  }
+}
+
+f_plot_tp_cure_surv_extrap <- function(PERSUADE) {
+  #' Plot Extrapolated Annual Transition Probabilities (Cure Models)
+  #'
+  #' Produces smoothed observed annual transition probabilities with shaded CIs,
+  #' overlaid with predictions from cure survival models.
+  #'
+  #' @param PERSUADE A PERSUADE object from `f_PERSUADE()`.
+  #'
+  #' @return A base R plot per group.
+  #' @export
+  #'
+  #' @examples
+  #' f_plot_tp_cure_surv_extrap(PERSUADE)
+  if (!isTRUE(PERSUADE$input$cure_mod)) return(invisible())
+  
+  input <- PERSUADE$input
+  misc <- PERSUADE$misc
+  surv_obs <- PERSUADE$surv_obs
+  surv_pred <- PERSUADE$surv_pred
+  
+  line_type <- as.integer(c(1, "2222", "5212"))
+  offset <- if (isTRUE(input$spline_mod)) 0 else -9
+  
+  for (i in seq_len(misc$ngroups)) {
+    tp_obs <- surv_obs$tp[[paste0("gr_", i)]]
+    tp_pred <- surv_pred$tp_gr[[paste0("gr_", i)]]
+    
+    plot(tp_obs$time, tp_obs$smooth,
+         main =  paste0("B: Annual transition probability (cure curves), Group: ", misc$group_names[i]),
+         xlab = "time", ylab = "annual transition probability",
+         ylim = c(0, 1), xlim = c(0, input$time_horizon),
+         col = "black", type = "l", lwd = 2)
+    
+    lines(tp_obs$time, tp_obs$smooth_lower, col = "black", lty = 2, lwd = 2)
+    lines(tp_obs$time, tp_obs$smooth_upper, col = "black", lty = 2, lwd = 2)
+    
+    for (j in 18:23) {
+      j_offset <- j + offset
+      lines(input$time_pred[-1], unlist(tp_pred[, ..j_offset]), col = j - 17, lty = line_type[i], lwd = 1)
+    }
+    
+    legend("topleft", legend = misc$lbls_cure, col = 1:6, lty = line_type[i], cex = 0.8)
+  }
+}
+
+f_plot_hazard_parametric_extrap <- function(PERSUADE) {
+  #' Plot Extrapolated Hazard Functions (Parametric Models)
+  #'
+  #' Produces observed smoothed hazard rates overlaid with extrapolated hazard functions
+  #' from parametric survival models.
+  #'
+  #' @param PERSUADE A PERSUADE object from `f_PERSUADE()`.
+  #'
+  #' @return Base R plots, one per group.
+  #' @export
+  #'
+  #' @examples
+  #' f_plot_hazard_parametric_extrap(PERSUADE)
+  models <- names(PERSUADE$surv_model$param_models)
+  misc <- PERSUADE$misc
+  
+  cols <- seq_along(models)
+  line_type <- as.integer(c(1, "2222", "5212"))
+  
+  for (i in seq_len(misc$ngroups)) {
+    obs_data <- PERSUADE$surv_obs$haz$hazards[[paste0("smooth_gr", i)]]
+    plot(cbind(obs_data$est.grid, obs_data$haz.est),
+         main = paste0("C: Hazard function (parametric curves), Group: ", misc$group_names[i]),
+         type = "l", col = "black", lty = line_type[i], lwd = 2,
+         xlab = "time", ylab = "smoothed hazard rate",
+         xlim = c(0, PERSUADE$input$time_horizon),
+         ylim = c(0, PERSUADE$surv_obs$haz$max$smooth))
+    for (j in seq_along(models)) {
+      lines(cbind(PERSUADE$surv_pred$model[[models[j]]]$hazard[, 1],
+                  PERSUADE$surv_pred$model[[models[j]]]$hazard[, i + 1]),
+            col = cols[j], lty = line_type[i], lwd = 1)
+    }
+    legend("topleft", legend = PERSUADE$misc$lbls,
+           col = cols, lty = line_type[i], cex = 0.8)
+  }
+}
+
+f_plot_hazard_spline_extrap <- function(PERSUADE) {
+  #' Plot Extrapolated Hazard Functions (Spline Models)
+  #'
+  #' Produces observed smoothed hazard rates overlaid with extrapolated hazard functions
+  #' from spline-based survival models.
+  #'
+  #' @param PERSUADE A PERSUADE object from `f_PERSUADE()`.
+  #'
+  #' @return Base R plots, one per group (only if `input$spline_mod` is TRUE).
+  #' @export
+  #'
+  #' @examples
+  #' f_plot_hazard_spline_extrap(PERSUADE)
+  if (!isTRUE(PERSUADE$input$spline_mod)) return(invisible(NULL))
+  
+  models <- names(PERSUADE$surv_model$spline_models)
+  misc <- PERSUADE$misc
+  
+  cols <- seq_along(models)
+  line_type <- as.integer(c(1, "2222", "5212"))
+  
+  for (i in seq_len(misc$ngroups)) {
+    obs_data <- PERSUADE$surv_obs$haz$hazards[[paste0("smooth_gr", i)]]
+    plot(cbind(obs_data$est.grid, obs_data$haz.est),
+         main =  paste0("C: Hazard function (spline curves), Group: ", misc$group_names[i]),
+         type = "l", col = "black", lty = line_type[i], lwd = 2,
+         xlab = "time", ylab = "smoothed hazard rate",
+         xlim = c(0, PERSUADE$input$time_horizon),
+         ylim = c(0, PERSUADE$surv_obs$haz$max$smooth))
+    for (j in seq_along(models)) {
+      lines(cbind(PERSUADE$surv_pred$model$spline[[models[j]]]$hazard[, 1],
+                  PERSUADE$surv_pred$model$spline[[models[j]]]$hazard[, i + 1]),
+            col = cols[j], lty = line_type[i], lwd = 1)
+    }
+    legend("topleft", legend = PERSUADE$misc$lbls_spline,
+           col = cols, lty = line_type[i], cex = 0.8)
+  }
+}
+
+f_plot_hazard_cure_extrap <- function(PERSUADE) {
+  #' Plot Extrapolated Hazard Functions (Cure Models)
+  #'
+  #' Produces observed smoothed hazard rates overlaid with extrapolated hazard functions
+  #' from cure survival models (mixture and non-mixture).
+  #'
+  #' @param PERSUADE A PERSUADE object from `f_PERSUADE()`.
+  #'
+  #' @return Base R plots, one per group (only if `input$cure_mod` is TRUE).
+  #' @export
+  #'
+  #' @examples
+  #' f_plot_hazard_cure_extrap(PERSUADE)
+  if (!isTRUE(PERSUADE$input$cure_mod)) return(invisible(NULL))
+  
+  models <- names(PERSUADE$surv_model$cure_models)
+  misc <- PERSUADE$misc
+  
+  cols <- seq_along(models)
+  line_type <- as.integer(c(1, "2222", "5212"))
+  
+  for (i in seq_len(misc$ngroups)) {
+    obs_data <- PERSUADE$surv_obs$haz$hazards[[paste0("smooth_gr", i)]]
+    
+    plot(cbind(obs_data$est.grid, obs_data$haz.est),
+         main =  paste0("C: Hazard function (cure curves), Group: ", misc$group_names[i]),
+         type = "l", col = "black", lty = line_type[i], lwd = 2,
+         xlab = "time", ylab = "smoothed hazard rate",
+         xlim = c(0, PERSUADE$input$time_horizon),
+         ylim = c(0, PERSUADE$surv_obs$haz$max$smooth))
+    
+    for (j in seq_along(models)) {
+      lines(cbind(PERSUADE$surv_pred$model$cure[[models[j]]]$hazard[, 1],
+                  PERSUADE$surv_pred$model$cure[[models[j]]]$hazard[, i + 1]),
+            col = cols[j], lty = line_type[i], lwd = 1)
+    }
+    
+    legend("topleft", legend = PERSUADE$misc$lbls_cure,
+           col = cols, lty = line_type[i], cex = 0.8)
+  }
+}
+
+f_summary <- function(df) {
+  #' Compute Summary Statistics for Numeric Variables
+  #'
+  #' Produces descriptive statistics for each numeric variable in a data frame.
+  #' The statistics include mean, standard deviation, minimum, first quartile (Q1),
+  #' median, third quartile (Q3), maximum, and interquartile range (IQR),
+  #' rounded to three decimal places.
+  #'
+  #' @param df A data frame containing numeric variables to summarise.
+  #'
+  #' @return A data frame with one row per variable and columns for each
+  #'   summary statistic.
+  #' @export
+  #'
+  #' @examples
+  #' f_summary(mtcars)
+  res <- t(sapply(df, function(x) {
+    q <- quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1), na.rm = TRUE, names = FALSE)
+    round(c(
+      Mean   = mean(x, na.rm = TRUE),
+      Std.Dev= sd(x, na.rm = TRUE),
+      Min    = q[1],
+      Q1     = q[2],
+      Median = q[3],
+      Q3     = q[4],
+      Max    = q[5],
+      IQR    = q[4] - q[2]
+    ), 3)
+  }))
+  as.data.frame(res, check.names = FALSE)
+}
+

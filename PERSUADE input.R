@@ -34,7 +34,30 @@ source("PERSUADE figures.R")
 # docstring(f_surv_model_excel)
 
 # check Figure functions using docstring()
-# docstring(f_plot_km_survival)
+# docstring(f_plot_km_survival) 
+# docstring(f_plot_log_cumhaz)   
+# docstring(f_plot_schoenfeld_residuals)     
+# docstring(f_plot_smoothed_hazard)      
+# docstring(f_plot_hazard_with_models)   
+# docstring(f_plot_param_surv_model)   
+# docstring(f_plot_diag_param_surv_model)  
+# docstring(f_plot_tp_param_surv_model)   
+# docstring(f_plot_param_surv_extrap)  
+# docstring(f_plot_hazard_parametric_extrap) 
+# docstring(f_plot_tp_param_surv_extrap)   
+# docstring(f_plot_spline_surv_model) 
+# docstring(f_plot_diag_spline_surv_model)
+# docstring(f_plot_tp_spline_surv_model)  
+# docstring(f_plot_spline_surv_extrap) 
+# docstring(f_plot_tp_spline_surv_extrap) 
+# docstring(f_plot_hazard_spline_extrap) 
+# docstring(f_plot_cure_surv_model)  
+# docstring(f_plot_diag_cure_surv_model) 
+# docstring(f_plot_tp_cure_surv_model) 
+# docstring(f_plot_cure_surv_extrap) 
+# docstring(f_plot_hazard_cure_extrap)      
+# docstring(f_plot_tp_cure_surv_extrap)     
+# docstring(f_summary)
 
 # Colour palette for Figures
 n <- 9  #number of different colors (to be used for palette)
@@ -70,21 +93,27 @@ PERSUADE <- f_PERSUADE(
 
 #### EXPORT RESULTS ----
 # Create output directory
-output_dir <- paste0(name, "_output")
+output_dir <- file.path(getwd(), paste0(name, "_output"))
+output_images_dir <- file.path(getwd(), paste0(name, "_output/Images"))
 dir.create(output_dir, showWarnings = FALSE)
+dir.create(output_images_dir, showWarnings = FALSE)
 
-# Save PERSUADE object
-save(PERSUADE, file = file.path(getwd(), "PERSUADE.RData"))
+# Save PERSUADE object inside the output directory
+save(PERSUADE, file = file.path(output_dir, "PERSUADE.RData"))
 
-# Generate PDF report using R Markdown
-if (!file.exists("PERSUADE output.Rmd")) stop("The file 'PERSUADE output.Rmd' was not found.")
+# Render R Markdown into PDF
+if (!file.exists("Output.Rmd")) stop("The file 'Output.Rmd' was not found.")
+
 xfun::Rscript_call(
   rmarkdown::render,
   list(
-    input = "PERSUADE output.Rmd",
-    output_file = paste0(name, ".pdf"),
-    output_dir = output_dir,
-    intermediates_dir = output_dir
+    input = "Output.Rmd",
+    output_file = paste0(name, ".pdf"),  # PDF name tied to 'name'
+    output_dir = output_dir,             # PDF goes in same directory
+    intermediates_dir = output_dir,      # .tex & knitr intermediates here
+    knit_root_dir = output_dir,   # figures & knitr plots go here too
+    envir = list2env(list(PERSUADE = PERSUADE), parent = globalenv()),
+    clean = TRUE
   )
 )
 
@@ -92,3 +121,5 @@ xfun::Rscript_call(
 write.table(PERSUADE$surv_model_excel, "clipboard-128", sep = "\t", col.names = FALSE)
 write.csv(PERSUADE$surv_model_excel, file.path(output_dir, "PERSUADE_Time-to-event_models_parameters_comma.csv"))
 write.csv2(PERSUADE$surv_model_excel, file.path(output_dir, "PERSUADE_Time-to-event_models_parameters_semicolon.csv"))
+
+

@@ -1,0 +1,294 @@
+---
+output:
+  pdf_document:
+    toc: yes
+    keep_tex: TRUE
+urlcolor: blue
+---
+
+---
+title: "PERSUADE `r paste0(PERSUADE$name)`"
+date: "`r Sys.Date()`"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, 
+                      fig.align = "left", 
+                      fig.path = file.path(paste0(PERSUADE$name, "_output/Images/Figure_")), 
+                      dev = c('pdf', 'png'),
+                      dpi=300)
+options(warn=-1) # prevent warnings from being printed (options(warn=0) to turn warning back on)
+```
+
+```{r preparation, echo=FALSE, warning = FALSE, message = FALSE, results = "hide"}
+packages <- c("ggplot2", "knitr", "kableExtra",
+              "survminer", "survival")
+new.packages <- packages[!(packages %in% installed.packages()[, "Package"])]  #check for new packages
+if (length(new.packages)) install.packages(new.packages)  #install new packages (if needed)
+suppressPackageStartupMessages(lapply(packages, require, character.only = TRUE))  #load packages
+
+source(paste0(getwd(), "/PERSUADE figures.R"))
+
+# COLOUR PALETTE
+n <- 9  #number of different colors (to be used for palette)
+palette(rainbow(n = n, s = 1, v = 1, start = 0, end = max(1, n - 1)/n, alpha = 1))
+```
+
+\
+
+[Link to PERSUADE GitHub page](https://github.com/Bram-R/PERSUADE)
+
+\clearpage
+
+# 1. Kaplan-Meier  
+```{r plot_KM, echo=FALSE, fig.height=7, fig.width=7}
+f_plot_km_survival(PERSUADE)
+```
+
+```{r table_KM, echo=FALSE}
+kable_styling(
+  kable(
+    summary(PERSUADE$surv_obs$km)$table,
+    format = "latex", booktabs = TRUE, linesep = "",
+    caption = "Observed survival data"),
+  latex_options = c("HOLD_position", "scale_down", "striped"))
+```
+
+
+\clearpage
+
+# 2. Proportional hazards assumption  
+```{r PH_assumption, echo=FALSE, eval=if (PERSUADE$misc$ngroups>1) {TRUE} else {FALSE}, out.height="29%", fig.width=11}
+f_plot_log_cumhaz(PERSUADE)
+f_plot_schoenfeld_residuals(PERSUADE)
+```
+
+\clearpage
+
+# 3. Hazard function  
+## 3.1 Shape of the observed smoothed hazard function  
+```{r plot_hr, echo=FALSE}
+f_plot_smoothed_hazard(PERSUADE)
+```
+
+\clearpage
+
+## 3.2 Shape of the predicted hazard function  
+```{r plot_haz_pred, out.height="29%", fig.width=11, echo=FALSE}
+f_plot_hazard_with_models(PERSUADE)
+```
+
+\clearpage
+
+# 4 Parametric survival models 
+## 4.1 Standard parametric models  
+```{r gof_parametric, echo=FALSE, out.height="75%"}
+kable_styling(
+  kable(
+    PERSUADE$surv_model$param_ic[order(PERSUADE$surv_model$param_ic$AIC), ],
+    row.names = FALSE,format = "latex", booktabs = TRUE, linesep = "",
+    caption = "Goodness of fit statistics"),
+  latex_options = c("HOLD_position", "scale_down", "striped"))
+```
+
+\clearpage
+
+```{r param_models, echo=FALSE, out.height="25%", fig.width=11, results='asis'}
+model_names <- PERSUADE$misc$lbls
+i <- 1
+
+for (name in model_names) {
+  
+  # Print the heading
+  cat("\n\\clearpage\n\n")
+  cat("### ", name, "\n\n")
+  
+  # Ensure code is executed and printed in the document
+  f_plot_param_surv_model(PERSUADE, i)
+  f_plot_diag_param_surv_model(PERSUADE, i)
+  f_plot_tp_param_surv_model(PERSUADE, i)
+  
+  i <- i + 1
+}
+```
+
+\clearpage
+
+## 4.2 Parametric natural cubic spline models
+```{r gof_spline, echo=FALSE, out.height="75%", eval=PERSUADE$input$spline_mod}
+kable_styling(
+  kable(
+    rbind(PERSUADE$surv_model$param_ic, PERSUADE$surv_model$spline_ic)[
+      order(rbind(PERSUADE$surv_model$param_ic, PERSUADE$surv_model$spline_ic)$AIC), ],
+    row.names = FALSE, format = "latex", booktabs = TRUE, linesep = "",
+    caption = "Goodness of fit statistics (including standard parametric and spline models)"),
+  latex_options = c("HOLD_position", "scale_down", "striped"))
+```
+
+`r if(PERSUADE$input$spline_mod == TRUE) {return("\\clearpage")}`
+
+```{r spline_models, echo=FALSE, out.height="25%", fig.width=11, results='asis', eval=PERSUADE$input$spline_mod}
+model_names <- PERSUADE$misc$lbls_spline
+i <- 1
+
+for (name in model_names) {
+  
+  # Print the heading
+  cat("\n\\clearpage\n\n")
+  cat("### ", name, "\n\n")
+  
+  # Ensure code is executed and printed in the document
+  f_plot_spline_surv_model(PERSUADE, i)
+  f_plot_diag_spline_surv_model(PERSUADE, i)
+  f_plot_tp_spline_surv_model(PERSUADE, i)
+  
+  i <- i + 1
+}
+```
+
+\clearpage
+
+## 4.3 Parametric (non-)mixture cure models 
+```{r gof_cure, echo=FALSE, out.height="75%", eval=PERSUADE$input$cure_mod}
+kable_styling(
+  kable(
+    rbind(PERSUADE$surv_model$param_ic[,1:2], PERSUADE$surv_model$cure_ic[,1:2])[
+      order(rbind(PERSUADE$surv_model$param_ic[,1:2], PERSUADE$surv_model$cure_ic[,1:2])$AIC), ],
+    row.names = FALSE, format = "latex", booktabs = TRUE, linesep = "",
+    caption = "Goodness of fit statistics (including standard parametric and cure models)"),
+  latex_options = c("HOLD_position", "scale_down", "striped"))
+kable_styling(
+  kable(
+    PERSUADE$surv_model$cure_ic[,-2],
+    format = "latex", booktabs = TRUE, linesep = "",
+    caption = "Cure proportions per group"),
+  latex_options = c("HOLD_position", "scale_down", "striped"))
+```
+
+`r if(PERSUADE$input$cure_mod == TRUE) {return("\\clearpage")}`
+
+```{r cure_models, echo=FALSE, out.height="25%", fig.width=11, results='asis', eval=PERSUADE$input$cure_mod}
+model_names <- PERSUADE$misc$lbls_cure
+i <- 1
+
+for (name in model_names) {
+  
+  # Print the heading
+  cat("\n\\clearpage\n\n")
+  cat("### ", name, "\n\n")
+  
+  # Ensure code is executed and printed in the document
+  f_plot_cure_surv_model(PERSUADE, i)
+  f_plot_diag_cure_surv_model(PERSUADE, i)
+  f_plot_tp_cure_surv_model(PERSUADE, i)
+  
+  i <- i + 1
+}
+```
+
+\clearpage
+
+# 5 Extrapolation
+## 5.1 Extrapolated survival 
+```{r validate_extrapolation_KM, echo=FALSE, out.height="29%", fig.width=11}
+f_plot_param_surv_extrap(PERSUADE)
+f_plot_spline_surv_extrap(PERSUADE)
+f_plot_cure_surv_extrap(PERSUADE)
+```
+
+\clearpage
+
+## 5.2 Extrapolated transition probabilities
+```{r validate_extrapolation_tp, echo=FALSE, out.height="29%", fig.width=11}
+f_plot_tp_param_surv_extrap(PERSUADE)
+f_plot_tp_spline_surv_extrap(PERSUADE)
+f_plot_tp_cure_surv_extrap(PERSUADE)
+```
+
+\clearpage
+
+## 5.3 Extrapolated hazard function
+```{r validate_extrapolation_hr, echo=FALSE, out.height="29%", fig.width=11}
+f_plot_hazard_parametric_extrap(PERSUADE)
+f_plot_hazard_spline_extrap(PERSUADE)
+f_plot_hazard_cure_extrap(PERSUADE)
+```
+
+\clearpage
+
+## 5.4 Tabulated  results
+### `r paste("Group", PERSUADE$misc$group_names[1])`
+```{r validate_extrapolation1, echo=FALSE, out.height="29%", fig.width=11}
+i <- 1
+kable_styling(
+  kable(
+    t(round(PERSUADE$surv_pred$gr[[i]][1 + PERSUADE$input$time_pred_surv_table, ], 3))[-1, ], 
+    col.names = paste("T=", PERSUADE$surv_pred$gr[[i]][1 + PERSUADE$input$time_pred_surv_table, ][, 1]), 
+    format = "latex", booktabs = TRUE, linesep = "",
+    caption = "Survival probability at different time points"), 
+  latex_options = c("HOLD_position", "scale_down", "striped"))
+
+kable_styling(
+  kable(
+    f_summary(PERSUADE$surv_pred$tp_gr[[i]][, 2:PERSUADE$misc$cols_tp]), 
+    format = "latex", booktabs = TRUE, linesep = "", 
+    caption = "Summary statistics of annual transition probabilities"), 
+  latex_options = c("HOLD_position", "scale_down", "striped"))
+```
+
+\clearpage
+
+### `r paste("Group", PERSUADE$misc$group_names[i + 1])`
+```{r validate_extrapolation2, echo=FALSE, out.height="29%", fig.width=11, eval=if (PERSUADE$misc$ngroups>1) {TRUE} else {FALSE}}
+i <- i + 1
+kable_styling(
+  kable(
+    t(round(PERSUADE$surv_pred$gr[[i]][1 + PERSUADE$input$time_pred_surv_table, ], 3))[-1, ], 
+    col.names = paste("T=", PERSUADE$surv_pred$gr[[i]][1 + PERSUADE$input$time_pred_surv_table, ][, 1]), 
+    format = "latex", booktabs = TRUE, linesep = "", 
+    caption = "Survival probability at different time points"), 
+  latex_options = c("HOLD_position", "scale_down", "striped"))
+
+kable_styling(
+  kable(
+    f_summary(PERSUADE$surv_pred$tp_gr[[i]][, 2:PERSUADE$misc$cols_tp]), 
+    format = "latex", booktabs = TRUE, linesep = "", 
+    caption = "Summary statistics of annual transition probabilities"), 
+  latex_options = c("HOLD_position", "scale_down", "striped"))
+```
+
+\clearpage
+
+### `r paste("Group", PERSUADE$misc$group_names[i + 1])`
+```{r validate_extrapolation3, echo=FALSE, out.height="29%", fig.width=11, eval=if (PERSUADE$misc$ngroups>2) {TRUE} else {FALSE}}
+i <- i + 1
+kable_styling(
+  kable(
+    t(round(PERSUADE$surv_pred$gr[[i]][1 + PERSUADE$input$time_pred_surv_table, ], 3))[-1, ], 
+    col.names = paste("T=", PERSUADE$surv_pred$gr[[i]][1 + PERSUADE$input$time_pred_surv_table, ][, 1]), 
+    format = "latex", booktabs = TRUE, linesep = "", 
+    caption = "Survival probability at different time points"), 
+  latex_options = c("HOLD_position", "scale_down", "striped"))
+
+kable_styling(
+  kable(
+    f_summary(PERSUADE$surv_pred$tp_gr[[i]][, 2:PERSUADE$misc$cols_tp]), 
+    format = "latex", booktabs = TRUE, linesep = "", 
+    caption = "Summary statistics of annual transition probabilities"), 
+  latex_options = c("HOLD_position", "scale_down", "striped"))
+```
+
+\clearpage
+
+# 6. PERSUADE object information
+```{r oi, echo=FALSE}
+print(str(PERSUADE, max.level = 2))
+```
+
+\clearpage
+
+# 7. Session information
+```{r si, echo=FALSE}
+print(sessionInfo(), RNG = TRUE, locale = FALSE)
+```
+
