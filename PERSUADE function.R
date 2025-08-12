@@ -106,7 +106,7 @@ f_PERSUADE <- function(name = "no_name", years, status, group,
   )
   
   # Output
-  list(
+  output <- list(
     name = name,
     input = list(
       years = years,
@@ -148,6 +148,8 @@ f_PERSUADE <- function(name = "no_name", years, status, group,
       list(cols_tp = cols_tp)
     )
   )
+  class(output) <- "PERSUADE" # for implementing S3 class
+  return(output)
 }
 
 #### Functions used in the main PERSUADE function ----

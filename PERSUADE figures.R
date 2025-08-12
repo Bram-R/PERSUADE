@@ -55,6 +55,59 @@ f_plot_km_survival <- function(PERSUADE) {
   return(plot_obj)
 }
 
+f_plot_km_survival_base <- function(PERSUADE) {
+  #' Plot Kaplan-Meier Survival Curves from PERSUADE Object
+  #'
+  #' Generates Kaplan-Meier survival plots using ggsurvplot, adapting automatically 
+  #' to the number of groups in the PERSUADE object.
+  #'
+  #' @param PERSUADE A PERSUADE object created by `f_PERSUADE()`.
+  #'
+  #' @return A `ggsurvplot` object showing KM curves with risk table and optional CI/rug.
+  #' @export
+  #'
+  #' @examples
+  #' f_plot_km_survival_base(PERSUADE)
+  input <- PERSUADE$input
+  misc <- PERSUADE$misc
+  surv_obs <- PERSUADE$surv_obs
+  surv_pred <- PERSUADE$surv_pred
+
+  ngroups <- misc$ngroups
+  group_names <- misc$group_names
+  line_type <- as.integer(c(1, "2222", "5212"))
+  km_line_color <- c("black", "lightgrey", "darkgrey")
+  
+  # Base KM plot
+  plot(
+    surv_obs$km, lwd = 2, col = km_line_color[1:ngroups],
+    main = "Kaplan-Meier", lty = line_type,
+    xlab = "time", ylab = "survival"
+  )
+  
+  # Add shaded CI per group
+  for (i in seq_len(ngroups)) {
+    idx <- surv_obs$km_names == i
+    polygon(
+      na.omit(data.frame(
+        x = c(surv_obs$km$time[idx], rev(surv_obs$km$time[idx])),
+        y = c(surv_obs$km$lower[idx], rev(surv_obs$km$upper[idx]))
+      )),
+      col = adjustcolor(km_line_color[i], alpha.f = 0.3),
+      border = NA
+    )
+  }
+  
+  # Add legend with model and KM lines
+  legend(
+    "bottomleft",
+    legend = group_names,
+    col = km_line_color[1:ngroups],
+    lty = c(line_type[1:ngroups], rep(1, ngroups)),
+    cex = 0.8, ncol = 2, bty = "n"
+  )
+}
+
 f_plot_log_cumhaz <- function(PERSUADE) {
   #' Plot Log(-log(Survival)) vs Log(Time)
   #'
@@ -1634,5 +1687,47 @@ f_summary <- function(df) {
     ), 3)
   }))
   as.data.frame(res, check.names = FALSE)
+}
+
+f_generate_report <- function(PERSUADE) {
+  #' Generate PDF report for PERSUADE analysis
+  #'
+  #' Saves the PERSUADE object and generates a PDF report using `Output.Rmd`.
+  #'
+  #' @param PERSUADE A PERSUADE object from `f_PERSUADE()`.
+  #'
+  #' @return Path to generated PDF (invisible).
+  #' @export
+  #' 
+  #' @examples
+  #' f_generate_report(PERSUADE)
+  name <- PERSUADE$name
+  
+  # Create output directories
+  output_dir <- file.path(getwd(), paste0(name, "_output"))
+  fig_dir    <- file.path(output_dir, "Images")
+  dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
+  dir.create(fig_dir, showWarnings = FALSE)
+  
+  # Save PERSUADE object inside the output directory
+  save(PERSUADE, file = file.path(output_dir, "PERSUADE.RData"))
+  
+  # Render R Markdown into PDF
+  rmd_file <- "Output.Rmd"
+  if (!file.exists(rmd_file)) stop("The file '", rmd_file, "' was not found.")
+  
+  # Ensure knit options inside Rmd can use this figure directory
+  rmarkdown::render(
+    input = rmd_file,
+    output_file = paste0(name, ".pdf"),
+    output_dir = output_dir,
+    intermediates_dir = output_dir,
+    knit_root_dir = output_dir,
+    params = list(fig_dir = fig_dir), # pass fig_dir into the Rmd
+    envir = list2env(list(PERSUADE = PERSUADE), parent = globalenv()),
+    clean = TRUE
+  )
+  
+  invisible(file.path(output_dir, paste0(name, ".pdf")))
 }
 

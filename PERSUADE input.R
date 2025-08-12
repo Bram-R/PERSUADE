@@ -19,9 +19,9 @@ suppressPackageStartupMessages(lapply(required_packages, require, character.only
 rm(list = ls())
 
 #### LOAD PERSUADE FUNCTIONS ----
-if (!file.exists("PERSUADE function.R")) stop("The file 'PERSUADE function.R' was not found.")
 source("PERSUADE function.R")
 source("PERSUADE figures.R")
+source("PERSUADE S3 object functions.R")
 
 # check PERSUADE functions using docstring()
 # docstring(f_PERSUADE)
@@ -58,6 +58,12 @@ source("PERSUADE figures.R")
 # docstring(f_plot_hazard_cure_extrap)      
 # docstring(f_plot_tp_cure_surv_extrap)     
 # docstring(f_summary)
+# docstring(f_generate_report)
+
+# check S3 object functions for PERSUADE using docstring()
+# docstring(print.PERSUADE)
+# docstring(summary.PERSUADE)
+# docstring(plot.PERSUADE)
 
 # Colour palette for Figures
 n <- 9  #number of different colors (to be used for palette)
@@ -91,31 +97,10 @@ PERSUADE <- f_PERSUADE(
   time_pred_surv_table = time_pred_surv_table
 )
 
+
 #### EXPORT RESULTS ----
-# Create output directory
-output_dir <- file.path(getwd(), paste0(name, "_output"))
-output_images_dir <- file.path(getwd(), paste0(name, "_output/Images"))
-dir.create(output_dir, showWarnings = FALSE)
-dir.create(output_images_dir, showWarnings = FALSE)
-
-# Save PERSUADE object inside the output directory
-save(PERSUADE, file = file.path(output_dir, "PERSUADE.RData"))
-
-# Render R Markdown into PDF
-if (!file.exists("Output.Rmd")) stop("The file 'Output.Rmd' was not found.")
-
-xfun::Rscript_call(
-  rmarkdown::render,
-  list(
-    input = "Output.Rmd",
-    output_file = paste0(name, ".pdf"),  # PDF name tied to 'name'
-    output_dir = output_dir,             # PDF goes in same directory
-    intermediates_dir = output_dir,      # .tex & knitr intermediates here
-    knit_root_dir = output_dir,   # figures & knitr plots go here too
-    envir = list2env(list(PERSUADE = PERSUADE), parent = globalenv()),
-    clean = TRUE
-  )
-)
+# Create report
+f_generate_report(PERSUADE)
 
 # Export parametric survival models to clipboard and CSV files
 write.table(PERSUADE$surv_model_excel, "clipboard-128", sep = "\t", col.names = FALSE)

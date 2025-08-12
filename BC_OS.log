@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.8.8)  11 AUG 2025 17:10
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.8.8)  12 AUG 2025 15:50
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1305,97 +1305,97 @@ LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 80
 (c:/Users/g10028783/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-Overfull \hbox (18.49356pt too wide) in paragraph at lines 953--953
+Overfull \hbox (18.49356pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ group               : Factor w/ 3 levels "Good","Medium",..: 1 1 1 1 1 1 1 1 1 1 ...[] 
  []
 
 
-Overfull \hbox (44.74348pt too wide) in paragraph at lines 953--953
+Overfull \hbox (44.74348pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ rate               : chr [1:24] "expo" "rate" "-2.80703426596042" "-3.08148411925748" ...[] 
  []
 
 
-Overfull \hbox (81.49338pt too wide) in paragraph at lines 953--953
+Overfull \hbox (81.49338pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ groupMedium        : chr [1:24] "expo" "groupMedium" "0.818021897705403" "0.482435189564671" ...[] 
  []
 
 
-Overfull \hbox (60.49344pt too wide) in paragraph at lines 953--953
+Overfull \hbox (60.49344pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ groupPoor          : chr [1:24] "expo" "groupPoor" "1.53752320421143" "1.21843772753164" ...[] 
  []
 
 
-Overfull \hbox (49.99347pt too wide) in paragraph at lines 953--953
+Overfull \hbox (49.99347pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ shape              : chr [1:24] "weib" "shape" "0.522842941227738" "0.285099322690929" ...[] 
  []
 
 
-Overfull \hbox (39.4935pt too wide) in paragraph at lines 953--953
+Overfull \hbox (39.4935pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ scale              : chr [1:24] "weib" "scale" "2.26626166011077" "2.02632949004802" ...[] 
  []
 
 
-Overfull \hbox (91.99335pt too wide) in paragraph at lines 953--953
+Overfull \hbox (91.99335pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ groupMedium        : chr [1:24] "weib" "groupMedium" "-0.447145140906987" "-0.732231654626038" ...[] 
  []
 
 
-Overfull \hbox (65.74342pt too wide) in paragraph at lines 953--953
+Overfull \hbox (65.74342pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ groupPoor          : chr [1:24] "weib" "groupPoor" "-1.0384947611494" "-1.30926136509352" ...[] 
  []
 
 
-Overfull \hbox (123.49326pt too wide) in paragraph at lines 953--953
+Overfull \hbox (123.49326pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ shape(groupMedium) : chr [1:24] "weib" "shape(groupMedium)" "-0.193739409990849" "-0.48403844423884" ...[] 
  []
 
 
-Overfull \hbox (118.24327pt too wide) in paragraph at lines 953--953
+Overfull \hbox (118.24327pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ shape(groupPoor)   : chr [1:24] "weib" "shape(groupPoor)" "-0.258211641329158" "-0.530410174966165" ...[] 
  []
 
 
-Overfull \hbox (49.99347pt too wide) in paragraph at lines 953--953
+Overfull \hbox (49.99347pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ shape              : chr [1:24] "gom" "shape" "0.221650478494696" "0.0571597766378877" ...[] 
  []
 
 
-Overfull \hbox (39.4935pt too wide) in paragraph at lines 953--953
+Overfull \hbox (39.4935pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ rate               : chr [1:24] "gom" "rate" "-3.36564422440594" "-3.90407851702435" ...[] 
  []
 
 
-Overfull \hbox (70.99341pt too wide) in paragraph at lines 953--953
+Overfull \hbox (70.99341pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ groupMedium        : chr [1:24] "gom" "groupMedium" "1.06685398302701" "0.423029806773669" ...[] 
  []
 
 
-Overfull \hbox (49.99347pt too wide) in paragraph at lines 953--953
+Overfull \hbox (49.99347pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ groupPoor          : chr [1:24] "gom" "groupPoor" "1.9540432716812" "1.35352047967122" ...[] 
  []
 
 
-Overfull \hbox (128.74324pt too wide) in paragraph at lines 953--953
+Overfull \hbox (128.74324pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ shape(groupMedium) : chr [1:24] "gom" "shape(groupMedium)" "-0.0847240786449626" "-0.289307606940079" ...[] 
  []
 
 
-Overfull \hbox (112.99329pt too wide) in paragraph at lines 953--953
+Overfull \hbox (112.99329pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ shape(groupPoor)   : chr [1:24] "gom" "shape(groupPoor)" "-0.138758583249691" "-0.340847146615907" ...[] 
  []
 
 
-Overfull \hbox (55.24345pt too wide) in paragraph at lines 953--953
+Overfull \hbox (55.24345pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ meanlog            : chr [1:24] "lnorm" "meanlog" "2.15766237442877" "1.89389741374292" ...[] 
  []
 
 
-Overfull \hbox (70.99341pt too wide) in paragraph at lines 953--953
+Overfull \hbox (70.99341pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ sdlog              : chr [1:24] "lnorm" "sdlog" "-0.0231614685999281" "-0.240079127188789" ...[] 
  []
 
 
-Overfull \hbox (97.24333pt too wide) in paragraph at lines 953--953
+Overfull \hbox (97.24333pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ groupMedium        : chr [1:24] "lnorm" "groupMedium" "-0.616405276964592" "-0.931509869641886" ...[] 
  []
 
@@ -1404,425 +1404,495 @@ Overfull \hbox (97.24333pt too wide) in paragraph at lines 953--953
 [45
 
 ]
-Overfull \hbox (76.2434pt too wide) in paragraph at lines 953--953
+Overfull \hbox (76.2434pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ groupPoor          : chr [1:24] "lnorm" "groupPoor" "-1.29461457120387" "-1.59148086932483" ...[] 
  []
 
 
-Overfull \hbox (133.99323pt too wide) in paragraph at lines 953--953
+Overfull \hbox (133.99323pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ sdlog(groupMedium) : chr [1:24] "lnorm" "sdlog(groupMedium)" "0.0430707930704261" "-0.220247133683413" ...[] 
  []
 
 
-Overfull \hbox (118.24327pt too wide) in paragraph at lines 953--953
+Overfull \hbox (118.24327pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ sdlog(groupPoor)   : chr [1:24] "lnorm" "sdlog(groupPoor)" "-0.035860060637656" "-0.28475437844687" ...[] 
  []
 
 
-Overfull \hbox (49.99347pt too wide) in paragraph at lines 953--953
+Overfull \hbox (49.99347pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ shape              : chr [1:24] "llog" "shape" "0.626215586614288" "0.391807869444117" ...[] 
  []
 
 
-Overfull \hbox (39.4935pt too wide) in paragraph at lines 953--953
+Overfull \hbox (39.4935pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ scale              : chr [1:24] "llog" "scale" "2.09213155981541" "1.85991061112256" ...[] 
  []
 
 
-Overfull \hbox (91.99335pt too wide) in paragraph at lines 953--953
+Overfull \hbox (91.99335pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ groupMedium        : chr [1:24] "llog" "groupMedium" "-0.559250078304111" "-0.843377495291217" ...[] 
  []
 
 
-Overfull \hbox (70.99341pt too wide) in paragraph at lines 953--953
+Overfull \hbox (70.99341pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ groupPoor          : chr [1:24] "llog" "groupPoor" "-1.24675818981847" "-1.51563436942317" ...[] 
  []
 
 
-Overfull \hbox (128.74324pt too wide) in paragraph at lines 953--953
+Overfull \hbox (128.74324pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ shape(groupMedium) : chr [1:24] "llog" "shape(groupMedium)" "-0.119014027328347" "-0.404025558374602" ...[] 
  []
 
 
-Overfull \hbox (123.49326pt too wide) in paragraph at lines 953--953
+Overfull \hbox (123.49326pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ shape(groupPoor)   : chr [1:24] "llog" "shape(groupPoor)" "-0.0445926446637765" "-0.315035624096927" ...[] 
  []
 
 
-Overfull \hbox (44.74348pt too wide) in paragraph at lines 953--953
+Overfull \hbox (44.74348pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ shape              : chr [1:24] "gam" "shape" "0.730152742986698" "0.405934219745528" ...[] 
  []
 
 
-Overfull \hbox (39.4935pt too wide) in paragraph at lines 953--953
+Overfull \hbox (39.4935pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ rate               : chr [1:24] "gam" "rate" "-1.49809910454757" "-2.03166884973234" ...[] 
  []
 
 
-Overfull \hbox (76.2434pt too wide) in paragraph at lines 953--953
+Overfull \hbox (76.2434pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ groupMedium        : chr [1:24] "gam" "groupMedium" "0.24690520822162" "-0.392738296363486" ...[] 
  []
 
 
-Overfull \hbox (65.74342pt too wide) in paragraph at lines 953--953
+Overfull \hbox (65.74342pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ groupPoor          : chr [1:24] "gam" "groupPoor" "0.834663901724156" "0.234149853810018" ...[] 
  []
 
 
-Overfull \hbox (118.24327pt too wide) in paragraph at lines 953--953
+Overfull \hbox (118.24327pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ shape(groupMedium) : chr [1:24] "gam" "shape(groupMedium)" "-0.22379661876854" "-0.625065262057719" ...[] 
  []
 
 
-Overfull \hbox (112.99329pt too wide) in paragraph at lines 953--953
+Overfull \hbox (112.99329pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ shape(groupPoor)   : chr [1:24] "gam" "shape(groupPoor)" "-0.245015909581633" "-0.628451036394306" ...[] 
  []
 
 
-Overfull \hbox (23.74355pt too wide) in paragraph at lines 953--953
+Overfull \hbox (23.74355pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ mu                 : chr [1:24] "ggam" "mu" "1.81202668453465" "1.21730209478661" ...[] 
  []
 
 
-Overfull \hbox (55.24345pt too wide) in paragraph at lines 953--953
+Overfull \hbox (55.24345pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ sigma              : chr [1:24] "ggam" "sigma" "0.232571933902732" "-0.016741543388701" ...[] 
  []
 
 
-Overfull \hbox (28.99353pt too wide) in paragraph at lines 953--953
+Overfull \hbox (28.99353pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ Q                  : chr [1:24] "ggam" "Q" "-1.22829849620357" "-2.75400037606476" ...[] 
  []
 
 
-Overfull \hbox (86.74336pt too wide) in paragraph at lines 953--953
+Overfull \hbox (86.74336pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ groupMedium        : chr [1:24] "ggam" "groupMedium" "-0.703779456085614" "-1.46345284222943" ...[] 
  []
 
 
-Overfull \hbox (70.99341pt too wide) in paragraph at lines 953--953
+Overfull \hbox (70.99341pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ groupPoor          : chr [1:24] "ggam" "groupPoor" "-1.15639058358082" "-1.81090501002432" ...[] 
  []
 
 
-Overfull \hbox (128.74324pt too wide) in paragraph at lines 953--953
+Overfull \hbox (128.74324pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ sigma(groupMedium) : chr [1:24] "ggam" "sigma(groupMedium)" "-0.111742534466758" "-0.400994984162153" ...[] 
  []
 
 
-Overfull \hbox (118.24327pt too wide) in paragraph at lines 953--953
+Overfull \hbox (118.24327pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ sigma(groupPoor)   : chr [1:24] "ggam" "sigma(groupPoor)" "-0.251806027157588" "-0.529348754284861" ...[] 
  []
 
 
-Overfull \hbox (91.99335pt too wide) in paragraph at lines 953--953
+Overfull \hbox (91.99335pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ Q(groupMedium)     : chr [1:24] "ggam" "Q(groupMedium)" "0.130949690012828" "-1.7041062478985" ...[] 
  []
 
 
-Overfull \hbox (91.99335pt too wide) in paragraph at lines 953--953
+Overfull \hbox (91.99335pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ Q(groupPoor)       : chr [1:24] "ggam" "Q(groupPoor)" "0.706102215543455" "-0.924489391519342" ...[] 
  []
 
 
-Overfull \hbox (97.24333pt too wide) in paragraph at lines 953--953
+Overfull \hbox (97.24333pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma0             : chr [1:24] "spl_hazard_1" "gamma0" "-4.00166824461331" "-4.73804895372434" ...[] 
  []
 
 
-Overfull \hbox (86.74336pt too wide) in paragraph at lines 953--953
+Overfull \hbox (86.74336pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma1             : chr [1:24] "spl_hazard_1" "gamma1" "5.68413827144086" "2.64680689857505" ...[] 
  []
 
 
-Overfull \hbox (97.24333pt too wide) in paragraph at lines 953--953
+Overfull \hbox (97.24333pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma2             : chr [1:24] "spl_hazard_1" "gamma2" "0.536346985941307" "0.150091211344567" ...[] 
  []
 
 
-Overfull \hbox (118.24327pt too wide) in paragraph at lines 953--953
+Overfull \hbox (118.24327pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ groupMedium        : chr [1:24] "spl_hazard_1" "groupMedium" "1.64701334654769" "0.821214805140719" ...[] 
  []
 
 
-Overfull \hbox (102.49332pt too wide) in paragraph at lines 953--953
+Overfull \hbox (102.49332pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ groupPoor          : chr [1:24] "spl_hazard_1" "groupPoor" "2.73852858210568" "1.95737254582953" ...[] 
  []
 
 
-Overfull \hbox (165.49313pt too wide) in paragraph at lines 953--953
+Overfull \hbox (165.49313pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma1(groupMedium): chr [1:24] "spl_hazard_1" "gamma1(groupMedium)" "-2.61371799384606" "-5.82220007861285" ...[] 
  []
 
 
-Overfull \hbox (154.99316pt too wide) in paragraph at lines 953--953
+Overfull \hbox (154.99316pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma1(groupPoor)  : chr [1:24] "spl_hazard_1" "gamma1(groupPoor)" "-3.04969394511859" "-6.15023020731018" ...[] 
  []
 
 
-Overfull \hbox (175.9931pt too wide) in paragraph at lines 953--953
+Overfull \hbox (175.9931pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma2(groupMedium): chr [1:24] "spl_hazard_1" "gamma2(groupMedium)" "-0.286595121633603" "-0.697332687514067" ...[] 
  []
 
 
-Overfull \hbox (165.49313pt too wide) in paragraph at lines 953--953
+Overfull \hbox (165.49313pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma2(groupPoor)  : chr [1:24] "spl_hazard_1" "gamma2(groupPoor)" "-0.310481705247366" "-0.707578456048756" ...[] 
  []
 
 
-Overfull \hbox (81.49338pt too wide) in paragraph at lines 953--953
+Overfull \hbox (81.49338pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma0             : chr [1:24] "spl_odds_1" "gamma0" "-4.0491737654773" "-4.80121937987566" ...[] 
  []
 
 
-Overfull \hbox (70.99341pt too wide) in paragraph at lines 953--953
+Overfull \hbox (70.99341pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma1             : chr [1:24] "spl_odds_1" "gamma1" "5.58348971192191" "2.4370507805455" ...[] 
  []
 
 
-Overfull \hbox (91.99335pt too wide) in paragraph at lines 953--953
+Overfull \hbox (91.99335pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma2             : chr [1:24] "spl_odds_1" "gamma2" "0.503676257390164" "0.0982702028126948" ...[] 
  []
 
 
-Overfull \hbox (107.7433pt too wide) in paragraph at lines 953--953
+Overfull \hbox (107.7433pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ groupMedium        : chr [1:24] "spl_odds_1" "groupMedium" "1.68509095473313" "0.829331935950268" ...[] 
  []
 
 
-Overfull \hbox (91.99335pt too wide) in paragraph at lines 953--953
+Overfull \hbox (91.99335pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ groupPoor          : chr [1:24] "spl_odds_1" "groupPoor" "2.81726297700326" "1.99594335877646" ...[] 
  []
 
 
-Overfull \hbox (149.74318pt too wide) in paragraph at lines 953--953
+Overfull \hbox (149.74318pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma1(groupMedium): chr [1:24] "spl_odds_1" "gamma1(groupMedium)" "-2.44366892055128" "-5.7810508303141" ...[] 
  []
 
 
-Overfull \hbox (144.4932pt too wide) in paragraph at lines 953--953
+Overfull \hbox (144.4932pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma1(groupPoor)  : chr [1:24] "spl_odds_1" "gamma1(groupPoor)" "-2.85991639069175" "-6.08715984641314" ...[] 
  []
 
 
-Overfull \hbox (160.24315pt too wide) in paragraph at lines 953--953
+Overfull \hbox (160.24315pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma2(groupMedium): chr [1:24] "spl_odds_1" "gamma2(groupMedium)" "-0.27699989500101" "-0.711354615382456" ...[] 
  []
 
 
-Overfull \hbox (154.99316pt too wide) in paragraph at lines 953--953
+Overfull \hbox (154.99316pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma2(groupPoor)  : chr [1:24] "spl_odds_1" "gamma2(groupPoor)" "-0.328459513919301" "-0.750684427402127" ...[] 
  []
 
 
-Overfull \hbox (97.24333pt too wide) in paragraph at lines 953--953
+Overfull \hbox (97.24333pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma0             : chr [1:24] "spl_normal_1" "gamma0" "-2.18021330994335" "-2.50676494276407" ...[] 
  []
 
 
-Overfull \hbox (91.99335pt too wide) in paragraph at lines 953--953
+Overfull \hbox (91.99335pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma1             : chr [1:24] "spl_normal_1" "gamma1" "2.00305993955204" "0.754967846287642" ...[] 
  []
 
 
-Overfull \hbox (107.7433pt too wide) in paragraph at lines 953--953
+Overfull \hbox (107.7433pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma2             : chr [1:24] "spl_normal_1" "gamma2" "0.139244131569558" "-0.0310780149656247" ...[] 
  []
 
 
-Overfull \hbox (123.49326pt too wide) in paragraph at lines 953--953
+Overfull \hbox (123.49326pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ groupMedium        : chr [1:24] "spl_normal_1" "groupMedium" "0.781203417379839" "0.385884196054485" ...[] 
  []
 
 
-Overfull \hbox (102.49332pt too wide) in paragraph at lines 953--953
+Overfull \hbox (102.49332pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ groupPoor          : chr [1:24] "spl_normal_1" "groupPoor" "1.39918475049402" "1.01366868901266" ...[] 
  []
 
 
-Overfull \hbox (170.74312pt too wide) in paragraph at lines 953--953
+Overfull \hbox (170.74312pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma1(groupMedium): chr [1:24] "spl_normal_1" "gamma1(groupMedium)" "-0.474093975078312" "-1.83544807143859" ...[] 
  []
 
 
-Overfull \hbox (160.24315pt too wide) in paragraph at lines 953--953
+Overfull \hbox (160.24315pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma1(groupPoor)  : chr [1:24] "spl_normal_1" "gamma1(groupPoor)" "-0.634060434239667" "-1.92995211744732" ...[] 
  []
 
 
-Overfull \hbox (181.24309pt too wide) in paragraph at lines 953--953
+Overfull \hbox (181.24309pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma2(groupMedium): chr [1:24] "spl_normal_1" "gamma2(groupMedium)" "-0.0508253646904045" "-0.239541872205599" ...[] 
  []
 
 
-Overfull \hbox (170.74312pt too wide) in paragraph at lines 953--953
+Overfull \hbox (170.74312pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma2(groupPoor)  : chr [1:24] "spl_normal_1" "gamma2(groupPoor)" "-0.0772462585348352" "-0.258802417798604" ...[] 
  []
 
 
-Overfull \hbox (97.24333pt too wide) in paragraph at lines 953--953
+Overfull \hbox (97.24333pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma0             : chr [1:24] "spl_hazard_2" "gamma0" "-3.98129140079743" "-6.29287630646042" ...[] 
  []
 
 
-Overfull \hbox (91.99335pt too wide) in paragraph at lines 953--953
+Overfull \hbox (91.99335pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma1             : chr [1:24] "spl_hazard_2" "gamma1" "5.57246906818651" "-3.04982227896694" ...[] 
  []
 
 
-Overfull \hbox (97.24333pt too wide) in paragraph at lines 953--953
+Overfull \hbox (97.24333pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma2             : chr [1:24] "spl_hazard_2" "gamma2" "0.256338265058247" "-3.08497801538128" ...[] 
  []
 
 
 
 [46]
-Overfull \hbox (91.99335pt too wide) in paragraph at lines 953--953
+Overfull \hbox (91.99335pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma3             : chr [1:24] "spl_hazard_2" "gamma3" "0.289633438971024" "-2.6933860504839" ...[] 
  []
 
 
-Overfull \hbox (112.99329pt too wide) in paragraph at lines 953--953
+Overfull \hbox (112.99329pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ groupMedium        : chr [1:24] "spl_hazard_2" "groupMedium" "2.91628215953512" "0.44776511920309" ...[] 
  []
 
 
-Overfull \hbox (107.7433pt too wide) in paragraph at lines 953--953
+Overfull \hbox (107.7433pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ groupPoor          : chr [1:24] "spl_hazard_2" "groupPoor" "2.88242174914437" "0.521582149841658" ...[] 
  []
 
 
-Overfull \hbox (165.49313pt too wide) in paragraph at lines 953--953
+Overfull \hbox (165.49313pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma1(groupMedium): chr [1:24] "spl_hazard_2" "gamma1(groupMedium)" "0.783631054627367" "-8.25403760882558" ...[] 
  []
 
 
-Overfull \hbox (154.99316pt too wide) in paragraph at lines 953--953
+Overfull \hbox (154.99316pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma1(groupPoor)  : chr [1:24] "spl_hazard_2" "gamma1(groupPoor)" "-2.64531056845819" "-11.3266605556107" ...[] 
  []
 
 
-Overfull \hbox (160.24315pt too wide) in paragraph at lines 953--953
+Overfull \hbox (160.24315pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma2(groupMedium): chr [1:24] "spl_hazard_2" "gamma2(groupMedium)" "1.65006763421488" "-1.89827829294063" ...[] 
  []
 
 
-Overfull \hbox (160.24315pt too wide) in paragraph at lines 953--953
+Overfull \hbox (160.24315pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma2(groupPoor)  : chr [1:24] "spl_hazard_2" "gamma2(groupPoor)" "0.0774625317935244" "-3.31396936615822" ...[] 
  []
 
 
-Overfull \hbox (165.49313pt too wide) in paragraph at lines 953--953
+Overfull \hbox (165.49313pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma3(groupMedium): chr [1:24] "spl_hazard_2" "gamma3(groupMedium)" "-1.90693272459592" "-5.10157626008234" ...[] 
  []
 
 
-Overfull \hbox (154.99316pt too wide) in paragraph at lines 953--953
+Overfull \hbox (154.99316pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma3(groupPoor)  : chr [1:24] "spl_hazard_2" "gamma3(groupPoor)" "-0.404156251325355" "-3.4518627816484" ...[] 
  []
 
 
-Overfull \hbox (81.49338pt too wide) in paragraph at lines 953--953
+Overfull \hbox (81.49338pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma0             : chr [1:24] "spl_odds_2" "gamma0" "-4.02185633708958" "-6.3825076933676" ...[] 
  []
 
 
-Overfull \hbox (81.49338pt too wide) in paragraph at lines 953--953
+Overfull \hbox (81.49338pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma1             : chr [1:24] "spl_odds_2" "gamma1" "5.51052878336718" "-3.19361337561952" ...[] 
  []
 
 
-Overfull \hbox (86.74336pt too wide) in paragraph at lines 953--953
+Overfull \hbox (86.74336pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma2             : chr [1:24] "spl_odds_2" "gamma2" "0.253140292086233" "-3.16417940172001" ...[] 
  []
 
 
-Overfull \hbox (81.49338pt too wide) in paragraph at lines 953--953
+Overfull \hbox (81.49338pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma3             : chr [1:24] "spl_odds_2" "gamma3" "0.26119991232863" "-2.81390126847145" ...[] 
  []
 
 
-Overfull \hbox (102.49332pt too wide) in paragraph at lines 953--953
+Overfull \hbox (102.49332pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ groupMedium        : chr [1:24] "spl_odds_2" "groupMedium" "3.02298542925585" "0.47779400406568" ...[] 
  []
 
 
-Overfull \hbox (91.99335pt too wide) in paragraph at lines 953--953
+Overfull \hbox (91.99335pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ groupPoor          : chr [1:24] "spl_odds_2" "groupPoor" "2.89341134948443" "0.46717570677471" ...[] 
  []
 
 
-Overfull \hbox (144.4932pt too wide) in paragraph at lines 953--953
+Overfull \hbox (144.4932pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma1(groupMedium): chr [1:24] "spl_odds_2" "gamma1(groupMedium)" "1.0315946008094" "-8.13093154547689" ...[] 
  []
 
 
-Overfull \hbox (144.4932pt too wide) in paragraph at lines 953--953
+Overfull \hbox (144.4932pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma1(groupPoor)  : chr [1:24] "spl_odds_2" "gamma1(groupPoor)" "-2.61699779061024" "-11.3869290847966" ...[] 
  []
 
 
-Overfull \hbox (149.74318pt too wide) in paragraph at lines 953--953
+Overfull \hbox (149.74318pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma2(groupMedium): chr [1:24] "spl_odds_2" "gamma2(groupMedium)" "1.80086631783035" "-1.86369707937375" ...[] 
  []
 
 
-Overfull \hbox (154.99316pt too wide) in paragraph at lines 953--953
+Overfull \hbox (154.99316pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma2(groupPoor)  : chr [1:24] "spl_odds_2" "gamma2(groupPoor)" "-0.0115893063326446" "-3.50651895971515" ...[] 
  []
 
 
-Overfull \hbox (144.4932pt too wide) in paragraph at lines 953--953
+Overfull \hbox (144.4932pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma3(groupMedium): chr [1:24] "spl_odds_2" "gamma3(groupMedium)" "-2.0827061335566" "-5.4192694293387" ...[] 
  []
 
 
-Overfull \hbox (149.74318pt too wide) in paragraph at lines 953--953
+Overfull \hbox (149.74318pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma3(groupPoor)  : chr [1:24] "spl_odds_2" "gamma3(groupPoor)" "-0.339047547656046" "-3.52457422720196" ...[] 
  []
 
 
-Overfull \hbox (97.24333pt too wide) in paragraph at lines 953--953
+Overfull \hbox (97.24333pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma0             : chr [1:24] "spl_normal_2" "gamma0" "-2.47954443170845" "-3.33706504973905" ...[] 
  []
 
 
-Overfull \hbox (86.74336pt too wide) in paragraph at lines 953--953
+Overfull \hbox (86.74336pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma1             : chr [1:24] "spl_normal_2" "gamma1" "1.1528048973128" "-1.19034788985897" ...[] 
  []
 
 
-Overfull \hbox (102.49332pt too wide) in paragraph at lines 953--953
+Overfull \hbox (102.49332pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma2             : chr [1:24] "spl_normal_2" "gamma2" "-0.360056185826704" "-1.45685342474927" ...[] 
  []
 
 
-Overfull \hbox (102.49332pt too wide) in paragraph at lines 953--953
+Overfull \hbox (102.49332pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ gamma3             : chr [1:24] "spl_normal_2" "gamma3" "0.489377045312761" "-0.587788063673127" ...[] 
  []
 
 
-Overfull \hbox (118.24327pt too wide) in paragraph at lines 953--953
+Overfull \hbox (118.24327pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ groupMedium        : chr [1:24] "spl_normal_2" "groupMedium" "1.56460781348189" "0.580355629786665" ...[] 
  []
 
 
-Overfull \hbox (107.7433pt too wide) in paragraph at lines 953--953
+Overfull \hbox (107.7433pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ groupPoor          : chr [1:24] "spl_normal_2" "groupPoor" "1.63775064239602" "0.723786688856852" ...[] 
  []
 
 
-Overfull \hbox (60.49344pt too wide) in paragraph at lines 953--953
+Overfull \hbox (60.49344pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ lbls_spline: chr [1:9] "Hazard 1 knots" "Hazard 2 knots" "Hazard 3 knots" "Odds 1 knots" ...[] 
  []
 
 
-Overfull \hbox (270.49283pt too wide) in paragraph at lines 953--953
+Overfull \hbox (270.49283pt too wide) in paragraph at lines 954--954
 []\T1/lmtt/m/n/10 ##   ..$ lbls_cure  : chr [1:6] "Mixture cure Weibull" "Non-mixture cure Weibull" "Mixture cure Log-normal" "Non-mixture cure Log-normal" ...[] 
  []
 
 
 
 [47]
+Overfull \hbox (81.49338pt too wide) in paragraph at lines 993--993
+[]\T1/lmtt/m/n/10 ## [1] survival_3.7-0   survminer_0.5.0  ggpubr_0.6.0     kableExtra_1.4.0 knitr_1.50       ggplot2_3.5.2[] 
+ []
+
+
+Overfull \hbox (170.74312pt too wide) in paragraph at lines 993--993
+[]\T1/lmtt/m/n/10 ##  [1] flexsurvcure_1.3.1  gtable_0.3.6        xfun_0.52           bslib_0.8.0         rstatix_0.7.2       lattice_0.22-6[] 
+ []
+
+
+Overfull \hbox (160.24315pt too wide) in paragraph at lines 993--993
+[]\T1/lmtt/m/n/10 ##  [7] numDeriv_2016.8-1.1 quadprog_1.5-8      vctrs_0.6.5         tools_4.4.2         generics_0.1.3      tibble_3.2.1[] 
+ []
+
+
+Overfull \hbox (170.74312pt too wide) in paragraph at lines 993--993
+[]\T1/lmtt/m/n/10 ## [13] pkgconfig_2.0.3     Matrix_1.7-1        data.table_1.16.4   lifecycle_1.0.4     farver_2.1.2        compiler_4.4.2[] 
+ []
+
+
+Overfull \hbox (186.49307pt too wide) in paragraph at lines 993--993
+[]\T1/lmtt/m/n/10 ## [19] stringr_1.5.1       statmod_1.5.0       munsell_0.5.1       carData_3.0-5       mstate_0.3.3        htmltools_0.5.8.1[] 
+ []
+
+
+Overfull \hbox (175.9931pt too wide) in paragraph at lines 993--993
+[]\T1/lmtt/m/n/10 ## [25] sass_0.4.9          yaml_2.3.10         Formula_1.2-5       pillar_1.10.0       car_3.1-3           jquerylib_0.1.4[] 
+ []
+
+
+Overfull \hbox (154.99316pt too wide) in paragraph at lines 993--993
+[]\T1/lmtt/m/n/10 ## [31] tidyr_1.3.1         cachem_1.1.0        muhaz_1.2.6.4       boot_1.3-31         abind_1.4-8         km.ci_0.5-6[] 
+ []
+
+
+Overfull \hbox (154.99316pt too wide) in paragraph at lines 993--993
+[]\T1/lmtt/m/n/10 ## [37] commonmark_1.9.5    tidyselect_1.2.1    digest_0.6.37       mvtnorm_1.3-2       stringi_1.8.4       dplyr_1.1.4[] 
+ []
+
+
+Overfull \hbox (181.24309pt too wide) in paragraph at lines 993--993
+[]\T1/lmtt/m/n/10 ## [43] purrr_1.0.4         labeling_0.4.3      splines_4.4.2       fastmap_1.2.0       grid_4.4.2          colorspace_2.1-1[] 
+ []
+
+
+Overfull \hbox (160.24315pt too wide) in paragraph at lines 993--993
+[]\T1/lmtt/m/n/10 ## [49] cli_3.6.3           flexsurv_2.3.2      magrittr_2.0.3      broom_1.0.8         withr_3.0.2         scales_1.3.0[] 
+ []
+
+
+Overfull \hbox (170.74312pt too wide) in paragraph at lines 993--993
+[]\T1/lmtt/m/n/10 ## [55] backports_1.5.0     rmarkdown_2.29      ggtext_0.1.2        gridExtra_2.3       deSolve_1.40        ggsignif_0.6.4[] 
+ []
+
+
+Overfull \hbox (170.74312pt too wide) in paragraph at lines 993--993
+[]\T1/lmtt/m/n/10 ## [61] zoo_1.8-12          evaluate_1.0.1      KMsurv_0.1-5        viridisLite_0.4.2   markdown_1.13       survMisc_0.5.6[] 
+ []
+
+
+Overfull \hbox (149.74318pt too wide) in paragraph at lines 993--993
+[]\T1/lmtt/m/n/10 ## [67] rlang_1.1.6         gridtext_0.1.5      Rcpp_1.0.13-1       xtable_1.8-4        glue_1.8.0          xml2_1.3.6[] 
+ []
+
+
+Overfull \hbox (81.49338pt too wide) in paragraph at lines 993--993
+[]\T1/lmtt/m/n/10 ## [73] svglite_2.1.3       rstudioapi_0.17.1   jsonlite_1.8.9      R6_2.5.1            systemfonts_1.1.0[] 
+ []
+
+
 
 [48
 
@@ -1844,7 +1914,7 @@ Here is how much of TeX's memory you used:
  14 hyphenation exceptions out of 8191
  89i,10n,93p,724b,624s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <c:/Users/g10028783/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb><c:/Users/g10028783/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb><c:/Users/g10028783/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb><c:/Users/g10028783/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb><c:/Users/g10028783/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb><c:/Users/g10028783/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb>
-Output written on BC_OS.pdf (48 pages, 2851505 bytes).
+Output written on BC_OS.pdf (48 pages, 2851687 bytes).
 PDF statistics:
  1272 PDF objects out of 1440 (max. 8388607)
  986 compressed objects within 10 object streams
