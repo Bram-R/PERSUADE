@@ -392,7 +392,7 @@ f_surv_model <- function(years, status, group, strata, ngroups, form, spline_mod
   #'              group = factor(bc$group), strata = FALSE,
   #'              ngroups = nlevels(bc$group), form = as.formula(Surv(bc$recyrs, bc$censrec) ~ factor(bc$group)),
   #'              spline_mod = TRUE, cure_mod = FALSE,
-  #'              cure_link = "logit", group_names = levels(bc$group))
+  #'              cure_link = "logistic", group_names = levels(bc$group))
   #' }
   #' @export
   
@@ -464,7 +464,6 @@ f_surv_model <- function(years, status, group, strata, ngroups, form, spline_mod
   # Fit cure models if requested
   cure_models <- list()
   cure_ic <- NULL
-  cure_fraction <- NULL
   if (cure_mod) {
     cure_dists <- c("weibull", "lnorm", "llogis")
     for (dist in cure_dists) {
@@ -486,7 +485,12 @@ f_surv_model <- function(years, status, group, strata, ngroups, form, spline_mod
       Model = cure_labels,
       AIC = sapply(cure_models, function(models) sum(sapply(models, function(model) model$AIC))),
       CureFraction = t(sapply(cure_models, function(models) {
-        sapply(models, function(model) paste0(round(model$res[1, 1], 2) * 100, "%"))
+        sapply(models, function(model) {
+          est <- round(model$res[1, 1] * 100, 0)
+          lci <- round(model$res[1, 2] * 100, 0)
+          uci <- round(model$res[1, 3] * 100, 0)
+          paste0(est, "% (", lci, "%–", uci, "%)")
+        })
       }))
     )
   }

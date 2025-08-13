@@ -47,7 +47,7 @@ f_plot_km_survival <- function(PERSUADE) {
     censor = ngroups == 1,
     ggtheme = theme_light(),
     color = if (ngroups > 1) "strata" else "black",
-    linetype = if (ngroups > 1) as.integer(c(1, "2222", "5212")),
+    linetype = if (ngroups > 1) as.integer(c(1, "3333", "5212")),
     size = 0.5,
     legend = "top"
   )
@@ -75,7 +75,7 @@ f_plot_km_survival_base <- function(PERSUADE) {
 
   ngroups <- misc$ngroups
   group_names <- misc$group_names
-  line_type <- as.integer(c(1, "2222", "5212"))
+  line_type <- as.integer(c(1, "3333", "5212"))
   km_line_color <- c("black", "lightgrey", "darkgrey")
   
   # Base KM plot
@@ -224,7 +224,7 @@ f_plot_smoothed_hazard <- function(PERSUADE) {
   
   # Define plotting colors and line types (extendable, will recycle if needed)
   haz_line_color <- c("black", "lightgrey", "darkgrey")
-  line_type <- as.integer(c(1, "2222", "5212", "3313", "1144", "42"))
+  line_type <- as.integer(c(1, "3333", "5212", "3313", "1144", "42"))
   
   # Extract plot limits
   xlim_range <- c(0, surv_obs$haz$max$time)
@@ -298,7 +298,7 @@ f_plot_hazard_with_models <- function(PERSUADE) {
   # Define base plot styles
   haz_line_color <- c("black", "lightgrey", "darkgrey")
   line_color <- 1:9
-  line_type <- c(1, 2222, 5212)
+  line_type <- c(1, 3333, 5212)
   
   # Define model groups to iterate over
   model_types <- list(
@@ -311,7 +311,7 @@ f_plot_hazard_with_models <- function(PERSUADE) {
   cure_col_index <- c(2, 3, 4)  # assumes group 1: col 2, group 2: col 3, etc.
   
   for (i in seq_len(ngroups)) {
-    group_label <- paste("Group", misc$group_names[i])
+    group_label <- paste("Group:", misc$group_names[i])
     smooth_name <- paste0("smooth_gr", i)
     smooth_data <- surv_obs$haz$hazards[[smooth_name]]
     
@@ -420,7 +420,7 @@ f_plot_param_surv_model <- function(PERSUADE, model_index = 1) {
   
   ngroups <- misc$ngroups
   group_names <- misc$group_names
-  line_type <- as.integer(c(1, "2222", "5212"))
+  line_type <- as.integer(c(1, "3333", "5212"))
   km_line_color <- c("black", "lightgrey", "darkgrey")
   
   # Base KM plot
@@ -490,7 +490,7 @@ f_plot_spline_surv_model <- function(PERSUADE, model_index = 1) {
   
   ngroups <- misc$ngroups
   group_names <- misc$group_names
-  line_type <- as.integer(c(1, "2222", "5212"))
+  line_type <- as.integer(c(1, "3333", "5212"))
   km_line_color <- c("black", "lightgrey", "darkgrey")
   
   # Base KM plot
@@ -569,7 +569,7 @@ f_plot_cure_surv_model <- function(PERSUADE, model_index = 1) {
   
   ngroups <- misc$ngroups
   group_names <- misc$group_names
-  line_type <- as.integer(c(1, "2222", "5212"))
+  line_type <- as.integer(c(1, "3333", "5212"))
   km_line_color <- c("black", "lightgrey", "darkgrey")
   
   # Base KM plot
@@ -638,7 +638,7 @@ f_plot_diag_param_surv_model <- function(PERSUADE, model_index = 1) {
   
   ngroups <- misc$ngroups
   group_names <- misc$group_names
-  line_type <- as.integer(c(1, "2222", "5212"))
+  line_type <- as.integer(c(1, "3333", "5212"))
   point_shape <- c(1, 8, 9)
   km_line_color <- c("black", "lightgrey", "darkgrey")
   
@@ -776,7 +776,7 @@ f_plot_diag_spline_surv_model <- function(PERSUADE, model_index = 1) {
   
   ngroups <- misc$ngroups
   group_names <- misc$group_names
-  line_type <- as.integer(c(1, "2222", "5212"))
+  line_type <- as.integer(c(1, "3333", "5212"))
   point_shape <- c(1, 8, 9)
   km_line_color <- c("black", "lightgrey", "darkgrey")
   
@@ -894,7 +894,7 @@ f_plot_diag_cure_surv_model <- function(PERSUADE, model_index = 1) {
   
   ngroups <- misc$ngroups
   group_names <- misc$group_names
-  line_type <- as.integer(c(1, "2222", "5212"))
+  line_type <- as.integer(c(1, "3333", "5212"))
   point_shape <- c(1, 8, 9)
   km_line_color <- c("black", "lightgrey", "darkgrey")
   
@@ -999,7 +999,7 @@ f_plot_tp_param_surv_model <- function(PERSUADE, model_index = 1) {
   
   ngroups <- misc$ngroups
   group_names <- misc$group_names
-  line_type <- as.integer(c(1, "2222", "5212"))
+  line_type <- as.integer(c(1, "3333", "5212"))
   point_shape <- c(1, 8, 9)
   km_line_color <- c("black", "lightgrey", "darkgrey")
   
@@ -1092,7 +1092,7 @@ f_plot_tp_spline_surv_model <- function(PERSUADE, model_index = 1) {
   
   ngroups       <- misc$ngroups
   group_names   <- misc$group_names
-  line_type     <- as.integer(c(1, "2222", "5212"))
+  line_type     <- as.integer(c(1, "3333", "5212"))
   point_shape   <- c(1, 8, 9)
   km_line_color <- c("black", "lightgrey", "darkgrey")
   
@@ -1198,7 +1198,7 @@ f_plot_tp_cure_surv_model <- function(PERSUADE, model_index = 1) {
   
   ngroups       <- misc$ngroups
   group_names   <- misc$group_names
-  line_type     <- as.integer(c(1, "2222", "5212"))
+  line_type     <- as.integer(c(1, "3333", "5212"))
   point_shape   <- c(1, 8, 9)
   km_line_color <- c("black", "lightgrey", "darkgrey")
   
@@ -1291,7 +1291,7 @@ f_plot_param_surv_extrap <- function(PERSUADE) {
   surv_pred <- PERSUADE$surv_pred
   model_names <- names(PERSUADE$surv_model$param_models)
   
-  line_type <- as.integer(c(1, "2222", "5212"))
+  line_type <- as.integer(c(1, "3333", "5212"))
   
   for (i in seq_len(misc$ngroups)) {
     plot(
@@ -1338,7 +1338,7 @@ f_plot_spline_surv_extrap <- function(PERSUADE) {
   surv_pred <- PERSUADE$surv_pred
   model_names <- names(PERSUADE$surv_model$spline_models)
   
-  line_type <- as.integer(c(1, "2222", "5212"))
+  line_type <- as.integer(c(1, "3333", "5212"))
   
   for (i in seq_len(misc$ngroups)) {
     plot(
@@ -1385,7 +1385,7 @@ f_plot_cure_surv_extrap <- function(PERSUADE) {
   surv_pred <- PERSUADE$surv_pred
   model_names <- names(PERSUADE$surv_model$cure_models)
   
-  line_type <- as.integer(c(1, "2222", "5212"))
+  line_type <- as.integer(c(1, "3333", "5212"))
   
   for (i in seq_len(misc$ngroups)) {
     plot(
@@ -1428,7 +1428,7 @@ f_plot_tp_param_surv_extrap <- function(PERSUADE) {
   surv_obs <- PERSUADE$surv_obs
   surv_pred <- PERSUADE$surv_pred
   
-  line_type <- as.integer(c(1, "2222", "5212"))
+  line_type <- as.integer(c(1, "3333", "5212"))
   
   for (i in seq_len(misc$ngroups)) {
     tp_obs <- surv_obs$tp[[paste0("gr_", i)]]
@@ -1471,7 +1471,7 @@ f_plot_tp_spline_surv_extrap <- function(PERSUADE) {
   surv_obs <- PERSUADE$surv_obs
   surv_pred <- PERSUADE$surv_pred
   
-  line_type <- as.integer(c(1, "2222", "5212"))
+  line_type <- as.integer(c(1, "3333", "5212"))
   
   for (i in seq_len(misc$ngroups)) {
     tp_obs <- surv_obs$tp[[paste0("gr_", i)]]
@@ -1514,7 +1514,7 @@ f_plot_tp_cure_surv_extrap <- function(PERSUADE) {
   surv_obs <- PERSUADE$surv_obs
   surv_pred <- PERSUADE$surv_pred
   
-  line_type <- as.integer(c(1, "2222", "5212"))
+  line_type <- as.integer(c(1, "3333", "5212"))
   offset <- if (isTRUE(input$spline_mod)) 0 else -9
   
   for (i in seq_len(misc$ngroups)) {
@@ -1556,7 +1556,7 @@ f_plot_hazard_parametric_extrap <- function(PERSUADE) {
   misc <- PERSUADE$misc
   
   cols <- seq_along(models)
-  line_type <- as.integer(c(1, "2222", "5212"))
+  line_type <- as.integer(c(1, "3333", "5212"))
   
   for (i in seq_len(misc$ngroups)) {
     obs_data <- PERSUADE$surv_obs$haz$hazards[[paste0("smooth_gr", i)]]
@@ -1595,7 +1595,7 @@ f_plot_hazard_spline_extrap <- function(PERSUADE) {
   misc <- PERSUADE$misc
   
   cols <- seq_along(models)
-  line_type <- as.integer(c(1, "2222", "5212"))
+  line_type <- as.integer(c(1, "3333", "5212"))
   
   for (i in seq_len(misc$ngroups)) {
     obs_data <- PERSUADE$surv_obs$haz$hazards[[paste0("smooth_gr", i)]]
@@ -1634,7 +1634,7 @@ f_plot_hazard_cure_extrap <- function(PERSUADE) {
   misc <- PERSUADE$misc
   
   cols <- seq_along(models)
-  line_type <- as.integer(c(1, "2222", "5212"))
+  line_type <- as.integer(c(1, "3333", "5212"))
   
   for (i in seq_len(misc$ngroups)) {
     obs_data <- PERSUADE$surv_obs$haz$hazards[[paste0("smooth_gr", i)]]

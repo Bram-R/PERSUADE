@@ -1,14 +1,16 @@
 ---
+title: "PERSUADE"
+date: "`r Sys.Date()`"
 output:
   pdf_document:
     toc: yes
-    keep_tex: TRUE
+    keep_tex: true
 urlcolor: blue
----
-
----
-title: "PERSUADE `r paste0(PERSUADE$name)`"
-date: "`r Sys.Date()`"
+header-includes:
+  - \usepackage{float}
+  - \usepackage{booktabs}
+  - \usepackage{longtable}
+  - \usepackage[table]{xcolor}
 ---
 
 ```{r setup, include=FALSE}
@@ -86,7 +88,7 @@ f_plot_hazard_with_models(PERSUADE)
 kable_styling(
   kable(
     PERSUADE$surv_model$param_ic[order(PERSUADE$surv_model$param_ic$AIC), ],
-    row.names = FALSE,format = "latex", booktabs = TRUE, linesep = "",
+    row.names = FALSE, format = "latex", booktabs = TRUE, linesep = "",
     caption = "Goodness of fit statistics"),
   latex_options = c("HOLD_position", "scale_down", "striped"))
 ```
@@ -159,9 +161,9 @@ kable_styling(
   latex_options = c("HOLD_position", "scale_down", "striped"))
 kable_styling(
   kable(
-    PERSUADE$surv_model$cure_ic[,-2],
-    format = "latex", booktabs = TRUE, linesep = "",
-    caption = "Cure proportions per group"),
+    PERSUADE$surv_model$cure_ic[,-2], col.names = c("Model", PERSUADE$misc$group_names),
+    row.names = FALSE, format = "latex", booktabs = TRUE, linesep = "",
+    caption = "Cure proportions per group (lower and upper 95CI)"),
   latex_options = c("HOLD_position", "scale_down", "striped"))
 ```
 
@@ -217,65 +219,50 @@ f_plot_hazard_cure_extrap(PERSUADE)
 \clearpage
 
 ## 5.4 Tabulated  results
-### `r paste("Group", PERSUADE$misc$group_names[1])`
-```{r validate_extrapolation1, echo=FALSE, out.height="29%", fig.width=11}
-i <- 1
-kable_styling(
-  kable(
-    t(round(PERSUADE$surv_pred$gr[[i]][1 + PERSUADE$input$time_pred_surv_table, ], 3))[-1, ], 
-    col.names = paste("T=", PERSUADE$surv_pred$gr[[i]][1 + PERSUADE$input$time_pred_surv_table, ][, 1]), 
-    format = "latex", booktabs = TRUE, linesep = "",
-    caption = "Survival probability at different time points"), 
-  latex_options = c("HOLD_position", "scale_down", "striped"))
+```{r validate_extrapolation_table, echo=FALSE, out.height="25%", fig.width=11, results='asis'}
+group_names <- paste("Group", PERSUADE$misc$group_names)
 
-kable_styling(
-  kable(
-    f_summary(PERSUADE$surv_pred$tp_gr[[i]][, 2:PERSUADE$misc$cols_tp]), 
-    format = "latex", booktabs = TRUE, linesep = "", 
-    caption = "Summary statistics of annual transition probabilities"), 
-  latex_options = c("HOLD_position", "scale_down", "striped"))
-```
-
-\clearpage
-
-### `r paste("Group", PERSUADE$misc$group_names[i + 1])`
-```{r validate_extrapolation2, echo=FALSE, out.height="29%", fig.width=11, eval=if (PERSUADE$misc$ngroups>1) {TRUE} else {FALSE}}
-i <- i + 1
-kable_styling(
-  kable(
-    t(round(PERSUADE$surv_pred$gr[[i]][1 + PERSUADE$input$time_pred_surv_table, ], 3))[-1, ], 
-    col.names = paste("T=", PERSUADE$surv_pred$gr[[i]][1 + PERSUADE$input$time_pred_surv_table, ][, 1]), 
-    format = "latex", booktabs = TRUE, linesep = "", 
-    caption = "Survival probability at different time points"), 
-  latex_options = c("HOLD_position", "scale_down", "striped"))
-
-kable_styling(
-  kable(
-    f_summary(PERSUADE$surv_pred$tp_gr[[i]][, 2:PERSUADE$misc$cols_tp]), 
-    format = "latex", booktabs = TRUE, linesep = "", 
-    caption = "Summary statistics of annual transition probabilities"), 
-  latex_options = c("HOLD_position", "scale_down", "striped"))
-```
-
-\clearpage
-
-### `r paste("Group", PERSUADE$misc$group_names[i + 1])`
-```{r validate_extrapolation3, echo=FALSE, out.height="29%", fig.width=11, eval=if (PERSUADE$misc$ngroups>2) {TRUE} else {FALSE}}
-i <- i + 1
-kable_styling(
-  kable(
-    t(round(PERSUADE$surv_pred$gr[[i]][1 + PERSUADE$input$time_pred_surv_table, ], 3))[-1, ], 
-    col.names = paste("T=", PERSUADE$surv_pred$gr[[i]][1 + PERSUADE$input$time_pred_surv_table, ][, 1]), 
-    format = "latex", booktabs = TRUE, linesep = "", 
-    caption = "Survival probability at different time points"), 
-  latex_options = c("HOLD_position", "scale_down", "striped"))
-
-kable_styling(
-  kable(
-    f_summary(PERSUADE$surv_pred$tp_gr[[i]][, 2:PERSUADE$misc$cols_tp]), 
-    format = "latex", booktabs = TRUE, linesep = "", 
-    caption = "Summary statistics of annual transition probabilities"), 
-  latex_options = c("HOLD_position", "scale_down", "striped"))
+for (i in seq_along(group_names)) {
+  
+  # Only insert a page break before *subsequent* groups
+  if (i > 1) {
+    cat("\n\\clearpage\n\n")
+  }
+  
+  # Section title
+  cat("### ", group_names[i], "\n\n")
+  
+  # Survival probability table
+  print(
+    kable_styling(
+      kable(
+        t(round(PERSUADE$surv_pred$gr[[i]][
+          1 + PERSUADE$input$time_pred_surv_table, ], 3))[-1, ], 
+        col.names = paste("T=",
+          PERSUADE$surv_pred$gr[[i]][
+            1 + PERSUADE$input$time_pred_surv_table, ][, 1]
+        ), 
+        format = "latex", booktabs = TRUE, linesep = "", table.envir = "table",
+        caption = "Survival probability at different time points"), 
+      latex_options = c("HOLD_position", "scale_down", "striped")
+    )
+  )
+  cat("\n")
+  
+  # Annual transition probability table
+  print(
+    kable_styling(
+      kable(
+        f_summary(
+          PERSUADE$surv_pred$tp_gr[[i]][, 2:PERSUADE$misc$cols_tp]
+        ), 
+        format = "latex", booktabs = TRUE, linesep = "", table.envir = "table",
+        caption = "Summary statistics of annual transition probabilities"), 
+      latex_options = c("HOLD_position", "scale_down", "striped")
+    )
+  )
+  cat("\n")
+}
 ```
 
 \clearpage

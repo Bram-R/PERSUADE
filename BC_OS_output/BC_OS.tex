@@ -55,20 +55,10 @@
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 \setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{float}
 \usepackage{booktabs}
 \usepackage{longtable}
-\usepackage{array}
-\usepackage{multirow}
-\usepackage{wrapfig}
-\usepackage{float}
-\usepackage{colortbl}
-\usepackage{pdflscape}
-\usepackage{tabu}
-\usepackage{threeparttable}
-\usepackage{threeparttablex}
-\usepackage[normalem]{ulem}
-\usepackage{makecell}
-\usepackage{xcolor}
+\usepackage[table]{xcolor}
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
@@ -76,7 +66,7 @@
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same}
 \hypersetup{
-  pdftitle={PERSUADE BC\_OS},
+  pdftitle={PERSUADE},
   colorlinks=true,
   linkcolor={Maroon},
   filecolor={Maroon},
@@ -84,9 +74,9 @@
   urlcolor={blue},
   pdfcreator={LaTeX via pandoc}}
 
-\title{PERSUADE BC\_OS}
+\title{PERSUADE}
 \author{}
-\date{\vspace{-2.5em}2025-08-12}
+\date{\vspace{-2.5em}2025-08-13}
 
 \begin{document}
 \maketitle
@@ -115,9 +105,9 @@
 \toprule
   & records & n.max & n.start & events & rmean & se(rmean) & median & 0.95LCL & 0.95UCL\\
 \midrule
-\cellcolor{gray!10}{group=Good} & \cellcolor{gray!10}{229} & \cellcolor{gray!10}{229} & \cellcolor{gray!10}{229} & \cellcolor{gray!10}{51} & \cellcolor{gray!10}{5.934330} & \cellcolor{gray!10}{0.1616003} & \cellcolor{gray!10}{NA} & \cellcolor{gray!10}{NA} & \cellcolor{gray!10}{NA}\\
-group=Medium & 229 & 229 & 229 & 103 & 4.600852 & 0.1856699 & 5.254795 & 4.115068 & 5.572603\\
-\cellcolor{gray!10}{group=Poor} & \cellcolor{gray!10}{228} & \cellcolor{gray!10}{228} & \cellcolor{gray!10}{228} & \cellcolor{gray!10}{145} & \cellcolor{gray!10}{3.101736} & \cellcolor{gray!10}{0.1772520} & \cellcolor{gray!10}{2.183562} & \cellcolor{gray!10}{1.978082} & \cellcolor{gray!10}{2.619178}\\
+\cellcolor{gray!10}{group=Good} & \cellcolor{gray!10}{229} & \cellcolor{gray!10}{229} & \cellcolor{gray!10}{229} & \cellcolor{gray!10}{51} & \cellcolor{gray!10}{5.934} & \cellcolor{gray!10}{0.1616} & \cellcolor{gray!10}{NA} & \cellcolor{gray!10}{NA} & \cellcolor{gray!10}{NA}\\
+group=Medium & 229 & 229 & 229 & 103 & 4.601 & 0.1857 & 5.255 & 4.115 & 5.573\\
+\cellcolor{gray!10}{group=Poor} & \cellcolor{gray!10}{228} & \cellcolor{gray!10}{228} & \cellcolor{gray!10}{228} & \cellcolor{gray!10}{145} & \cellcolor{gray!10}{3.102} & \cellcolor{gray!10}{0.1773} & \cellcolor{gray!10}{2.184} & \cellcolor{gray!10}{1.978} & \cellcolor{gray!10}{2.619}\\
 \bottomrule
 \end{tabular}}
 \end{table}
@@ -181,13 +171,13 @@ models}\label{standard-parametric-models}
 \toprule
 Model & AIC & BIC\\
 \midrule
-\cellcolor{gray!10}{Generalised Gamma} & \cellcolor{gray!10}{1589.049} & \cellcolor{gray!10}{1629.826}\\
-Log-normal & 1592.880 & 1620.066\\
-\cellcolor{gray!10}{Log-logistic} & \cellcolor{gray!10}{1609.294} & \cellcolor{gray!10}{1636.479}\\
-Gamma & 1621.982 & 1649.167\\
-\cellcolor{gray!10}{Weibull} & \cellcolor{gray!10}{1632.618} & \cellcolor{gray!10}{1659.803}\\
-Gompertz & 1660.954 & 1688.140\\
-\cellcolor{gray!10}{Exponential} & \cellcolor{gray!10}{1668.212} & \cellcolor{gray!10}{1681.805}\\
+\cellcolor{gray!10}{Generalised Gamma} & \cellcolor{gray!10}{1589} & \cellcolor{gray!10}{1630}\\
+Log-normal & 1593 & 1620\\
+\cellcolor{gray!10}{Log-logistic} & \cellcolor{gray!10}{1609} & \cellcolor{gray!10}{1636}\\
+Gamma & 1622 & 1649\\
+\cellcolor{gray!10}{Weibull} & \cellcolor{gray!10}{1633} & \cellcolor{gray!10}{1660}\\
+Gompertz & 1661 & 1688\\
+\cellcolor{gray!10}{Exponential} & \cellcolor{gray!10}{1668} & \cellcolor{gray!10}{1682}\\
 \bottomrule
 \end{tabular}}
 \end{table}
@@ -278,22 +268,22 @@ models}\label{parametric-natural-cubic-spline-models}
 \toprule
 Model & AIC & BIC\\
 \midrule
-\cellcolor{gray!10}{Odds 1 knots} & \cellcolor{gray!10}{1585.894} & \cellcolor{gray!10}{1640.264}\\
-Odds 2 knots & 1587.289 & 1641.659\\
-\cellcolor{gray!10}{Hazard 3 knots} & \cellcolor{gray!10}{1587.682} & \cellcolor{gray!10}{1628.460}\\
-Odds 3 knots & 1588.344 & 1642.714\\
-\cellcolor{gray!10}{Generalised Gamma} & \cellcolor{gray!10}{1589.049} & \cellcolor{gray!10}{1629.826}\\
-Hazard 1 knots & 1589.327 & 1630.105\\
-\cellcolor{gray!10}{Normal 3 knots} & \cellcolor{gray!10}{1589.832} & \cellcolor{gray!10}{1657.795}\\
-Normal 1 knots & 1589.875 & 1657.838\\
-\cellcolor{gray!10}{Hazard 2 knots} & \cellcolor{gray!10}{1590.221} & \cellcolor{gray!10}{1630.999}\\
-Normal 2 knots & 1590.718 & 1658.681\\
-\cellcolor{gray!10}{Log-normal} & \cellcolor{gray!10}{1592.880} & \cellcolor{gray!10}{1620.066}\\
-Log-logistic & 1609.294 & 1636.479\\
-\cellcolor{gray!10}{Gamma} & \cellcolor{gray!10}{1621.982} & \cellcolor{gray!10}{1649.167}\\
-Weibull & 1632.618 & 1659.803\\
-\cellcolor{gray!10}{Gompertz} & \cellcolor{gray!10}{1660.954} & \cellcolor{gray!10}{1688.140}\\
-Exponential & 1668.212 & 1681.805\\
+\cellcolor{gray!10}{Odds 1 knots} & \cellcolor{gray!10}{1586} & \cellcolor{gray!10}{1640}\\
+Odds 2 knots & 1587 & 1642\\
+\cellcolor{gray!10}{Hazard 3 knots} & \cellcolor{gray!10}{1588} & \cellcolor{gray!10}{1628}\\
+Odds 3 knots & 1588 & 1643\\
+\cellcolor{gray!10}{Generalised Gamma} & \cellcolor{gray!10}{1589} & \cellcolor{gray!10}{1630}\\
+Hazard 1 knots & 1589 & 1630\\
+\cellcolor{gray!10}{Normal 3 knots} & \cellcolor{gray!10}{1590} & \cellcolor{gray!10}{1658}\\
+Normal 1 knots & 1590 & 1658\\
+\cellcolor{gray!10}{Hazard 2 knots} & \cellcolor{gray!10}{1590} & \cellcolor{gray!10}{1631}\\
+Normal 2 knots & 1591 & 1659\\
+\cellcolor{gray!10}{Log-normal} & \cellcolor{gray!10}{1593} & \cellcolor{gray!10}{1620}\\
+Log-logistic & 1609 & 1636\\
+\cellcolor{gray!10}{Gamma} & \cellcolor{gray!10}{1622} & \cellcolor{gray!10}{1649}\\
+Weibull & 1633 & 1660\\
+\cellcolor{gray!10}{Gompertz} & \cellcolor{gray!10}{1661} & \cellcolor{gray!10}{1688}\\
+Exponential & 1668 & 1682\\
 \bottomrule
 \end{tabular}}
 \end{table}
@@ -404,38 +394,38 @@ models}\label{parametric-non-mixture-cure-models}
 \toprule
 Model & AIC\\
 \midrule
-\cellcolor{gray!10}{Generalised Gamma} & \cellcolor{gray!10}{1589.049}\\
-Log-normal & 1592.880\\
-\cellcolor{gray!10}{Mixture cure Log-normal} & \cellcolor{gray!10}{1593.762}\\
-Non-mixture cure Log-normal & 1593.793\\
-\cellcolor{gray!10}{Mixture cure Log-logistic} & \cellcolor{gray!10}{1604.290}\\
-Non-mixture cure Log-logistic & 1605.960\\
-\cellcolor{gray!10}{Log-logistic} & \cellcolor{gray!10}{1609.294}\\
-Non-mixture cure Weibull & 1615.016\\
-\cellcolor{gray!10}{Gamma} & \cellcolor{gray!10}{1621.982}\\
-Mixture cure Weibull & 1622.730\\
-\cellcolor{gray!10}{Weibull} & \cellcolor{gray!10}{1632.618}\\
-Gompertz & 1660.954\\
-\cellcolor{gray!10}{Exponential} & \cellcolor{gray!10}{1668.212}\\
+\cellcolor{gray!10}{Generalised Gamma} & \cellcolor{gray!10}{1589}\\
+Log-normal & 1593\\
+\cellcolor{gray!10}{Mixture cure Log-normal} & \cellcolor{gray!10}{1594}\\
+Non-mixture cure Log-normal & 1594\\
+\cellcolor{gray!10}{Mixture cure Log-logistic} & \cellcolor{gray!10}{1604}\\
+Non-mixture cure Log-logistic & 1606\\
+\cellcolor{gray!10}{Log-logistic} & \cellcolor{gray!10}{1609}\\
+Non-mixture cure Weibull & 1615\\
+\cellcolor{gray!10}{Gamma} & \cellcolor{gray!10}{1622}\\
+Mixture cure Weibull & 1623\\
+\cellcolor{gray!10}{Weibull} & \cellcolor{gray!10}{1633}\\
+Gompertz & 1661\\
+\cellcolor{gray!10}{Exponential} & \cellcolor{gray!10}{1668}\\
 \bottomrule
 \end{tabular}}
 \end{table}
 
 \begin{table}[H]
 \centering
-\caption{\label{tab:gof_cure}Cure proportions per group}
+\caption{\label{tab:gof_cure}Cure proportions per group (lower and upper 95CI)}
 \centering
 \resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
-\begin{tabular}[t]{lllll}
+\begin{tabular}[t]{llll}
 \toprule
-  & Model & CureFraction.1 & CureFraction.2 & CureFraction.3\\
+Model & Good & Medium & Poor\\
 \midrule
-\cellcolor{gray!10}{cure\_weibull\_mix} & \cellcolor{gray!10}{Mixture cure Weibull} & \cellcolor{gray!10}{65\%} & \cellcolor{gray!10}{31\%} & \cellcolor{gray!10}{18\%}\\
-cure\_weibull\_nmix & Non-mixture cure Weibull & 65\% & 30\% & 17\%\\
-\cellcolor{gray!10}{cure\_lnorm\_mix} & \cellcolor{gray!10}{Mixture cure Log-normal} & \cellcolor{gray!10}{57\%} & \cellcolor{gray!10}{19\%} & \cellcolor{gray!10}{11\%}\\
-cure\_lnorm\_nmix & Non-mixture cure Log-normal & 56\% & 20\% & 10\%\\
-\cellcolor{gray!10}{cure\_llogis\_mix} & \cellcolor{gray!10}{Mixture cure Log-logistic} & \cellcolor{gray!10}{60\%} & \cellcolor{gray!10}{23\%} & \cellcolor{gray!10}{14\%}\\
-cure\_llogis\_nmix & Non-mixture cure Log-logistic & 60\% & 25\% & 15\%\\
+\cellcolor{gray!10}{Mixture cure Weibull} & \cellcolor{gray!10}{65\% (54\%–75\%)} & \cellcolor{gray!10}{31\% (15\%–53\%)} & \cellcolor{gray!10}{18\% (10\%–29\%)}\\
+Non-mixture cure Weibull & 65\% (53\%–75\%) & 30\% (13\%–55\%) & 17\% (9\%–29\%)\\
+\cellcolor{gray!10}{Mixture cure Log-normal} & \cellcolor{gray!10}{57\% (35\%–77\%)} & \cellcolor{gray!10}{19\% (3\%–66\%)} & \cellcolor{gray!10}{11\% (3\%–35\%)}\\
+Non-mixture cure Log-normal & 56\% (33\%–77\%) & 20\% (5\%–57\%) & 10\% (3\%–30\%)\\
+\cellcolor{gray!10}{Mixture cure Log-logistic} & \cellcolor{gray!10}{60\% (45\%–74\%)} & \cellcolor{gray!10}{23\% (7\%–54\%)} & \cellcolor{gray!10}{14\% (6\%–30\%)}\\
+Non-mixture cure Log-logistic & 60\% (45\%–74\%) & 25\% (10\%–51\%) & 15\% (8\%–28\%)\\
 \bottomrule
 \end{tabular}}
 \end{table}
@@ -583,7 +573,7 @@ function}\label{extrapolated-hazard-function}
 
 \begin{table}[H]
 \centering
-\caption{\label{tab:validate_extrapolation1}Survival probability at different time points}
+\caption{\label{tab:validate_extrapolation_table}Survival probability at different time points}
 \centering
 \resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
 \begin{tabular}[t]{lrrrrrrrrrrrr}
@@ -618,7 +608,7 @@ Non-mixture cure Log-logistic & 1 & 0.989 & 0.933 & 0.846 & 0.767 & 0.712 & 0.62
 
 \begin{table}[H]
 \centering
-\caption{\label{tab:validate_extrapolation1}Summary statistics of annual transition probabilities}
+\caption{\label{tab:validate_extrapolation_table}Summary statistics of annual transition probabilities}
 \centering
 \resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
 \begin{tabular}[t]{lrrrrrrrr}
@@ -657,7 +647,7 @@ Non-mixture cure Log-logistic & 0.012 & 0.025 & 0.000 & 0.000 & 0.001 & 0.007 & 
 
 \begin{table}[H]
 \centering
-\caption{\label{tab:validate_extrapolation2}Survival probability at different time points}
+\caption{\label{tab:validate_extrapolation_table}Survival probability at different time points}
 \centering
 \resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
 \begin{tabular}[t]{lrrrrrrrrrrrr}
@@ -692,7 +682,7 @@ Non-mixture cure Log-logistic & 1 & 0.931 & 0.793 & 0.659 & 0.554 & 0.479 & 0.32
 
 \begin{table}[H]
 \centering
-\caption{\label{tab:validate_extrapolation2}Summary statistics of annual transition probabilities}
+\caption{\label{tab:validate_extrapolation_table}Summary statistics of annual transition probabilities}
 \centering
 \resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
 \begin{tabular}[t]{lrrrrrrrr}
@@ -731,7 +721,7 @@ Non-mixture cure Log-logistic & 0.032 & 0.048 & 0.001 & 0.002 & 0.007 & 0.037 & 
 
 \begin{table}[H]
 \centering
-\caption{\label{tab:validate_extrapolation3}Survival probability at different time points}
+\caption{\label{tab:validate_extrapolation_table}Survival probability at different time points}
 \centering
 \resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
 \begin{tabular}[t]{lrrrrrrrrrrrr}
@@ -766,7 +756,7 @@ Non-mixture cure Log-logistic & 1 & 0.823 & 0.549 & 0.380 & 0.293 & 0.246 & 0.17
 
 \begin{table}[H]
 \centering
-\caption{\label{tab:validate_extrapolation3}Summary statistics of annual transition probabilities}
+\caption{\label{tab:validate_extrapolation_table}Summary statistics of annual transition probabilities}
 \centering
 \resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
 \begin{tabular}[t]{lrrrrrrrr}
@@ -942,7 +932,7 @@ information}\label{persuade-object-information}
 ##   .. [list output truncated]
 ##  $ misc            :List of 7
 ##   ..$ form       :Class 'formula'  language Surv(years, status) ~ group
-##   .. .. ..- attr(*, ".Environment")=<environment: 0x000001e735fef3b0> 
+##   .. .. ..- attr(*, ".Environment")=<environment: 0x000001908400e180> 
 ##   ..$ group_names: chr [1:3] "Good" "Medium" "Poor"
 ##   ..$ ngroups    : int 3
 ##   ..$ lbls       : chr [1:7] "Exponential" "Weibull" "Gompertz" "Log-normal" ...
@@ -971,25 +961,33 @@ information}\label{persuade-object-information}
 ##  Sample:  Rejection 
 ##  
 ## attached base packages:
-## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## [1] splines   stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] survival_3.7-0   survminer_0.5.0  ggpubr_0.6.0     kableExtra_1.4.0 knitr_1.50       ggplot2_3.5.2   
+##  [1] docstring_1.0.0    flexsurvcure_1.3.1 sft_2.2-1          SuppDists_1.1-9.8  fda_6.2.0          deSolve_1.40      
+##  [7] fds_1.8            RCurl_1.98-1.16    rainbow_3.8        pcaPP_2.0-5        MASS_7.3-61        kableExtra_1.4.0  
+## [13] knitr_1.50         summarytools_1.1.4 data.table_1.16.4  survminer_0.5.0    ggpubr_0.6.0       ggplot2_3.5.2     
+## [19] muhaz_1.2.6.4      flexsurv_2.3.2     survival_3.7-0     rms_6.8-2          Hmisc_5.2-0       
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] flexsurvcure_1.3.1  gtable_0.3.6        xfun_0.52           bslib_0.8.0         rstatix_0.7.2       lattice_0.22-6     
-##  [7] numDeriv_2016.8-1.1 quadprog_1.5-8      vctrs_0.6.5         tools_4.4.2         generics_0.1.3      tibble_3.2.1       
-## [13] pkgconfig_2.0.3     Matrix_1.7-1        data.table_1.16.4   lifecycle_1.0.4     farver_2.1.2        compiler_4.4.2     
-## [19] stringr_1.5.1       statmod_1.5.0       munsell_0.5.1       carData_3.0-5       mstate_0.3.3        htmltools_0.5.8.1  
-## [25] sass_0.4.9          yaml_2.3.10         Formula_1.2-5       pillar_1.10.0       car_3.1-3           jquerylib_0.1.4    
-## [31] tidyr_1.3.1         cachem_1.1.0        muhaz_1.2.6.4       boot_1.3-31         abind_1.4-8         km.ci_0.5-6        
-## [37] commonmark_1.9.5    tidyselect_1.2.1    digest_0.6.37       mvtnorm_1.3-2       stringi_1.8.4       dplyr_1.1.4        
-## [43] purrr_1.0.4         labeling_0.4.3      splines_4.4.2       fastmap_1.2.0       grid_4.4.2          colorspace_2.1-1   
-## [49] cli_3.6.3           flexsurv_2.3.2      magrittr_2.0.3      broom_1.0.8         withr_3.0.2         scales_1.3.0       
-## [55] backports_1.5.0     rmarkdown_2.29      ggtext_0.1.2        gridExtra_2.3       deSolve_1.40        ggsignif_0.6.4     
-## [61] zoo_1.8-12          evaluate_1.0.1      KMsurv_0.1-5        viridisLite_0.4.2   markdown_1.13       survMisc_0.5.6     
-## [67] rlang_1.1.6         gridtext_0.1.5      Rcpp_1.0.13-1       xtable_1.8-4        glue_1.8.0          xml2_1.3.6         
-## [73] svglite_2.1.3       rstudioapi_0.17.1   jsonlite_1.8.9      R6_2.5.1            systemfonts_1.1.0
+##   [1] rstudioapi_0.17.1   jsonlite_1.8.9      magrittr_2.0.3      TH.data_1.1-2       magick_2.8.5        farver_2.1.2       
+##   [7] rmarkdown_2.29      vctrs_0.6.5         base64enc_0.1-3     tinytex_0.57        rstatix_0.7.2       htmltools_0.5.8.1  
+##  [13] polspline_1.1.25    broom_1.0.8         Formula_1.2-5       sass_0.4.9          hdrcde_3.4          pracma_2.4.4       
+##  [19] KernSmooth_2.23-24  bslib_0.8.0         htmlwidgets_1.6.4   plyr_1.8.9          sandwich_3.1-1      zoo_1.8-12         
+##  [25] lubridate_1.9.3     cachem_1.1.0        commonmark_1.9.5    lifecycle_1.0.4     pkgconfig_2.0.3     Matrix_1.7-1       
+##  [31] R6_2.5.1            fastmap_1.2.0       digest_0.6.37       numDeriv_2016.8-1.1 colorspace_2.1-1    labeling_0.4.3     
+##  [37] km.ci_0.5-6         timechange_0.3.0    abind_1.4-8         compiler_4.4.2      withr_3.0.2         pander_0.6.5       
+##  [43] htmlTable_2.4.3     backports_1.5.0     carData_3.0-5       ggsignif_0.6.4      quantreg_5.99       tools_4.4.2        
+##  [49] foreign_0.8-87      mstate_0.3.3        nnet_7.3-19         glue_1.8.0          quadprog_1.5-8      nlme_3.1-166       
+##  [55] gridtext_0.1.5      grid_4.4.2          checkmate_2.3.2     cluster_2.1.6       reshape2_1.4.4      generics_0.1.3     
+##  [61] gtable_0.3.6        KMsurv_0.1-5        tidyr_1.3.1         xml2_1.3.6          car_3.1-3           markdown_1.13      
+##  [67] pillar_1.10.0       stringr_1.5.1       dplyr_1.1.4         ggtext_0.1.2        pryr_0.1.6          lattice_0.22-6     
+##  [73] SparseM_1.84-2      ks_1.14.3           tidyselect_1.2.1    gridExtra_2.3       svglite_2.1.3       xfun_0.52          
+##  [79] statmod_1.5.0       rapportools_1.1     matrixStats_1.5.0   stringi_1.8.4       yaml_2.3.10         boot_1.3-31        
+##  [85] evaluate_1.0.1      codetools_0.2-20    tcltk_4.4.2         tibble_3.2.1        cli_3.6.3           rpart_4.1.23       
+##  [91] xtable_1.8-4        systemfonts_1.1.0   munsell_0.5.1       jquerylib_0.1.4     roxygen2_7.3.2      survMisc_0.5.6     
+##  [97] Rcpp_1.0.13-1       MatrixModels_0.5-3  mclust_6.1.1        bitops_1.0-9        viridisLite_0.4.2   mvtnorm_1.3-2      
+## [103] scales_1.3.0        purrr_1.0.4         rlang_1.1.6         multcomp_1.4-26
 \end{verbatim}
 
 \end{document}
