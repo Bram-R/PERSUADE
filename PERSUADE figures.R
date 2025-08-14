@@ -1297,7 +1297,7 @@ f_plot_param_surv_extrap <- function(PERSUADE) {
   for (i in seq_len(misc$ngroups)) {
     # Base KM plot
     plot(
-      surv_obs$km[i], lwd = 2, col = km_line_color[i], conf.int = FALSE,
+      surv_obs$km[i], lwd = 2, col = km_line_color[i], conf.int = FALSE, lty = line_type[i],
       main = paste0("A: Kaplan-Meier (parametric curves), Group: ", misc$group_names[i]),
       xlab = "time", ylab = "survival",
       xlim = c(0, input$time_horizon)
@@ -1359,7 +1359,7 @@ f_plot_spline_surv_extrap <- function(PERSUADE) {
   for (i in seq_len(misc$ngroups)) {
     # Base KM plot
     plot(
-      surv_obs$km[i], lwd = 2, col = km_line_color[i], conf.int = FALSE,
+      surv_obs$km[i], lwd = 2, col = km_line_color[i], conf.int = FALSE, lty = line_type[i],
       main = paste0("A: Kaplan-Meier (spline curves), Group: ", misc$group_names[i]),
       xlab = "time", ylab = "survival",
       xlim = c(0, input$time_horizon)
@@ -1421,7 +1421,7 @@ f_plot_cure_surv_extrap <- function(PERSUADE) {
   for (i in seq_len(misc$ngroups)) {
     # Base KM plot
     plot(
-      surv_obs$km[i], lwd = 2, col = km_line_color[i], conf.int = FALSE,
+      surv_obs$km[i], lwd = 2, col = km_line_color[i], conf.int = FALSE, lty = line_type[i],
       main = paste0("A: Kaplan-Meier (cure curves), Group: ", misc$group_names[i]),
       xlab = "time", ylab = "survival",
       xlim = c(0, input$time_horizon)
@@ -1473,6 +1473,7 @@ f_plot_tp_param_surv_extrap <- function(PERSUADE) {
   surv_obs <- PERSUADE$surv_obs
   surv_pred <- PERSUADE$surv_pred
   
+  line_color <- c("black", "lightgrey", "darkgrey")
   line_type <- as.integer(c(1, "3333", "5212"))
   
   for (i in seq_len(misc$ngroups)) {
@@ -1483,10 +1484,17 @@ f_plot_tp_param_surv_extrap <- function(PERSUADE) {
          main =  paste0("B: Annual transition probability (parametric curves), Group: ", misc$group_names[i]),
          xlab = "time", ylab = "annual transition probability",
          ylim = c(0, 1), xlim = c(0, input$time_horizon),
-         col = "black", type = "l", lwd = 2)
+         lty = line_type[i], col = line_color[i], type = "l", lwd = 2)
     
-    lines(tp_obs$time, tp_obs$smooth_lower, col = "black", lty = 2, lwd = 2)
-    lines(tp_obs$time, tp_obs$smooth_upper, col = "black", lty = 2, lwd = 2)
+    # Add shaded CI per group
+    polygon(
+      na.omit(data.frame(
+        x = c(tp_obs$time, rev(tp_obs$time)),
+        y = c(tp_obs$smooth_upper, rev(tp_obs$smooth_lower))
+      )),
+      col = adjustcolor(line_color[i], alpha.f = 0.3),
+      border = NA
+    )
     
     for (j in 2:8) {
       lines(input$time_pred[-1], unlist(tp_pred[, ..j]), col = j - 1, lty = line_type[i], lwd = 1)
@@ -1516,6 +1524,7 @@ f_plot_tp_spline_surv_extrap <- function(PERSUADE) {
   surv_obs <- PERSUADE$surv_obs
   surv_pred <- PERSUADE$surv_pred
   
+  line_color <- c("black", "lightgrey", "darkgrey")
   line_type <- as.integer(c(1, "3333", "5212"))
   
   for (i in seq_len(misc$ngroups)) {
@@ -1526,10 +1535,10 @@ f_plot_tp_spline_surv_extrap <- function(PERSUADE) {
          main =  paste0("B: Annual transition probability (spline curves), Group: ", misc$group_names[i]),
          xlab = "time", ylab = "annual transition probability",
          ylim = c(0, 1), xlim = c(0, input$time_horizon),
-         col = "black", type = "l", lwd = 2)
+         lty = line_type[i], col = line_color[i], type = "l", lwd = 2)
     
-    lines(tp_obs$time, tp_obs$smooth_lower, col = "black", lty = 2, lwd = 2)
-    lines(tp_obs$time, tp_obs$smooth_upper, col = "black", lty = 2, lwd = 2)
+    lines(tp_obs$time, tp_obs$smooth_lower, col = line_color[i], lty = 2, lwd = 2)
+    lines(tp_obs$time, tp_obs$smooth_upper, col = line_color[i], lty = 2, lwd = 2)
     
     for (j in 9:17) {
       lines(input$time_pred[-1], unlist(tp_pred[, ..j]), col = j - 8, lty = line_type[i], lwd = 1)
@@ -1559,6 +1568,7 @@ f_plot_tp_cure_surv_extrap <- function(PERSUADE) {
   surv_obs <- PERSUADE$surv_obs
   surv_pred <- PERSUADE$surv_pred
   
+  line_color <- c("black", "lightgrey", "darkgrey")
   line_type <- as.integer(c(1, "3333", "5212"))
   offset <- if (isTRUE(input$spline_mod)) 0 else -9
   
@@ -1570,10 +1580,10 @@ f_plot_tp_cure_surv_extrap <- function(PERSUADE) {
          main =  paste0("B: Annual transition probability (cure curves), Group: ", misc$group_names[i]),
          xlab = "time", ylab = "annual transition probability",
          ylim = c(0, 1), xlim = c(0, input$time_horizon),
-         col = "black", type = "l", lwd = 2)
+         lty = line_type[i], col = line_color[i], type = "l", lwd = 2)
     
-    lines(tp_obs$time, tp_obs$smooth_lower, col = "black", lty = 2, lwd = 2)
-    lines(tp_obs$time, tp_obs$smooth_upper, col = "black", lty = 2, lwd = 2)
+    lines(tp_obs$time, tp_obs$smooth_lower, col = line_color[i], lty = 2, lwd = 2)
+    lines(tp_obs$time, tp_obs$smooth_upper, col = line_color[i], lty = 2, lwd = 2)
     
     for (j in 18:23) {
       j_offset <- j + offset
@@ -1601,13 +1611,14 @@ f_plot_hazard_parametric_extrap <- function(PERSUADE) {
   misc <- PERSUADE$misc
   
   cols <- seq_along(models)
+  line_color <- c("black", "lightgrey", "darkgrey")
   line_type <- as.integer(c(1, "3333", "5212"))
   
   for (i in seq_len(misc$ngroups)) {
     obs_data <- PERSUADE$surv_obs$haz$hazards[[paste0("smooth_gr", i)]]
     plot(cbind(obs_data$est.grid, obs_data$haz.est),
          main = paste0("C: Hazard function (parametric curves), Group: ", misc$group_names[i]),
-         type = "l", col = "black", lty = line_type[i], lwd = 2,
+         type = "l", col = line_color[i], lty = line_type[i], lwd = 2,
          xlab = "time", ylab = "smoothed hazard rate",
          xlim = c(0, PERSUADE$input$time_horizon),
          ylim = c(0, PERSUADE$surv_obs$haz$max$smooth))
@@ -1640,13 +1651,14 @@ f_plot_hazard_spline_extrap <- function(PERSUADE) {
   misc <- PERSUADE$misc
   
   cols <- seq_along(models)
+  line_color <- c("black", "lightgrey", "darkgrey")
   line_type <- as.integer(c(1, "3333", "5212"))
   
   for (i in seq_len(misc$ngroups)) {
     obs_data <- PERSUADE$surv_obs$haz$hazards[[paste0("smooth_gr", i)]]
     plot(cbind(obs_data$est.grid, obs_data$haz.est),
          main =  paste0("C: Hazard function (spline curves), Group: ", misc$group_names[i]),
-         type = "l", col = "black", lty = line_type[i], lwd = 2,
+         type = "l", col = line_color[i], lty = line_type[i], lwd = 2,
          xlab = "time", ylab = "smoothed hazard rate",
          xlim = c(0, PERSUADE$input$time_horizon),
          ylim = c(0, PERSUADE$surv_obs$haz$max$smooth))
@@ -1679,6 +1691,7 @@ f_plot_hazard_cure_extrap <- function(PERSUADE) {
   misc <- PERSUADE$misc
   
   cols <- seq_along(models)
+  line_color <- c("black", "lightgrey", "darkgrey")
   line_type <- as.integer(c(1, "3333", "5212"))
   
   for (i in seq_len(misc$ngroups)) {
@@ -1686,7 +1699,7 @@ f_plot_hazard_cure_extrap <- function(PERSUADE) {
     
     plot(cbind(obs_data$est.grid, obs_data$haz.est),
          main =  paste0("C: Hazard function (cure curves), Group: ", misc$group_names[i]),
-         type = "l", col = "black", lty = line_type[i], lwd = 2,
+         type = "l", col = line_color[i], lty = line_type[i], lwd = 2,
          xlab = "time", ylab = "smoothed hazard rate",
          xlim = c(0, PERSUADE$input$time_horizon),
          ylim = c(0, PERSUADE$surv_obs$haz$max$smooth))

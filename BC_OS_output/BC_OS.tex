@@ -76,7 +76,7 @@
 
 \title{PERSUADE}
 \author{}
-\date{\vspace{-2.5em}2025-08-13}
+\date{\vspace{-2.5em}2025-08-14}
 
 \begin{document}
 \maketitle
@@ -268,16 +268,16 @@ models}\label{parametric-natural-cubic-spline-models}
 \toprule
 Model & AIC & BIC\\
 \midrule
-\cellcolor{gray!10}{Odds 1 knots} & \cellcolor{gray!10}{1586} & \cellcolor{gray!10}{1640}\\
+\cellcolor{gray!10}{Hazard 2 knots} & \cellcolor{gray!10}{1586} & \cellcolor{gray!10}{1640}\\
 Odds 2 knots & 1587 & 1642\\
-\cellcolor{gray!10}{Hazard 3 knots} & \cellcolor{gray!10}{1588} & \cellcolor{gray!10}{1628}\\
-Odds 3 knots & 1588 & 1643\\
+\cellcolor{gray!10}{Normal 1 knots} & \cellcolor{gray!10}{1588} & \cellcolor{gray!10}{1628}\\
+Normal 2 knots & 1588 & 1643\\
 \cellcolor{gray!10}{Generalised Gamma} & \cellcolor{gray!10}{1589} & \cellcolor{gray!10}{1630}\\
 Hazard 1 knots & 1589 & 1630\\
 \cellcolor{gray!10}{Normal 3 knots} & \cellcolor{gray!10}{1590} & \cellcolor{gray!10}{1658}\\
-Normal 1 knots & 1590 & 1658\\
-\cellcolor{gray!10}{Hazard 2 knots} & \cellcolor{gray!10}{1590} & \cellcolor{gray!10}{1631}\\
-Normal 2 knots & 1591 & 1659\\
+Hazard 3 knots & 1590 & 1658\\
+\cellcolor{gray!10}{Odds 1 knots} & \cellcolor{gray!10}{1590} & \cellcolor{gray!10}{1631}\\
+Odds 3 knots & 1591 & 1659\\
 \cellcolor{gray!10}{Log-normal} & \cellcolor{gray!10}{1593} & \cellcolor{gray!10}{1620}\\
 Log-logistic & 1609 & 1636\\
 \cellcolor{gray!10}{Gamma} & \cellcolor{gray!10}{1622} & \cellcolor{gray!10}{1649}\\
@@ -932,7 +932,7 @@ information}\label{persuade-object-information}
 ##   .. [list output truncated]
 ##  $ misc            :List of 7
 ##   ..$ form       :Class 'formula'  language Surv(years, status) ~ group
-##   .. .. ..- attr(*, ".Environment")=<environment: 0x000001908400e180> 
+##   .. .. ..- attr(*, ".Environment")=<environment: 0x000001cf18efde18> 
 ##   ..$ group_names: chr [1:3] "Good" "Medium" "Poor"
 ##   ..$ ngroups    : int 3
 ##   ..$ lbls       : chr [1:7] "Exponential" "Weibull" "Gompertz" "Log-normal" ...
@@ -950,7 +950,7 @@ information}\label{persuade-object-information}
 \begin{verbatim}
 ## R version 4.4.2 (2024-10-31 ucrt)
 ## Platform: x86_64-w64-mingw32/x64
-## Running under: Windows 10 x64 (build 19045)
+## Running under: Windows 11 x64 (build 26100)
 ## 
 ## Matrix products: default
 ## 
