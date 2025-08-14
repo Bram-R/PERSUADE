@@ -72,7 +72,7 @@ f_plot_km_survival_base <- function(PERSUADE) {
   misc <- PERSUADE$misc
   surv_obs <- PERSUADE$surv_obs
   surv_pred <- PERSUADE$surv_pred
-
+  
   ngroups <- misc$ngroups
   group_names <- misc$group_names
   line_type <- as.integer(c(1, "3333", "5212"))
@@ -1292,15 +1292,29 @@ f_plot_param_surv_extrap <- function(PERSUADE) {
   model_names <- names(PERSUADE$surv_model$param_models)
   
   line_type <- as.integer(c(1, "3333", "5212"))
+  km_line_color <- c("black", "lightgrey", "darkgrey")
   
   for (i in seq_len(misc$ngroups)) {
+    # Base KM plot
     plot(
-      surv_obs$km[i], lwd = 2, col = "black",
+      surv_obs$km[i], lwd = 2, col = km_line_color[i], conf.int = FALSE,
       main = paste0("A: Kaplan-Meier (parametric curves), Group: ", misc$group_names[i]),
       xlab = "time", ylab = "survival",
       xlim = c(0, input$time_horizon)
     )
     
+    # Add shaded CI per group
+    idx <- surv_obs$km_names == i
+    polygon(
+      na.omit(data.frame(
+        x = c(surv_obs$km$time[idx], rev(surv_obs$km$time[idx])),
+        y = c(surv_obs$km$lower[idx], rev(surv_obs$km$upper[idx]))
+      )),
+      col = adjustcolor(km_line_color[i], alpha.f = 0.3),
+      border = NA
+    )
+    
+    # Add parametric curves
     for (j in seq_along(model_names)) {
       lines(
         x = input$time_pred,
@@ -1311,6 +1325,7 @@ f_plot_param_surv_extrap <- function(PERSUADE) {
       )
     }
     
+    # Add legend  
     legend("topright", legend = misc$lbls, col = 1:length(model_names),
            lty = line_type[i], cex = 0.8)
   }
@@ -1339,15 +1354,29 @@ f_plot_spline_surv_extrap <- function(PERSUADE) {
   model_names <- names(PERSUADE$surv_model$spline_models)
   
   line_type <- as.integer(c(1, "3333", "5212"))
+  km_line_color <- c("black", "lightgrey", "darkgrey")
   
   for (i in seq_len(misc$ngroups)) {
+    # Base KM plot
     plot(
-      surv_obs$km[i], lwd = 2, col = "black",
+      surv_obs$km[i], lwd = 2, col = km_line_color[i], conf.int = FALSE,
       main = paste0("A: Kaplan-Meier (spline curves), Group: ", misc$group_names[i]),
       xlab = "time", ylab = "survival",
       xlim = c(0, input$time_horizon)
     )
     
+    # Add shaded CI per group
+    idx <- surv_obs$km_names == i
+    polygon(
+      na.omit(data.frame(
+        x = c(surv_obs$km$time[idx], rev(surv_obs$km$time[idx])),
+        y = c(surv_obs$km$lower[idx], rev(surv_obs$km$upper[idx]))
+      )),
+      col = adjustcolor(km_line_color[i], alpha.f = 0.3),
+      border = NA
+    )
+    
+    # Add parametric curves
     for (j in seq_along(model_names)) {
       lines(
         x = input$time_pred,
@@ -1358,6 +1387,7 @@ f_plot_spline_surv_extrap <- function(PERSUADE) {
       )
     }
     
+    # Add legend 
     legend("topright", legend = misc$lbls_spline, col = 1:length(model_names),
            lty = line_type[i], cex = 0.8)
   }
@@ -1386,15 +1416,29 @@ f_plot_cure_surv_extrap <- function(PERSUADE) {
   model_names <- names(PERSUADE$surv_model$cure_models)
   
   line_type <- as.integer(c(1, "3333", "5212"))
+  km_line_color <- c("black", "lightgrey", "darkgrey")
   
   for (i in seq_len(misc$ngroups)) {
+    # Base KM plot
     plot(
-      surv_obs$km[i], lwd = 2, col = "black",
+      surv_obs$km[i], lwd = 2, col = km_line_color[i], conf.int = FALSE,
       main = paste0("A: Kaplan-Meier (cure curves), Group: ", misc$group_names[i]),
       xlab = "time", ylab = "survival",
       xlim = c(0, input$time_horizon)
     )
     
+    # Add shaded CI per group
+    idx <- surv_obs$km_names == i
+    polygon(
+      na.omit(data.frame(
+        x = c(surv_obs$km$time[idx], rev(surv_obs$km$time[idx])),
+        y = c(surv_obs$km$lower[idx], rev(surv_obs$km$upper[idx]))
+      )),
+      col = adjustcolor(km_line_color[i], alpha.f = 0.3),
+      border = NA
+    )
+    
+    # Add parametric curves
     for (j in seq_along(model_names)) {
       lines(
         x = input$time_pred,
@@ -1405,6 +1449,7 @@ f_plot_cure_surv_extrap <- function(PERSUADE) {
       )
     }
     
+    # Add legend  
     legend("topright", legend = misc$lbls_cure, col = 1:length(model_names),
            lty = line_type[i], cex = 0.8)
   }

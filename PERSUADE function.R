@@ -452,6 +452,10 @@ f_surv_model <- function(years, status, group, strata, ngroups, form, spline_mod
         )
       }
     }
+    model_order <- with(expand.grid(k = 1:3, scale = c("hazard", "odds", "normal")),
+                        paste0("spl_", scale, "_", k))
+    spline_models <- spline_models[model_order]
+    
     spline_labels <- expand.grid(k = 1:3, scale = c("Hazard", "Odds", "Normal"))
     spline_labels <- apply(spline_labels, 1, function(x) paste(x[2], x[1], "knots"))
     spline_ic <- data.frame(

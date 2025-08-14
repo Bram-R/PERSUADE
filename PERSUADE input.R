@@ -97,8 +97,23 @@ PERSUADE <- f_PERSUADE(
   time_pred_surv_table = time_pred_surv_table
 )
 
+#### RESULTS ----
+# S3 functionality
+print(PERSUADE)
 
-#### EXPORT RESULTS ----
+summary(PERSUADE,type = "km")
+summary(PERSUADE,type = "surv_probs")
+summary(PERSUADE,type = "gof")
+summary(PERSUADE,type = "gof_spline")
+summary(PERSUADE,type = "gof_cure")
+
+plot(PERSUADE, type = "km")
+plot(PERSUADE, type = "ph")
+plot(PERSUADE, type = "hr")
+plot(PERSUADE, type = "param_models")
+plot(PERSUADE, type = "spline_models")
+plot(PERSUADE, type = "cure_models")
+
 # Create report
 f_generate_report(PERSUADE)
 

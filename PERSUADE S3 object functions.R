@@ -25,6 +25,9 @@ summary.PERSUADE <- function(object, type = "km", ...) {
   #' The type argument controls which summary is produced:
   #'   - `"km"`: Kaplan–Meier estimates (default).
   #'   - `"surv_probs"`: Survival probabilities at specified prediction times for each group.
+  #'   - `"gof"`: Goodness of fit statistics for standard parametric models.
+  #'   - `"gof_spline"`: Goodness of fit statistics for spline models.
+  #'   - `"gof_cure"`: Goodness of fit statistics for cure models (including cure fraction).
   #'
   #' @param object A PERSUADE object from `f_PERSUADE()`.
   #' @param type Character. Type of summary to return.
@@ -49,8 +52,19 @@ summary.PERSUADE <- function(object, type = "km", ...) {
       colnames(surv_mat) <- paste("T=", object$surv_pred$gr[[i]][1 + object$input$time_pred_surv_table, ][, 1])
       surv_tables[[i]] <- as.data.frame(surv_mat)
     }
-    
     return(surv_tables)
+    
+  } else if  (type == "gof") {
+    return(PERSUADE$surv_model$param_ic)
+ 
+  } else if  (type == "gof_spline") {
+    if (!isTRUE(PERSUADE$input$spline_mod)) stop("No spline models identified")
+    return(PERSUADE$surv_model$spline_ic)
+    
+  } else if  (type == "gof_cure") {
+    if (!isTRUE(PERSUADE$input$cure_mod)) stop("No cure models identified")
+    return(PERSUADE$surv_model$cure_ic) 
+       
   } else {
     stop("Unknown plot type: ", type)
   }
