@@ -1,0 +1,466 @@
+---
+title: "PERSUADE"
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    toc: yes
+    keep_tex: true
+urlcolor: blue
+header-includes:
+  - \usepackage{float}
+  - \usepackage{booktabs}
+  - \usepackage{longtable}
+  - \usepackage[table]{xcolor}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, 
+                      fig.align = "left", 
+                      fig.path = file.path(paste0(PERSUADE$name, "_output/Images/Figure_")), 
+                      dev = c('pdf', 'png'),
+                      dpi=300)
+options(warn=-1) # prevent warnings from being printed (options(warn=0) to turn warning back on)
+```
+
+```{r preparation, echo=FALSE, warning = FALSE, message = FALSE, results = "hide"}
+packages <- c("ggplot2", "knitr", "kableExtra",
+              "survminer", "survival")
+new.packages <- packages[!(packages %in% installed.packages()[, "Package"])]  #check for new packages
+if (length(new.packages)) install.packages(new.packages)  #install new packages (if needed)
+suppressPackageStartupMessages(lapply(packages, require, character.only = TRUE))  #load packages
+
+source(paste0(getwd(), "/PERSUADE_figures.R"))
+
+# COLOUR PALETTE
+n <- 9  #number of different colors (to be used for palette)
+palette(rainbow(n = n, s = 1, v = 1, start = 0, end = max(1, n - 1)/n, alpha = 1))
+```
+
+\
+
+[Link to PERSUADE GitHub page](https://github.com/Bram-R/PERSUADE)
+
+\clearpage
+
+# 1. Kaplan-Meier  
+The Kaplan–Meier (KM) curves provide a non-parametric estimate of the survival function, based solely on the observed data, without assuming any particular hazard shape or distribution. These plots allow visual comparison of survival experience between groups, highlighting differences in survival patterns and potential crossing of curves, which may later inform the choice of stratified vs. non-stratified models (see Section 2). The accompanying table summarises key KM estimates (e.g., median survival, survival probabilities at selected time points). These observed data serve as the benchmark against which all parametric, spline-based, and cure model fits will be assessed.
+
+\clearpage
+
+```{r plot_KM, echo=FALSE, fig.height=7, fig.width=7}
+f_plot_km_survival(PERSUADE)
+```
+
+```{r table_KM, echo=FALSE}
+kable_styling(
+  kable(
+    summary(PERSUADE$surv_obs$km)$table,
+    format = "latex", booktabs = TRUE, linesep = "",
+    caption = "Observed survival data", label = "Table_1"),
+  latex_options = c("HOLD_position", "scale_down", "striped"))
+```
+
+\clearpage
+
+# 2. Proportional hazards assumption  
+**Should stratified parametric survival models be used?**  
+To decide whether stratified or non-stratified parametric survival models should be applied, it is important to assess whether the **proportional hazards (PH) assumption** holds. This assumption means that the hazard ratio between two (or more) groups remains constant over time.  
+
+- **If the PH assumption holds:** Non-stratified parametric models can be used, with group effects included as covariates in a single model.  
+- **If the PH assumption does not hold:** It is advised to fit separate (stratified) parametric survival models for each group.  
+
+This section presents plots for assessing the PH assumption **over the observed data period only**. Even if the PH assumption appears valid here, it might be violated beyond the observed follow-up. For further details, see [NICE DSU TSD 14](http://nicedsu.org.uk/wp-content/uploads/2016/03/NICE-DSU-TSD-Survival-analysis.updated-March-2013.v2.pdf).  
+
+**How to interpret the figures:**  
+
+- **Figure A** plots the log of time against the log of the cumulative hazard for each group. Parallel lines suggest that the PH assumption holds.  
+- **Figures B and C** show scaled Schoenfeld residuals over time, with a smoothed spline (cyan) overlaid. If the spline systematically deviates from a horizontal line, this suggests a time-varying covariate effect and a potential PH violation ([Grambsch & Therneau, 1994](https://doi.org/10.1093/biomet/81.3.515)).  
+- **Crossing survival curves** in the Kaplan–Meier plot (previous page) may also indicate that the PH assumption is not satisfied.  
+
+**Caution:** These diagnostics only apply to the observed data period. Towards the end of follow-up, results may be unreliable due to sparse data, so the tail of curves should be interpreted with care.  
+
+\clearpage
+
+```{r PH_assumption, echo=FALSE, eval=if (PERSUADE$misc$ngroups>1) {TRUE} else {FALSE}, out.height="29%", fig.width=11}
+f_plot_log_cumhaz(PERSUADE)
+f_plot_schoenfeld_residuals(PERSUADE)
+```
+
+\clearpage
+
+# 3. Hazard function  
+## 3.1 Shape of the observed smoothed hazard function  
+The **hazard function** represents the instantaneous rate at which an event occurs at a specific time, conditional on survival until that time. Its shape varies depending on the assumed distribution (parametric survival model). When selecting an appropriate model, the plausibility of different hazard function shapes should be considered in light of:
+
+- The shape of the *observed* hazard function (shown below). 
+- Known hazard shapes from standard parametric models (see Table).
+- Relevant *external data* (not shown here).  
+
+Below is an overview of the potential hazard shapes for standard parametric survival models:
+
+| No | Distribution         | Hazard function shape                                                                 |
+|----|----------------------|----------------------------------------------------------------------------------------|
+| 1  | Exponential          | Constant hazard                                                                       |
+| 2  | Weibull               | Monotonically increasing or decreasing hazards                                       |
+| 3  | Gompertz              | Monotonically increasing or decreasing hazards                                       |
+| 4  | Log-normal            | Arc-shaped or monotonically decreasing hazards                                       |
+| 5  | Log-logistic          | Arc-shaped or monotonically decreasing hazards                                       |
+| 6  | Gamma                 | Monotonically increasing or decreasing hazards                                       |
+| 7  | Generalised Gamma     | Arc-shaped, bathtub-shaped, monotonically increasing, or monotonically decreasing    |
+
+Because **spline-based** and **(non-)mixture cure models** are derived from these standard parametric forms, their hazard functions can be interpreted in relation to the table above.  
+
+- For **spline-based models** using the *hazard scale*, the baseline hazard is Weibull, so hazards are monotonic within each spline segment (between knots).  
+- For **spline-based models** using the *odds scale* (log-logistic) or *normal scale* (log-normal), the baseline hazard follows the corresponding parametric form.  
+- For **(non-)mixture cure models**, the hazard shape applies separately to the cure and non-cure fractions.  
+
+For more details and visualisations of hazard function shapes across parametric survival models, see [Incerti (2019)](https://devinincerti.com/2019/06/18/parametric_survival.html).  
+
+**Caution:** These plots apply only to the *observed* data period and cannot directly inform the hazard shape beyond this range. Additionally, hazard estimates near the end of follow-up may be unstable due to sparse data. Interpret the tails of the curves with care.
+
+\clearpage
+
+```{r plot_hr, echo=FALSE}
+f_plot_smoothed_hazard(PERSUADE)
+```
+
+\clearpage
+
+## 3.2 Shape of the predicted hazard function  
+
+The following plots show how the hazard rate is estimated under each fitted parametric survival model. These curves reflect the model-based *predicted* hazard functions over time, which may extend beyond the observed data period (see *Extrapolation Section*). By comparing these predicted hazard shapes, together with the known hazard function form for each parametric model, to:
+
+- The **observed smoothed hazard functions**, and  
+- Prior knowledge or external evidence on plausible hazard behaviour,  
+
+you can assess whether each model’s functional form provides a reasonable representation and extrapolation of the underlying event process.
+
+\clearpage
+
+# 4 Parametric survival models 
+```{r plot_haz_pred, out.height="29%", fig.width=11, echo=FALSE}
+f_plot_hazard_with_models(PERSUADE)
+```
+
+## 4.1 Standard parametric models
+The Table below displays the goodness-of-fit statistics for each parametric survival model, ordered from 'best' fitting to less well fitting based on the Akaike Information Criterion (AIC). The AIC and Bayesian Information Criterion (BIC) provide a measure of the relative fit of each model to the observed data, while penalising for the number of parameters included in the fitted models. The lower the AIC or BIC, the better the relative fit of a model compared to other fitted models.  
+
+**Rules of thumb for model selection**:  
+
+- **Burnham and Anderson** (1998) suggest that models with an AIC within 4 points of the lowest AIC can be considered as having substantial support from the data [Burnham and Anderson, 1998](https://doi.org/10.1007/978-1-4757-2917-7).  
+- **Raftery** (1995) suggests that models with a BIC within 2 points of the lowest BIC can be considered the best-fitting models [Raftery et al., 1995](https://doi.org/10.2307/271063).  
+
+In the following pages, three plots per fitted parametric survival model are displayed to support visual inspection of the fit of the models to the observed data:  
+
+- **Figure A**: Kaplan–Meier curves (black and grey) versus fitted parametric survival models (colour).  
+- **Figure B**: Diagnostic plot specific to each fitted parametric survival model (see graphical test in Table 1 of [Ishak et al., 2013](https://doi.org/10.1007/s40273-013-0064-3)).
+- **Figure C**: Comparison of smoothed hazard rates based on empirical data (black and grey) versus estimated transition probabilities (colour). 
+
+In Figures A and C, the Kaplan–Meier curves and smoothed hazard rates are identical across models; only the coloured fitted curves change.  
+The guiding rule is: the closer the coloured lines are to the black and grey lines, the better the fit.  
+
+Notably:  
+
+- Weibull (shape = 1), Gompertz (shape = 0) and gamma (shape = 1) distributions simplify to the exponential distribution.  
+- The generalised gamma distribution simplifies to:
+-- Log-normal (Q = 0)  
+-- Weibull (Q = 1)  
+-- Exponential (Q = 1 and scale = 1)  
+-- Gamma (Q = scale)  
+
+Information regarding parameterisation of parametric survival models can be found [here](https://devinincerti.com/code/survival-distributions.html).  
+
+**CAUTION**:  
+These goodness-of-fit statistics apply only to the *observed* data period. They do not indicate the suitability of extrapolated survival beyond this period. Additionally, the tail of the observed data period may be affected by a low number of observations, which should be considered when interpreting model performance.
+
+\clearpage
+
+```{r gof_parametric, echo=FALSE, out.height="75%"}
+kable_styling(
+  kable(
+    PERSUADE$surv_model$param_ic[order(PERSUADE$surv_model$param_ic$AIC), ],
+    row.names = FALSE, format = "latex", booktabs = TRUE, linesep = "",
+    caption = "Goodness of fit statistics", label = "Table_2"),
+  latex_options = c("HOLD_position", "scale_down", "striped"))
+```
+
+\clearpage
+
+```{r param_models, echo=FALSE, out.height="25%", fig.width=11, results='asis'}
+model_names <- PERSUADE$misc$lbls
+i <- 1
+
+for (name in model_names) {
+  
+  # Print the heading
+  cat("\n\\clearpage\n\n")
+  cat("### ", name, "\n\n")
+  
+  # Ensure code is executed and printed in the document
+  f_plot_param_surv_model(PERSUADE, i)
+  f_plot_diag_param_surv_model(PERSUADE, i)
+  f_plot_tp_param_surv_model(PERSUADE, i)
+  
+  i <- i + 1
+}
+```
+
+\clearpage
+
+## 4.2 Parametric natural cubic spline models
+If standard parametric models do not provide a satisfactory fit to the data (based on the visual assessments and goodness-of-fit statistics presented in the previous section or extrapolations presented in the next section), spline-based models may provide a more flexible alternative. An explanation of these natural cubic spline models, henceforth referred to as spline-based models, is provided in [Royston and Parmar (2002)](https://doi.org/10.1002/sim.1203).  
+
+**Model complexity and parsimony**  
+Following the principle of *Occam’s Razor* and the recommendations in [NICE TSD 21](https://www.sheffield.ac.uk/media/34188/download?attachment), the preferred approach is to select the simplest model (e.g., a standard parametric model) that provides an adequate fit to the data and clinically plausible extrapolations. However, when simpler models do not provide a satisfactory fit, particularly in terms of long-term extrapolations and consistency with external evidence, more flexible models, such as spline-based models, can be considered.  
+
+**Relationship to standard parametric models**  
+Spline-based models extend standard parametric survival models by allowing the hazard, odds, or normal scale to vary flexibly over time:  
+
+- **Hazard scale** spline models extend the Weibull distribution.  
+- **Odds scale** spline models extend the log-logistic distribution.  
+- **Normal scale** spline models extend the log-normal distribution.  
+
+**Model assessment and rules of thumb**  
+The same goodness-of-fit statistics (AIC and BIC) used in Section 4.1 are presented here, and the same *rules of thumb* apply:  
+
+- **Burnham & Anderson (1998)**: Models within 4 AIC points of the lowest AIC are considered to have substantial support from the data [Burnham and Anderson, 1998](https://doi.org/10.1007/978-1-4757-2917-7).  
+- **Raftery (1995)**: Models within 2 BIC points of the lowest BIC are considered among the best-fitting models [Raftery et al., 1995](https://doi.org/10.2307/271063).  
+
+**Plots**  
+As in Section 4.1, the following pages display three plots for each fitted spline-based survival model:  
+
+- **Figure A**: Kaplan–Meier curves (black and grey) versus the fitted spline model (colour).  
+- **Figure B**: Model-specific diagnostic plots (see [Ishak et al., 2013](https://doi.org/10.1007/s40273-013-0064-3)).  
+- **Figure C**: Smoothed hazard rates from empirical data (black and grey) versus model-based estimates (colour).  
+
+**CAUTION**:  
+These statistics and plots apply only to the *observed* data period and do not directly inform the appropriateness of extrapolations beyond this period.  
+Additionally, the tail of the observed data may be affected by a low number of events, which should be considered when interpreting model performance.
+
+\clearpage
+
+```{r gof_spline, echo=FALSE, out.height="75%", eval=PERSUADE$input$spline_mod}
+kable_styling(
+  kable(
+    rbind(PERSUADE$surv_model$param_ic, PERSUADE$surv_model$spline_ic)[
+      order(rbind(PERSUADE$surv_model$param_ic, PERSUADE$surv_model$spline_ic)$AIC), ],
+    row.names = FALSE, format = "latex", booktabs = TRUE, linesep = "", label = "Table_3",
+    caption = "Goodness of fit statistics (including standard parametric and spline models)"), 
+  latex_options = c("HOLD_position", "scale_down", "striped"))
+```
+
+`r if(PERSUADE$input$spline_mod == TRUE) {return("\\clearpage")}`
+
+```{r spline_models, echo=FALSE, out.height="25%", fig.width=11, results='asis', eval=PERSUADE$input$spline_mod}
+model_names <- PERSUADE$misc$lbls_spline
+i <- 1
+
+for (name in model_names) {
+  
+  # Print the heading
+  cat("\n\\clearpage\n\n")
+  cat("### ", name, "\n\n")
+  
+  # Ensure code is executed and printed in the document
+  f_plot_spline_surv_model(PERSUADE, i)
+  f_plot_diag_spline_surv_model(PERSUADE, i)
+  f_plot_tp_spline_surv_model(PERSUADE, i)
+  
+  i <- i + 1
+}
+```
+
+\clearpage
+
+## 4.3 Parametric (non-)mixture cure models 
+In some disease areas, a proportion of patients may be considered “cured,” meaning they have the same mortality risk as the general population (or a background hazard). Cure models explicitly allow for this possibility and estimate both the cure fraction and the survival of the uncured fraction.
+
+- *Mixture cure models*: Assume the population is composed of a cured fraction and an uncured fraction, each with its own survival curve. The overall survival curve is a weighted mixture of the two. This means the survival curve approaches a horizontal asymptote at the estimated cure fraction.  
+- *Non-mixture cure models*: Directly model the hazard function so that it approaches zero over time for the cured fraction, without explicitly separating the two subpopulations in the survival function.  
+
+Both approaches can be fitted using standard parametric distributions (i.e., Weibull, log-normal or log-logistic).
+
+The *link function* relates the linear predictor to the estimated cure fraction.  
+The most commonly used link function is the *logistic*, but others are available:
+
+- `"logistic"`: Ensures the cure fraction is between 0 and 1 via the logistic transformation.  
+- `"loglog"`: Uses the complementary log–log link, which can be more appropriate if cure proportions are very close to 0 or 1.  
+- `"identity"`: Fits the cure fraction directly on the probability scale (must remain in [0,1]).  
+- `"probit"`: Uses the cumulative normal distribution as the link.  
+
+**Model complexity and parsimony**  
+Following *Occam’s Razor* and [NICE TSD 21](https://www.sheffield.ac.uk/media/34188/download?attachment), standard parametric models should be preferred when they provide an adequate and clinically plausible fit. Cure models should be considered only when there is strong clinical or empirical evidence supporting the presence of a long-term cured fraction.
+
+**Model assessment and rules of thumb**  
+The same goodness-of-fit statistics (AIC and BIC) used in Section 4.1 are presented here, and the same *rules of thumb* apply:  
+
+- **Burnham & Anderson (1998)**: Models within 4 AIC points of the lowest AIC are considered to have substantial support from the data [Burnham and Anderson, 1998](https://doi.org/10.1007/978-1-4757-2917-7).  
+- **Raftery (1995)**: Models within 2 BIC points of the lowest BIC are considered among the best-fitting models [Raftery et al., 1995](https://doi.org/10.2307/271063).  
+
+**Plots**  
+As in Section 4.1, the following pages display three plots for each fitted spline-based survival model:  
+
+- **Figure A**: Kaplan–Meier curves (black and grey) versus the fitted spline model (colour).  
+- **Figure B**: Model-specific diagnostic plots (see [Ishak et al., 2013](https://doi.org/10.1007/s40273-013-0064-3)).  
+- **Figure C**: Smoothed hazard rates from empirical data (black and grey) versus model-based estimates (colour).  
+
+**CAUTION**:  
+These statistics and plots apply only to the *observed* data period and do not directly inform the appropriateness of extrapolations beyond this period.  
+Additionally, the tail of the observed data may be affected by a low number of events, which should be considered when interpreting model performance.
+
+\clearpage
+
+```{r gof_cure, echo=FALSE, out.height="75%", eval=PERSUADE$input$cure_mod}
+kable_styling(
+  kable(
+    rbind(PERSUADE$surv_model$param_ic[,1:2], PERSUADE$surv_model$cure_ic[,1:2])[
+      order(rbind(PERSUADE$surv_model$param_ic[,1:2], PERSUADE$surv_model$cure_ic[,1:2])$AIC), ],
+    row.names = FALSE, format = "latex", booktabs = TRUE, linesep = "", label = "Table_4",
+    caption = "Goodness of fit statistics (including standard parametric and cure models)"),
+  latex_options = c("HOLD_position", "scale_down", "striped"))
+kable_styling(
+  kable(
+    PERSUADE$surv_model$cure_ic[,-2], 
+    row.names = FALSE,
+    format = "latex", booktabs = TRUE, linesep = "", label = "Table_5",
+    caption = "Cure proportions per group (lower and upper 95CI)"),
+  latex_options = c("HOLD_position", "scale_down", "striped"))
+```
+
+`r if(PERSUADE$input$cure_mod == TRUE) {return("\\clearpage")}`
+
+```{r cure_models, echo=FALSE, out.height="25%", fig.width=11, results='asis', eval=PERSUADE$input$cure_mod}
+model_names <- PERSUADE$misc$lbls_cure
+i <- 1
+
+for (name in model_names) {
+  
+  # Print the heading
+  cat("\n\\clearpage\n\n")
+  cat("### ", name, "\n\n")
+  
+  # Ensure code is executed and printed in the document
+  f_plot_cure_surv_model(PERSUADE, i)
+  f_plot_diag_cure_surv_model(PERSUADE, i)
+  f_plot_tp_cure_surv_model(PERSUADE, i)
+  
+  i <- i + 1
+}
+```
+
+\clearpage
+
+# 5 Extrapolation
+The plausibility of estimated survival beyond the observed data period is often a critical driver in health economic models. As highlighted in [NICE TSD 14](https://nicedsu.org.uk/wp-content/uploads/2016/03/NICE-DSU-TSD-Survival-analysis.updated-March-2013.v2.pdf) and [NICE TSD 21](https://www.sheffield.ac.uk/media/34188/download),  model choice for extrapolation should consider whether the estimated long-term survival is consistent with **external data** (e.g., observational studies, registry data, or general population mortality).  
+
+In this section, extrapolation is examined by:  
+
+1. *Plotting survival curves* (Figures A) over the observed and extrapolated periods.  
+2. *Plotting annual transition probabilities* (Figures B) over the observed and extrapolated periods. 
+3. *Plotting hazard functions* (Figures C) over the observed and extrapolated periods. 
+4. *Tabulating survival probabilities* at multiple user-specified time points (first table). 
+5. *Summarising annual transition probabilities* (second table).  
+
+All outputs are presented *per group*.
+
+**Assessing plausibility** 
+
+- Compare survival probabilities at specific time points with *external data* (e.g., registry data, literature, expert opinion).  
+- Compare annual transition probabilities with *general population mortality* (e.g., from national life tables).  
+- If a model predicts conditional transition probabilities more favourable than the general population, this may be implausible unless clinically justified.  
+- In such cases, alternative models should be considered, or adjustments made (e.g., incorporating background mortality).  
+
+**Note:** These checks are consistent with the guidance in NICE TSD 14 and TSD 21, which recommend:  
+
+- Using *external evidence* to validate extrapolations.  
+- Keeping models as simple as possible (Occam’s Razor), but adopting more flexible approaches when standard parametric models do not align with external evidence or long-term expectations.  
+
+## 5.1 Extrapolated survival 
+```{r validate_extrapolation_KM, echo=FALSE, out.height="29%", fig.width=11}
+f_plot_param_surv_extrap(PERSUADE)
+f_plot_spline_surv_extrap(PERSUADE)
+f_plot_cure_surv_extrap(PERSUADE)
+```
+
+\clearpage
+
+## 5.2 Extrapolated transition probabilities
+```{r validate_extrapolation_tp, echo=FALSE, out.height="29%", fig.width=11}
+f_plot_tp_param_surv_extrap(PERSUADE)
+f_plot_tp_spline_surv_extrap(PERSUADE)
+f_plot_tp_cure_surv_extrap(PERSUADE)
+```
+
+\clearpage
+
+## 5.3 Extrapolated hazard function
+```{r validate_extrapolation_hr, echo=FALSE, out.height="29%", fig.width=11}
+f_plot_hazard_parametric_extrap(PERSUADE)
+f_plot_hazard_spline_extrap(PERSUADE)
+f_plot_hazard_cure_extrap(PERSUADE)
+```
+
+\clearpage
+
+## 5.4 Tabulated  results
+```{r validate_extrapolation_table, echo=FALSE, out.height="25%", fig.width=11, results='asis'}
+group_names <- paste("Group", PERSUADE$misc$group_names)
+
+for (i in seq_along(group_names)) {
+  
+  # Only insert a page break before *subsequent* groups
+  if (i > 1) {
+    cat("\n\\clearpage\n\n")
+  }
+  
+  # Section title
+  cat("### ", group_names[i], "\n\n")
+  
+  # Survival probability table
+  print(
+    kable_styling(
+      kable(
+        t(round(PERSUADE$surv_pred$gr[[i]][
+          1 + PERSUADE$input$time_pred_surv_table, ], 3))[-1, ], 
+        col.names = paste("T=",
+                          PERSUADE$surv_pred$gr[[i]][
+                            1 + PERSUADE$input$time_pred_surv_table, ][, 1]
+        ), 
+        format = "latex", booktabs = TRUE, linesep = "", table.envir = "table",
+        caption = "Survival probability at different time points", 
+        label = paste0("Table_6_", i)),
+      latex_options = c("HOLD_position", "scale_down", "striped")
+    )
+  )
+  cat("\n")
+  
+  # Annual transition probability table
+  print(
+    kable_styling(
+      kable(
+        f_summary(
+          PERSUADE$surv_pred$tp_gr[[i]][, 2:PERSUADE$misc$cols_tp]
+        ), 
+        format = "latex", booktabs = TRUE, linesep = "", table.envir = "table",
+        caption = "Summary statistics of annual transition probabilities", 
+        label = paste0("Table_7_", i)),
+      latex_options = c("HOLD_position", "scale_down", "striped")
+    )
+  )
+  cat("\n")
+}
+```
+
+\clearpage
+
+# 6. PERSUADE object information
+```{r oi, echo=FALSE}
+print(str(PERSUADE, max.level = 2))
+```
+
+\clearpage
+
+# 7. Session information
+```{r si, echo=FALSE}
+print(sessionInfo(), RNG = TRUE, locale = FALSE)
+```

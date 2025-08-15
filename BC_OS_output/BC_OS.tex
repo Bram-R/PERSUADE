@@ -38,6 +38,16 @@
 \makeatother
 \usepackage{xcolor}
 \usepackage[margin=1in]{geometry}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
 \usepackage{graphicx}
 \makeatletter
 \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
@@ -59,6 +69,20 @@
 \usepackage{booktabs}
 \usepackage{longtable}
 \usepackage[table]{xcolor}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
@@ -76,7 +100,7 @@
 
 \title{PERSUADE}
 \author{}
-\date{\vspace{-2.5em}2025-08-14}
+\date{\vspace{-2.5em}2025-08-15}
 
 \begin{document}
 \maketitle
@@ -94,11 +118,24 @@
 
 \section{1. Kaplan-Meier}\label{kaplan-meier}
 
+The Kaplan--Meier (KM) curves provide a non-parametric estimate of the
+survival function, based solely on the observed data, without assuming
+any particular hazard shape or distribution. These plots allow visual
+comparison of survival experience between groups, highlighting
+differences in survival patterns and potential crossing of curves, which
+may later inform the choice of stratified vs.~non-stratified models (see
+Section 2). The accompanying table summarises key KM estimates (e.g.,
+median survival, survival probabilities at selected time points). These
+observed data serve as the benchmark against which all parametric,
+spline-based, and cure model fits will be assessed.
+
+\clearpage
+
 \begin{flushleft}\includegraphics{BC_OS_output/Images/Figure_plot_KM-1} \end{flushleft}
 
 \begin{table}[H]
 \centering
-\caption{\label{tab:table_KM}Observed survival data}
+\caption{\label{tab:Table_1}Observed survival data}
 \centering
 \resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
 \begin{tabular}[t]{lrrrrrrrrr}
@@ -117,6 +154,57 @@ group=Medium & 229 & 229 & 229 & 103 & 4.601 & 0.1857 & 5.255 & 4.115 & 5.573\\
 \section{2. Proportional hazards
 assumption}\label{proportional-hazards-assumption}
 
+\textbf{Should stratified parametric survival models be used?}\\
+To decide whether stratified or non-stratified parametric survival
+models should be applied, it is important to assess whether the
+\textbf{proportional hazards (PH) assumption} holds. This assumption
+means that the hazard ratio between two (or more) groups remains
+constant over time.
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{If the PH assumption holds:} Non-stratified parametric models
+  can be used, with group effects included as covariates in a single
+  model.\\
+\item
+  \textbf{If the PH assumption does not hold:} It is advised to fit
+  separate (stratified) parametric survival models for each group.
+\end{itemize}
+
+This section presents plots for assessing the PH assumption \textbf{over
+the observed data period only}. Even if the PH assumption appears valid
+here, it might be violated beyond the observed follow-up. For further
+details, see
+\href{http://nicedsu.org.uk/wp-content/uploads/2016/03/NICE-DSU-TSD-Survival-analysis.updated-March-2013.v2.pdf}{NICE
+DSU TSD 14}.
+
+\textbf{How to interpret the figures:}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Figure A} plots the log of time against the log of the
+  cumulative hazard for each group. Parallel lines suggest that the PH
+  assumption holds.\\
+\item
+  \textbf{Figures B and C} show scaled Schoenfeld residuals over time,
+  with a smoothed spline (cyan) overlaid. If the spline systematically
+  deviates from a horizontal line, this suggests a time-varying
+  covariate effect and a potential PH violation
+  (\href{https://doi.org/10.1093/biomet/81.3.515}{Grambsch \& Therneau,
+  1994}).\\
+\item
+  \textbf{Crossing survival curves} in the Kaplan--Meier plot (previous
+  page) may also indicate that the PH assumption is not satisfied.
+\end{itemize}
+
+\textbf{Caution:} These diagnostics only apply to the observed data
+period. Towards the end of follow-up, results may be unreliable due to
+sparse data, so the tail of curves should be interpreted with care.
+
+\clearpage
+
 \begin{flushleft}\includegraphics[height=0.29\textheight]{BC_OS_output/Images/Figure_PH_assumption-1} \end{flushleft}
 
 \begin{flushleft}\includegraphics[height=0.29\textheight]{BC_OS_output/Images/Figure_PH_assumption-2} \end{flushleft}
@@ -130,12 +218,111 @@ assumption}\label{proportional-hazards-assumption}
 \subsection{3.1 Shape of the observed smoothed hazard
 function}\label{shape-of-the-observed-smoothed-hazard-function}
 
+The \textbf{hazard function} represents the instantaneous rate at which
+an event occurs at a specific time, conditional on survival until that
+time. Its shape varies depending on the assumed distribution (parametric
+survival model). When selecting an appropriate model, the plausibility
+of different hazard function shapes should be considered in light of:
+
+\begin{itemize}
+\tightlist
+\item
+  The shape of the \emph{observed} hazard function (shown below).
+\item
+  Known hazard shapes from standard parametric models (see Table).
+\item
+  Relevant \emph{external data} (not shown here).
+\end{itemize}
+
+Below is an overview of the potential hazard shapes for standard
+parametric survival models:
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0351}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1930}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.7719}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+No
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Distribution
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Hazard function shape
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1 & Exponential & Constant hazard \\
+2 & Weibull & Monotonically increasing or decreasing hazards \\
+3 & Gompertz & Monotonically increasing or decreasing hazards \\
+4 & Log-normal & Arc-shaped or monotonically decreasing hazards \\
+5 & Log-logistic & Arc-shaped or monotonically decreasing hazards \\
+6 & Gamma & Monotonically increasing or decreasing hazards \\
+7 & Generalised Gamma & Arc-shaped, bathtub-shaped, monotonically
+increasing, or monotonically decreasing \\
+\end{longtable}
+
+Because \textbf{spline-based} and \textbf{(non-)mixture cure models} are
+derived from these standard parametric forms, their hazard functions can
+be interpreted in relation to the table above.
+
+\begin{itemize}
+\tightlist
+\item
+  For \textbf{spline-based models} using the \emph{hazard scale}, the
+  baseline hazard is Weibull, so hazards are monotonic within each
+  spline segment (between knots).\\
+\item
+  For \textbf{spline-based models} using the \emph{odds scale}
+  (log-logistic) or \emph{normal scale} (log-normal), the baseline
+  hazard follows the corresponding parametric form.\\
+\item
+  For \textbf{(non-)mixture cure models}, the hazard shape applies
+  separately to the cure and non-cure fractions.
+\end{itemize}
+
+For more details and visualisations of hazard function shapes across
+parametric survival models, see
+\href{https://devinincerti.com/2019/06/18/parametric_survival.html}{Incerti
+(2019)}.
+
+\textbf{Caution:} These plots apply only to the \emph{observed} data
+period and cannot directly inform the hazard shape beyond this range.
+Additionally, hazard estimates near the end of follow-up may be unstable
+due to sparse data. Interpret the tails of the curves with care.
+
+\clearpage
+
 \begin{flushleft}\includegraphics{BC_OS_output/Images/Figure_plot_hr-1} \end{flushleft}
 
 \clearpage
 
 \subsection{3.2 Shape of the predicted hazard
 function}\label{shape-of-the-predicted-hazard-function}
+
+The following plots show how the hazard rate is estimated under each
+fitted parametric survival model. These curves reflect the model-based
+\emph{predicted} hazard functions over time, which may extend beyond the
+observed data period (see \emph{Extrapolation Section}). By comparing
+these predicted hazard shapes, together with the known hazard function
+form for each parametric model, to:
+
+\begin{itemize}
+\tightlist
+\item
+  The \textbf{observed smoothed hazard functions}, and\\
+\item
+  Prior knowledge or external evidence on plausible hazard behaviour,
+\end{itemize}
+
+you can assess whether each model's functional form provides a
+reasonable representation and extrapolation of the underlying event
+process.
+
+\clearpage
+
+\section{4 Parametric survival models}\label{parametric-survival-models}
 
 \begin{flushleft}\includegraphics[height=0.29\textheight]{BC_OS_output/Images/Figure_plot_haz_pred-1} \end{flushleft}
 
@@ -155,16 +342,88 @@ function}\label{shape-of-the-predicted-hazard-function}
 
 \begin{flushleft}\includegraphics[height=0.29\textheight]{BC_OS_output/Images/Figure_plot_haz_pred-9} \end{flushleft}
 
-\clearpage
-
-\section{4 Parametric survival models}\label{parametric-survival-models}
-
 \subsection{4.1 Standard parametric
 models}\label{standard-parametric-models}
 
+The Table below displays the goodness-of-fit statistics for each
+parametric survival model, ordered from `best' fitting to less well
+fitting based on the Akaike Information Criterion (AIC). The AIC and
+Bayesian Information Criterion (BIC) provide a measure of the relative
+fit of each model to the observed data, while penalising for the number
+of parameters included in the fitted models. The lower the AIC or BIC,
+the better the relative fit of a model compared to other fitted models.
+
+\textbf{Rules of thumb for model selection}:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Burnham and Anderson} (1998) suggest that models with an AIC
+  within 4 points of the lowest AIC can be considered as having
+  substantial support from the data
+  \href{https://doi.org/10.1007/978-1-4757-2917-7}{Burnham and Anderson,
+  1998}.\\
+\item
+  \textbf{Raftery} (1995) suggests that models with a BIC within 2
+  points of the lowest BIC can be considered the best-fitting models
+  \href{https://doi.org/10.2307/271063}{Raftery et al., 1995}.
+\end{itemize}
+
+In the following pages, three plots per fitted parametric survival model
+are displayed to support visual inspection of the fit of the models to
+the observed data:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Figure A}: Kaplan--Meier curves (black and grey) versus fitted
+  parametric survival models (colour).\\
+\item
+  \textbf{Figure B}: Diagnostic plot specific to each fitted parametric
+  survival model (see graphical test in Table 1 of
+  \href{https://doi.org/10.1007/s40273-013-0064-3}{Ishak et al., 2013}).
+\item
+  \textbf{Figure C}: Comparison of smoothed hazard rates based on
+  empirical data (black and grey) versus estimated transition
+  probabilities (colour).
+\end{itemize}
+
+In Figures A and C, the Kaplan--Meier curves and smoothed hazard rates
+are identical across models; only the coloured fitted curves change.\\
+The guiding rule is: the closer the coloured lines are to the black and
+grey lines, the better the fit.
+
+Notably:
+
+\begin{itemize}
+\tightlist
+\item
+  Weibull (shape = 1), Gompertz (shape = 0) and gamma (shape = 1)
+  distributions simplify to the exponential distribution.\\
+\item
+  The generalised gamma distribution simplifies to: -- Log-normal (Q =
+  0)\\
+  -- Weibull (Q = 1)\\
+  -- Exponential (Q = 1 and scale = 1)\\
+  -- Gamma (Q = scale)
+\end{itemize}
+
+Information regarding parameterisation of parametric survival models can
+be found
+\href{https://devinincerti.com/code/survival-distributions.html}{here}.
+
+\textbf{CAUTION}:\\
+These goodness-of-fit statistics apply only to the \emph{observed} data
+period. They do not indicate the suitability of extrapolated survival
+beyond this period. Additionally, the tail of the observed data period
+may be affected by a low number of observations, which should be
+considered when interpreting model performance.
+
+\clearpage
+
 \begin{table}[H]
 \centering
-\caption{\label{tab:gof_parametric}Goodness of fit statistics}
+\caption{\label{tab:Table_2}Goodness of fit statistics}
 \centering
 \resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
 \begin{tabular}[t]{lrr}
@@ -259,9 +518,89 @@ Gompertz & 1661 & 1688\\
 \subsection{4.2 Parametric natural cubic spline
 models}\label{parametric-natural-cubic-spline-models}
 
+If standard parametric models do not provide a satisfactory fit to the
+data (based on the visual assessments and goodness-of-fit statistics
+presented in the previous section or extrapolations presented in the
+next section), spline-based models may provide a more flexible
+alternative. An explanation of these natural cubic spline models,
+henceforth referred to as spline-based models, is provided in
+\href{https://doi.org/10.1002/sim.1203}{Royston and Parmar (2002)}.
+
+\textbf{Model complexity and parsimony}\\
+Following the principle of \emph{Occam's Razor} and the recommendations
+in
+\href{https://www.sheffield.ac.uk/media/34188/download?attachment}{NICE
+TSD 21}, the preferred approach is to select the simplest model (e.g., a
+standard parametric model) that provides an adequate fit to the data and
+clinically plausible extrapolations. However, when simpler models do not
+provide a satisfactory fit, particularly in terms of long-term
+extrapolations and consistency with external evidence, more flexible
+models, such as spline-based models, can be considered.
+
+\textbf{Relationship to standard parametric models}\\
+Spline-based models extend standard parametric survival models by
+allowing the hazard, odds, or normal scale to vary flexibly over time:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Hazard scale} spline models extend the Weibull distribution.\\
+\item
+  \textbf{Odds scale} spline models extend the log-logistic
+  distribution.\\
+\item
+  \textbf{Normal scale} spline models extend the log-normal
+  distribution.
+\end{itemize}
+
+\textbf{Model assessment and rules of thumb}\\
+The same goodness-of-fit statistics (AIC and BIC) used in Section 4.1
+are presented here, and the same \emph{rules of thumb} apply:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Burnham \& Anderson (1998)}: Models within 4 AIC points of the
+  lowest AIC are considered to have substantial support from the data
+  \href{https://doi.org/10.1007/978-1-4757-2917-7}{Burnham and Anderson,
+  1998}.\\
+\item
+  \textbf{Raftery (1995)}: Models within 2 BIC points of the lowest BIC
+  are considered among the best-fitting models
+  \href{https://doi.org/10.2307/271063}{Raftery et al., 1995}.
+\end{itemize}
+
+\textbf{Plots}\\
+As in Section 4.1, the following pages display three plots for each
+fitted spline-based survival model:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Figure A}: Kaplan--Meier curves (black and grey) versus the
+  fitted spline model (colour).\\
+\item
+  \textbf{Figure B}: Model-specific diagnostic plots (see
+  \href{https://doi.org/10.1007/s40273-013-0064-3}{Ishak et al.,
+  2013}).\\
+\item
+  \textbf{Figure C}: Smoothed hazard rates from empirical data (black
+  and grey) versus model-based estimates (colour).
+\end{itemize}
+
+\textbf{CAUTION}:\\
+These statistics and plots apply only to the \emph{observed} data period
+and do not directly inform the appropriateness of extrapolations beyond
+this period.\\
+Additionally, the tail of the observed data may be affected by a low
+number of events, which should be considered when interpreting model
+performance.
+
+\clearpage
+
 \begin{table}[H]
 \centering
-\caption{\label{tab:gof_spline}Goodness of fit statistics (including standard parametric and spline models)}
+\caption{\label{tab:Table_3}Goodness of fit statistics (including standard parametric and spline models)}
 \centering
 \resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
 \begin{tabular}[t]{lrr}
@@ -385,9 +724,106 @@ Exponential & 1668 & 1682\\
 \subsection{4.3 Parametric (non-)mixture cure
 models}\label{parametric-non-mixture-cure-models}
 
+In some disease areas, a proportion of patients may be considered
+``cured,'' meaning they have the same mortality risk as the general
+population (or a background hazard). Cure models explicitly allow for
+this possibility and estimate both the cure fraction and the survival of
+the uncured fraction.
+
+\begin{itemize}
+\tightlist
+\item
+  \emph{Mixture cure models}: Assume the population is composed of a
+  cured fraction and an uncured fraction, each with its own survival
+  curve. The overall survival curve is a weighted mixture of the two.
+  This means the survival curve approaches a horizontal asymptote at the
+  estimated cure fraction.\\
+\item
+  \emph{Non-mixture cure models}: Directly model the hazard function so
+  that it approaches zero over time for the cured fraction, without
+  explicitly separating the two subpopulations in the survival function.
+\end{itemize}
+
+Both approaches can be fitted using standard parametric distributions
+(i.e., Weibull, log-normal or log-logistic).
+
+The \emph{link function} relates the linear predictor to the estimated
+cure fraction.\\
+The most commonly used link function is the \emph{logistic}, but others
+are available:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{"logistic"}: Ensures the cure fraction is between 0 and 1 via
+  the logistic transformation.\\
+\item
+  \texttt{"loglog"}: Uses the complementary log--log link, which can be
+  more appropriate if cure proportions are very close to 0 or 1.\\
+\item
+  \texttt{"identity"}: Fits the cure fraction directly on the
+  probability scale (must remain in {[}0,1{]}).\\
+\item
+  \texttt{"probit"}: Uses the cumulative normal distribution as the
+  link.
+\end{itemize}
+
+\textbf{Model complexity and parsimony}\\
+Following \emph{Occam's Razor} and
+\href{https://www.sheffield.ac.uk/media/34188/download?attachment}{NICE
+TSD 21}, standard parametric models should be preferred when they
+provide an adequate and clinically plausible fit. Cure models should be
+considered only when there is strong clinical or empirical evidence
+supporting the presence of a long-term cured fraction.
+
+\textbf{Model assessment and rules of thumb}\\
+The same goodness-of-fit statistics (AIC and BIC) used in Section 4.1
+are presented here, and the same \emph{rules of thumb} apply:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Burnham \& Anderson (1998)}: Models within 4 AIC points of the
+  lowest AIC are considered to have substantial support from the data
+  \href{https://doi.org/10.1007/978-1-4757-2917-7}{Burnham and Anderson,
+  1998}.\\
+\item
+  \textbf{Raftery (1995)}: Models within 2 BIC points of the lowest BIC
+  are considered among the best-fitting models
+  \href{https://doi.org/10.2307/271063}{Raftery et al., 1995}.
+\end{itemize}
+
+\textbf{Plots}\\
+As in Section 4.1, the following pages display three plots for each
+fitted spline-based survival model:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Figure A}: Kaplan--Meier curves (black and grey) versus the
+  fitted spline model (colour).\\
+\item
+  \textbf{Figure B}: Model-specific diagnostic plots (see
+  \href{https://doi.org/10.1007/s40273-013-0064-3}{Ishak et al.,
+  2013}).\\
+\item
+  \textbf{Figure C}: Smoothed hazard rates from empirical data (black
+  and grey) versus model-based estimates (colour).
+\end{itemize}
+
+\textbf{CAUTION}:\\
+These statistics and plots apply only to the \emph{observed} data period
+and do not directly inform the appropriateness of extrapolations beyond
+this period.\\
+Additionally, the tail of the observed data may be affected by a low
+number of events, which should be considered when interpreting model
+performance.
+
+\clearpage
+
 \begin{table}[H]
 \centering
-\caption{\label{tab:gof_cure}Goodness of fit statistics (including standard parametric and cure models)}
+\caption{\label{tab:Table_4}Goodness of fit statistics (including standard parametric and cure models)}
 \centering
 \resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
 \begin{tabular}[t]{lr}
@@ -413,19 +849,19 @@ Gompertz & 1661\\
 
 \begin{table}[H]
 \centering
-\caption{\label{tab:gof_cure}Cure proportions per group (lower and upper 95CI)}
+\caption{\label{tab:Table_5}Cure proportions per group (lower and upper 95CI)}
 \centering
 \resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
-\begin{tabular}[t]{llll}
+\begin{tabular}[t]{ll}
 \toprule
-Model & Good & Medium & Poor\\
+Model & CureFraction\\
 \midrule
-\cellcolor{gray!10}{Mixture cure Weibull} & \cellcolor{gray!10}{65\% (54\%–75\%)} & \cellcolor{gray!10}{31\% (15\%–53\%)} & \cellcolor{gray!10}{18\% (10\%–29\%)}\\
-Non-mixture cure Weibull & 65\% (53\%–75\%) & 30\% (13\%–55\%) & 17\% (9\%–29\%)\\
-\cellcolor{gray!10}{Mixture cure Log-normal} & \cellcolor{gray!10}{57\% (35\%–77\%)} & \cellcolor{gray!10}{19\% (3\%–66\%)} & \cellcolor{gray!10}{11\% (3\%–35\%)}\\
-Non-mixture cure Log-normal & 56\% (33\%–77\%) & 20\% (5\%–57\%) & 10\% (3\%–30\%)\\
-\cellcolor{gray!10}{Mixture cure Log-logistic} & \cellcolor{gray!10}{60\% (45\%–74\%)} & \cellcolor{gray!10}{23\% (7\%–54\%)} & \cellcolor{gray!10}{14\% (6\%–30\%)}\\
-Non-mixture cure Log-logistic & 60\% (45\%–74\%) & 25\% (10\%–51\%) & 15\% (8\%–28\%)\\
+\cellcolor{gray!10}{Mixture cure Weibull} & \cellcolor{gray!10}{65\% (54\%–75\%), 31\% (15\%–53\%), 18\% (10\%–29\%)}\\
+Non-mixture cure Weibull & 65\% (53\%–75\%), 30\% (13\%–55\%), 17\% (9\%–29\%)\\
+\cellcolor{gray!10}{Mixture cure Log-normal} & \cellcolor{gray!10}{57\% (35\%–77\%), 19\% (3\%–66\%), 11\% (3\%–35\%)}\\
+Non-mixture cure Log-normal & 56\% (33\%–77\%), 20\% (5\%–57\%), 10\% (3\%–30\%)\\
+\cellcolor{gray!10}{Mixture cure Log-logistic} & \cellcolor{gray!10}{60\% (45\%–74\%), 23\% (7\%–54\%), 14\% (6\%–30\%)}\\
+Non-mixture cure Log-logistic & 60\% (45\%–74\%), 25\% (10\%–51\%), 15\% (8\%–28\%)\\
 \bottomrule
 \end{tabular}}
 \end{table}
@@ -498,6 +934,71 @@ Log-logistic}\label{non-mixture-cure-log-logistic}
 \clearpage
 
 \section{5 Extrapolation}\label{extrapolation}
+
+The plausibility of estimated survival beyond the observed data period
+is often a critical driver in health economic models. As highlighted in
+\href{https://nicedsu.org.uk/wp-content/uploads/2016/03/NICE-DSU-TSD-Survival-analysis.updated-March-2013.v2.pdf}{NICE
+TSD 14} and \href{https://www.sheffield.ac.uk/media/34188/download}{NICE
+TSD 21}, model choice for extrapolation should consider whether the
+estimated long-term survival is consistent with \textbf{external data}
+(e.g., observational studies, registry data, or general population
+mortality).
+
+In this section, extrapolation is examined by:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \emph{Plotting survival curves} (Figures A) over the observed and
+  extrapolated periods.\\
+\item
+  \emph{Plotting annual transition probabilities} (Figures B) over the
+  observed and extrapolated periods.
+\item
+  \emph{Plotting hazard functions} (Figures C) over the observed and
+  extrapolated periods.
+\item
+  \emph{Tabulating survival probabilities} at multiple user-specified
+  time points (first table).
+\item
+  \emph{Summarising annual transition probabilities} (second table).
+\end{enumerate}
+
+All outputs are presented \emph{per group}.
+
+\textbf{Assessing plausibility}
+
+\begin{itemize}
+\tightlist
+\item
+  Compare survival probabilities at specific time points with
+  \emph{external data} (e.g., registry data, literature, expert
+  opinion).\\
+\item
+  Compare annual transition probabilities with \emph{general population
+  mortality} (e.g., from national life tables).\\
+\item
+  If a model predicts conditional transition probabilities more
+  favourable than the general population, this may be implausible unless
+  clinically justified.\\
+\item
+  In such cases, alternative models should be considered, or adjustments
+  made (e.g., incorporating background mortality).
+\end{itemize}
+
+\textbf{Note:} These checks are consistent with the guidance in NICE TSD
+14 and TSD 21, which recommend:
+
+\begin{itemize}
+\tightlist
+\item
+  Using \emph{external evidence} to validate extrapolations.\\
+\item
+  Keeping models as simple as possible (Occam's Razor), but adopting
+  more flexible approaches when standard parametric models do not align
+  with external evidence or long-term expectations.
+\end{itemize}
 
 \subsection{5.1 Extrapolated survival}\label{extrapolated-survival}
 
@@ -573,7 +1074,7 @@ function}\label{extrapolated-hazard-function}
 
 \begin{table}[H]
 \centering
-\caption{\label{tab:validate_extrapolation_table}Survival probability at different time points}
+\caption{\label{tab:Table_6_1}Survival probability at different time points}
 \centering
 \resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
 \begin{tabular}[t]{lrrrrrrrrrrrr}
@@ -608,7 +1109,7 @@ Non-mixture cure Log-logistic & 1 & 0.989 & 0.933 & 0.846 & 0.767 & 0.712 & 0.62
 
 \begin{table}[H]
 \centering
-\caption{\label{tab:validate_extrapolation_table}Summary statistics of annual transition probabilities}
+\caption{\label{tab:Table_7_1}Summary statistics of annual transition probabilities}
 \centering
 \resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
 \begin{tabular}[t]{lrrrrrrrr}
@@ -617,7 +1118,7 @@ Non-mixture cure Log-logistic & 1 & 0.989 & 0.933 & 0.846 & 0.767 & 0.712 & 0.62
 \midrule
 \cellcolor{gray!10}{Exponential} & \cellcolor{gray!10}{0.059} & \cellcolor{gray!10}{0.000} & \cellcolor{gray!10}{0.059} & \cellcolor{gray!10}{0.059} & \cellcolor{gray!10}{0.059} & \cellcolor{gray!10}{0.059} & \cellcolor{gray!10}{0.059} & \cellcolor{gray!10}{0.000}\\
 Weibull & 0.235 & 0.096 & 0.004 & 0.164 & 0.251 & 0.317 & 0.371 & 0.153\\
-\cellcolor{gray!10}{Gompertz} & \cellcolor{gray!10}{0.485} & \cellcolor{gray!10}{0.361} & \cellcolor{gray!10}{0.034} & \cellcolor{gray!10}{0.128} & \cellcolor{gray!10}{0.415} & \cellcolor{gray!10}{0.878} & \cellcolor{gray!10}{1.000} & \cellcolor{gray!10}{0.750}\\
+\cellcolor{gray!10}{Gompertz} & \cellcolor{gray!10}{0.374} & \cellcolor{gray!10}{0.300} & \cellcolor{gray!10}{0.034} & \cellcolor{gray!10}{0.101} & \cellcolor{gray!10}{0.278} & \cellcolor{gray!10}{0.631} & \cellcolor{gray!10}{0.952} & \cellcolor{gray!10}{0.530}\\
 Log-normal & 0.068 & 0.017 & 0.000 & 0.056 & 0.067 & 0.082 & 0.094 & 0.025\\
 \cellcolor{gray!10}{Log-logistic} & \cellcolor{gray!10}{0.073} & \cellcolor{gray!10}{0.023} & \cellcolor{gray!10}{0.002} & \cellcolor{gray!10}{0.053} & \cellcolor{gray!10}{0.070} & \cellcolor{gray!10}{0.094} & \cellcolor{gray!10}{0.109} & \cellcolor{gray!10}{0.040}\\
 Gamma & 0.149 & 0.038 & 0.001 & 0.139 & 0.164 & 0.175 & 0.181 & 0.036\\
@@ -647,7 +1148,7 @@ Non-mixture cure Log-logistic & 0.012 & 0.025 & 0.000 & 0.000 & 0.001 & 0.007 & 
 
 \begin{table}[H]
 \centering
-\caption{\label{tab:validate_extrapolation_table}Survival probability at different time points}
+\caption{\label{tab:Table_6_2}Survival probability at different time points}
 \centering
 \resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
 \begin{tabular}[t]{lrrrrrrrrrrrr}
@@ -682,7 +1183,7 @@ Non-mixture cure Log-logistic & 1 & 0.931 & 0.793 & 0.659 & 0.554 & 0.479 & 0.32
 
 \begin{table}[H]
 \centering
-\caption{\label{tab:validate_extrapolation_table}Summary statistics of annual transition probabilities}
+\caption{\label{tab:Table_7_2}Summary statistics of annual transition probabilities}
 \centering
 \resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
 \begin{tabular}[t]{lrrrrrrrr}
@@ -691,7 +1192,7 @@ Non-mixture cure Log-logistic & 1 & 0.931 & 0.793 & 0.659 & 0.554 & 0.479 & 0.32
 \midrule
 \cellcolor{gray!10}{Exponential} & \cellcolor{gray!10}{0.128} & \cellcolor{gray!10}{0.000} & \cellcolor{gray!10}{0.128} & \cellcolor{gray!10}{0.128} & \cellcolor{gray!10}{0.128} & \cellcolor{gray!10}{0.128} & \cellcolor{gray!10}{0.128} & \cellcolor{gray!10}{0.000}\\
 Weibull & 0.282 & 0.073 & 0.030 & 0.238 & 0.300 & 0.341 & 0.373 & 0.103\\
-\cellcolor{gray!10}{Gompertz} & \cellcolor{gray!10}{0.535} & \cellcolor{gray!10}{0.313} & \cellcolor{gray!10}{0.000} & \cellcolor{gray!10}{0.233} & \cellcolor{gray!10}{0.509} & \cellcolor{gray!10}{0.851} & \cellcolor{gray!10}{1.000} & \cellcolor{gray!10}{0.619}\\
+\cellcolor{gray!10}{Gompertz} & \cellcolor{gray!10}{0.470} & \cellcolor{gray!10}{0.278} & \cellcolor{gray!10}{0.096} & \cellcolor{gray!10}{0.210} & \cellcolor{gray!10}{0.425} & \cellcolor{gray!10}{0.726} & \cellcolor{gray!10}{0.951} & \cellcolor{gray!10}{0.515}\\
 Log-normal & 0.095 & 0.032 & 0.000 & 0.069 & 0.086 & 0.117 & 0.163 & 0.048\\
 \cellcolor{gray!10}{Log-logistic} & \cellcolor{gray!10}{0.085} & \cellcolor{gray!10}{0.040} & \cellcolor{gray!10}{0.015} & \cellcolor{gray!10}{0.051} & \cellcolor{gray!10}{0.072} & \cellcolor{gray!10}{0.115} & \cellcolor{gray!10}{0.167} & \cellcolor{gray!10}{0.063}\\
 Gamma & 0.214 & 0.034 & 0.016 & 0.211 & 0.227 & 0.234 & 0.237 & 0.023\\
@@ -721,7 +1222,7 @@ Non-mixture cure Log-logistic & 0.032 & 0.048 & 0.001 & 0.002 & 0.007 & 0.037 & 
 
 \begin{table}[H]
 \centering
-\caption{\label{tab:validate_extrapolation_table}Survival probability at different time points}
+\caption{\label{tab:Table_6_3}Survival probability at different time points}
 \centering
 \resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
 \begin{tabular}[t]{lrrrrrrrrrrrr}
@@ -756,7 +1257,7 @@ Non-mixture cure Log-logistic & 1 & 0.823 & 0.549 & 0.380 & 0.293 & 0.246 & 0.17
 
 \begin{table}[H]
 \centering
-\caption{\label{tab:validate_extrapolation_table}Summary statistics of annual transition probabilities}
+\caption{\label{tab:Table_7_3}Summary statistics of annual transition probabilities}
 \centering
 \resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
 \begin{tabular}[t]{lrrrrrrrr}
@@ -765,7 +1266,7 @@ Non-mixture cure Log-logistic & 1 & 0.823 & 0.549 & 0.380 & 0.293 & 0.246 & 0.17
 \midrule
 \cellcolor{gray!10}{Exponential} & \cellcolor{gray!10}{0.245} & \cellcolor{gray!10}{0.000} & \cellcolor{gray!10}{0.245} & \cellcolor{gray!10}{0.245} & \cellcolor{gray!10}{0.245} & \cellcolor{gray!10}{0.245} & \cellcolor{gray!10}{0.245} & \cellcolor{gray!10}{0.000}\\
 Weibull & 0.454 & 0.087 & 0.091 & 0.411 & 0.479 & 0.522 & 0.553 & 0.111\\
-\cellcolor{gray!10}{Gompertz} & \cellcolor{gray!10}{0.588} & \cellcolor{gray!10}{0.244} & \cellcolor{gray!10}{0.000} & \cellcolor{gray!10}{0.367} & \cellcolor{gray!10}{0.586} & \cellcolor{gray!10}{0.816} & \cellcolor{gray!10}{1.000} & \cellcolor{gray!10}{0.449}\\
+\cellcolor{gray!10}{Gompertz} & \cellcolor{gray!10}{0.579} & \cellcolor{gray!10}{0.231} & \cellcolor{gray!10}{0.217} & \cellcolor{gray!10}{0.366} & \cellcolor{gray!10}{0.572} & \cellcolor{gray!10}{0.794} & \cellcolor{gray!10}{0.952} & \cellcolor{gray!10}{0.428}\\
 Log-normal & 0.150 & 0.063 & 0.002 & 0.100 & 0.128 & 0.184 & 0.307 & 0.084\\
 \cellcolor{gray!10}{Log-logistic} & \cellcolor{gray!10}{0.116} & \cellcolor{gray!10}{0.078} & \cellcolor{gray!10}{0.031} & \cellcolor{gray!10}{0.057} & \cellcolor{gray!10}{0.083} & \cellcolor{gray!10}{0.149} & \cellcolor{gray!10}{0.321} & \cellcolor{gray!10}{0.092}\\
 Gamma & 0.370 & 0.042 & 0.047 & 0.370 & 0.385 & 0.391 & 0.394 & 0.020\\
@@ -824,7 +1325,7 @@ information}\label{persuade-object-information}
 ##   ..$ spline_models:List of 9
 ##   ..$ spline_ic    :'data.frame':    9 obs. of  3 variables:
 ##   ..$ cure_models  :List of 6
-##   ..$ cure_ic      :'data.frame':    6 obs. of  5 variables:
+##   ..$ cure_ic      :'data.frame':    6 obs. of  3 variables:
 ##  $ surv_pred       :List of 3
 ##   ..$ model:List of 9
 ##   ..$ gr   :List of 3
@@ -932,7 +1433,7 @@ information}\label{persuade-object-information}
 ##   .. [list output truncated]
 ##  $ misc            :List of 7
 ##   ..$ form       :Class 'formula'  language Surv(years, status) ~ group
-##   .. .. ..- attr(*, ".Environment")=<environment: 0x000001cf18efde18> 
+##   .. .. ..- attr(*, ".Environment")=<environment: 0x000001c5bb9bca60> 
 ##   ..$ group_names: chr [1:3] "Good" "Medium" "Poor"
 ##   ..$ ngroups    : int 3
 ##   ..$ lbls       : chr [1:7] "Exponential" "Weibull" "Gompertz" "Log-normal" ...
@@ -964,30 +1465,28 @@ information}\label{persuade-object-information}
 ## [1] splines   stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-##  [1] docstring_1.0.0    flexsurvcure_1.3.1 sft_2.2-1          SuppDists_1.1-9.8  fda_6.2.0          deSolve_1.40      
-##  [7] fds_1.8            RCurl_1.98-1.16    rainbow_3.8        pcaPP_2.0-5        MASS_7.3-61        kableExtra_1.4.0  
-## [13] knitr_1.50         summarytools_1.1.4 data.table_1.16.4  survminer_0.5.0    ggpubr_0.6.0       ggplot2_3.5.2     
-## [19] muhaz_1.2.6.4      flexsurv_2.3.2     survival_3.7-0     rms_6.8-2          Hmisc_5.2-0       
+##  [1] kableExtra_1.4.0   knitr_1.50         docstring_1.0.0    data.table_1.16.4  survminer_0.5.0    ggpubr_0.6.0      
+##  [7] ggplot2_3.5.2      sft_2.2-1          SuppDists_1.1-9.8  fda_6.2.0          deSolve_1.40       fds_1.8           
+## [13] RCurl_1.98-1.16    rainbow_3.8        pcaPP_2.0-5        MASS_7.3-61        muhaz_1.2.6.4      flexsurvcure_1.3.1
+## [19] flexsurv_2.3.2     survival_3.7-0     rms_6.8-2          Hmisc_5.2-0       
 ## 
 ## loaded via a namespace (and not attached):
-##   [1] rstudioapi_0.17.1   jsonlite_1.8.9      magrittr_2.0.3      TH.data_1.1-2       magick_2.8.5        farver_2.1.2       
-##   [7] rmarkdown_2.29      vctrs_0.6.5         base64enc_0.1-3     tinytex_0.57        rstatix_0.7.2       htmltools_0.5.8.1  
-##  [13] polspline_1.1.25    broom_1.0.8         Formula_1.2-5       sass_0.4.9          hdrcde_3.4          pracma_2.4.4       
-##  [19] KernSmooth_2.23-24  bslib_0.8.0         htmlwidgets_1.6.4   plyr_1.8.9          sandwich_3.1-1      zoo_1.8-12         
-##  [25] lubridate_1.9.3     cachem_1.1.0        commonmark_1.9.5    lifecycle_1.0.4     pkgconfig_2.0.3     Matrix_1.7-1       
-##  [31] R6_2.5.1            fastmap_1.2.0       digest_0.6.37       numDeriv_2016.8-1.1 colorspace_2.1-1    labeling_0.4.3     
-##  [37] km.ci_0.5-6         timechange_0.3.0    abind_1.4-8         compiler_4.4.2      withr_3.0.2         pander_0.6.5       
-##  [43] htmlTable_2.4.3     backports_1.5.0     carData_3.0-5       ggsignif_0.6.4      quantreg_5.99       tools_4.4.2        
-##  [49] foreign_0.8-87      mstate_0.3.3        nnet_7.3-19         glue_1.8.0          quadprog_1.5-8      nlme_3.1-166       
-##  [55] gridtext_0.1.5      grid_4.4.2          checkmate_2.3.2     cluster_2.1.6       reshape2_1.4.4      generics_0.1.3     
-##  [61] gtable_0.3.6        KMsurv_0.1-5        tidyr_1.3.1         xml2_1.3.6          car_3.1-3           markdown_1.13      
-##  [67] pillar_1.10.0       stringr_1.5.1       dplyr_1.1.4         ggtext_0.1.2        pryr_0.1.6          lattice_0.22-6     
-##  [73] SparseM_1.84-2      ks_1.14.3           tidyselect_1.2.1    gridExtra_2.3       svglite_2.1.3       xfun_0.52          
-##  [79] statmod_1.5.0       rapportools_1.1     matrixStats_1.5.0   stringi_1.8.4       yaml_2.3.10         boot_1.3-31        
-##  [85] evaluate_1.0.1      codetools_0.2-20    tcltk_4.4.2         tibble_3.2.1        cli_3.6.3           rpart_4.1.23       
-##  [91] xtable_1.8-4        systemfonts_1.1.0   munsell_0.5.1       jquerylib_0.1.4     roxygen2_7.3.2      survMisc_0.5.6     
-##  [97] Rcpp_1.0.13-1       MatrixModels_0.5-3  mclust_6.1.1        bitops_1.0-9        viridisLite_0.4.2   mvtnorm_1.3-2      
-## [103] scales_1.3.0        purrr_1.0.4         rlang_1.1.6         multcomp_1.4-26
+##  [1] bitops_1.0-9        gridExtra_2.3       sandwich_3.1-1      rlang_1.1.6         magrittr_2.0.3      multcomp_1.4-26    
+##  [7] polspline_1.1.25    compiler_4.4.2      roxygen2_7.3.2      systemfonts_1.1.0   vctrs_0.6.5         quantreg_5.99      
+## [13] quadprog_1.5-8      stringr_1.5.1       pkgconfig_2.0.3     fastmap_1.2.0       backports_1.5.0     labeling_0.4.3     
+## [19] KMsurv_0.1-5        rmarkdown_2.29      markdown_1.13       pracma_2.4.4        MatrixModels_0.5-3  purrr_1.0.4        
+## [25] xfun_0.52           cachem_1.1.0        jsonlite_1.8.9      mstate_0.3.3        broom_1.0.8         cluster_2.1.6      
+## [31] R6_2.5.1            bslib_0.8.0         stringi_1.8.4       car_3.1-3           boot_1.3-31         rpart_4.1.23       
+## [37] jquerylib_0.1.4     numDeriv_2016.8-1.1 Rcpp_1.0.13-1       zoo_1.8-12          base64enc_0.1-3     hdrcde_3.4         
+## [43] Matrix_1.7-1        nnet_7.3-19         tidyselect_1.2.1    rstudioapi_0.17.1   abind_1.4-8         yaml_2.3.10        
+## [49] ggtext_0.1.2        codetools_0.2-20    lattice_0.22-6      tibble_3.2.1        ks_1.14.3           withr_3.0.2        
+## [55] evaluate_1.0.1      foreign_0.8-87      xml2_1.3.6          survMisc_0.5.6      mclust_6.1.1        pillar_1.10.0      
+## [61] carData_3.0-5       KernSmooth_2.23-24  checkmate_2.3.2     generics_0.1.3      commonmark_1.9.5    munsell_0.5.1      
+## [67] scales_1.3.0        xtable_1.8-4        glue_1.8.0          tools_4.4.2         SparseM_1.84-2      ggsignif_0.6.4     
+## [73] mvtnorm_1.3-2       grid_4.4.2          tidyr_1.3.1         colorspace_2.1-1    nlme_3.1-166        htmlTable_2.4.3    
+## [79] Formula_1.2-5       cli_3.6.3           km.ci_0.5-6         viridisLite_0.4.2   svglite_2.1.3       dplyr_1.1.4        
+## [85] gtable_0.3.6        rstatix_0.7.2       sass_0.4.9          digest_0.6.37       TH.data_1.1-2       farver_2.1.2       
+## [91] htmlwidgets_1.6.4   htmltools_0.5.8.1   lifecycle_1.0.4     statmod_1.5.0       gridtext_0.1.5
 \end{verbatim}
 
 \end{document}
