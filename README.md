@@ -12,8 +12,8 @@ Specifically, The intention of the template was to provide information and suppo
 
 How to use PERSUADE
 1)  Make sure the the files "PERSUADE_function.R", "PERSUADE_figures.R", "PERSUADE_S3_object_functions.R" and "PERSUADE_output.Rmd" are saved in the R working directory
-2)  Open "PERSUADE input.R" 
+2)  Open "PERSUADE_input.R" 
 3)  Specify the input data and change the outcome/ project name using the "name" parameter
 4)  Adjust TRUE/ FALSE in the PERSUADE function "f_PERSUADE(...)" if necessary
-5)  Run all code in "PERSUADE input.R", the results will be stored in a subdirectory using the outcome/ project name 
+5)  Run all code in "PERSUADE_input.R", the results will be stored in a subdirectory using the outcome/ project name 
 
