@@ -1,17 +1,19 @@
-#### Functions used to create Figures in the R Markdown file ----
+#### Functions used to create Figures and other output (e.g. for use in an R Markdown file) ----
 f_plot_km_survival <- function(PERSUADE) {
-  #' Plot Kaplan-Meier Survival Curves from PERSUADE Object
+  #' Plot Kaplan-Meier Survival Curves (ggsurvplot)
   #'
-  #' Generates Kaplan-Meier survival plots using ggsurvplot, adapting automatically 
-  #' to the number of groups in the PERSUADE object.
+  #' Generates Kaplan-Meier survival plots from a PERSUADE object using
+  #' [survminer::ggsurvplot()], automatically adapting to the number of groups.
   #'
-  #' @param PERSUADE A PERSUADE object created by `f_PERSUADE()`.
+  #' @param PERSUADE A PERSUADE object created by [f_PERSUADE()].
   #'
-  #' @return A `ggsurvplot` object showing KM curves with risk table and optional CI/rug.
-  #' @export
+  #' @return A `ggsurvplot` object with KM curves, risk table, CI bands, and optional censor marks.
   #'
   #' @examples
+  #' \dontrun{
   #' f_plot_km_survival(PERSUADE)
+  #' }
+  #' @export
   input <- PERSUADE$input
   misc <- PERSUADE$misc
   ngroups <- misc$ngroups
@@ -56,18 +58,20 @@ f_plot_km_survival <- function(PERSUADE) {
 }
 
 f_plot_km_survival_base <- function(PERSUADE) {
-  #' Plot Kaplan-Meier Survival Curves from PERSUADE Object
+  #' Plot Kaplan-Meier Survival Curves (Base R)
   #'
-  #' Generates Kaplan-Meier survival plots using ggsurvplot, adapting automatically 
-  #' to the number of groups in the PERSUADE object.
+  #' Generates Kaplan-Meier survival plots from a PERSUADE object using base R graphics,
+  #' with shaded confidence intervals and group-specific legends.
   #'
-  #' @param PERSUADE A PERSUADE object created by `f_PERSUADE()`.
+  #' @param PERSUADE A PERSUADE object created by [f_PERSUADE()].
   #'
-  #' @return A `ggsurvplot` object showing KM curves with risk table and optional CI/rug.
-  #' @export
+  #' @return A base R plot.
   #'
   #' @examples
+  #' \dontrun{
   #' f_plot_km_survival_base(PERSUADE)
+  #' }
+  #' @export
   input <- PERSUADE$input
   misc <- PERSUADE$misc
   surv_obs <- PERSUADE$surv_obs
@@ -109,18 +113,19 @@ f_plot_km_survival_base <- function(PERSUADE) {
 }
 
 f_plot_log_cumhaz <- function(PERSUADE) {
-  #' Plot Log(-log(Survival)) vs Log(Time)
+  #' Log-Log Survival Diagnostic Plot
   #'
-  #' Creates a base R plot for the log cumulative hazard (ln(-ln(S(t)))) against ln(time),
-  #' commonly used for checking proportional hazards.
+  #' Creates a log(-log(S(t))) vs log(time) plot to visually assess proportional hazards.
   #'
-  #' @param PERSUADE A PERSUADE object created by `f_PERSUADE()`.
+  #' @param PERSUADE A PERSUADE object created by [f_PERSUADE()].
   #'
-  #' @return A base R plot.
-  #' @export
-  #' 
+  #' @return A base R plot showing ln(-ln(S(t))) against ln(time).
+  #'
   #' @examples
+  #' \dontrun{
   #' f_plot_log_cumhaz(PERSUADE)
+  #' }
+  #' @export
   surv_obs <- PERSUADE$surv_obs
   input <- PERSUADE$input
   misc <- PERSUADE$misc
@@ -165,17 +170,20 @@ f_plot_log_cumhaz <- function(PERSUADE) {
 }
 
 f_plot_schoenfeld_residuals <- function(PERSUADE) {
-  #' Plot Schoenfeld Residuals for Proportional Hazards Diagnostics
+  #' Schoenfeld Residuals Plot
   #'
-  #' Plots scaled Schoenfeld residuals and regression lines from Cox PH model to assess PH assumptions.
+  #' Produces scaled Schoenfeld residual plots with fitted regression lines
+  #' to evaluate Cox proportional hazards assumptions.
   #'
-  #' @param PERSUADE A PERSUADE object created by `f_PERSUADE()`.
+  #' @param PERSUADE A PERSUADE object created by [f_PERSUADE()].
   #'
-  #' @return One or more base R plots.
-  #' @export
+  #' @return One or more base R plots, one per group comparison.
   #'
   #' @examples
+  #' \dontrun{
   #' f_plot_schoenfeld_residuals(PERSUADE)
+  #' }
+  #' @export
   if (PERSUADE$misc$ngroups < 2) {
     stop("Scaled Schoenfeld residuals not available for a single group")
   }
@@ -211,17 +219,19 @@ f_plot_schoenfeld_residuals <- function(PERSUADE) {
 }
 
 f_plot_smoothed_hazard <- function(PERSUADE) {
-  #' Plot Smoothed Hazard Functions by Group
+  #' Smoothed Hazard Function Plot
   #'
-  #' Creates a base R line plot showing smoothed hazard functions for all groups in the PERSUADE object.
+  #' Plots smoothed hazard estimates for each group in the PERSUADE object.
   #'
-  #' @param PERSUADE A PERSUADE object created by `f_PERSUADE()`.
+  #' @param PERSUADE A PERSUADE object created by [f_PERSUADE()].
   #'
-  #' @return A base R plot.
-  #' @export
+  #' @return A base R plot of smoothed hazards by group.
   #'
   #' @examples
+  #' \dontrun{
   #' f_plot_smoothed_hazard(PERSUADE)
+  #' }
+  #' @export
   surv_obs <- PERSUADE$surv_obs
   misc <- PERSUADE$misc
   ngroups <- misc$ngroups
@@ -281,18 +291,20 @@ f_plot_smoothed_hazard <- function(PERSUADE) {
 }
 
 f_plot_hazard_with_models <- function(PERSUADE) {
-  #' Plot Observed and Parametric Hazard Estimates by Group
+  #' Hazard Plot with Model Overlays
   #'
-  #' Plots smoothed hazard estimates from observed data with optional overlays from
-  #' parametric, spline-based, and cure models for each group.
+  #' Plots observed smoothed hazard estimates together with hazard predictions
+  #' from parametric, spline, and cure survival models (if fitted).
   #'
-  #' @param PERSUADE A PERSUADE object created by `f_PERSUADE()`.
+  #' @param PERSUADE A PERSUADE object created by [f_PERSUADE()].
   #'
-  #' @return Base R plots by group with multiple hazard overlays.
-  #' @export
+  #' @return A series of base R plots, one per group, with hazard overlays by model family.
   #'
   #' @examples
+  #' \dontrun{
   #' f_plot_hazard_with_models(PERSUADE)
+  #' }
+  #' @export
   input <- PERSUADE$input
   surv_pred <- PERSUADE$surv_pred
   misc <- PERSUADE$misc
@@ -400,19 +412,21 @@ f_plot_hazard_with_models <- function(PERSUADE) {
 }
 
 f_plot_param_surv_model <- function(PERSUADE, model_index = 1) {
-  #' Plot Kaplan-Meier and Fitted Parametric Survival Model
+  #' Parametric Survival Model Overlay
   #'
-  #' Dynamically overlays a parametric survival model on top of KM curves
-  #' with shaded confidence bands per group.
+  #' Overlays a fitted parametric survival model on top of KM curves, including
+  #' shaded KM confidence bands per group.
   #'
-  #' @param PERSUADE A PERSUADE object from `f_PERSUADE()`.
-  #' @param model_index Integer. Index for model selection.
+  #' @param PERSUADE A PERSUADE object created by [f_PERSUADE()].
+  #' @param model_index Integer. Index of the parametric model in `PERSUADE$surv_pred$model`.
   #'
-  #' @return A base R plot.
-  #' @export
-  #' 
+  #' @return A base R plot of KM curves with parametric model overlays.
+  #'
   #' @examples
-  #' f_plot_param_surv_model(PERSUADE, 1)
+  #' \dontrun{
+  #' f_plot_param_surv_model(PERSUADE, model_index = 1)
+  #' }
+  #' @export
   input <- PERSUADE$input
   misc <- PERSUADE$misc
   surv_obs <- PERSUADE$surv_obs
@@ -469,19 +483,21 @@ f_plot_param_surv_model <- function(PERSUADE, model_index = 1) {
 }
 
 f_plot_spline_surv_model <- function(PERSUADE, model_index = 1) {
-  #' Plot Kaplan-Meier and Fitted Spline-Based Survival Model
+  #' Spline Survival Model Overlay
   #'
-  #' Dynamically overlays a spline-based survival model on top of KM curves
-  #' with shaded confidence bands per group, and vertical lines at knot locations.
+  #' Overlays a spline-based survival model on KM curves, including shaded KM
+  #' confidence bands and vertical lines for knot positions.
   #'
-  #' @param PERSUADE A PERSUADE object from `f_PERSUADE()`.
-  #' @param model_index Integer. Index for model selection.
+  #' @param PERSUADE A PERSUADE object created by [f_PERSUADE()].
+  #' @param model_index Integer. Index of the spline model in `PERSUADE$surv_pred$model$spline`.
   #'
-  #' @return A base R plot.
-  #' @export
-  #' 
+  #' @return A base R plot of KM curves with spline model overlays and knots.
+  #'
   #' @examples
-  #' f_plot_spline_surv_model(PERSUADE, 1)
+  #' \dontrun{
+  #' f_plot_spline_surv_model(PERSUADE, model_index = 1)
+  #' }
+  #' @export
   input <- PERSUADE$input
   misc <- PERSUADE$misc
   surv_obs <- PERSUADE$surv_obs
@@ -549,19 +565,21 @@ f_plot_spline_surv_model <- function(PERSUADE, model_index = 1) {
 }
 
 f_plot_cure_surv_model <- function(PERSUADE, model_index = 1) {
-  #' Plot Kaplan-Meier and Fitted Cure-Based Survival Model
+  #' Cure Survival Model Overlay
   #'
-  #' Dynamically overlays a cure-based survival model on top of KM curves
-  #' with shaded confidence bands per group.
+  #' Overlays a fitted cure survival model on KM curves, including shaded KM
+  #' confidence bands per group.
   #'
-  #' @param PERSUADE A PERSUADE object from `f_PERSUADE()`.
-  #' @param model_index Integer. Index for model selection.
+  #' @param PERSUADE A PERSUADE object created by [f_PERSUADE()].
+  #' @param model_index Integer. Index of the cure model in `PERSUADE$surv_pred$model$cure`.
   #'
-  #' @return A base R plot.
-  #' @export
-  #' 
+  #' @return A base R plot of KM curves with cure model overlays.
+  #'
   #' @examples
-  #' f_plot_cure_surv_model(PERSUADE, 1)
+  #' \dontrun{
+  #' f_plot_cure_surv_model(PERSUADE, model_index = 1)
+  #' }
+  #' @export
   input <- PERSUADE$input
   misc <- PERSUADE$misc
   surv_obs <- PERSUADE$surv_obs
