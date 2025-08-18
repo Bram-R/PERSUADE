@@ -34,7 +34,7 @@ The framework supports the analyst in:
 ---
 
 ## Repository Structure
-├── PERSUADE_input.R # Main script to configure inputs and initiate the analysis \n
+├── PERSUADE_input.R # Main script to configure inputs and initiate the analysis /n
 ├── PERSUADE_function.R # Core function implementation: f_PERSUADE(...) 
 ├── PERSUADE_figures.R # Visualization utilities 
 ├── PERSUADE_S3_object_functions.R # S3 methods and object manipulation tools 
