@@ -34,14 +34,14 @@ The framework supports the analyst in:
 ---
 
 ## Repository Structure
-├── PERSUADE_input.R # Main script to configure inputs and initiate the analysis
-├── PERSUADE_function.R # Core function implementation: f_PERSUADE(...)
-├── PERSUADE_figures.R # Visualization utilities
-├── PERSUADE_S3_object_functions.R # S3 methods and object manipulation tools
-├── PERSUADE_output.Rmd # Markdown template for generating reports
-├── PERSUADE_figure_process.png/.vsdx # Visual diagram explaining the workflow
-├── PERSUADE Excel template 2020_05_15.xltx # Optional spreadsheet template
-├── README.md # This readme file
+├── PERSUADE_input.R # Main script to configure inputs and initiate the analysis 
+├── PERSUADE_function.R # Core function implementation: f_PERSUADE(...) 
+├── PERSUADE_figures.R # Visualization utilities 
+├── PERSUADE_S3_object_functions.R # S3 methods and object manipulation tools 
+├── PERSUADE_output.Rmd # Markdown template for generating reports 
+├── PERSUADE_figure_process.png/.vsdx # Visual diagram explaining the workflow 
+├── PERSUADE Excel template 2020_05_15.xltx # Optional spreadsheet template 
+├── README.md # This readme file 
 ├── .gitignore
 ├── PERSUADE.Rproj # Optional RStudio project file
 ├── PERSUADE.enl # Auxiliary file
