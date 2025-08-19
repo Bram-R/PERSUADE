@@ -33,41 +33,19 @@ The framework supports the analyst in:
 
 ---
 
-## Repository Structure
-```text
-├── PERSUADE_input.R # Main script to configure inputs and initiate the analysis 
-├── PERSUADE_function.R # Core function implementation: f_PERSUADE(...) 
-├── PERSUADE_output_functions.R # Visualization utilities 
-├── PERSUADE_S3_object_functions.R # S3 methods and object manipulation tools 
-├── PERSUADE_output.Rmd # Markdown template for generating reports 
-├── PERSUADE_figure_process.png/.vsdx # Visual diagram explaining the workflow 
-├── PERSUADE Excel template 2020_05_15.xltx # Optional spreadsheet template 
-├── README.md # This readme file 
-├── .gitignore
-├── PERSUADE.Rproj # Optional RStudio project file
-├── PERSUADE.enl # Auxiliary file
-└── BC_OS_output # Output artifacts (generated results)
-```
-
----
 
 ## Getting Started
 
 ### **Prerequisites**
-- R (version compatible with tidyverse, survival, and other dependencies)
+- R (version compatible with survival and other dependencies)
 - Recommended: RStudio for better environment handling
 
 ### **Setup Instructions**
 
-1. **Place files in your working directory:**  
-   Ensure the following are present:
-   - `PERSUADE_input.R`
-   - `PERSUADE_function.R`  
-   - `PERSUADE_output_functions.R`  
-   - `PERSUADE_S3_object_functions.R`  
-   - `PERSUADE_output.Rmd`  
+1. **Load PERSUADE pacakge:**  
+   devtools::install_github("Bram-R/PERSUADE")
 
-2. **Open `PERSUADE_input.R`:**  
+2. **Specify input see `PERSUADE_input.R` as example (https://github.com/Bram-R/PERSUADE/blob/master/PERSUADE_input.R):**  
    - Specify your input dataset (e.g., CSV or R object)  
    - Set the project name and outcome identifier using the `name` parameter  
 
@@ -105,7 +83,7 @@ Visualize the process via the included diagram:
 ## Extending or Customizing
 
 - **Add new model types:** Incorporate additional parametric distributions or non-parametric methods by extending `f_PERSUADE()`.  
-- **Refine plots:** Customize visualizations in `PERSUADE_figures.R` or adopt themes for publication-quality graphics.  
+- **Refine plots:** Customize visualizations in `PERSUADE_output_functions.R` or adopt themes for publication-quality graphics.  
 - **Scale to new data formats:** Build data preprocessing modules for commonly used formats (e.g., survival objects, breakpoints, long-format datasets).  
 - **Automate Reporting:** Enhance the R Markdown template for production-ready reports with headers, metadata, or version control.  
 
