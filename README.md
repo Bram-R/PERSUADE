@@ -37,7 +37,7 @@ The framework supports the analyst in:
 ```text
 ├── PERSUADE_input.R # Main script to configure inputs and initiate the analysis 
 ├── PERSUADE_function.R # Core function implementation: f_PERSUADE(...) 
-├── PERSUADE_figures.R # Visualization utilities 
+├── PERSUADE_output_functions.R # Visualization utilities 
 ├── PERSUADE_S3_object_functions.R # S3 methods and object manipulation tools 
 ├── PERSUADE_output.Rmd # Markdown template for generating reports 
 ├── PERSUADE_figure_process.png/.vsdx # Visual diagram explaining the workflow 
@@ -63,7 +63,7 @@ The framework supports the analyst in:
    Ensure the following are present:
    - `PERSUADE_input.R`
    - `PERSUADE_function.R`  
-   - `PERSUADE_figures.R`  
+   - `PERSUADE_output_functions.R`  
    - `PERSUADE_S3_object_functions.R`  
    - `PERSUADE_output.Rmd`  
 
