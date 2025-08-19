@@ -1,5 +1,5 @@
 ---
-title: "PERSUADE"
+title: "`r paste0('PERSUADE ', PERSUADE$name)`"
 date: "`r Sys.Date()`"
 output:
   pdf_document:
@@ -14,6 +14,7 @@ header-includes:
 ---
 
 ```{r setup, include=FALSE}
+library(PERSUADE)
 knitr::opts_chunk$set(echo = TRUE, 
                       fig.align = "left", 
                       fig.path = file.path(paste0(PERSUADE$name, "_output/Images/Figure_")), 
@@ -23,14 +24,6 @@ options(warn=-1) # prevent warnings from being printed (options(warn=0) to turn 
 ```
 
 ```{r preparation, echo=FALSE, warning = FALSE, message = FALSE, results = "hide"}
-packages <- c("ggplot2", "knitr", "kableExtra",
-              "survminer", "survival")
-new.packages <- packages[!(packages %in% installed.packages()[, "Package"])]  #check for new packages
-if (length(new.packages)) install.packages(new.packages)  #install new packages (if needed)
-suppressPackageStartupMessages(lapply(packages, require, character.only = TRUE))  #load packages
-
-source(paste0(getwd(), "/PERSUADE_output_functions.R"))
-
 # COLOUR PALETTE
 n <- 9  #number of different colors (to be used for palette)
 palette(rainbow(n = n, s = 1, v = 1, start = 0, end = max(1, n - 1)/n, alpha = 1))
@@ -52,8 +45,8 @@ f_plot_km_survival(PERSUADE)
 ```
 
 ```{r table_KM, echo=FALSE}
-kable_styling(
-  kable(
+kableExtra::kable_styling(
+  knitr::kable(
     summary(PERSUADE$surv_obs$km)$table,
     format = "latex", booktabs = TRUE, linesep = "",
     caption = "Observed survival data", label = "Table_1"),
@@ -176,8 +169,8 @@ These goodness-of-fit statistics apply only to the *observed* data period. They 
 \clearpage
 
 ```{r gof_parametric, echo=FALSE, out.height="75%"}
-kable_styling(
-  kable(
+kableExtra::kable_styling(
+  knitr::kable(
     PERSUADE$surv_model$param_ic[order(PERSUADE$surv_model$param_ic$AIC), ],
     row.names = FALSE, format = "latex", booktabs = TRUE, linesep = "",
     caption = "Goodness of fit statistics", label = "Table_2"),
@@ -240,8 +233,8 @@ Additionally, the tail of the observed data may be affected by a low number of e
 \clearpage
 
 ```{r gof_spline, echo=FALSE, out.height="75%", eval=PERSUADE$input$spline_mod}
-kable_styling(
-  kable(
+kableExtra::kable_styling(
+  knitr::kable(
     rbind(PERSUADE$surv_model$param_ic, PERSUADE$surv_model$spline_ic)[
       order(rbind(PERSUADE$surv_model$param_ic, PERSUADE$surv_model$spline_ic)$AIC), ],
     row.names = FALSE, format = "latex", booktabs = TRUE, linesep = "", label = "Table_3",
@@ -311,15 +304,15 @@ Additionally, the tail of the observed data may be affected by a low number of e
 \clearpage
 
 ```{r gof_cure, echo=FALSE, out.height="75%", eval=PERSUADE$input$cure_mod}
-kable_styling(
-  kable(
+kableExtra::kable_styling(
+  knitr::kable(
     rbind(PERSUADE$surv_model$param_ic[,1:2], PERSUADE$surv_model$cure_ic[,1:2])[
       order(rbind(PERSUADE$surv_model$param_ic[,1:2], PERSUADE$surv_model$cure_ic[,1:2])$AIC), ],
     row.names = FALSE, format = "latex", booktabs = TRUE, linesep = "", label = "Table_4",
     caption = "Goodness of fit statistics (including standard parametric and cure models)"),
   latex_options = c("HOLD_position", "scale_down", "striped"))
-kable_styling(
-  kable(
+kableExtra::kable_styling(
+  knitr::kable(
     PERSUADE$surv_model$cure_ic[,-2], 
     row.names = FALSE,
     format = "latex", booktabs = TRUE, linesep = "", label = "Table_5",
@@ -418,8 +411,8 @@ for (i in seq_along(group_names)) {
   
   # Survival probability table
   print(
-    kable_styling(
-      kable(
+    kableExtra::kable_styling(
+      knitr::kable(
         t(round(PERSUADE$surv_pred$gr[[i]][
           1 + PERSUADE$input$time_pred_surv_table, ], 3))[-1, ], 
         col.names = paste("T=",
@@ -436,8 +429,8 @@ for (i in seq_along(group_names)) {
   
   # Annual transition probability table
   print(
-    kable_styling(
-      kable(
+    kableExtra::kable_styling(
+      knitr::kable(
         f_summary(
           PERSUADE$surv_pred$tp_gr[[i]][, 2:PERSUADE$misc$cols_tp]
         ), 

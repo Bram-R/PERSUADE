@@ -1,0 +1,40 @@
+Package: PERSUADE
+Title: Parametric Survival Model Selection for Decision-Analytic Models
+Version: 0.0.0.9000
+Authors@R: 
+    c(
+      person("Bram", "R.", email = "bram.ramaekers@mumc.nl", role = c("aut", "cre"),
+             comment = c(ORCID = "https://orcid.org/0000-0001-5785-9228")),
+      person("Xa4P", role = "ctb")
+    )
+Description: Provides a standardized framework to support the selection and 
+    evaluation of parametric survival models for time-to-event data. Includes 
+    tools for visualizing survival data, checking proportional hazards assumptions, 
+    comparing parametric and cure models, examining hazard functions, 
+    and evaluating model extrapolation. Results are structured to 
+    facilitate integration into decision-analytic models, and reports 
+    can be generated with R Markdown for reproducible workflows.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Depends: 
+    R (>= 4.1.0)
+Imports: 
+    rms,
+    survival,
+    flexsurv,
+    flexsurvcure,
+    muhaz,
+    sft,
+    survminer,
+    ggplot2,
+    data.table
+Suggests: 
+    testthat (>= 3.0.0),
+    knitr,
+    kableExtra,
+    rmarkdown
+Config/testthat/edition: 3
+LazyData: true
+VignetteBuilder: knitr

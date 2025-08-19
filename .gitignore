@@ -3,3 +3,8 @@
 .RData
 .Ruserdata
 To do.R
+.Rdata
+.httr-oauth
+.DS_Store
+.quarto
+inst/doc

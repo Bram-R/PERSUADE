@@ -19,7 +19,7 @@ f_plot_km_survival <- function(PERSUADE) {
   ngroups <- misc$ngroups
   form <- misc$form
   group_names <- misc$group_names
-  
+
   # Build the data frame used for survival fit
   df_km <- if (ngroups > 1) {
     data.frame(
@@ -33,12 +33,12 @@ f_plot_km_survival <- function(PERSUADE) {
       status = input$status
     )
   }
-  
+
   # Fit KM model
-  surv_object <- surv_fit(formula = form, data = df_km)
-  
+  surv_object <- survminer::surv_fit(formula = form, data = df_km)
+
   # Plot
-  plot_obj <- ggsurvplot(
+  plot_obj <- survminer::ggsurvplot(
     fit = surv_object,
     data = df_km,
     legend.labs = group_names,
@@ -47,13 +47,13 @@ f_plot_km_survival <- function(PERSUADE) {
     surv.median.line = "hv",
     ncensor.plot = ngroups > 1,
     censor = ngroups == 1,
-    ggtheme = theme_light(),
+    ggtheme = ggplot2::theme_light(),
     color = if (ngroups > 1) "strata" else "black",
     linetype = if (ngroups > 1) as.integer(c(1, "3333", "5212")),
     size = 0.5,
     legend = "top"
   )
-  
+
   return(plot_obj)
 }
 
@@ -76,19 +76,19 @@ f_plot_km_survival_base <- function(PERSUADE) {
   misc <- PERSUADE$misc
   surv_obs <- PERSUADE$surv_obs
   surv_pred <- PERSUADE$surv_pred
-  
+
   ngroups <- misc$ngroups
   group_names <- misc$group_names
   line_type <- as.integer(c(1, "3333", "5212"))
   km_line_color <- c("black", "lightgrey", "darkgrey")
-  
+
   # Base KM plot
   plot(
     surv_obs$km, lwd = 2, col = km_line_color[1:ngroups],
     main = "Kaplan-Meier", lty = line_type,
     xlab = "time", ylab = "survival"
   )
-  
+
   # Add shaded CI per group
   for (i in seq_len(ngroups)) {
     idx <- surv_obs$km_names == i
@@ -101,7 +101,7 @@ f_plot_km_survival_base <- function(PERSUADE) {
       border = NA
     )
   }
-  
+
   # Add legend with model and KM lines
   legend(
     "bottomleft",
@@ -129,24 +129,24 @@ f_plot_log_cumhaz <- function(PERSUADE) {
   surv_obs <- PERSUADE$surv_obs
   input <- PERSUADE$input
   misc <- PERSUADE$misc
-  
+
   km <- surv_obs$km
   km_names <- surv_obs$km_names
-  
+
   log_time <- log(km$time)
   log_hazard <- log(-log(km$surv))
-  
+
   valid_idx <- is.finite(log_time) & is.finite(log_hazard) & km$surv != 1
-  
+
   x_vals <- log_time[valid_idx]
   y_vals <- log_hazard[valid_idx]
   group_vals <- km_names[valid_idx]
-  
+
   xlim_range <- range(x_vals)
-  
+
   pch_type <- c(1, 8, 9)[group_vals]
   line_color <- c("black", "lightgrey", "darkgrey")[group_vals]
-  
+
   plot(
     x = x_vals, y = y_vals,
     main = "A: LN(cumulative hazard)",
@@ -157,7 +157,7 @@ f_plot_log_cumhaz <- function(PERSUADE) {
     pch = pch_type,
     col = line_color
   )
-  
+
   if (misc$ngroups > 1) {
     legend(
       "topleft",
@@ -187,15 +187,15 @@ f_plot_schoenfeld_residuals <- function(PERSUADE) {
   if (PERSUADE$misc$ngroups < 2) {
     stop("Scaled Schoenfeld residuals not available for a single group")
   }
-  
+
   cox_fit <- PERSUADE$surv_obs$cox_reg
   misc <- PERSUADE$misc
-  
-  zph <- cox.zph(cox_fit, terms = FALSE)
+
+  zph <- survival::cox.zph(cox_fit, terms = FALSE)
   zph_data <- zph$y
   zph_time <- zph$x
   ngroups <- misc$ngroups
-  
+
   for (i in 1:(ngroups - 1)) {
     plot(
       zph[i], col = "5", lwd = 2,
@@ -203,12 +203,12 @@ f_plot_schoenfeld_residuals <- function(PERSUADE) {
       xlab = "time",
       ylab = paste("Beta(t) for", misc$group_names[i + 1], "vs", misc$group_names[1])
     )
-    
+
     abline(h = 0, lty = 3)
-    
+
     lm_fit <- lm(zph_data[, i] ~ zph_time)
     abline(lm_fit$coefficients, col = "7", lty = 1, lwd = 2)
-    
+
     legend("bottomleft", legend = c(
       "smoothed line (natural spline with df = 4)",
       "regression line"
@@ -235,20 +235,20 @@ f_plot_smoothed_hazard <- function(PERSUADE) {
   surv_obs <- PERSUADE$surv_obs
   misc <- PERSUADE$misc
   ngroups <- misc$ngroups
-  
+
   # Define plotting colors and line types (extendable, will recycle if needed)
   haz_line_color <- c("black", "lightgrey", "darkgrey")
   line_type <- as.integer(c(1, "3333", "5212", "3313", "1144", "42"))
-  
+
   # Extract plot limits
   xlim_range <- c(0, surv_obs$haz$max$time)
   ylim_range <- c(0, surv_obs$haz$max$smooth)
-  
+
   # Loop through groups to extract smoothed hazard data
   for (i in seq_len(ngroups)) {
     group_name <- paste0("smooth_gr", i)
     haz_data <- surv_obs$haz$hazards[[group_name]]
-    
+
     if (i == 1) {
       # Start plot with group 1
       with(haz_data, {
@@ -278,7 +278,7 @@ f_plot_smoothed_hazard <- function(PERSUADE) {
       })
     }
   }
-  
+
   # Add legend
   legend(
     "topleft",
@@ -310,27 +310,27 @@ f_plot_hazard_with_models <- function(PERSUADE) {
   misc <- PERSUADE$misc
   surv_obs <- PERSUADE$surv_obs
   ngroups <- misc$ngroups
-  
+
   # Define base plot styles
   haz_line_color <- c("black", "lightgrey", "darkgrey")
   line_color <- 1:9
   line_type <- c(1, 3333, 5212)
-  
+
   # Define model groups to iterate over
   model_types <- list(
     base = names(PERSUADE$surv_model$param_models),
     spline = names(PERSUADE$surv_model$spline_models),
     cure = names(PERSUADE$surv_model$cure_models)
   )
-  
+
   # Determine cure column per group
   cure_col_index <- c(2, 3, 4)  # assumes group 1: col 2, group 2: col 3, etc.
-  
+
   for (i in seq_len(ngroups)) {
     group_label <- paste("Group:", misc$group_names[i])
     smooth_name <- paste0("smooth_gr", i)
     smooth_data <- surv_obs$haz$hazards[[smooth_name]]
-    
+
     plot(
       smooth_data$est.grid, smooth_data$haz.est,
       main = paste0("Standard parametric models, ", group_label),
@@ -343,7 +343,7 @@ f_plot_hazard_with_models <- function(PERSUADE) {
       xlim = c(0, surv_obs$haz$max$time),
       ylim = c(0, surv_obs$haz$max$smooth)
     )
-    
+
     # ── Parametric Model Overlays ─────────────────────────────────────────────
     for (j in seq_along(model_types$base)) {
       lines(
@@ -355,7 +355,7 @@ f_plot_hazard_with_models <- function(PERSUADE) {
       )
     }
     legend("topleft", legend = misc$lbls, col = line_color[1:7], lty = line_type[i], cex = 0.8, bty = "n")
-    
+
     # ── Spline Models ─────────────────────────────────────────────────────────
     if (isTRUE(input$spline_mod)) {
       plot(
@@ -381,7 +381,7 @@ f_plot_hazard_with_models <- function(PERSUADE) {
       }
       legend("topleft", legend = misc$lbls_spline, col = line_color[1:9], lty = line_type[i], cex = 0.8, bty = "n")
     }
-    
+
     # ── Cure Models ───────────────────────────────────────────────────────────
     if (isTRUE(input$cure_mod)) {
       plot(
@@ -431,23 +431,23 @@ f_plot_param_surv_model <- function(PERSUADE, model_index = 1) {
   misc <- PERSUADE$misc
   surv_obs <- PERSUADE$surv_obs
   surv_pred <- PERSUADE$surv_pred
-  
+
   model_key = names(surv_pred$model)[model_index]
   model_label = misc$lbls[model_index]
   col_index = model_index
-  
+
   ngroups <- misc$ngroups
   group_names <- misc$group_names
   line_type <- as.integer(c(1, "3333", "5212"))
   km_line_color <- c("black", "lightgrey", "darkgrey")
-  
+
   # Base KM plot
   plot(
     surv_obs$km, lwd = 2, col = km_line_color[1:ngroups],
     main = paste("A: Kaplan-Meier (", model_label, ")", sep = ""),
     xlab = "time", ylab = "survival"
   )
-  
+
   # Add shaded CI per group
   for (i in seq_len(ngroups)) {
     idx <- surv_obs$km_names == i
@@ -460,7 +460,7 @@ f_plot_param_surv_model <- function(PERSUADE, model_index = 1) {
       border = NA
     )
   }
-  
+
   # Overlay model predictions
   for (i in seq_len(ngroups)) {
     lines(
@@ -471,7 +471,7 @@ f_plot_param_surv_model <- function(PERSUADE, model_index = 1) {
       lwd = 2
     )
   }
-  
+
   # Add legend with model and KM lines
   legend(
     "bottomleft",
@@ -503,23 +503,23 @@ f_plot_spline_surv_model <- function(PERSUADE, model_index = 1) {
   surv_obs <- PERSUADE$surv_obs
   surv_pred <- PERSUADE$surv_pred
   surv_model <- PERSUADE$surv_model
-  
+
   model_key = names(surv_pred$model$spline)[model_index]
   model_label = misc$lbls_spline[model_index]
   col_index = model_index
-  
+
   ngroups <- misc$ngroups
   group_names <- misc$group_names
   line_type <- as.integer(c(1, "3333", "5212"))
   km_line_color <- c("black", "lightgrey", "darkgrey")
-  
+
   # Base KM plot
   plot(
     surv_obs$km, lwd = 2, col = km_line_color[1:ngroups],
     main = paste("A: Kaplan-Meier (", model_label, ")", sep = ""),
     xlab = "time", ylab = "survival"
   )
-  
+
   # Add shaded CI per group
   for (i in seq_len(ngroups)) {
     idx <- surv_obs$km_names == i
@@ -532,7 +532,7 @@ f_plot_spline_surv_model <- function(PERSUADE, model_index = 1) {
       border = NA
     )
   }
-  
+
   # Overlay model predictions for each group
   for (i in seq_len(ngroups)) {
     lines(
@@ -543,7 +543,7 @@ f_plot_spline_surv_model <- function(PERSUADE, model_index = 1) {
       lwd = 2
     )
   }
-  
+
   # Add vertical lines for knots
   knots <- exp(surv_model$spline_models[[model_key]]$knots)
   if (length(knots) >= 2) {
@@ -553,7 +553,7 @@ f_plot_spline_surv_model <- function(PERSUADE, model_index = 1) {
     # Boundary knots (first & last): lighter dashed line
     abline(v = c(knots[1], knots[length(knots)]), lty = 3, lwd = 1)
   }
-  
+
   # Add legend
   legend(
     "bottomleft",
@@ -584,23 +584,23 @@ f_plot_cure_surv_model <- function(PERSUADE, model_index = 1) {
   misc <- PERSUADE$misc
   surv_obs <- PERSUADE$surv_obs
   surv_pred <- PERSUADE$surv_pred
-  
+
   model_key = names(surv_pred$model$cure)[model_index]
   model_label = misc$lbls_cure[model_index]
   col_index = model_index
-  
+
   ngroups <- misc$ngroups
   group_names <- misc$group_names
   line_type <- as.integer(c(1, "3333", "5212"))
   km_line_color <- c("black", "lightgrey", "darkgrey")
-  
+
   # Base KM plot
   plot(
     surv_obs$km, lwd = 2, col = km_line_color[1:ngroups],
     main = paste("A: Kaplan-Meier (", model_label, ")", sep = ""),
     xlab = "time", ylab = "survival"
   )
-  
+
   # Add shaded CI per group
   for (i in seq_len(ngroups)) {
     idx <- surv_obs$km_names == i
@@ -613,7 +613,7 @@ f_plot_cure_surv_model <- function(PERSUADE, model_index = 1) {
       border = NA
     )
   }
-  
+
   # Overlay cure model predictions
   for (i in seq_len(ngroups)) {
     lines(
@@ -624,7 +624,7 @@ f_plot_cure_surv_model <- function(PERSUADE, model_index = 1) {
       lwd = 2
     )
   }
-  
+
   # Add legend
   legend(
     "bottomleft",
@@ -657,17 +657,17 @@ f_plot_diag_param_surv_model <- function(PERSUADE, model_index = 1) {
   misc <- PERSUADE$misc
   surv_obs <- PERSUADE$surv_obs
   surv_pred <- PERSUADE$surv_pred
-  
+
   model_key = names(surv_pred$model)[model_index]
   model_label = misc$lbls[model_index]
   col_index = model_index
-  
+
   ngroups <- misc$ngroups
   group_names <- misc$group_names
   line_type <- as.integer(c(1, "3333", "5212"))
   point_shape <- c(1, 8, 9)
   km_line_color <- c("black", "lightgrey", "darkgrey")
-  
+
   # Define transformation logic for each model
   transform_funs <- list(
     expo  = list(
@@ -699,13 +699,13 @@ f_plot_diag_param_surv_model <- function(PERSUADE, model_index = 1) {
       pred = function(time, surv) cbind(log(time), log(-log(surv)))
     )
   )
-  
+
   if (!model_key %in% names(transform_funs)) {
     stop("Model key not recognized in transform_funs")
   }
-  
+
   tf <- transform_funs[[model_key]]
-  
+
   # Prepare observed data
   if (model_key == "gom") {
     obs_data <- tf$obs(
@@ -726,7 +726,7 @@ f_plot_diag_param_surv_model <- function(PERSUADE, model_index = 1) {
     obs_col <- km_line_color[surv_obs$km_names]
     obs_pch <- point_shape[surv_obs$km_names]
   }
-  
+
   # Base plot
   plot(
     obs_data, cex = 0.6, pch = obs_pch, col = obs_col,
@@ -748,7 +748,7 @@ f_plot_diag_param_surv_model <- function(PERSUADE, model_index = 1) {
                   gam   = "LN(cumulative hazard)",
                   ggam  = "LN(cumulative hazard)")
   )
-  
+
   # Add predicted lines
   for (i in seq_len(ngroups)) {
     if (model_key == "gom") {
@@ -764,7 +764,7 @@ f_plot_diag_param_surv_model <- function(PERSUADE, model_index = 1) {
     }
     lines(pred_data, col = as.character(col_index), lty = line_type[i], lwd = 2)
   }
-  
+
   # Legend
   legend(
     "topleft",
@@ -799,17 +799,17 @@ f_plot_diag_spline_surv_model <- function(PERSUADE, model_index = 1) {
   surv_obs <- PERSUADE$surv_obs
   surv_pred <- PERSUADE$surv_pred
   surv_model <- PERSUADE$surv_model
-  
+
   model_key = names(surv_pred$model$spline)[model_index]
   model_label = misc$lbls_spline[model_index]
   col_index = model_index
-  
+
   ngroups <- misc$ngroups
   group_names <- misc$group_names
   line_type <- as.integer(c(1, "3333", "5212"))
   point_shape <- c(1, 8, 9)
   km_line_color <- c("black", "lightgrey", "darkgrey")
-  
+
   # Determine spline type from model_key
   spline_type <- if (grepl("hazard", model_key)) {
     "hazard"
@@ -820,7 +820,7 @@ f_plot_diag_spline_surv_model <- function(PERSUADE, model_index = 1) {
   } else {
     stop("Model key not recognized as spline hazard/odds/normal")
   }
-  
+
   # Define transformations
   transform_funs <- list(
     hazard = list(
@@ -842,18 +842,18 @@ f_plot_diag_spline_surv_model <- function(PERSUADE, model_index = 1) {
       ylab = "- standard normal quartiles"
     )
   )
-  
+
   tf <- transform_funs[[spline_type]]
-  
+
   # Observed data
   obs_data <- tf$obs(
     time = surv_obs$km$time,
     surv = surv_obs$km$surv
   )
-  
+
   obs_col <- km_line_color[surv_obs$km_names]
   obs_pch <- point_shape[surv_obs$km_names]
-  
+
   # Base plot
   plot(
     obs_data, cex = 0.6, pch = obs_pch, col = obs_col,
@@ -865,7 +865,7 @@ f_plot_diag_spline_surv_model <- function(PERSUADE, model_index = 1) {
       ceiling(max(log(surv_obs$km$time)))
     )
   )
-  
+
   # Predicted lines for all groups
   for (i in seq_len(ngroups)) {
     pred_data <- tf$pred(
@@ -874,7 +874,7 @@ f_plot_diag_spline_surv_model <- function(PERSUADE, model_index = 1) {
     )
     lines(pred_data, col = as.character(col_index), lty = line_type[i], lwd = 2)
   }
-  
+
   # Draw knots
   knots <- surv_model$spline_models[[model_key]]$knots
   if (!is.null(knots)) {
@@ -887,7 +887,7 @@ f_plot_diag_spline_surv_model <- function(PERSUADE, model_index = 1) {
       }
     }
   }
-  
+
   # Legend
   legend(
     "topleft",
@@ -921,17 +921,17 @@ f_plot_diag_cure_surv_model <- function(PERSUADE, model_index = 1) {
   misc <- PERSUADE$misc
   surv_obs <- PERSUADE$surv_obs
   surv_pred <- PERSUADE$surv_pred
-  
+
   model_key = names(surv_pred$model$cure)[model_index]
   model_label = misc$lbls_cure[model_index]
   col_index = model_index
-  
+
   ngroups <- misc$ngroups
   group_names <- misc$group_names
   line_type <- as.integer(c(1, "3333", "5212"))
   point_shape <- c(1, 8, 9)
   km_line_color <- c("black", "lightgrey", "darkgrey")
-  
+
   # Detect cure model distribution
   dist_type <- if (grepl("weib", model_key, ignore.case = TRUE)) {
     "weibull"
@@ -942,7 +942,7 @@ f_plot_diag_cure_surv_model <- function(PERSUADE, model_index = 1) {
   } else {
     stop("Model key not recognized as Weibull, log-normal, or log-logistic cure model")
   }
-  
+
   # Define transformations
   transform_funs <- list(
     weibull = list(
@@ -964,18 +964,18 @@ f_plot_diag_cure_surv_model <- function(PERSUADE, model_index = 1) {
       ylab = "-LN(survival odds)"
     )
   )
-  
+
   tf <- transform_funs[[dist_type]]
-  
+
   # Observed data
   obs_data <- tf$obs(
     time = surv_obs$km$time,
     surv = surv_obs$km$surv
   )
-  
+
   obs_col <- km_line_color[surv_obs$km_names]
   obs_pch <- point_shape[surv_obs$km_names]
-  
+
   # Base plot
   plot(
     obs_data, cex = 0.6, pch = obs_pch, col = obs_col,
@@ -987,7 +987,7 @@ f_plot_diag_cure_surv_model <- function(PERSUADE, model_index = 1) {
       ceiling(max(log(surv_obs$km$time)))
     )
   )
-  
+
   # Predicted lines for all groups
   for (i in seq_len(ngroups)) {
     pred_data <- tf$pred(
@@ -996,7 +996,7 @@ f_plot_diag_cure_surv_model <- function(PERSUADE, model_index = 1) {
     )
     lines(pred_data, col = as.character(col_index), lty = line_type[i], lwd = 2)
   }
-  
+
   # Legend
   legend(
     "topleft",
@@ -1031,25 +1031,25 @@ f_plot_tp_param_surv_model <- function(PERSUADE, model_index = 1) {
   misc <- PERSUADE$misc
   surv_obs <- PERSUADE$surv_obs
   surv_pred <- PERSUADE$surv_pred
-  
+
   model_key = names(surv_pred$model)[model_index]
   model_label = misc$lbls[model_index]
   col_index = model_index
-  
+
   ngroups <- misc$ngroups
   group_names <- misc$group_names
   line_type <- as.integer(c(1, "3333", "5212"))
   point_shape <- c(1, 8, 9)
   km_line_color <- c("black", "lightgrey", "darkgrey")
-  
+
   # Map model_key to column index in tp_gr predictions
   model_map <- setNames(as.list(2:8), names(PERSUADE$surv_model$param_models))
-  
+
   if (!model_key %in% names(model_map)) {
     stop("Model key not recognized in model_map")
   }
   pred_col_index <- model_map[[model_key]]
-  
+
   # Base plot — group 1
   plot(
     x = surv_obs$tp$gr_1$time, y = surv_obs$tp$gr_1$smooth,
@@ -1065,7 +1065,7 @@ f_plot_tp_param_surv_model <- function(PERSUADE, model_index = 1) {
     y = unlist(surv_pred$tp_gr$gr_1[, ..pred_col_index]),
     col = as.character(col_index), lty = line_type[1], lwd = 2
   )
-  
+
   # Additional groups
   if (ngroups > 1) {
     for (i in 2:ngroups) {
@@ -1083,7 +1083,7 @@ f_plot_tp_param_surv_model <- function(PERSUADE, model_index = 1) {
       )
     }
   }
-  
+
   # Shaded CIs
   for (i in seq_len(ngroups)) {
     gr_name <- paste0("gr_", i)
@@ -1095,7 +1095,7 @@ f_plot_tp_param_surv_model <- function(PERSUADE, model_index = 1) {
       border = NA
     )
   }
-  
+
   # Legend
   legend(
     "topleft",
@@ -1131,25 +1131,25 @@ f_plot_tp_spline_surv_model <- function(PERSUADE, model_index = 1) {
   surv_obs   <- PERSUADE$surv_obs
   surv_pred  <- PERSUADE$surv_pred
   surv_model <- PERSUADE$surv_model
-  
+
   model_key = names(surv_pred$model$spline)[model_index]
   model_label = misc$lbls_spline[model_index]
   col_index = model_index
-  
+
   ngroups       <- misc$ngroups
   group_names   <- misc$group_names
   line_type     <- as.integer(c(1, "3333", "5212"))
   point_shape   <- c(1, 8, 9)
   km_line_color <- c("black", "lightgrey", "darkgrey")
-  
+
   # Map model_key to column index in tp_gr predictions
   model_map <- setNames(as.list(9:17), names(PERSUADE$surv_model$spline_models))
-  
+
   if (!model_key %in% names(model_map)) {
     stop("Model key not recognized in model_map")
   }
   pred_col_index <- model_map[[model_key]]
-  
+
   # Base plot: group 1 observed
   plot(
     x = surv_obs$tp$gr_1$time,
@@ -1168,7 +1168,7 @@ f_plot_tp_spline_surv_model <- function(PERSUADE, model_index = 1) {
     col = as.character(col_index),
     lty = line_type[1], lwd = 2
   )
-  
+
   # Additional groups
   if (ngroups > 1) {
     for (i in 2:ngroups) {
@@ -1187,7 +1187,7 @@ f_plot_tp_spline_surv_model <- function(PERSUADE, model_index = 1) {
       )
     }
   }
-  
+
   # Shaded CIs
   for (i in seq_len(ngroups)) {
     gr_name <- paste0("gr_", i)
@@ -1199,7 +1199,7 @@ f_plot_tp_spline_surv_model <- function(PERSUADE, model_index = 1) {
       border = NA
     )
   }
-  
+
   # Vertical lines for knots
   knots <- exp(surv_model$spline_models[[model_key]]$knots)
   if (length(knots) >= 2) {
@@ -1209,7 +1209,7 @@ f_plot_tp_spline_surv_model <- function(PERSUADE, model_index = 1) {
     abline(v = internal, lty = 2, lwd = 1.5)
     abline(v = boundary, lty = 3, lwd = 1)
   }
-  
+
   # Legend
   legend(
     "topleft",
@@ -1244,26 +1244,26 @@ f_plot_tp_cure_surv_model <- function(PERSUADE, model_index = 1) {
   misc      <- PERSUADE$misc
   surv_obs  <- PERSUADE$surv_obs
   surv_pred <- PERSUADE$surv_pred
-  
+
   model_key = names(surv_pred$model$cure)[model_index]
   model_label = misc$lbls_cure[model_index]
   col_index = model_index
-  
+
   ngroups       <- misc$ngroups
   group_names   <- misc$group_names
   line_type     <- as.integer(c(1, "3333", "5212"))
   point_shape   <- c(1, 8, 9)
   km_line_color <- c("black", "lightgrey", "darkgrey")
-  
+
   # Map model_key to column index in tp_gr predictions
   model_map <- setNames(as.list(18:23), names(PERSUADE$surv_model$cure_models))
-  
+
   if (!model_key %in% names(model_map)) {
     stop("Model key not recognized in model_map")
   }
   pred_col_index <- model_map[[model_key]]
   pred_col_index <- pred_col_index - if (input$spline_mod == FALSE) { 9 } else { 0 }
-  
+
   # Base plot: group 1 observed
   plot(
     x = surv_obs$tp$gr_1$time,
@@ -1282,7 +1282,7 @@ f_plot_tp_cure_surv_model <- function(PERSUADE, model_index = 1) {
     col = as.character(col_index),
     lty = line_type[1], lwd = 2
   )
-  
+
   # Additional groups
   if (ngroups > 1) {
     for (i in 2:ngroups) {
@@ -1301,7 +1301,7 @@ f_plot_tp_cure_surv_model <- function(PERSUADE, model_index = 1) {
       )
     }
   }
-  
+
   # Shaded CIs
   for (i in seq_len(ngroups)) {
     gr_name <- paste0("gr_", i)
@@ -1313,7 +1313,7 @@ f_plot_tp_cure_surv_model <- function(PERSUADE, model_index = 1) {
       border = NA
     )
   }
-  
+
   # Legend
   legend(
     "topleft",
@@ -1347,10 +1347,10 @@ f_plot_param_surv_extrap <- function(PERSUADE) {
   surv_obs <- PERSUADE$surv_obs
   surv_pred <- PERSUADE$surv_pred
   model_names <- names(PERSUADE$surv_model$param_models)
-  
+
   line_type <- as.integer(c(1, "3333", "5212"))
   km_line_color <- c("black", "lightgrey", "darkgrey")
-  
+
   for (i in seq_len(misc$ngroups)) {
     # Base KM plot
     plot(
@@ -1359,7 +1359,7 @@ f_plot_param_surv_extrap <- function(PERSUADE) {
       xlab = "time", ylab = "survival",
       xlim = c(0, input$time_horizon)
     )
-    
+
     # Add shaded CI per group
     idx <- surv_obs$km_names == i
     polygon(
@@ -1370,7 +1370,7 @@ f_plot_param_surv_extrap <- function(PERSUADE) {
       col = adjustcolor(km_line_color[i], alpha.f = 0.3),
       border = NA
     )
-    
+
     # Add parametric curves
     for (j in seq_along(model_names)) {
       lines(
@@ -1381,8 +1381,8 @@ f_plot_param_surv_extrap <- function(PERSUADE) {
         lwd = 1
       )
     }
-    
-    # Add legend  
+
+    # Add legend
     legend("topright", legend = misc$lbls, col = 1:length(model_names),
            lty = line_type[i], cex = 0.8)
   }
@@ -1406,16 +1406,16 @@ f_plot_param_surv_extrap <- function(PERSUADE) {
 #' }
 f_plot_spline_surv_extrap <- function(PERSUADE) {
   if (!isTRUE(PERSUADE$input$spline_mod)) return(invisible())
-  
+
   input <- PERSUADE$input
   misc <- PERSUADE$misc
   surv_obs <- PERSUADE$surv_obs
   surv_pred <- PERSUADE$surv_pred
   model_names <- names(PERSUADE$surv_model$spline_models)
-  
+
   line_type <- as.integer(c(1, "3333", "5212"))
   km_line_color <- c("black", "lightgrey", "darkgrey")
-  
+
   for (i in seq_len(misc$ngroups)) {
     # Base KM plot
     plot(
@@ -1424,7 +1424,7 @@ f_plot_spline_surv_extrap <- function(PERSUADE) {
       xlab = "time", ylab = "survival",
       xlim = c(0, input$time_horizon)
     )
-    
+
     # Add shaded CI per group
     idx <- surv_obs$km_names == i
     polygon(
@@ -1435,7 +1435,7 @@ f_plot_spline_surv_extrap <- function(PERSUADE) {
       col = adjustcolor(km_line_color[i], alpha.f = 0.3),
       border = NA
     )
-    
+
     # Add parametric curves
     for (j in seq_along(model_names)) {
       lines(
@@ -1446,8 +1446,8 @@ f_plot_spline_surv_extrap <- function(PERSUADE) {
         lwd = 1
       )
     }
-    
-    # Add legend 
+
+    # Add legend
     legend("topright", legend = misc$lbls_spline, col = 1:length(model_names),
            lty = line_type[i], cex = 0.8)
   }
@@ -1472,16 +1472,16 @@ f_plot_spline_surv_extrap <- function(PERSUADE) {
 #' }
 f_plot_cure_surv_extrap <- function(PERSUADE) {
   if (!isTRUE(PERSUADE$input$cure_mod)) return(invisible())
-  
+
   input <- PERSUADE$input
   misc <- PERSUADE$misc
   surv_obs <- PERSUADE$surv_obs
   surv_pred <- PERSUADE$surv_pred
   model_names <- names(PERSUADE$surv_model$cure_models)
-  
+
   line_type <- as.integer(c(1, "3333", "5212"))
   km_line_color <- c("black", "lightgrey", "darkgrey")
-  
+
   for (i in seq_len(misc$ngroups)) {
     # Base KM plot
     plot(
@@ -1490,7 +1490,7 @@ f_plot_cure_surv_extrap <- function(PERSUADE) {
       xlab = "time", ylab = "survival",
       xlim = c(0, input$time_horizon)
     )
-    
+
     # Add shaded CI per group
     idx <- surv_obs$km_names == i
     polygon(
@@ -1501,7 +1501,7 @@ f_plot_cure_surv_extrap <- function(PERSUADE) {
       col = adjustcolor(km_line_color[i], alpha.f = 0.3),
       border = NA
     )
-    
+
     # Add parametric curves
     for (j in seq_along(model_names)) {
       lines(
@@ -1512,8 +1512,8 @@ f_plot_cure_surv_extrap <- function(PERSUADE) {
         lwd = 1
       )
     }
-    
-    # Add legend  
+
+    # Add legend
     legend("topright", legend = misc$lbls_cure, col = 1:length(model_names),
            lty = line_type[i], cex = 0.8)
   }
@@ -1539,20 +1539,20 @@ f_plot_tp_param_surv_extrap <- function(PERSUADE) {
   misc <- PERSUADE$misc
   surv_obs <- PERSUADE$surv_obs
   surv_pred <- PERSUADE$surv_pred
-  
+
   line_color <- c("black", "lightgrey", "darkgrey")
   line_type <- as.integer(c(1, "3333", "5212"))
-  
+
   for (i in seq_len(misc$ngroups)) {
     tp_obs <- surv_obs$tp[[paste0("gr_", i)]]
     tp_pred <- surv_pred$tp_gr[[paste0("gr_", i)]]
-    
+
     plot(tp_obs$time, tp_obs$smooth,
          main =  paste0("B: Annual transition probability (parametric curves), Group: ", misc$group_names[i]),
          xlab = "time", ylab = "annual transition probability",
          ylim = c(0, 1), xlim = c(0, input$time_horizon),
          lty = line_type[i], col = line_color[i], type = "l", lwd = 2)
-    
+
     # Add shaded CI per group
     polygon(
       na.omit(data.frame(
@@ -1562,11 +1562,11 @@ f_plot_tp_param_surv_extrap <- function(PERSUADE) {
       col = adjustcolor(line_color[i], alpha.f = 0.3),
       border = NA
     )
-    
+
     for (j in 2:8) {
       lines(input$time_pred[-1], unlist(tp_pred[, ..j]), col = j - 1, lty = line_type[i], lwd = 1)
     }
-    
+
     legend("topleft", legend = misc$lbls, col = 1:7, lty = line_type[i], cex = 0.8)
   }
 }
@@ -1589,25 +1589,25 @@ f_plot_tp_param_surv_extrap <- function(PERSUADE) {
 #' }
 f_plot_tp_spline_surv_extrap <- function(PERSUADE) {
   if (!isTRUE(PERSUADE$input$spline_mod)) return(invisible())
-  
+
   input <- PERSUADE$input
   misc <- PERSUADE$misc
   surv_obs <- PERSUADE$surv_obs
   surv_pred <- PERSUADE$surv_pred
-  
+
   line_color <- c("black", "lightgrey", "darkgrey")
   line_type <- as.integer(c(1, "3333", "5212"))
-  
+
   for (i in seq_len(misc$ngroups)) {
     tp_obs <- surv_obs$tp[[paste0("gr_", i)]]
     tp_pred <- surv_pred$tp_gr[[paste0("gr_", i)]]
-    
+
     plot(tp_obs$time, tp_obs$smooth,
          main =  paste0("B: Annual transition probability (spline curves), Group: ", misc$group_names[i]),
          xlab = "time", ylab = "annual transition probability",
          ylim = c(0, 1), xlim = c(0, input$time_horizon),
          lty = line_type[i], col = line_color[i], type = "l", lwd = 2)
-    
+
     # Add shaded CI per group
     polygon(
       na.omit(data.frame(
@@ -1617,11 +1617,11 @@ f_plot_tp_spline_surv_extrap <- function(PERSUADE) {
       col = adjustcolor(line_color[i], alpha.f = 0.3),
       border = NA
     )
-    
+
     for (j in 9:17) {
       lines(input$time_pred[-1], unlist(tp_pred[, ..j]), col = j - 8, lty = line_type[i], lwd = 1)
     }
-    
+
     legend("topleft", legend = misc$lbls_spline, col = 1:9, lty = line_type[i], cex = 0.8)
   }
 }
@@ -1644,26 +1644,26 @@ f_plot_tp_spline_surv_extrap <- function(PERSUADE) {
 #' }
 f_plot_tp_cure_surv_extrap <- function(PERSUADE) {
   if (!isTRUE(PERSUADE$input$cure_mod)) return(invisible())
-  
+
   input <- PERSUADE$input
   misc <- PERSUADE$misc
   surv_obs <- PERSUADE$surv_obs
   surv_pred <- PERSUADE$surv_pred
-  
+
   line_color <- c("black", "lightgrey", "darkgrey")
   line_type <- as.integer(c(1, "3333", "5212"))
   offset <- if (isTRUE(input$spline_mod)) 0 else -9
-  
+
   for (i in seq_len(misc$ngroups)) {
     tp_obs <- surv_obs$tp[[paste0("gr_", i)]]
     tp_pred <- surv_pred$tp_gr[[paste0("gr_", i)]]
-    
+
     plot(tp_obs$time, tp_obs$smooth,
          main =  paste0("B: Annual transition probability (cure curves), Group: ", misc$group_names[i]),
          xlab = "time", ylab = "annual transition probability",
          ylim = c(0, 1), xlim = c(0, input$time_horizon),
          lty = line_type[i], col = line_color[i], type = "l", lwd = 2)
-    
+
     # Add shaded CI per group
     polygon(
       na.omit(data.frame(
@@ -1673,12 +1673,12 @@ f_plot_tp_cure_surv_extrap <- function(PERSUADE) {
       col = adjustcolor(line_color[i], alpha.f = 0.3),
       border = NA
     )
-    
+
     for (j in 18:23) {
       j_offset <- j + offset
       lines(input$time_pred[-1], unlist(tp_pred[, ..j_offset]), col = j - 17, lty = line_type[i], lwd = 1)
     }
-    
+
     legend("topleft", legend = misc$lbls_cure, col = 1:6, lty = line_type[i], cex = 0.8)
   }
 }
@@ -1701,11 +1701,11 @@ f_plot_tp_cure_surv_extrap <- function(PERSUADE) {
 f_plot_hazard_parametric_extrap <- function(PERSUADE) {
   models <- names(PERSUADE$surv_model$param_models)
   misc <- PERSUADE$misc
-  
+
   cols <- seq_along(models)
   line_color <- c("black", "lightgrey", "darkgrey")
   line_type <- as.integer(c(1, "3333", "5212"))
-  
+
   for (i in seq_len(misc$ngroups)) {
     obs_data <- PERSUADE$surv_obs$haz$hazards[[paste0("smooth_gr", i)]]
     plot(cbind(obs_data$est.grid, obs_data$haz.est),
@@ -1742,14 +1742,14 @@ f_plot_hazard_parametric_extrap <- function(PERSUADE) {
 #' }
 f_plot_hazard_spline_extrap <- function(PERSUADE) {
   if (!isTRUE(PERSUADE$input$spline_mod)) return(invisible(NULL))
-  
+
   models <- names(PERSUADE$surv_model$spline_models)
   misc <- PERSUADE$misc
-  
+
   cols <- seq_along(models)
   line_color <- c("black", "lightgrey", "darkgrey")
   line_type <- as.integer(c(1, "3333", "5212"))
-  
+
   for (i in seq_len(misc$ngroups)) {
     obs_data <- PERSUADE$surv_obs$haz$hazards[[paste0("smooth_gr", i)]]
     plot(cbind(obs_data$est.grid, obs_data$haz.est),
@@ -1786,30 +1786,30 @@ f_plot_hazard_spline_extrap <- function(PERSUADE) {
 #' }
 f_plot_hazard_cure_extrap <- function(PERSUADE) {
   if (!isTRUE(PERSUADE$input$cure_mod)) return(invisible(NULL))
-  
+
   models <- names(PERSUADE$surv_model$cure_models)
   misc <- PERSUADE$misc
-  
+
   cols <- seq_along(models)
   line_color <- c("black", "lightgrey", "darkgrey")
   line_type <- as.integer(c(1, "3333", "5212"))
-  
+
   for (i in seq_len(misc$ngroups)) {
     obs_data <- PERSUADE$surv_obs$haz$hazards[[paste0("smooth_gr", i)]]
-    
+
     plot(cbind(obs_data$est.grid, obs_data$haz.est),
          main =  paste0("C: Hazard function (cure curves), Group: ", misc$group_names[i]),
          type = "l", col = line_color[i], lty = line_type[i], lwd = 2,
          xlab = "time", ylab = "smoothed hazard rate",
          xlim = c(0, PERSUADE$input$time_horizon),
          ylim = c(0, PERSUADE$surv_obs$haz$max$smooth))
-    
+
     for (j in seq_along(models)) {
       lines(cbind(PERSUADE$surv_pred$model$cure[[models[j]]]$hazard[, 1],
                   PERSUADE$surv_pred$model$cure[[models[j]]]$hazard[, i + 1]),
             col = cols[j], lty = line_type[i], lwd = 1)
     }
-    
+
     legend("topleft", legend = PERSUADE$misc$lbls_cure,
            col = cols, lty = line_type[i], cex = 0.8)
   }
@@ -1851,9 +1851,8 @@ f_summary <- function(df) {
 
 #' Generate PDF Report for a PERSUADE Analysis
 #'
-#' Save the PERSUADE object and render a PDF report using `PERSUADE_output.Rmd`.
-#' The function creates an output directory `<name>_output`, saves `PERSUADE.RData`,
-#' and writes `<name>.pdf` into that directory.
+#' Save the PERSUADE object and render a PDF report using the bundled
+#' `PERSUADE_output.Rmd` template.
 #'
 #' @param PERSUADE A PERSUADE object returned by [f_PERSUADE()].
 #'
@@ -1861,46 +1860,40 @@ f_summary <- function(df) {
 #'   PDF, returned invisibly.
 #' @export
 #'
-#' @details The R Markdown file `PERSUADE_output.Rmd` must be available in the
-#'   working directory. Figures are written to a subdirectory `Images/` and the
-#'   knit environment is initialised with the supplied `PERSUADE` object.
+#' @details The R Markdown file `PERSUADE_output.Rmd` is stored within the
+#'   package under `inst/rmd/`. Figures are written to a subdirectory `Images/`
+#'   inside the output folder, and the knit environment is initialised with the
+#'   supplied `PERSUADE` object.
 #'
 #' @seealso [f_PERSUADE()]
-#'
-#' @examples
-#' \dontrun{
-#' PERSUADE <- f_PERSUADE(...)
-#' pdf_path <- f_generate_report(P)
-#' pdf_path
-#' }
 f_generate_report <- function(PERSUADE) {
   name <- PERSUADE$name
-  
+
   # Create output directories
   output_dir <- file.path(getwd(), paste0(name, "_output"))
   fig_dir    <- file.path(output_dir, "Images")
   dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
   dir.create(fig_dir, showWarnings = FALSE)
-  
-  # Save PERSUADE object inside the output directory
+
+  # Save PERSUADE object
   save(PERSUADE, file = file.path(output_dir, "PERSUADE.RData"))
-  
+
+  # Locate Rmd template from package installation
+  rmd_file <- system.file("rmd", "PERSUADE_output.Rmd", package = "PERSUADE")
+  if (rmd_file == "") stop("The PERSUADE Rmd template was not found in the package.")
+
   # Render R Markdown into PDF
-  rmd_file <- "PERSUADE_output.Rmd"
-  if (!file.exists(rmd_file)) stop("The file '", rmd_file, "' was not found.")
-  
-  # Ensure knit options inside Rmd can use this figure directory
   rmarkdown::render(
     input = rmd_file,
     output_file = paste0(name, ".pdf"),
     output_dir = output_dir,
     intermediates_dir = output_dir,
     knit_root_dir = output_dir,
-    params = list(fig_dir = fig_dir), # pass fig_dir into the Rmd
+    params = list(fig_dir = fig_dir),
     envir = list2env(list(PERSUADE = PERSUADE), parent = globalenv()),
     clean = TRUE
   )
-  
+
   invisible(file.path(output_dir, paste0(name, ".pdf")))
 }
 
