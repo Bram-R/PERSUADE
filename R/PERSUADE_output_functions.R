@@ -1889,7 +1889,7 @@ f_generate_report <- function(PERSUADE) {
     output_dir = output_dir,
     intermediates_dir = output_dir,
     knit_root_dir = output_dir,
-    params = list(fig_dir = fig_dir),
+    params = list(fig_dir = "Images"), # pass relative dir
     envir = list2env(list(PERSUADE = PERSUADE), parent = globalenv()),
     clean = TRUE
   )
