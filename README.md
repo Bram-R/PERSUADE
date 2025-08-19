@@ -75,7 +75,7 @@ The framework supports the analyst in:
    Within the call to `f_PERSUADE(...)`, toggle options (`TRUE`/`FALSE`) for the analyses you want to run  
 
 4. **Run the Workflow:**  
-   Execute all code in `PERSUADE_input.R`. Outputs—including figures, results, and R Markdown reports—will be saved into a subdirectory named after the `name` parameter.
+   Execute all code in `PERSUADE_input.R`. Outputs—including figures, results, and R Markdown reports will be saved into a subdirectory named after the `name` parameter.
 
 ---
 
@@ -86,7 +86,7 @@ Upon execution, expect:
 - A structured output directory tied to your project name  
 - Visualizations: Kaplan–Meier curves, hazard plots, model-fit overlays  
 - Diagnostic outputs: diagnostic plots, goodness-of-fit comparisons  
-- An R Markdown report ready for rendering (PDF, HTML, etc.) detailing your analysis  
+- An R Markdown report ready for rendering R Markdown reports detailing your analysis  
 
 These outputs help critically evaluate model fit, especially for extrapolating survival beyond the observed timeline.
 

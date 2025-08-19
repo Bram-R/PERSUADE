@@ -29,7 +29,7 @@ new.packages <- packages[!(packages %in% installed.packages()[, "Package"])]  #c
 if (length(new.packages)) install.packages(new.packages)  #install new packages (if needed)
 suppressPackageStartupMessages(lapply(packages, require, character.only = TRUE))  #load packages
 
-source(paste0(getwd(), "/PERSUADE_figures.R"))
+source(paste0(getwd(), "/PERSUADE_output_functions.R"))
 
 # COLOUR PALETTE
 n <- 9  #number of different colors (to be used for palette)

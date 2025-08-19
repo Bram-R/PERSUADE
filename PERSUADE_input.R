@@ -20,7 +20,7 @@ rm(list = ls())
 
 #### LOAD PERSUADE FUNCTIONS ----
 source("PERSUADE_function.R")
-source("PERSUADE_figures.R")
+source("PERSUADE_output_functions.R")
 source("PERSUADE_S3_object_functions.R")
 
 # check PERSUADE functions using docstring()
