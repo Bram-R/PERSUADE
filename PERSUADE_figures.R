@@ -636,19 +636,23 @@ f_plot_cure_surv_model <- function(PERSUADE, model_index = 1) {
 }
 
 f_plot_diag_param_surv_model <- function(PERSUADE, model_index = 1) {
-  #' Plot Diagnostic Figures for Standard Parametric Survival Models
+  #' Diagnostic Plot for Parametric Survival Models
   #'
-  #' Produces diagnostic plots for various parametric survival models,
-  #' using transformations specific to each model family.
+  #' Produces diagnostic plots for standard parametric survival models, using
+  #' appropriate transformations depending on the model family (exponential,
+  #' Weibull, Gompertz, log-normal, log-logistic, gamma, generalized gamma).
   #'
-  #' @param PERSUADE A PERSUADE object from `f_PERSUADE()`.
-  #' @param model_index Integer. Index for model selection.
+  #' @param PERSUADE A PERSUADE object created by [f_PERSUADE()].
+  #' @param model_index Integer. Index of the parametric model in
+  #'   `PERSUADE$surv_pred$model`.
   #'
-  #' @return A base R plot.
-  #' @export
-  #' 
+  #' @return A base R diagnostic plot for the selected parametric survival model.
+  #'
   #' @examples
-  #' f_plot_diag_param_surv_model(PERSUADE, 1)
+  #' \dontrun{
+  #' f_plot_diag_param_surv_model(PERSUADE, model_index = 1)
+  #' }
+  #' @export
   input <- PERSUADE$input
   misc <- PERSUADE$misc
   surv_obs <- PERSUADE$surv_obs
@@ -773,19 +777,23 @@ f_plot_diag_param_surv_model <- function(PERSUADE, model_index = 1) {
 }
 
 f_plot_diag_spline_surv_model <- function(PERSUADE, model_index = 1) {
-  #' Plot Diagnostic Figures for Spline-based Survival Models
+  #' Diagnostic Plot for Spline Survival Models
   #'
-  #' Produces diagnostic plots for spline-based survival models,
-  #' with transformations depending on the spline scale (hazard, odds, normal).
+  #' Produces diagnostic plots for spline-based survival models, using log-time
+  #' transformations adapted to hazard, odds, or normal scales depending on the
+  #' spline model type.
   #'
-  #' @param PERSUADE A PERSUADE object from `f_PERSUADE()`.
-  #' @param model_index Integer. Index for model selection.
+  #' @param PERSUADE A PERSUADE object created by [f_PERSUADE()].
+  #' @param model_index Integer. Index of the spline model in
+  #'   `PERSUADE$surv_pred$model$spline`.
   #'
-  #' @return A base R plot.
-  #' @export
-  #' 
+  #' @return A base R diagnostic plot for the selected spline-based survival model.
+  #'
   #' @examples
-  #' f_plot_diag_spline_surv_model(PERSUADE, 1)
+  #' \dontrun{
+  #' f_plot_diag_spline_surv_model(PERSUADE, model_index = 1)
+  #' }
+  #' @export
   input <- PERSUADE$input
   misc <- PERSUADE$misc
   surv_obs <- PERSUADE$surv_obs
@@ -892,19 +900,23 @@ f_plot_diag_spline_surv_model <- function(PERSUADE, model_index = 1) {
 }
 
 f_plot_diag_cure_surv_model <- function(PERSUADE, model_index = 1) {
-  #' Plot Diagnostic Figures for Cure Survival Models
+  #' Diagnostic Plot for Cure Survival Models
   #'
-  #' Produces diagnostic plots for mixture and non-mixture cure models,
-  #' with transformations depending on the distribution (Weibull, log-normal, log-logistic).
+  #' Produces diagnostic plots for mixture and non-mixture cure survival models,
+  #' using transformations depending on the underlying distribution
+  #' (Weibull, log-normal, log-logistic).
   #'
-  #' @param PERSUADE A PERSUADE object from `f_PERSUADE()`.
-  #' @param model_index Integer. Index for model selection.
+  #' @param PERSUADE A PERSUADE object created by [f_PERSUADE()].
+  #' @param model_index Integer. Index of the cure model in
+  #'   `PERSUADE$surv_pred$model$cure`.
   #'
-  #' @return A base R plot.
-  #' @export
-  #' 
+  #' @return A base R diagnostic plot for the selected cure survival model.
+  #'
   #' @examples
-  #' f_plot_diag_cure_surv_model(PERSUADE, 1)
+  #' \dontrun{
+  #' f_plot_diag_cure_surv_model(PERSUADE, model_index = 1)
+  #' }
+  #' @export
   input <- PERSUADE$input
   misc <- PERSUADE$misc
   surv_obs <- PERSUADE$surv_obs
@@ -999,17 +1011,22 @@ f_plot_diag_cure_surv_model <- function(PERSUADE, model_index = 1) {
 f_plot_tp_param_surv_model <- function(PERSUADE, model_index = 1) {
   #' Plot Annual Transition Probabilities for Parametric Survival Models
   #'
-  #' Plots smoothed observed annual transition probabilities alongside
-  #' model-predicted probabilities for each group, with shaded confidence intervals.
+  #' Plot smoothed observed annual transition probabilities alongside
+  #' model-predicted probabilities for a selected parametric model,
+  #' with shaded confidence intervals per group.
   #'
-  #' @param PERSUADE A PERSUADE object from `f_PERSUADE()`.
-  #' @param model_index Integer. Index for model selection.
+  #' @param PERSUADE A PERSUADE object returned by [f_PERSUADE()].
+  #' @param model_index Integer index selecting the parametric model within
+  #'   `PERSUADE$surv_model$param_models` (1-based). Defaults to `1`.
   #'
-  #' @return A base R plot.
+  #' @return Invisibly returns `NULL`. The function draws a base R plot as a side effect.
   #' @export
-  #' 
+  #'
   #' @examples
-  #' f_plot_tp_param_surv_model(PERSUADE, 1)
+  #' \dontrun{
+  #' PERSUADE <- f_PERSUADE(...)
+  #' f_plot_tp_param_surv_model(PERSUADE, model_index = 1)
+  #' }
   input <- PERSUADE$input
   misc <- PERSUADE$misc
   surv_obs <- PERSUADE$surv_obs
@@ -1093,17 +1110,22 @@ f_plot_tp_param_surv_model <- function(PERSUADE, model_index = 1) {
 f_plot_tp_spline_surv_model <- function(PERSUADE, model_index = 1) {
   #' Plot Annual Transition Probabilities for Spline Survival Models
   #'
-  #' Plots smoothed observed annual transition probabilities alongside
-  #' spline model predictions, with shaded confidence intervals and knot lines.
+  #' Plot smoothed observed annual transition probabilities together with
+  #' predictions from a selected spline survival model (hazard/odds/normal scale),
+  #' including shaded confidence intervals and vertical lines for spline knots.
   #'
-  #' @param PERSUADE A PERSUADE object from `f_PERSUADE()`.
-  #' @param model_index Integer. Index for model selection.
+  #' @param PERSUADE A PERSUADE object returned by [f_PERSUADE()].
+  #' @param model_index Integer index selecting the spline model within
+  #'   `PERSUADE$surv_model$spline_models` (1-based). Defaults to `1`.
   #'
-  #' @return A base R plot.
+  #' @return Invisibly returns `NULL`. The function draws a base R plot as a side effect.
   #' @export
   #'
   #' @examples
-  #' f_plot_tp_spline_surv_model(PERSUADE, 1)
+  #' \dontrun{
+  #' PERSUADE <- f_PERSUADE(...)
+  #' f_plot_tp_spline_surv_model(PERSUADE, model_index = 1)
+  #' }
   input      <- PERSUADE$input
   misc       <- PERSUADE$misc
   surv_obs   <- PERSUADE$surv_obs
@@ -1202,17 +1224,22 @@ f_plot_tp_spline_surv_model <- function(PERSUADE, model_index = 1) {
 f_plot_tp_cure_surv_model <- function(PERSUADE, model_index = 1) {
   #' Plot Annual Transition Probabilities for Cure Survival Models
   #'
-  #' Produces smoothed observed annual transition probabilities with shaded CIs,
-  #' overlaid with predictions from a cure survival model (mixture or non-mixture).
+  #' Plot smoothed observed annual transition probabilities with shaded confidence
+  #' intervals, overlaid with predictions from a selected cure survival model
+  #' (mixture or non-mixture; Weibull, log-normal, or log-logistic).
   #'
-  #' @param PERSUADE A PERSUADE object from `f_PERSUADE()`.
-  #' @param model_index Integer. Index for model selection.
+  #' @param PERSUADE A PERSUADE object returned by [f_PERSUADE()].
+  #' @param model_index Integer index selecting the cure model within
+  #'   `PERSUADE$surv_model$cure_models` (1-based). Defaults to `1`.
   #'
-  #' @return A base R plot.
+  #' @return Invisibly returns `NULL`. The function draws a base R plot as a side effect.
   #' @export
   #'
   #' @examples
-  #' f_plot_tp_cure_surv_model(PERSUADE, 1)
+  #' \dontrun{
+  #' PERSUADE <- f_PERSUADE(...)
+  #' f_plot_tp_cure_surv_model(PERSUADE, model_index = 1)
+  #' }
   input     <- PERSUADE$input
   misc      <- PERSUADE$misc
   surv_obs  <- PERSUADE$surv_obs
@@ -1301,18 +1328,20 @@ f_plot_tp_cure_surv_model <- function(PERSUADE, model_index = 1) {
 f_plot_param_surv_extrap <- function(PERSUADE) {
   #' Plot Extrapolated Parametric Survival Models per Group
   #'
-  #' Produces Kaplan-Meier curves per group overlaid with fitted parametric
-  #' survival models, extrapolated up to the defined time horizon.
-  #' The models include: Exponential, Weibull, Gompertz, Log-normal,
-  #' Log-logistic, Gamma, and Generalized Gamma.
+  #' Plot Kaplan–Meier curves per group with shaded confidence bands and overlay
+  #' fitted parametric survival models (Exponential, Weibull, Gompertz, log-normal,
+  #' log-logistic, Gamma, generalized Gamma) extrapolated to the analysis time horizon.
   #'
-  #' @param PERSUADE A PERSUADE object from `f_PERSUADE()`.
+  #' @param PERSUADE A PERSUADE object returned by [f_PERSUADE()].
   #'
-  #' @return A base R plot per group.
+  #' @return Invisibly returns `NULL`. The function draws one or more base R plots as side effects.
   #' @export
   #'
   #' @examples
-  #' f_plot_param_surv_extrap(PERSUADE)
+  #' \dontrun{
+  #' PERSUADE <- f_PERSUADE(...)
+  #' f_plot_param_surv_extrap(P)
+  #' }
   input <- PERSUADE$input
   misc <- PERSUADE$misc
   surv_obs <- PERSUADE$surv_obs
@@ -1362,17 +1391,20 @@ f_plot_param_surv_extrap <- function(PERSUADE) {
 f_plot_spline_surv_extrap <- function(PERSUADE) {
   #' Plot Extrapolated Spline Survival Models per Group
   #'
-  #' Produces Kaplan-Meier curves per group overlaid with fitted spline
-  #' survival models, extrapolated up to the defined time horizon.
-  #' Models include: spline hazard, odds, and normal forms.
+  #' Plot Kaplan–Meier curves per group with shaded confidence bands and overlay
+  #' fitted spline survival models (hazard, odds, normal scales) extrapolated to
+  #' the analysis time horizon. Runs only when `PERSUADE$input$spline_mod` is `TRUE`.
   #'
-  #' @param PERSUADE A PERSUADE object from `f_PERSUADE()`.
+  #' @param PERSUADE A PERSUADE object returned by [f_PERSUADE()].
   #'
-  #' @return A base R plot per group.
+  #' @return Invisibly returns `NULL`. The function draws one or more base R plots as side effects.
   #' @export
   #'
   #' @examples
-  #' f_plot_spline_surv_extrap(PERSUADE)
+  #' \dontrun{
+  #' PERSUADE <- f_PERSUADE(...)
+  #' f_plot_spline_surv_extrap(P)
+  #' }
   if (!isTRUE(PERSUADE$input$spline_mod)) return(invisible())
   
   input <- PERSUADE$input
@@ -1424,17 +1456,21 @@ f_plot_spline_surv_extrap <- function(PERSUADE) {
 f_plot_cure_surv_extrap <- function(PERSUADE) {
   #' Plot Extrapolated Cure Survival Models per Group
   #'
-  #' Produces Kaplan-Meier curves per group overlaid with fitted cure
-  #' survival models, extrapolated up to the defined time horizon.
-  #' Models include: Weibull, Log-normal, and Log-logistic (mixture and non-mixture).
+  #' Plot Kaplan–Meier curves per group with shaded confidence bands and overlay
+  #' fitted cure survival models (Weibull, log-normal, log-logistic; mixture and
+  #' non-mixture forms) extrapolated to the analysis time horizon. Runs only when
+  #' `PERSUADE$input$cure_mod` is `TRUE`.
   #'
-  #' @param PERSUADE A PERSUADE object from `f_PERSUADE()`.
+  #' @param PERSUADE A PERSUADE object returned by [f_PERSUADE()].
   #'
-  #' @return A base R plot per group.
+  #' @return Invisibly returns `NULL`. The function draws one or more base R plots as side effects.
   #' @export
   #'
   #' @examples
-  #' f_plot_cure_surv_extrap(PERSUADE)
+  #' \dontrun{
+  #' PERSUADE <- f_PERSUADE(...)
+  #' f_plot_cure_surv_extrap(P)
+  #' }
   if (!isTRUE(PERSUADE$input$cure_mod)) return(invisible())
   
   input <- PERSUADE$input
@@ -1486,16 +1522,19 @@ f_plot_cure_surv_extrap <- function(PERSUADE) {
 f_plot_tp_param_surv_extrap <- function(PERSUADE) {
   #' Plot Extrapolated Annual Transition Probabilities (Parametric Models)
   #'
-  #' Produces smoothed observed annual transition probabilities with shaded CIs,
-  #' overlaid with predictions from parametric survival models.
+  #' Plot smoothed observed annual transition probabilities with shaded confidence
+  #' intervals and overlay predictions from all fitted parametric survival models.
   #'
-  #' @param PERSUADE A PERSUADE object from `f_PERSUADE()`.
+  #' @param PERSUADE A PERSUADE object returned by [f_PERSUADE()].
   #'
-  #' @return A base R plot per group.
+  #' @return Invisibly returns `NULL`. The function draws one or more base R plots as side effects.
   #' @export
   #'
   #' @examples
-  #' f_plot_tp_param_surv_extrap(PERSUADE)
+  #' \dontrun{
+  #' PERSUADE <- f_PERSUADE(...)
+  #' f_plot_tp_param_surv_extrap(P)
+  #' }
   input <- PERSUADE$input
   misc <- PERSUADE$misc
   surv_obs <- PERSUADE$surv_obs
@@ -1535,16 +1574,20 @@ f_plot_tp_param_surv_extrap <- function(PERSUADE) {
 f_plot_tp_spline_surv_extrap <- function(PERSUADE) {
   #' Plot Extrapolated Annual Transition Probabilities (Spline Models)
   #'
-  #' Produces smoothed observed annual transition probabilities with shaded CIs,
-  #' overlaid with predictions from spline survival models.
+  #' Plot smoothed observed annual transition probabilities with shaded confidence
+  #' intervals and overlay predictions from all fitted spline survival models.
+  #' Runs only when `PERSUADE$input$spline_mod` is `TRUE`.
   #'
-  #' @param PERSUADE A PERSUADE object from `f_PERSUADE()`.
+  #' @param PERSUADE A PERSUADE object returned by [f_PERSUADE()].
   #'
-  #' @return A base R plot per group.
+  #' @return Invisibly returns `NULL`. The function draws one or more base R plots as side effects.
   #' @export
   #'
   #' @examples
-  #' f_plot_tp_spline_surv_extrap(PERSUADE)
+  #' \dontrun{
+  #' PERSUADE <- f_PERSUADE(...)
+  #' f_plot_tp_spline_surv_extrap(P)
+  #' }
   if (!isTRUE(PERSUADE$input$spline_mod)) return(invisible())
   
   input <- PERSUADE$input
@@ -1586,16 +1629,20 @@ f_plot_tp_spline_surv_extrap <- function(PERSUADE) {
 f_plot_tp_cure_surv_extrap <- function(PERSUADE) {
   #' Plot Extrapolated Annual Transition Probabilities (Cure Models)
   #'
-  #' Produces smoothed observed annual transition probabilities with shaded CIs,
-  #' overlaid with predictions from cure survival models.
+  #' Plot smoothed observed annual transition probabilities with shaded confidence
+  #' intervals and overlay predictions from all fitted cure survival models.
+  #' Runs only when `PERSUADE$input$cure_mod` is `TRUE`.
   #'
-  #' @param PERSUADE A PERSUADE object from `f_PERSUADE()`.
+  #' @param PERSUADE A PERSUADE object returned by [f_PERSUADE()].
   #'
-  #' @return A base R plot per group.
+  #' @return Invisibly returns `NULL`. The function draws one or more base R plots as side effects.
   #' @export
   #'
   #' @examples
-  #' f_plot_tp_cure_surv_extrap(PERSUADE)
+  #' \dontrun{
+  #' PERSUADE <- f_PERSUADE(...)
+  #' f_plot_tp_cure_surv_extrap(P)
+  #' }
   if (!isTRUE(PERSUADE$input$cure_mod)) return(invisible())
   
   input <- PERSUADE$input
@@ -1639,16 +1686,19 @@ f_plot_tp_cure_surv_extrap <- function(PERSUADE) {
 f_plot_hazard_parametric_extrap <- function(PERSUADE) {
   #' Plot Extrapolated Hazard Functions (Parametric Models)
   #'
-  #' Produces observed smoothed hazard rates overlaid with extrapolated hazard functions
-  #' from parametric survival models.
+  #' Plot observed smoothed hazard rates per group and overlay extrapolated
+  #' hazard functions from all fitted parametric survival models.
   #'
-  #' @param PERSUADE A PERSUADE object from `f_PERSUADE()`.
+  #' @param PERSUADE A PERSUADE object returned by [f_PERSUADE()].
   #'
-  #' @return Base R plots, one per group.
+  #' @return Invisibly returns `NULL`. The function draws one or more base R plots as side effects.
   #' @export
   #'
   #' @examples
-  #' f_plot_hazard_parametric_extrap(PERSUADE)
+  #' \dontrun{
+  #' PERSUADE <- f_PERSUADE(...)
+  #' f_plot_hazard_parametric_extrap(P)
+  #' }
   models <- names(PERSUADE$surv_model$param_models)
   misc <- PERSUADE$misc
   
@@ -1677,16 +1727,20 @@ f_plot_hazard_parametric_extrap <- function(PERSUADE) {
 f_plot_hazard_spline_extrap <- function(PERSUADE) {
   #' Plot Extrapolated Hazard Functions (Spline Models)
   #'
-  #' Produces observed smoothed hazard rates overlaid with extrapolated hazard functions
-  #' from spline-based survival models.
+  #' Plot observed smoothed hazard rates per group and overlay extrapolated
+  #' hazard functions from all fitted spline survival models. Runs only when
+  #' `PERSUADE$input$spline_mod` is `TRUE`.
   #'
-  #' @param PERSUADE A PERSUADE object from `f_PERSUADE()`.
+  #' @param PERSUADE A PERSUADE object returned by [f_PERSUADE()].
   #'
-  #' @return Base R plots, one per group (only if `input$spline_mod` is TRUE).
+  #' @return Invisibly returns `NULL`. The function draws one or more base R plots as side effects.
   #' @export
   #'
   #' @examples
-  #' f_plot_hazard_spline_extrap(PERSUADE)
+  #' \dontrun{
+  #' PERSUADE <- f_PERSUADE(...)
+  #' f_plot_hazard_spline_extrap(P)
+  #' }
   if (!isTRUE(PERSUADE$input$spline_mod)) return(invisible(NULL))
   
   models <- names(PERSUADE$surv_model$spline_models)
@@ -1717,16 +1771,20 @@ f_plot_hazard_spline_extrap <- function(PERSUADE) {
 f_plot_hazard_cure_extrap <- function(PERSUADE) {
   #' Plot Extrapolated Hazard Functions (Cure Models)
   #'
-  #' Produces observed smoothed hazard rates overlaid with extrapolated hazard functions
-  #' from cure survival models (mixture and non-mixture).
+  #' Plot observed smoothed hazard rates per group and overlay extrapolated
+  #' hazard functions from all fitted cure survival models (mixture and non-mixture).
+  #' Runs only when `PERSUADE$input$cure_mod` is `TRUE`.
   #'
-  #' @param PERSUADE A PERSUADE object from `f_PERSUADE()`.
+  #' @param PERSUADE A PERSUADE object returned by [f_PERSUADE()].
   #'
-  #' @return Base R plots, one per group (only if `input$cure_mod` is TRUE).
+  #' @return Invisibly returns `NULL`. The function draws one or more base R plots as side effects.
   #' @export
   #'
   #' @examples
-  #' f_plot_hazard_cure_extrap(PERSUADE)
+  #' \dontrun{
+  #' PERSUADE <- f_PERSUADE(...)
+  #' f_plot_hazard_cure_extrap(P)
+  #' }
   if (!isTRUE(PERSUADE$input$cure_mod)) return(invisible(NULL))
   
   models <- names(PERSUADE$surv_model$cure_models)
@@ -1760,19 +1818,21 @@ f_plot_hazard_cure_extrap <- function(PERSUADE) {
 f_summary <- function(df) {
   #' Compute Summary Statistics for Numeric Variables
   #'
-  #' Produces descriptive statistics for each numeric variable in a data frame.
-  #' The statistics include mean, standard deviation, minimum, first quartile (Q1),
-  #' median, third quartile (Q3), maximum, and interquartile range (IQR),
-  #' rounded to three decimal places.
+  #' Compute descriptive statistics for each numeric variable in a data frame:
+  #' mean, standard deviation, minimum, first quartile (Q1), median, third
+  #' quartile (Q3), maximum, and interquartile range (IQR). Results are rounded
+  #' to three decimals.
   #'
-  #' @param df A data frame containing numeric variables to summarise.
+  #' @param df A data frame; numeric columns are summarized.
   #'
-  #' @return A data frame with one row per variable and columns for each
-  #'   summary statistic.
+  #' @return A data frame (one row per variable) with columns:
+  #'   `Mean`, `Std.Dev`, `Min`, `Q1`, `Median`, `Q3`, `Max`, `IQR`.
   #' @export
   #'
   #' @examples
+  #' \dontrun{
   #' f_summary(mtcars)
+  #' }
   res <- t(sapply(df, function(x) {
     q <- quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1), na.rm = TRUE, names = FALSE)
     round(c(
@@ -1790,17 +1850,30 @@ f_summary <- function(df) {
 }
 
 f_generate_report <- function(PERSUADE) {
-  #' Generate PDF report for PERSUADE analysis
+  #' Generate PDF Report for a PERSUADE Analysis
   #'
-  #' Saves the PERSUADE object and generates a PDF report using `PERSUADE_output.Rmd`.
+  #' Save the PERSUADE object and render a PDF report using `PERSUADE_output.Rmd`.
+  #' The function creates an output directory `<name>_output`, saves `PERSUADE.RData`,
+  #' and writes `<name>.pdf` into that directory.
   #'
-  #' @param PERSUADE A PERSUADE object from `f_PERSUADE()`.
+  #' @param PERSUADE A PERSUADE object returned by [f_PERSUADE()].
   #'
-  #' @return Path to generated PDF (invisible).
+  #' @return A length-1 character string giving the absolute path to the generated
+  #'   PDF, returned invisibly.
   #' @export
-  #' 
+  #'
+  #' @details The R Markdown file `PERSUADE_output.Rmd` must be available in the
+  #'   working directory. Figures are written to a subdirectory `Images/` and the
+  #'   knit environment is initialised with the supplied `PERSUADE` object.
+  #'
+  #' @seealso [f_PERSUADE()]
+  #'
   #' @examples
-  #' f_generate_report(PERSUADE)
+  #' \dontrun{
+  #' PERSUADE <- f_PERSUADE(...)
+  #' pdf_path <- f_generate_report(P)
+  #' pdf_path
+  #' }
   name <- PERSUADE$name
   
   # Create output directories

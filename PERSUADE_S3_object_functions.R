@@ -1,4 +1,5 @@
 #### S3 object functions for PERSUADE ----
+
 print.PERSUADE <- function(PERSUADE, ...) {
   #' Print Method for PERSUADE Objects
   #'
@@ -8,10 +9,13 @@ print.PERSUADE <- function(PERSUADE, ...) {
   #' @param ... Additional arguments (currently unused).
   #'
   #' @return Invisibly returns the PERSUADE object.
+  #' 
   #' @export
   #'
   #' @examples
+  #' \dontrun{
   #' print(PERSUADE)
+  #' }
   cat("PERSUADE Survival Analysis Object\n")
   cat("Analysis Name:", PERSUADE$name, "\n")
   cat("Number of Observations:", length(PERSUADE$input$years), "\n")
@@ -22,22 +26,25 @@ print.PERSUADE <- function(PERSUADE, ...) {
 summary.PERSUADE <- function(object, type = "km", ...) {
   #' Summary Method for PERSUADE Objects
   #'
-  #' The type argument controls which summary is produced:
+  #' The `type` argument controls which summary is produced:
   #'   - `"km"`: Kaplan–Meier estimates (default).
   #'   - `"surv_probs"`: Survival probabilities at specified prediction times for each group.
-  #'   - `"gof"`: Goodness of fit statistics for standard parametric models.
-  #'   - `"gof_spline"`: Goodness of fit statistics for spline models.
-  #'   - `"gof_cure"`: Goodness of fit statistics for cure models (including cure fraction).
+  #'   - `"gof"`: Goodness-of-fit statistics for standard parametric models.
+  #'   - `"gof_spline"`: Goodness-of-fit statistics for spline models.
+  #'   - `"gof_cure"`: Goodness-of-fit statistics for cure models (including cure fraction).
   #'
   #' @param object A PERSUADE object from `f_PERSUADE()`.
   #' @param type Character. Type of summary to return.
   #' @param ... Additional arguments passed to methods (currently unused).
   #'
   #' @return A data frame or list of data frames depending on `type`.
+  #'
   #' @export
   #'
   #' @examples
+  #' \dontrun{
   #' summary(PERSUADE, type = "surv_probs")
+  #' }
   if (type == "km") {
     return(summary(object$surv_obs$km)$table)
     
@@ -55,42 +62,46 @@ summary.PERSUADE <- function(object, type = "km", ...) {
     return(surv_tables)
     
   } else if  (type == "gof") {
-    return(PERSUADE$surv_model$param_ic)
- 
+    return(object$surv_model$param_ic)
+    
   } else if  (type == "gof_spline") {
-    if (!isTRUE(PERSUADE$input$spline_mod)) stop("No spline models identified")
-    return(PERSUADE$surv_model$spline_ic)
+    if (!isTRUE(object$input$spline_mod)) stop("No spline models identified")
+    return(object$surv_model$spline_ic)
     
   } else if  (type == "gof_cure") {
-    if (!isTRUE(PERSUADE$input$cure_mod)) stop("No cure models identified")
-    return(PERSUADE$surv_model$cure_ic) 
-       
+    if (!isTRUE(object$input$cure_mod)) stop("No cure models identified")
+    return(object$surv_model$cure_ic) 
+    
   } else {
-    stop("Unknown plot type: ", type)
+    stop("Unknown summary type: ", type)
   }
 }
 
 plot.PERSUADE <- function(PERSUADE, type = "km", ...) {
-  #' Plot method for PERSUADE objects
+  #' Plot Method for PERSUADE Objects
   #'
-  #' Generates different sets of diagnostic and model fit plots for PERSUADE survival analysis objects.
-  #' The type argument controls which plot(s) are produced:
-  #' - `"km"`: Kaplan–Meier survival curves.
-  #' - `"ph"`: Proportional hazards diagnostics.
-  #' - `"hr"`: Hazard function with fitted models.
-  #' - `"param_models"`: Fitted parametric survival models with diagnostics and transition probability plots.
-  #' - `"spline_models"`: Fitted spline-based survival models with diagnostics and transition probability plots.
-  #' - `"cure_models"`: Fitted cure survival models with diagnostics and transition probability plots.
+  #' Generates diagnostic and model fit plots for PERSUADE survival analysis objects.
+  #' The `type` argument controls which plot(s) are produced:
+  #'   - `"km"`: Kaplan–Meier survival curves.
+  #'   - `"ph"`: Proportional hazards diagnostics.
+  #'   - `"hr"`: Hazard function with fitted models.
+  #'   - `"param_models"`: Fitted parametric survival models with diagnostics and transition probability plots.
+  #'   - `"spline_models"`: Fitted spline-based survival models with diagnostics and transition probability plots.
+  #'   - `"cure_models"`: Fitted cure survival models with diagnostics and transition probability plots.
   #'
   #' @param PERSUADE A PERSUADE object from `f_PERSUADE()`.
   #' @param type Character. The type of plot to produce.
   #' @param ... Additional arguments (currently unused).
   #'
-  #' @return A list of results from the plotting functions (invisible). Also produces base R plots as side effects.
+  #' @return Invisibly returns a list of results from the plotting functions.
+  #'   Also produces base R plots as side effects.
+  #' 
   #' @export
   #'
   #' @examples
+  #' \dontrun{
   #' plot(PERSUADE, "km")
+  #' }
   plots <- list()
   
   if (type == "km") {
@@ -135,6 +146,3 @@ plot.PERSUADE <- function(PERSUADE, type = "km", ...) {
   
   invisible(plots)
 }
-
-
-
