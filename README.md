@@ -53,7 +53,8 @@ The framework supports the analyst in:
    Within the call to `f_PERSUADE(...)`, toggle options (`TRUE`/`FALSE`) for the analyses you want to run  
 
 4. **Run the Workflow:**  
-   Execute all code in `PERSUADE_input.R`. Outputs—including figures, results, and R Markdown reports will be saved into a subdirectory named after the `name` parameter.
+   - Use print(), summary() and plot() on the PERSUADE (S3) object
+   - Execute f_generate_report() using the PERSUADE object as input to generate an R Markdown report. Figures will be saved into a subdirectory named after the `name` parameter.
 
 ---
 
