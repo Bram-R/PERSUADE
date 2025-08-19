@@ -9,6 +9,7 @@ rm(list = ls())
 
 #### LOAD PERSUADE ----
 devtools::install_github("Bram-R/PERSUADE")
+library("PERSUADE")
 
 # Colour palette for Figures
 n <- 9  #number of different colors (to be used for palette)

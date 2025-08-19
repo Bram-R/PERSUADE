@@ -6,6 +6,7 @@ output:
     toc: yes
     keep_tex: true
 urlcolor: blue
+knit_root_dir: !expr here::here()
 header-includes:
   - \usepackage{float}
   - \usepackage{booktabs}
@@ -17,6 +18,7 @@ header-includes:
 library(PERSUADE)
 knitr::opts_chunk$set(echo = TRUE, 
                       fig.align = "left", 
+                      fig.keep = "all",
                       fig.path = file.path(paste0(PERSUADE$name, "_output/Images/Figure_")), 
                       dev = c('pdf', 'png'),
                       dpi=300)
