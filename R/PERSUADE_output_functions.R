@@ -1880,6 +1880,7 @@ f_generate_report <- function(PERSUADE) {
 
   # Locate Rmd template from package installation
   rmd_file <- system.file("rmd", "PERSUADE_output.Rmd", package = "PERSUADE")
+  #rmd_file <- file.path(getwd(), paste0("inst/rmd/PERSUADE_output.Rmd")) # set locally for validation purposes
   if (rmd_file == "") stop("The PERSUADE Rmd template was not found in the package.")
 
   # Render R Markdown into PDF
@@ -1889,7 +1890,7 @@ f_generate_report <- function(PERSUADE) {
     output_dir = output_dir,
     intermediates_dir = output_dir,
     knit_root_dir = output_dir,
-    params = list(fig_dir = "Images"), # pass relative dir
+    params = list(fig_dir = fig_dir),   # full path!
     envir = list2env(list(PERSUADE = PERSUADE), parent = globalenv()),
     clean = TRUE
   )

@@ -6,6 +6,8 @@ output:
     toc: yes
     keep_tex: true
 urlcolor: blue
+params:
+  fig_dir: "Images"
 header-includes:
   - \usepackage{float}
   - \usepackage{booktabs}
@@ -15,12 +17,14 @@ header-includes:
 
 ```{r setup, include=FALSE}
 library(PERSUADE)
-knitr::opts_chunk$set(echo = TRUE, 
-                      fig.align = "left", 
-                      fig.keep = "all",
-                      fig.path = "Images/Figure_",   # relative to knit_root_dir
-                      dev = c('pdf', 'png'),
-                      dpi=300)
+knitr::opts_chunk$set(
+  echo = TRUE,
+  fig.align = "left",
+  fig.keep = "all",
+  fig.path = paste0(params$fig_dir, "/Figure_"),  # full path into output_dir/Images
+  dev = c("pdf", "png"),
+  dpi = 300
+)
 options(warn=-1) # prevent warnings from being printed (options(warn=0) to turn warning back on)
 ```
 
