@@ -29,12 +29,12 @@ Imports:
     sft,
     survminer,
     ggplot2,
-    data.table
-Suggests: 
-    testthat (>= 3.0.0),
+    data.table,
     knitr,
     kableExtra,
     rmarkdown
+Suggests: 
+    testthat (>= 3.0.0)
 Config/testthat/edition: 3
 LazyData: true
 VignetteBuilder: knitr

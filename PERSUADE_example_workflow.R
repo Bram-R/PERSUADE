@@ -1,5 +1,5 @@
-#### Description: The ParamEtRic SUrvivAl moDel sElection (PERSUADE) template ####
-#### This is a standardised survival analysis template to support the selection of parametric survival models and their implementation in decision analytic models. ####
+#### Description: Example workflow for the ParamEtRic SUrvivAl moDel sElection (PERSUADE) communication tool ####
+#### This is a standardised survival analysis tool to support the selection and communication of parametric survival models and their implementation in decision analytic models. ####
 
 # General settings
 options(scipen = 999, max.print = 10000, digits = 4)
