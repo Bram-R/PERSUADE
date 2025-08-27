@@ -16,6 +16,7 @@ PERSUADE guides analysts through a reproducible workflow for survival analysis a
 - Goodness-of-fit statistics (AIC/BIC)
 - Explore model extrapolation beyond observed data
 - Automated PDF reports for communication
+- Export the parametric survival model parameters for use in decision-analytic models
 
 The framework is designed for transparency and consistency when survival analysis feeds into decision-analytic models.
 
