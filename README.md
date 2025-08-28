@@ -172,8 +172,7 @@ Start by running the example script to familiarize yourself with the workflow. F
 
 ## License & contact
 
-*(If applicable, include:)*  
-Licensed under **[LICENSE NAME]**.  
+Licensed under **GPL3**.  
 For questions, enhancements, or collaboration, reach out via GitHub Discussions or Issues.  
 
 ---
