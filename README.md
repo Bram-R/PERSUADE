@@ -25,7 +25,7 @@ The framework is designed for transparency and consistency when survival analysi
 ## Prerequisites 
 - R (version compatible with survival and other dependencies)
 - Recommended: RStudio for better environment handling
-- Install PERSUADE package: `devtools::install_github("Bram-R/PERSUADE")`
+- Install PERSUADE package: `devtools::install_github("Bram-R/PERSUADE", quiet = TRUE)`
 - Load PERSUADE package: `library(PERSUADE)`
 
 ## Quick start
@@ -46,7 +46,7 @@ This script:
 
 ### 1. Install and load PERSUADE package
 ```r
-devtools::install_github("Bram-R/PERSUADE")
+devtools::install_github("Bram-R/PERSUADE", quiet = TRUE)
 library(PERSUADE)
 ```
 
