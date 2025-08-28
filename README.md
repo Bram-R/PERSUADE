@@ -25,7 +25,7 @@ The framework is designed for transparency and consistency when survival analysi
 ## Prerequisites 
 - R (version compatible with survival and other dependencies)
 - Recommended: RStudio for better environment handling
-- Install PERSUADE package: `devtools::install_github("Bram-R/PERSUADE")`
+- Install PERSUADE package: `devtools::install_github("Bram-R/PERSUADE", quiet = TRUE)`
 - Load PERSUADE package: `library(PERSUADE)`
 
 ## Quick start
@@ -46,7 +46,7 @@ This script:
 
 ### 1. Install and load PERSUADE package
 ```r
-devtools::install_github("Bram-R/PERSUADE")
+devtools::install_github("Bram-R/PERSUADE", quiet = TRUE)
 library(PERSUADE)
 ```
 
@@ -146,7 +146,7 @@ Visualize the process via the included diagram:
 
 Start by running the example script to familiarize yourself with the workflow. For your own data: 
 
-- copy `PERSUADE_example_workflow.R` 
+- copy `PERSUADE_example_workflow.R` (see also vignette using: `browseVignettes("PERSUADE")`)
 - replace the input section with your dataset 
 - set the project name and outcome identifier using the `name` parameter  
 - within the call to `f_PERSUADE(...)`, toggle options (`TRUE`/`FALSE`) for the analyses you want to run  
