@@ -394,6 +394,7 @@ f_tp <- function(ngroups, cum_haz, time_unit) {
 #' @inheritParams f_PERSUADE
 #' @param form A survival model formula (e.g., `Surv(years, status) ~ group`).
 #' @param group_names Character vector of group labels (for cure fractions).
+#' @param ngroups Integer. Number of groups.
 #'
 #' @return A list containing:
 #'   - `param_models`, `param_ic`: Parametric models and information criteria.

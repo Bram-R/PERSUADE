@@ -5,7 +5,8 @@ Authors@R:
     c(
       person("Bram", "R.", email = "bram.ramaekers@mumc.nl", role = c("aut", "cre"),
              comment = c(ORCID = "https://orcid.org/0000-0001-5785-9228")),
-      person("Xa4P", role = "ctb")
+      person("Xa4P", role = "ctb",
+             comment = c(ORCID = "https://orcid.org/0000-0003-3563-0013"))
     )
 Description: Provides a standardized framework to support the selection and 
     evaluation of parametric survival models for time-to-event data. Includes 
@@ -14,7 +15,7 @@ Description: Provides a standardized framework to support the selection and
     and evaluating model extrapolation. Results are structured to 
     facilitate integration into decision-analytic models, and reports 
     can be generated with R Markdown for reproducible workflows.
-License: MIT + file LICENSE
+License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
@@ -33,6 +34,7 @@ Imports:
     data.table,
     knitr,
     kableExtra,
+    devtools,
     rmarkdown
 Suggests: 
     testthat (>= 3.0.0)

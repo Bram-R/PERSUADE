@@ -24,7 +24,9 @@ inside the output folder, and the knit environment is initialised with the
 supplied \code{PERSUADE} object.
 }
 \examples{
+\dontrun{
 f_generate_report(PERSUADE)
+}
 
 }
 \seealso{
