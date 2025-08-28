@@ -111,7 +111,7 @@ plot(PERSUADE, type = "spline_models")
 # Cure models
 plot(PERSUADE, type = "cure_models")
 ```
-Shows different visulatisations of the time-to-event data as well as parametric survival models.
+Shows different visualisations of the time-to-event data as well as parametric survival models.
 
 ### 6. Generate the report
 ```r
