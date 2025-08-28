@@ -166,7 +166,7 @@ Start by running the example script to familiarize yourself with the workflow. F
 ## Acknowledgments & history
 
 - Origins: this repository represents an ongoing effort to standardize survival model workflows in decision analysis.  
-- Contributors: developed by **Bram-R** and **Xa4P**; contributions are welcome via pull requests or issues.  
+- Contributors: developed by **Bram-R** (https://orcid.org/0000-0001-5785-9228) and **Xa4P** (https://orcid.org/0000-0003-3563-0013); contributions are welcome via pull requests or issues.  
 
 ---
 
