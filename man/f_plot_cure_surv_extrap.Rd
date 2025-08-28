@@ -23,4 +23,8 @@ non-mixture forms) extrapolated to the analysis time horizon. Runs only when
 PERSUADE <- f_PERSUADE(...)
 f_plot_cure_surv_extrap(P)
 }
+
+}
+\seealso{
+\code{\link[=f_PERSUADE]{f_PERSUADE()}}
 }

@@ -28,12 +28,14 @@ Computes smoothed hazard estimates for up to three groups using
 the \pkg{muhaz} package.
 }
 \examples{
-\dontrun{
+years <- survival::lung$time
+status <-  survival::lung$status
+group <- factor(survival::lung$sex)
 f_hazard(
-  years = survival::lung$time,
-  status = survival::lung$status,
-  group = factor(survival::lung$sex),
-  ngroups = 2
+  years = years,
+  status = status,
+  group = group,
+  ngroups = nlevels(group)
 )
-}
+
 }

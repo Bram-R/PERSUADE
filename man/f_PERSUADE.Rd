@@ -67,20 +67,21 @@ The workflow proceeds in three main stages:
 }
 }
 \examples{
-\dontrun{
+years <- survival::lung$time
+status <-  survival::lung$status
+group <- factor(survival::lung$sex)
 f_PERSUADE(
   name = "Example",
-  years = survival::lung$time,
-  status = survival::lung$status,
-  group = factor(survival::lung$sex),
+  years = years,
+  status = status,
+  group = group,
   strata = FALSE,
-  spline_mod = TRUE,
+  spline_mod = FALSE,
   cure_mod = FALSE,
-  time_unit = 30,
-  time_horizon = 1000,
-  time_pred_surv_table = seq(30, 1000, 30)
+  time_unit = 365.25/12,
+  time_horizon = 5000,
+  time_pred_surv_table = seq(0, 5000, 100)
 )
-}
 }
 \seealso{
 \code{\link[=f_hazard]{f_hazard()}}, \code{\link[=f_cum_hazard]{f_cum_hazard()}}, \code{\link[=f_surv_model]{f_surv_model()}}

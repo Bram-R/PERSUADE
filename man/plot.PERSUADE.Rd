@@ -33,4 +33,5 @@ The \code{type} argument controls which plot(s) are produced:
 \dontrun{
 plot(PERSUADE, "km")
 }
+
 }

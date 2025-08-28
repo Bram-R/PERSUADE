@@ -34,20 +34,21 @@
 #' @seealso [f_hazard()], [f_cum_hazard()], [f_surv_model()]
 #'
 #' @examples
-#' \dontrun{
+#' years <- survival::lung$time
+#' status <-  survival::lung$status
+#' group <- factor(survival::lung$sex)
 #' f_PERSUADE(
 #'   name = "Example",
-#'   years = survival::lung$time,
-#'   status = survival::lung$status,
-#'   group = factor(survival::lung$sex),
+#'   years = years,
+#'   status = status,
+#'   group = group,
 #'   strata = FALSE,
-#'   spline_mod = TRUE,
+#'   spline_mod = FALSE,
 #'   cure_mod = FALSE,
-#'   time_unit = 30,
-#'   time_horizon = 1000,
-#'   time_pred_surv_table = seq(30, 1000, 30)
+#'   time_unit = 365.25/12,
+#'   time_horizon = 5000,
+#'   time_pred_surv_table = seq(0, 5000, 100)
 #' )
-#' }
 #' @export
 # Validate inputs
 f_PERSUADE <- function(name = "no_name", years, status, group,
@@ -180,14 +181,16 @@ f_PERSUADE <- function(name = "no_name", years, status, group,
 #'   - `max`: Data frame with maximum time and hazard values.
 #'
 #' @examples
-#' \dontrun{
+#' years <- survival::lung$time
+#' status <-  survival::lung$status
+#' group <- factor(survival::lung$sex)
 #' f_hazard(
-#'   years = survival::lung$time,
-#'   status = survival::lung$status,
-#'   group = factor(survival::lung$sex),
-#'   ngroups = 2
+#'   years = years,
+#'   status = status,
+#'   group = group,
+#'   ngroups = nlevels(group)
 #' )
-#' }
+#'
 #' @export
 f_hazard <- function(years, status, group, ngroups) {
   if (!is.numeric(years) || !is.numeric(status)) {
@@ -244,16 +247,18 @@ f_hazard <- function(years, status, group, ngroups) {
 #'   - `H_delta`, `H_upper_delta`, `H_lower_delta`: Differences between time steps.
 #'
 #' @examples
-#' \dontrun{
+#' years <- survival::lung$time
+#' status <-  survival::lung$status
+#' group <- factor(survival::lung$sex)
 #' f_cum_hazard(
-#'   years = survival::lung$time,
-#'   status = survival::lung$status,
-#'   group = factor(survival::lung$sex),
-#'   ngroups = 2,
-#'   time_pred = seq(0, 1000, by = 30),
+#'   years = years,
+#'   status = status,
+#'   group = group,
+#'   ngroups = nlevels(group),
+#'   time_pred = seq(0, 5000, 100),
 #'   time_unit = 30
 #' )
-#' }
+#'
 #' @export
 f_cum_hazard <- function(years, status, group, ngroups, time_pred, time_unit) {
   if (!is.numeric(years) || !is.numeric(status)) {
@@ -318,17 +323,19 @@ f_cum_hazard <- function(years, status, group, ngroups, time_pred, time_unit) {
 #'   - `max`: Maximum upper bound across all groups.
 #'
 #' @examples
-#' \dontrun{
-#' cum <- f_cum_hazard(
-#'   years = survival::lung$time,
-#'   status = survival::lung$status,
-#'   group = factor(survival::lung$sex),
-#'   ngroups = 2,
-#'   time_pred = seq(0, 1000, by = 30),
+#' years <- survival::lung$time
+#' status <-  survival::lung$status
+#' group <- factor(survival::lung$sex)
+#' cum_haz <- f_cum_hazard(
+#'   years = years,
+#'   status = status,
+#'   group = group,
+#'   ngroups = nlevels(group),
+#'   time_pred = seq(0, 5000, 100),
 #'   time_unit = 30
 #' )
-#' f_tp(ngroups = 2, cum_haz = cum, time_unit = 30)
-#' }
+#' f_tp(ngroups = nlevels(group), cum_haz = cum_haz, time_unit = 30)
+#'
 #' @export
 f_tp <- function(ngroups, cum_haz, time_unit) {
   if (!is.numeric(ngroups) || ngroups < 1 || ngroups > 3) {
@@ -395,21 +402,23 @@ f_tp <- function(ngroups, cum_haz, time_unit) {
 #' (Weibull, Log-normal, Log-logistic with logistic/probit/etc. link).
 #'
 #' @examples
-#' \dontrun{
-#' form <- survival::Surv(survival::lung$time, survival::lung$status) ~ factor(survival::lung$sex)
+#' years <- survival::lung$time
+#' status <-  survival::lung$status
+#' group <- factor(survival::lung$sex)
+#' form <- as.formula(survival::Surv(years, status) ~ group)
 #' f_surv_model(
-#'   years = survival::lung$time,
-#'   status = survival::lung$status,
-#'   group = factor(survival::lung$sex),
+#'   years = years,
+#'   status = status,
+#'   group = group,
 #'   strata = FALSE,
-#'   ngroups = 2,
+#'   ngroups = nlevels(group),
 #'   form = form,
-#'   spline_mod = TRUE,
+#'   spline_mod = FALSE,
 #'   cure_mod = FALSE,
 #'   cure_link = "logistic",
-#'   group_names = levels(factor(survival::lung$sex))
+#'   group_names = levels(group)
 #' )
-#' }
+#'
 #' @export
 f_surv_model <- function(years, status, group, strata, ngroups, form, spline_mod, cure_mod, cure_link, group_names) {
   if (!is.numeric(years) || !is.numeric(status)) {
@@ -548,16 +557,30 @@ f_surv_model <- function(years, status, group, strata, ngroups, form, spline_mod
 #'   - `cure`: Predictions for cure models (if fitted).
 #'
 #' @examples
-#' \dontrun{
-#' preds <- f_surv_model_pred(
-#'   ngroups = 2,
-#'   time_pred = seq(0, 1000, 30),
-#'   surv_model = my_models,
-#'   spline_mod = TRUE,
+#' years <- survival::lung$time
+#' status <-  survival::lung$status
+#' group <- factor(survival::lung$sex)
+#' form <- as.formula(survival::Surv(years, status) ~ group)
+#' surv_model <- f_surv_model(
+#'   years = years,
+#'   status = status,
+#'   group = group,
+#'   strata = FALSE,
+#'   ngroups = nlevels(group),
+#'   form = form,
+#'   spline_mod = FALSE,
 #'   cure_mod = FALSE,
-#'   group_names = c("Male", "Female")
+#'   cure_link = "logistic",
+#'   group_names = levels(group)
 #' )
-#' }
+#' f_surv_model_pred(
+#'   ngroups = nlevels(group),
+#'   time_pred = seq(0, 5000, 100),
+#'   surv_model = surv_model,
+#'   spline_mod = FALSE,
+#'   cure_mod = FALSE,
+#'   group_names = levels(group)
+#' )
 #' @export
 f_surv_model_pred <- function(ngroups, time_pred, surv_model, spline_mod, cure_mod, group_names) {
   if (!is.numeric(time_pred)) stop("`time_pred` must be a numeric vector.")
@@ -569,6 +592,8 @@ f_surv_model_pred <- function(ngroups, time_pred, surv_model, spline_mod, cure_m
     est <- summary(model, t = time, type = type)
     if (ngroups == 1) names(est) <- paste("group=", group_names, sep = "")
     cbind(time, sapply(seq_len(ngroups), function(x) est[[paste("group=", group_names[x], sep = "")]]$est))
+    # out <- data.frame(time = est[[1]]$time, sapply(est, function(x) x$est))
+    # colnames(out) <- c("time", group_names)
   }
 
   # Parametric models predictions
@@ -632,15 +657,38 @@ f_surv_model_pred <- function(ngroups, time_pred, surv_model, spline_mod, cure_m
 #'   - survival predictions for all models (parametric, spline, cure).
 #'
 #' @examples
-#' \dontrun{
-#' gr_preds <- f_surv_model_pred_gr(
-#'   ngroups = 2,
-#'   surv_model = my_models,
-#'   surv_model_pred = preds,
-#'   spline_mod = TRUE,
+#' years <- survival::lung$time
+#' status <-  survival::lung$status
+#' group <- factor(survival::lung$sex)
+#' form <- as.formula(survival::Surv(years, status) ~ group)
+#' surv_model <- f_surv_model(
+#'   years = years,
+#'   status = status,
+#'   group = group,
+#'   strata = FALSE,
+#'   ngroups = nlevels(group),
+#'   form = form,
+#'   spline_mod = FALSE,
+#'   cure_mod = FALSE,
+#'   cure_link = "logistic",
+#'   group_names = levels(group)
+#' )
+#' surv_model_pred <- f_surv_model_pred(
+#'   ngroups = nlevels(group),
+#'   time_pred = seq(0, 5000, 100),
+#'   surv_model = surv_model,
+#'   spline_mod = FALSE,
+#'   cure_mod = FALSE,
+#'   group_names = levels(group)
+#' )
+#' f_surv_model_pred_gr(
+#'   ngroups = nlevels(group),
+#'   surv_model = surv_model,
+#'   surv_model_pred = surv_model_pred,
+#'   spline_mod = FALSE,
 #'   cure_mod = FALSE
 #' )
-#' }
+#'
 #' @export
 f_surv_model_pred_gr <- function(ngroups, surv_model, surv_model_pred, spline_mod, cure_mod) {
   if (!is.list(surv_model_pred)) stop("`surv_model_pred` must be a list.")
@@ -678,9 +726,48 @@ f_surv_model_pred_gr <- function(ngroups, surv_model, surv_model_pred, spline_mo
 #' @param cols_tp Integer, index of the last survival-related column (i.e., use columns 2:cols_tp).
 #'
 #' @return Named list of data.frames with transition probabilities (truncated after threshold).
-#' @export
 #'
-#' @importFrom data.table as.data.table shift copy set
+#' @examples
+#' years <- survival::lung$time
+#' status <-  survival::lung$status
+#' group <- factor(survival::lung$sex)
+#' form <- as.formula(survival::Surv(years, status) ~ group)
+#' surv_model <- f_surv_model(
+#'   years = years,
+#'   status = status,
+#'   group = group,
+#'   strata = FALSE,
+#'   ngroups = nlevels(group),
+#'   form = form,
+#'   spline_mod = FALSE,
+#'   cure_mod = FALSE,
+#'   cure_link = "logistic",
+#'   group_names = levels(group)
+#' )
+#' surv_model_pred <- f_surv_model_pred(
+#'   ngroups = nlevels(group),
+#'   time_pred = seq(0, 5000, 100),
+#'   surv_model = surv_model,
+#'   spline_mod = FALSE,
+#'   cure_mod = FALSE,
+#'   group_names = levels(group)
+#' )
+#' f_surv_model_pred_gr(
+#'   ngroups = nlevels(group),
+#'   surv_model = surv_model,
+#'   surv_model_pred = surv_model_pred,
+#'   spline_mod = FALSE,
+#'   cure_mod = FALSE
+#' )
+#' f_surv_model_pred_tp_gr(
+#'   ngroups = nlevels(group),
+#'   time_pred = seq(0, 5000, 100),
+#'   time_unit = 365.25/12,
+#'   surv_model_pred_gr = surv_model_pred_gr,
+#'   cols_tp = 8
+#')
+#'
+#' @export
 f_surv_model_pred_tp_gr <- function(ngroups, time_pred, time_unit, surv_model_pred_gr, cols_tp) {
   if (!is.numeric(time_pred)) stop("`time_pred` must be numeric.")
   if (!is.list(surv_model_pred_gr)) stop("`surv_model_pred_gr` must be a list.")
@@ -763,15 +850,30 @@ f_surv_model_pred_tp_gr <- function(ngroups, time_pred, time_unit, surv_model_pr
 #'   - Covariance matrix
 #'
 #' @examples
-#' \dontrun{
-#' df_excel <- f_surv_model_excel(
-#'   ngroups = 2,
+#' years <- survival::lung$time
+#' status <-  survival::lung$status
+#' group <- factor(survival::lung$sex)
+#' form <- as.formula(survival::Surv(years, status) ~ group)
+#' surv_model <- f_surv_model(
+#'   years = years,
+#'   status = status,
+#'   group = group,
 #'   strata = FALSE,
-#'   surv_model = my_models,
-#'   spline_mod = TRUE,
+#'   ngroups = nlevels(group),
+#'   form = form,
+#'   spline_mod = FALSE,
+#'   cure_mod = FALSE,
+#'   cure_link = "logistic",
+#'   group_names = levels(group)
+#' )
+#' f_surv_model_excel(
+#'   ngroups = nlevels(group),
+#'   strata = FALSE,
+#'   surv_model = surv_model,
+#'   spline_mod = FALSE,
 #'   cure_mod = FALSE
 #' )
-#' }
+#'
 #' @export
 # Helper function: Pad covariance matrices for consistent dimensions
 f_surv_model_excel <- function(ngroups, strata, surv_model, spline_mod, cure_mod) {
@@ -872,4 +974,3 @@ f_surv_model_excel <- function(ngroups, strata, surv_model, spline_mod, cure_mod
   # Transpose for Excel-friendly format
   return(as.data.frame(t(survmod), stringsAsFactors = FALSE))
 }
-

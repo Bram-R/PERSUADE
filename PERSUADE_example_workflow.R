@@ -22,13 +22,13 @@ name <- "BC_OS" # Analysis name
 # bc2 <- bc[bc$group!="Medium",] # 2 group data set (for testing purposes)
 
 # Input variables
-years <- flexsurv::bc$recyrs  # Time to event
-status <- flexsurv::bc$censrec  # Event status
-group <- flexsurv::bc$group  # Grouping variable (max 3 levels)
+years <- flexsurv::bc$recyrs  # Time to event (alternative example: factor(survival::lung$time))
+status <- flexsurv::bc$censrec  # Event status (alternative example: factor(survival::lung$status))
+group <- flexsurv::bc$group  # Grouping variable (alternative example: factor(survival::lung$sex))
 
 # Predicted survival table times (in years)
 time_pred_surv_table <- c(0, 1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 35)
-time_unit <- 1 / 12  # Time unit in years (monthly)
+time_unit <- 1 / 12  # Time unit in years (monthly), e.g. use 365.25/12 when time unit is days
 time_horizon <- 40  # Time horizon in years
 
 #### RUN PERSUADE ----

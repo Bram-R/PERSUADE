@@ -22,4 +22,8 @@ the analysis time horizon. Runs only when \code{PERSUADE$input$spline_mod} is \c
 PERSUADE <- f_PERSUADE(...)
 f_plot_spline_surv_extrap(P)
 }
+
+}
+\seealso{
+\code{\link[=f_PERSUADE]{f_PERSUADE()}}
 }

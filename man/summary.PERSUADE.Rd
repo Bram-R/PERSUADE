@@ -30,4 +30,5 @@ The \code{type} argument controls which summary is produced:
 \dontrun{
 summary(PERSUADE, type = "surv_probs")
 }
+
 }

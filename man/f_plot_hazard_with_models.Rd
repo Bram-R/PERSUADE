@@ -20,4 +20,8 @@ from parametric, spline, and cure survival models (if fitted).
 \dontrun{
 f_plot_hazard_with_models(PERSUADE)
 }
+
+}
+\seealso{
+\code{\link[=f_PERSUADE]{f_PERSUADE()}}
 }

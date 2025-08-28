@@ -12,6 +12,9 @@
 #' \dontrun{
 #' f_plot_km_survival(PERSUADE)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
 #' @export
 f_plot_km_survival <- function(PERSUADE) {
   input <- PERSUADE$input
@@ -70,6 +73,9 @@ f_plot_km_survival <- function(PERSUADE) {
 #' \dontrun{
 #' f_plot_km_survival_base(PERSUADE)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
 #' @export
 f_plot_km_survival_base <- function(PERSUADE) {
   input <- PERSUADE$input
@@ -124,6 +130,9 @@ f_plot_km_survival_base <- function(PERSUADE) {
 #' \dontrun{
 #' f_plot_log_cumhaz(PERSUADE)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
 #' @export
 f_plot_log_cumhaz <- function(PERSUADE) {
   surv_obs <- PERSUADE$surv_obs
@@ -182,6 +191,9 @@ f_plot_log_cumhaz <- function(PERSUADE) {
 #' \dontrun{
 #' f_plot_schoenfeld_residuals(PERSUADE)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
 #' @export
 f_plot_schoenfeld_residuals <- function(PERSUADE) {
   if (PERSUADE$misc$ngroups < 2) {
@@ -230,6 +242,9 @@ f_plot_schoenfeld_residuals <- function(PERSUADE) {
 #' \dontrun{
 #' f_plot_smoothed_hazard(PERSUADE)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
 #' @export
 f_plot_smoothed_hazard <- function(PERSUADE) {
   surv_obs <- PERSUADE$surv_obs
@@ -303,6 +318,9 @@ f_plot_smoothed_hazard <- function(PERSUADE) {
 #' \dontrun{
 #' f_plot_hazard_with_models(PERSUADE)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
 #' @export
 f_plot_hazard_with_models <- function(PERSUADE) {
   input <- PERSUADE$input
@@ -425,6 +443,9 @@ f_plot_hazard_with_models <- function(PERSUADE) {
 #' \dontrun{
 #' f_plot_param_surv_model(PERSUADE, model_index = 1)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
 #' @export
 f_plot_param_surv_model <- function(PERSUADE, model_index = 1) {
   input <- PERSUADE$input
@@ -496,6 +517,9 @@ f_plot_param_surv_model <- function(PERSUADE, model_index = 1) {
 #' \dontrun{
 #' f_plot_spline_surv_model(PERSUADE, model_index = 1)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
 #' @export
 f_plot_spline_surv_model <- function(PERSUADE, model_index = 1) {
   input <- PERSUADE$input
@@ -578,6 +602,9 @@ f_plot_spline_surv_model <- function(PERSUADE, model_index = 1) {
 #' \dontrun{
 #' f_plot_cure_surv_model(PERSUADE, model_index = 1)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
 #' @export
 f_plot_cure_surv_model <- function(PERSUADE, model_index = 1) {
   input <- PERSUADE$input
@@ -651,6 +678,9 @@ f_plot_cure_surv_model <- function(PERSUADE, model_index = 1) {
 #' \dontrun{
 #' f_plot_diag_param_surv_model(PERSUADE, model_index = 1)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
 #' @export
 f_plot_diag_param_surv_model <- function(PERSUADE, model_index = 1) {
   input <- PERSUADE$input
@@ -792,6 +822,9 @@ f_plot_diag_param_surv_model <- function(PERSUADE, model_index = 1) {
 #' \dontrun{
 #' f_plot_diag_spline_surv_model(PERSUADE, model_index = 1)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
 #' @export
 f_plot_diag_spline_surv_model <- function(PERSUADE, model_index = 1) {
   input <- PERSUADE$input
@@ -915,6 +948,9 @@ f_plot_diag_spline_surv_model <- function(PERSUADE, model_index = 1) {
 #' \dontrun{
 #' f_plot_diag_cure_surv_model(PERSUADE, model_index = 1)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
 #' @export
 f_plot_diag_cure_surv_model <- function(PERSUADE, model_index = 1) {
   input <- PERSUADE$input
@@ -1019,13 +1055,16 @@ f_plot_diag_cure_surv_model <- function(PERSUADE, model_index = 1) {
 #'   `PERSUADE$surv_model$param_models` (1-based). Defaults to `1`.
 #'
 #' @return Invisibly returns `NULL`. The function draws a base R plot as a side effect.
-#' @export
-#'
+
 #' @examples
 #' \dontrun{
 #' PERSUADE <- f_PERSUADE(...)
 #' f_plot_tp_param_surv_model(PERSUADE, model_index = 1)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
+#' @export
 f_plot_tp_param_surv_model <- function(PERSUADE, model_index = 1) {
   input <- PERSUADE$input
   misc <- PERSUADE$misc
@@ -1118,13 +1157,16 @@ f_plot_tp_param_surv_model <- function(PERSUADE, model_index = 1) {
 #'   `PERSUADE$surv_model$spline_models` (1-based). Defaults to `1`.
 #'
 #' @return Invisibly returns `NULL`. The function draws a base R plot as a side effect.
-#' @export
 #'
 #' @examples
 #' \dontrun{
 #' PERSUADE <- f_PERSUADE(...)
 #' f_plot_tp_spline_surv_model(PERSUADE, model_index = 1)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
+#' @export
 f_plot_tp_spline_surv_model <- function(PERSUADE, model_index = 1) {
   input      <- PERSUADE$input
   misc       <- PERSUADE$misc
@@ -1232,13 +1274,16 @@ f_plot_tp_spline_surv_model <- function(PERSUADE, model_index = 1) {
 #'   `PERSUADE$surv_model$cure_models` (1-based). Defaults to `1`.
 #'
 #' @return Invisibly returns `NULL`. The function draws a base R plot as a side effect.
-#' @export
 #'
 #' @examples
 #' \dontrun{
 #' PERSUADE <- f_PERSUADE(...)
 #' f_plot_tp_cure_surv_model(PERSUADE, model_index = 1)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
+#' @export
 f_plot_tp_cure_surv_model <- function(PERSUADE, model_index = 1) {
   input     <- PERSUADE$input
   misc      <- PERSUADE$misc
@@ -1334,13 +1379,16 @@ f_plot_tp_cure_surv_model <- function(PERSUADE, model_index = 1) {
 #' @param PERSUADE A PERSUADE object returned by [f_PERSUADE()].
 #'
 #' @return Invisibly returns `NULL`. The function draws one or more base R plots as side effects.
-#' @export
 #'
 #' @examples
 #' \dontrun{
 #' PERSUADE <- f_PERSUADE(...)
 #' f_plot_param_surv_extrap(P)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
+#' @export
 f_plot_param_surv_extrap <- function(PERSUADE) {
   input <- PERSUADE$input
   misc <- PERSUADE$misc
@@ -1397,13 +1445,16 @@ f_plot_param_surv_extrap <- function(PERSUADE) {
 #' @param PERSUADE A PERSUADE object returned by [f_PERSUADE()].
 #'
 #' @return Invisibly returns `NULL`. The function draws one or more base R plots as side effects.
-#' @export
 #'
 #' @examples
 #' \dontrun{
 #' PERSUADE <- f_PERSUADE(...)
 #' f_plot_spline_surv_extrap(P)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
+#' @export
 f_plot_spline_surv_extrap <- function(PERSUADE) {
   if (!isTRUE(PERSUADE$input$spline_mod)) return(invisible())
 
@@ -1463,13 +1514,16 @@ f_plot_spline_surv_extrap <- function(PERSUADE) {
 #' @param PERSUADE A PERSUADE object returned by [f_PERSUADE()].
 #'
 #' @return Invisibly returns `NULL`. The function draws one or more base R plots as side effects.
-#' @export
 #'
 #' @examples
 #' \dontrun{
 #' PERSUADE <- f_PERSUADE(...)
 #' f_plot_cure_surv_extrap(P)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
+#' @export
 f_plot_cure_surv_extrap <- function(PERSUADE) {
   if (!isTRUE(PERSUADE$input$cure_mod)) return(invisible())
 
@@ -1527,13 +1581,16 @@ f_plot_cure_surv_extrap <- function(PERSUADE) {
 #' @param PERSUADE A PERSUADE object returned by [f_PERSUADE()].
 #'
 #' @return Invisibly returns `NULL`. The function draws one or more base R plots as side effects.
-#' @export
 #'
 #' @examples
 #' \dontrun{
 #' PERSUADE <- f_PERSUADE(...)
 #' f_plot_tp_param_surv_extrap(P)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
+#' @export
 f_plot_tp_param_surv_extrap <- function(PERSUADE) {
   input <- PERSUADE$input
   misc <- PERSUADE$misc
@@ -1580,13 +1637,16 @@ f_plot_tp_param_surv_extrap <- function(PERSUADE) {
 #' @param PERSUADE A PERSUADE object returned by [f_PERSUADE()].
 #'
 #' @return Invisibly returns `NULL`. The function draws one or more base R plots as side effects.
-#' @export
 #'
 #' @examples
 #' \dontrun{
 #' PERSUADE <- f_PERSUADE(...)
 #' f_plot_tp_spline_surv_extrap(P)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
+#' @export
 f_plot_tp_spline_surv_extrap <- function(PERSUADE) {
   if (!isTRUE(PERSUADE$input$spline_mod)) return(invisible())
 
@@ -1635,13 +1695,16 @@ f_plot_tp_spline_surv_extrap <- function(PERSUADE) {
 #' @param PERSUADE A PERSUADE object returned by [f_PERSUADE()].
 #'
 #' @return Invisibly returns `NULL`. The function draws one or more base R plots as side effects.
-#' @export
 #'
 #' @examples
 #' \dontrun{
 #' PERSUADE <- f_PERSUADE(...)
 #' f_plot_tp_cure_surv_extrap(P)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
+#' @export
 f_plot_tp_cure_surv_extrap <- function(PERSUADE) {
   if (!isTRUE(PERSUADE$input$cure_mod)) return(invisible())
 
@@ -1691,13 +1754,16 @@ f_plot_tp_cure_surv_extrap <- function(PERSUADE) {
 #' @param PERSUADE A PERSUADE object returned by [f_PERSUADE()].
 #'
 #' @return Invisibly returns `NULL`. The function draws one or more base R plots as side effects.
-#' @export
 #'
 #' @examples
 #' \dontrun{
 #' PERSUADE <- f_PERSUADE(...)
 #' f_plot_hazard_parametric_extrap(P)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
+#' @export
 f_plot_hazard_parametric_extrap <- function(PERSUADE) {
   models <- names(PERSUADE$surv_model$param_models)
   misc <- PERSUADE$misc
@@ -1733,13 +1799,16 @@ f_plot_hazard_parametric_extrap <- function(PERSUADE) {
 #' @param PERSUADE A PERSUADE object returned by [f_PERSUADE()].
 #'
 #' @return Invisibly returns `NULL`. The function draws one or more base R plots as side effects.
-#' @export
 #'
 #' @examples
 #' \dontrun{
 #' PERSUADE <- f_PERSUADE(...)
 #' f_plot_hazard_spline_extrap(P)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
+#' @export
 f_plot_hazard_spline_extrap <- function(PERSUADE) {
   if (!isTRUE(PERSUADE$input$spline_mod)) return(invisible(NULL))
 
@@ -1777,13 +1846,16 @@ f_plot_hazard_spline_extrap <- function(PERSUADE) {
 #' @param PERSUADE A PERSUADE object returned by [f_PERSUADE()].
 #'
 #' @return Invisibly returns `NULL`. The function draws one or more base R plots as side effects.
-#' @export
 #'
 #' @examples
 #' \dontrun{
 #' PERSUADE <- f_PERSUADE(...)
 #' f_plot_hazard_cure_extrap(P)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
+#' @export
 f_plot_hazard_cure_extrap <- function(PERSUADE) {
   if (!isTRUE(PERSUADE$input$cure_mod)) return(invisible(NULL))
 
@@ -1826,15 +1898,14 @@ f_plot_hazard_cure_extrap <- function(PERSUADE) {
 #'
 #' @return A data frame (one row per variable) with columns:
 #'   `Mean`, `Std.Dev`, `Min`, `Q1`, `Median`, `Q3`, `Max`, `IQR`.
-#' @export
 #'
 #' @examples
-#' \dontrun{
 #' f_summary(mtcars)
-#' }
+#'
+#' @export
 f_summary <- function(df) {
   res <- t(sapply(df, function(x) {
-    q <- quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1), na.rm = TRUE, names = FALSE)
+    q <- stats::quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1), na.rm = TRUE, names = FALSE)
     round(c(
       Mean   = mean(x, na.rm = TRUE),
       Std.Dev= sd(x, na.rm = TRUE),
@@ -1858,7 +1929,6 @@ f_summary <- function(df) {
 #'
 #' @return A length-1 character string giving the absolute path to the generated
 #'   PDF, returned invisibly.
-#' @export
 #'
 #' @details The R Markdown file `PERSUADE_output.Rmd` is stored within the
 #'   package under `inst/rmd/`. Figures are written to a subdirectory `Images/`
@@ -1866,6 +1936,10 @@ f_summary <- function(df) {
 #'   supplied `PERSUADE` object.
 #'
 #' @seealso [f_PERSUADE()]
+#' @examples
+#' f_generate_report(PERSUADE)
+#'
+#' @export
 f_generate_report <- function(PERSUADE) {
   name <- PERSUADE$name
 

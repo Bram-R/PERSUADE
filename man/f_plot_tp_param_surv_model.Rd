@@ -25,4 +25,8 @@ with shaded confidence intervals per group.
 PERSUADE <- f_PERSUADE(...)
 f_plot_tp_param_surv_model(PERSUADE, model_index = 1)
 }
+
+}
+\seealso{
+\code{\link[=f_PERSUADE]{f_PERSUADE()}}
 }

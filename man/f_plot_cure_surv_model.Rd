@@ -22,4 +22,8 @@ confidence bands per group.
 \dontrun{
 f_plot_cure_surv_model(PERSUADE, model_index = 1)
 }
+
+}
+\seealso{
+\code{\link[=f_PERSUADE]{f_PERSUADE()}}
 }

@@ -21,4 +21,5 @@ Displays a brief summary of the PERSUADE object in the console.
 \dontrun{
 print(PERSUADE)
 }
+
 }

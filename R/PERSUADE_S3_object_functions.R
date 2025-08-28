@@ -8,12 +8,12 @@
 #'
 #' @return Invisibly returns the PERSUADE object.
 #'
-#' @export
-#'
 #' @examples
 #' \dontrun{
 #' print(PERSUADE)
 #' }
+#'
+#' @export
 print.PERSUADE <- function(PERSUADE, ...) {
   cat("PERSUADE Survival Analysis Object\n")
   cat("Analysis Name:", PERSUADE$name, "\n")
@@ -37,12 +37,12 @@ print.PERSUADE <- function(PERSUADE, ...) {
 #'
 #' @return A data frame or list of data frames depending on `type`.
 #'
-#' @export
-#'
 #' @examples
 #' \dontrun{
 #' summary(PERSUADE, type = "surv_probs")
 #' }
+#'
+#' @export
 summary.PERSUADE <- function(object, type = "km", ...) {
   if (type == "km") {
     return(summary(object$surv_obs$km)$table)
@@ -94,12 +94,12 @@ summary.PERSUADE <- function(object, type = "km", ...) {
 #' @return Invisibly returns a list of results from the plotting functions.
 #'   Also produces base R plots as side effects.
 #'
-#' @export
-#'
 #' @examples
 #' \dontrun{
 #' plot(PERSUADE, "km")
 #' }
+#'
+#' @export
 plot.PERSUADE <- function(PERSUADE, type = "km", ...) {
   plots <- list()
 

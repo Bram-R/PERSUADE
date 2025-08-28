@@ -14,21 +14,18 @@ A length-1 character string giving the absolute path to the generated
 PDF, returned invisibly.
 }
 \description{
-Save the PERSUADE object and render a PDF report using \code{PERSUADE_output.Rmd}.
-The function creates an output directory \verb{<name>_output}, saves \code{PERSUADE.RData},
-and writes \verb{<name>.pdf} into that directory.
+Save the PERSUADE object and render a PDF report using the bundled
+\code{PERSUADE_output.Rmd} template.
 }
 \details{
-The R Markdown file \code{PERSUADE_output.Rmd} must be available in the
-working directory. Figures are written to a subdirectory \verb{Images/} and the
-knit environment is initialised with the supplied \code{PERSUADE} object.
+The R Markdown file \code{PERSUADE_output.Rmd} is stored within the
+package under \verb{inst/rmd/}. Figures are written to a subdirectory \verb{Images/}
+inside the output folder, and the knit environment is initialised with the
+supplied \code{PERSUADE} object.
 }
 \examples{
-\dontrun{
-PERSUADE <- f_PERSUADE(...)
-pdf_path <- f_generate_report(P)
-pdf_path
-}
+f_generate_report(PERSUADE)
+
 }
 \seealso{
 \code{\link[=f_PERSUADE]{f_PERSUADE()}}

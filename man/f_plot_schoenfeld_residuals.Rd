@@ -20,4 +20,8 @@ to evaluate Cox proportional hazards assumptions.
 \dontrun{
 f_plot_schoenfeld_residuals(PERSUADE)
 }
+
+}
+\seealso{
+\code{\link[=f_PERSUADE]{f_PERSUADE()}}
 }

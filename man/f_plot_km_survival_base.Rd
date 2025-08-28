@@ -20,4 +20,8 @@ with shaded confidence intervals and group-specific legends.
 \dontrun{
 f_plot_km_survival_base(PERSUADE)
 }
+
+}
+\seealso{
+\code{\link[=f_PERSUADE]{f_PERSUADE()}}
 }

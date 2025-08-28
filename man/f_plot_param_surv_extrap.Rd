@@ -22,4 +22,8 @@ log-logistic, Gamma, generalized Gamma) extrapolated to the analysis time horizo
 PERSUADE <- f_PERSUADE(...)
 f_plot_param_surv_extrap(P)
 }
+
+}
+\seealso{
+\code{\link[=f_PERSUADE]{f_PERSUADE()}}
 }

@@ -30,3 +30,44 @@ Named list of data.frames with transition probabilities (truncated after thresho
 \description{
 Compute Transition Probabilities for Survival Model Predictions
 }
+\examples{
+years <- survival::lung$time
+status <-  survival::lung$status
+group <- factor(survival::lung$sex)
+form <- as.formula(survival::Surv(years, status) ~ group)
+surv_model <- f_surv_model(
+  years = years,
+  status = status,
+  group = group,
+  strata = FALSE,
+  ngroups = nlevels(group),
+  form = form,
+  spline_mod = FALSE,
+  cure_mod = FALSE,
+  cure_link = "logistic",
+  group_names = levels(group)
+)
+surv_model_pred <- f_surv_model_pred(
+  ngroups = nlevels(group),
+  time_pred = seq(0, 5000, 100),
+  surv_model = surv_model,
+  spline_mod = FALSE,
+  cure_mod = FALSE,
+  group_names = levels(group)
+)
+f_surv_model_pred_gr(
+  ngroups = nlevels(group),
+  surv_model = surv_model,
+  surv_model_pred = surv_model_pred,
+  spline_mod = FALSE,
+  cure_mod = FALSE
+)
+f_surv_model_pred_tp_gr(
+  ngroups = nlevels(group),
+  time_pred = seq(0, 5000, 100),
+  time_unit = 365.25/12,
+  surv_model_pred_gr = surv_model_pred_gr,
+  cols_tp = 8
+)
+
+}
