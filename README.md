@@ -146,7 +146,7 @@ Visualize the process via the included diagram:
 
 Start by running the example script to familiarize yourself with the workflow. For your own data: 
 
-- copy `PERSUADE_example_workflow.R` 
+- copy `PERSUADE_example_workflow.R` (see also vignette using: `browseVignettes("PERSUADE")`)
 - replace the input section with your dataset 
 - set the project name and outcome identifier using the `name` parameter  
 - within the call to `f_PERSUADE(...)`, toggle options (`TRUE`/`FALSE`) for the analyses you want to run  
