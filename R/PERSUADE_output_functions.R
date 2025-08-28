@@ -1937,7 +1937,9 @@ f_summary <- function(df) {
 #'
 #' @seealso [f_PERSUADE()]
 #' @examples
+#' \dontrun{
 #' f_generate_report(PERSUADE)
+#' }
 #'
 #' @export
 f_generate_report <- function(PERSUADE) {

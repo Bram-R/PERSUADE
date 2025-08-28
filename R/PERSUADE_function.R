@@ -206,7 +206,12 @@ f_hazard <- function(years, status, group, ngroups) {
   # Helper function to compute smoothed hazard for a group
   compute_hazard <- function(gr_idx) {
     if (gr_idx <= ngroups) {
-      return(muhaz::muhaz(years, status, group == levels(group)[gr_idx], max.time = max(years)))
+      subset_idx <- group == levels(group)[gr_idx]
+      return(muhaz::muhaz(
+        years[subset_idx],
+        status[subset_idx],
+        max.time = max(years[subset_idx], na.rm = TRUE)
+      ))
     }
     NULL
   }
@@ -221,8 +226,8 @@ f_hazard <- function(years, status, group, ngroups) {
     use.names = FALSE
   )
   haz_max <- data.frame(
-    time = ceiling(do.call(max, lapply(hazards, function(h) h$est.grid))),
-    smooth = ceiling(do.call(max, lapply(hazards, function(h) h$haz.est)))
+    time = ceiling(do.call(max, lapply(hazards[1:ngroups], function(h) h$est.grid))),
+    smooth = ceiling(do.call(max, lapply(hazards[1:ngroups], function(h) h$haz.est)))
   )
 
   list(hazards = hazards, names = haz_names, max = haz_max)
