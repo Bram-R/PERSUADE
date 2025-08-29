@@ -8,7 +8,7 @@ options(scipen = 999, max.print = 10000, digits = 4)
 rm(list = ls())
 
 #### LOAD PERSUADE ----
-devtools::install_github("Bram-R/PERSUADE", quiet = TRUE, upgrade = never)
+devtools::install_github("Bram-R/PERSUADE", quiet = TRUE, upgrade = "never")
 library("PERSUADE")
 
 # Colour palette for Figures

@@ -758,7 +758,7 @@ f_surv_model_pred_gr <- function(ngroups, surv_model, surv_model_pred, spline_mo
 #'   cure_mod = FALSE,
 #'   group_names = levels(group)
 #' )
-#' f_surv_model_pred_gr(
+#' surv_model_pred_gr <- f_surv_model_pred_gr(
 #'   ngroups = nlevels(group),
 #'   surv_model = surv_model,
 #'   surv_model_pred = surv_model_pred,
@@ -833,8 +833,11 @@ f_surv_model_pred_tp_gr <- function(ngroups, time_pred, time_unit, surv_model_pr
   # truncate spikes (e.g., Gompertz)
   groups_trunc <- truncate_after_threshold(groups, threshold = 0.95, include_exceed = FALSE)
 
-  names(groups_trunc) <- paste0("gr_", seq_len(ngroups))
-  return(groups_trunc)
+  # Convert each group to data.frame for downstream compatibility
+  groups_trunc_df <- lapply(groups_trunc, function(g) as.data.frame(g))
+
+  names(groups_trunc_df) <- paste0("gr_", seq_len(ngroups))
+  return(groups_trunc_df)
 }
 
 #' Prepare Excel-Ready Survival Model Output
