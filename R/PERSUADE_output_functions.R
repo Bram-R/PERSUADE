@@ -24,6 +24,7 @@ f_plot_km_survival <- function(PERSUADE) {
   group_names <- misc$group_names
 
   line_type <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
+  km_line_color <- c("black", "lightgrey", "darkgrey")
 
   # Build the data frame used for survival fit
   df_km <- if (ngroups > 1) {
@@ -43,23 +44,32 @@ f_plot_km_survival <- function(PERSUADE) {
   surv_object <- survminer::surv_fit(formula = form, data = df_km)
 
   # Plot
-  plot_obj <- survminer::ggsurvplot(
-    fit = surv_object,
-    data = df_km,
-    legend.labs = group_names,
-    risk.table = TRUE,
-    conf.int = TRUE,
-    surv.median.line = "hv",
-    ncensor.plot = ngroups > 1,
-    censor = ngroups == 1,
-    ggtheme = ggplot2::theme_light(),
-    color = if (ngroups > 1) "strata" else "black",
-    linetype = line_type,
-    size = 0.5,
-    legend = "top"
+  plot_obj <- suppressWarnings( # suppress warning related to risk.table = TRUE and surv.median.line = "hv"
+    survminer::ggsurvplot(
+      fit = surv_object,
+      data = df_km,
+      legend.labs = group_names,
+      risk.table = TRUE,
+      conf.int = TRUE,
+      surv.median.line = "hv",
+      ncensor.plot = ngroups > 1,
+      censor = ngroups == 1,
+      ggtheme = ggplot2::theme_light(),
+      color = if (ngroups > 1) "strata" else "black",
+      linetype = if (ngroups > 1) "strata" else "solid",
+      size = 0.5,
+      legend = "top"
+    )
   )
 
-  return(plot_obj)
+  # Override line types and colours manually
+  if (ngroups > 1) {
+    plot_obj$plot <- plot_obj$plot +
+      ggplot2::scale_linetype_manual(values = line_type) +
+      ggplot2::scale_color_manual(values = km_line_color)
+  }
+
+  return(suppressWarnings(print(plot_obj)))
 }
 
 #' Plot Kaplan-Meier Survival Curves (Base R)
@@ -115,7 +125,7 @@ f_plot_km_survival_base <- function(PERSUADE) {
     "bottomleft",
     legend = group_names,
     col = km_line_color[1:ngroups],
-    lty = c(line_type[1:ngroups], rep(1, ngroups)),
+    lty = c(line_type[1:ngroups]),
     cex = 0.8, ncol = 2, bty = "n"
   )
 }
@@ -500,7 +510,7 @@ f_plot_param_surv_model <- function(PERSUADE, model_index = 1) {
     "bottomleft",
     legend = c(group_names, rep("", ngroups)),
     col = c(rep(as.character(col_index), ngroups), km_line_color[1:ngroups]),
-    lty = c(line_type[1:ngroups], rep(1, ngroups)),
+    lty = c(line_type[1:ngroups]),
     cex = 0.8, ncol = 2, bty = "n"
   )
 }
@@ -585,7 +595,7 @@ f_plot_spline_surv_model <- function(PERSUADE, model_index = 1) {
     "bottomleft",
     legend = c(group_names, rep("", ngroups)),
     col = c(rep(as.character(col_index), ngroups), km_line_color[1:ngroups]),
-    lty = c(line_type[1:ngroups], rep(1, ngroups)),
+    lty = c(line_type[1:ngroups]),
     cex = 0.8, ncol = 2, bty = "n"
   )
 }
@@ -659,7 +669,7 @@ f_plot_cure_surv_model <- function(PERSUADE, model_index = 1) {
     "bottomleft",
     legend = c(group_names, rep("", ngroups)),
     col = c(rep(as.character(col_index), ngroups), km_line_color[1:ngroups]),
-    lty = c(line_type[1:ngroups], rep(1, ngroups)),
+    lty = c(line_type[1:ngroups]),
     cex = 0.8, ncol = 2, bty = "n"
   )
 }
