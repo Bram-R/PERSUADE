@@ -23,6 +23,8 @@ f_plot_km_survival <- function(PERSUADE) {
   form <- misc$form
   group_names <- misc$group_names
 
+  line_type <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
+
   # Build the data frame used for survival fit
   df_km <- if (ngroups > 1) {
     data.frame(
@@ -52,7 +54,7 @@ f_plot_km_survival <- function(PERSUADE) {
     censor = ngroups == 1,
     ggtheme = ggplot2::theme_light(),
     color = if (ngroups > 1) "strata" else "black",
-    linetype = if (ngroups > 1) as.integer(c(1, "3333", "5212")),
+    linetype = line_type,
     size = 0.5,
     legend = "top"
   )
@@ -85,7 +87,7 @@ f_plot_km_survival_base <- function(PERSUADE) {
 
   ngroups <- misc$ngroups
   group_names <- misc$group_names
-  line_type <- as.integer(c(1, "3333", "5212"))
+  line_type <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
   km_line_color <- c("black", "lightgrey", "darkgrey")
 
   # Base KM plot
@@ -253,7 +255,7 @@ f_plot_smoothed_hazard <- function(PERSUADE) {
 
   # Define plotting colors and line types (extendable, will recycle if needed)
   haz_line_color <- c("black", "lightgrey", "darkgrey")
-  line_type <- as.integer(c(1, "3333", "5212", "3313", "1144", "42"))
+  line_type <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
 
   # Extract plot limits
   xlim_range <- c(0, surv_obs$haz$max$time)
@@ -332,7 +334,7 @@ f_plot_hazard_with_models <- function(PERSUADE) {
   # Define base plot styles
   haz_line_color <- c("black", "lightgrey", "darkgrey")
   line_color <- 1:9
-  line_type <- c(1, 3333, 5212)
+  line_type <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
 
   # Define model groups to iterate over
   model_types <- list(
@@ -459,7 +461,7 @@ f_plot_param_surv_model <- function(PERSUADE, model_index = 1) {
 
   ngroups <- misc$ngroups
   group_names <- misc$group_names
-  line_type <- as.integer(c(1, "3333", "5212"))
+  line_type <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
   km_line_color <- c("black", "lightgrey", "darkgrey")
 
   # Base KM plot
@@ -534,7 +536,7 @@ f_plot_spline_surv_model <- function(PERSUADE, model_index = 1) {
 
   ngroups <- misc$ngroups
   group_names <- misc$group_names
-  line_type <- as.integer(c(1, "3333", "5212"))
+  line_type <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
   km_line_color <- c("black", "lightgrey", "darkgrey")
 
   # Base KM plot
@@ -618,7 +620,7 @@ f_plot_cure_surv_model <- function(PERSUADE, model_index = 1) {
 
   ngroups <- misc$ngroups
   group_names <- misc$group_names
-  line_type <- as.integer(c(1, "3333", "5212"))
+  line_type     <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
   km_line_color <- c("black", "lightgrey", "darkgrey")
 
   # Base KM plot
@@ -694,7 +696,7 @@ f_plot_diag_param_surv_model <- function(PERSUADE, model_index = 1) {
 
   ngroups <- misc$ngroups
   group_names <- misc$group_names
-  line_type <- as.integer(c(1, "3333", "5212"))
+  line_type     <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
   point_shape <- c(1, 8, 9)
   km_line_color <- c("black", "lightgrey", "darkgrey")
 
@@ -839,7 +841,7 @@ f_plot_diag_spline_surv_model <- function(PERSUADE, model_index = 1) {
 
   ngroups <- misc$ngroups
   group_names <- misc$group_names
-  line_type <- as.integer(c(1, "3333", "5212"))
+  line_type     <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
   point_shape <- c(1, 8, 9)
   km_line_color <- c("black", "lightgrey", "darkgrey")
 
@@ -964,7 +966,7 @@ f_plot_diag_cure_surv_model <- function(PERSUADE, model_index = 1) {
 
   ngroups <- misc$ngroups
   group_names <- misc$group_names
-  line_type <- as.integer(c(1, "3333", "5212"))
+  line_type     <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
   point_shape <- c(1, 8, 9)
   km_line_color <- c("black", "lightgrey", "darkgrey")
 
@@ -1077,7 +1079,7 @@ f_plot_tp_param_surv_model <- function(PERSUADE, model_index = 1) {
 
   ngroups <- misc$ngroups
   group_names <- misc$group_names
-  line_type <- as.integer(c(1, "3333", "5212"))
+  line_type     <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
   point_shape <- c(1, 8, 9)
   km_line_color <- c("black", "lightgrey", "darkgrey")
 
@@ -1180,7 +1182,7 @@ f_plot_tp_spline_surv_model <- function(PERSUADE, model_index = 1) {
 
   ngroups       <- misc$ngroups
   group_names   <- misc$group_names
-  line_type     <- as.integer(c(1, "3333", "5212"))
+  line_type     <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
   point_shape   <- c(1, 8, 9)
   km_line_color <- c("black", "lightgrey", "darkgrey")
 
@@ -1296,7 +1298,7 @@ f_plot_tp_cure_surv_model <- function(PERSUADE, model_index = 1) {
 
   ngroups       <- misc$ngroups
   group_names   <- misc$group_names
-  line_type     <- as.integer(c(1, "3333", "5212"))
+  line_type     <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
   point_shape   <- c(1, 8, 9)
   km_line_color <- c("black", "lightgrey", "darkgrey")
 
@@ -1396,7 +1398,7 @@ f_plot_param_surv_extrap <- function(PERSUADE) {
   surv_pred <- PERSUADE$surv_pred
   model_names <- names(PERSUADE$surv_model$param_models)
 
-  line_type <- as.integer(c(1, "3333", "5212"))
+  line_type <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
   km_line_color <- c("black", "lightgrey", "darkgrey")
 
   for (i in seq_len(misc$ngroups)) {
@@ -1464,7 +1466,7 @@ f_plot_spline_surv_extrap <- function(PERSUADE) {
   surv_pred <- PERSUADE$surv_pred
   model_names <- names(PERSUADE$surv_model$spline_models)
 
-  line_type <- as.integer(c(1, "3333", "5212"))
+  line_type <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
   km_line_color <- c("black", "lightgrey", "darkgrey")
 
   for (i in seq_len(misc$ngroups)) {
@@ -1533,7 +1535,7 @@ f_plot_cure_surv_extrap <- function(PERSUADE) {
   surv_pred <- PERSUADE$surv_pred
   model_names <- names(PERSUADE$surv_model$cure_models)
 
-  line_type <- as.integer(c(1, "3333", "5212"))
+  line_type <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
   km_line_color <- c("black", "lightgrey", "darkgrey")
 
   for (i in seq_len(misc$ngroups)) {
@@ -1598,7 +1600,7 @@ f_plot_tp_param_surv_extrap <- function(PERSUADE) {
   surv_pred <- PERSUADE$surv_pred
 
   line_color <- c("black", "lightgrey", "darkgrey")
-  line_type <- as.integer(c(1, "3333", "5212"))
+  line_type <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
 
   for (i in seq_len(misc$ngroups)) {
     tp_obs <- surv_obs$tp[[paste0("gr_", i)]]
@@ -1656,7 +1658,7 @@ f_plot_tp_spline_surv_extrap <- function(PERSUADE) {
   surv_pred <- PERSUADE$surv_pred
 
   line_color <- c("black", "lightgrey", "darkgrey")
-  line_type <- as.integer(c(1, "3333", "5212"))
+  line_type <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
 
   for (i in seq_len(misc$ngroups)) {
     tp_obs <- surv_obs$tp[[paste0("gr_", i)]]
@@ -1714,7 +1716,7 @@ f_plot_tp_cure_surv_extrap <- function(PERSUADE) {
   surv_pred <- PERSUADE$surv_pred
 
   line_color <- c("black", "lightgrey", "darkgrey")
-  line_type <- as.integer(c(1, "3333", "5212"))
+  line_type <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
   offset <- if (isTRUE(input$spline_mod)) 0 else -9
 
   for (i in seq_len(misc$ngroups)) {
@@ -1770,7 +1772,7 @@ f_plot_hazard_parametric_extrap <- function(PERSUADE) {
 
   cols <- seq_along(models)
   line_color <- c("black", "lightgrey", "darkgrey")
-  line_type <- as.integer(c(1, "3333", "5212"))
+  line_type <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
 
   for (i in seq_len(misc$ngroups)) {
     obs_data <- PERSUADE$surv_obs$haz$hazards[[paste0("smooth_gr", i)]]
@@ -1817,7 +1819,7 @@ f_plot_hazard_spline_extrap <- function(PERSUADE) {
 
   cols <- seq_along(models)
   line_color <- c("black", "lightgrey", "darkgrey")
-  line_type <- as.integer(c(1, "3333", "5212"))
+  line_type <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
 
   for (i in seq_len(misc$ngroups)) {
     obs_data <- PERSUADE$surv_obs$haz$hazards[[paste0("smooth_gr", i)]]
@@ -1864,7 +1866,7 @@ f_plot_hazard_cure_extrap <- function(PERSUADE) {
 
   cols <- seq_along(models)
   line_color <- c("black", "lightgrey", "darkgrey")
-  line_type <- as.integer(c(1, "3333", "5212"))
+  line_type <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
 
   for (i in seq_len(misc$ngroups)) {
     obs_data <- PERSUADE$surv_obs$haz$hazards[[paste0("smooth_gr", i)]]
@@ -1923,26 +1925,32 @@ f_summary <- function(df) {
 #' Generate PDF Report for a PERSUADE Analysis
 #'
 #' Save the PERSUADE object and render a PDF report using the bundled
-#' `PERSUADE_output.Rmd` template.
+#' `PERSUADE_output.Rmd` template, or a user-specified template.
 #'
 #' @param PERSUADE A PERSUADE object returned by [f_PERSUADE()].
+#' @param template_path Optional character string giving the full path to an Rmd
+#'   template. If `NULL` (the default), the function looks for
+#'   `PERSUADE_output.Rmd` within the package installation directory.
 #'
 #' @return A length-1 character string giving the absolute path to the generated
 #'   PDF, returned invisibly.
 #'
-#' @details The R Markdown file `PERSUADE_output.Rmd` is stored within the
-#'   package under `inst/rmd/`. Figures are written to a subdirectory `Images/`
-#'   inside the output folder, and the knit environment is initialised with the
-#'   supplied `PERSUADE` object.
+#' @details The default R Markdown file `PERSUADE_output.Rmd` is stored within
+#'   the package under `inst/rmd/`. Figures are written to a subdirectory
+#'   `Images/` inside the output folder, and the knit environment is
+#'   initialised with the supplied `PERSUADE` object. Supplying a custom
+#'   `template_path` allows alternative report formats to be used, and
+#'   simplifies testing.
 #'
 #' @seealso [f_PERSUADE()]
 #' @examples
 #' \dontrun{
 #' f_generate_report(PERSUADE)
+#' f_generate_report(PERSUADE, template_path = "custom_template.Rmd")
 #' }
 #'
 #' @export
-f_generate_report <- function(PERSUADE) {
+f_generate_report <- function(PERSUADE, template_path = NULL) {
   name <- PERSUADE$name
 
   # Create output directories
@@ -1954,14 +1962,18 @@ f_generate_report <- function(PERSUADE) {
   # Save PERSUADE object
   save(PERSUADE, file = file.path(output_dir, "PERSUADE.RData"))
 
-  # Locate Rmd template from package installation
-  rmd_file <- system.file("rmd", "PERSUADE_output.Rmd", package = "PERSUADE")
-  #rmd_file <- file.path(getwd(), paste0("inst/rmd/PERSUADE_output.Rmd")) # set locally for validation purposes
-  if (rmd_file == "") stop("The PERSUADE Rmd template was not found in the package.")
+  # Locate template
+  if (is.null(template_path)) {
+    template_path <- system.file("rmd", "PERSUADE_output.Rmd", package = "PERSUADE")
+  }
+
+  if (template_path == "") {
+    stop("The PERSUADE Rmd template was not found in the package.")
+  }
 
   # Render R Markdown into PDF
   rmarkdown::render(
-    input = rmd_file,
+    input = template_path,
     output_file = paste0(name, ".pdf"),
     output_dir = output_dir,
     intermediates_dir = output_dir,
@@ -1973,4 +1985,5 @@ f_generate_report <- function(PERSUADE) {
 
   invisible(file.path(output_dir, paste0(name, ".pdf")))
 }
+
 
