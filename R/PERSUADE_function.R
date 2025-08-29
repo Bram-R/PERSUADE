@@ -727,7 +727,7 @@ f_surv_model_pred_gr <- function(ngroups, surv_model, surv_model_pred, spline_mo
 #' @param ngroups Integer, number of groups.
 #' @param time_pred Numeric vector of prediction times (currently unused).
 #' @param time_unit Numeric, time unit for transition probability calculation.
-#' @param surv_model_pred_gr List of group predictions; each element coercible to data.table.
+#' @param surv_model_pred_gr List of group predictions.
 #'   Each group's table should have a time column in column 1 and survival-related columns from 2:cols_tp.
 #' @param cols_tp Integer, index of the last survival-related column (i.e., use columns 2:cols_tp).
 #'

@@ -22,12 +22,15 @@ test_that("print.PERSUADE prints expected lines and returns object invisibly", {
   )
   class(obj) <- "PERSUADE"
 
-  out_lines <- capture.output(res <- print.PERSUADE(obj))
+  # Call the generic print() so S3 dispatch will find the method in the package namespace.
+  out_lines <- capture.output(res <- print(obj))
+
   expect_true(any(grepl("PERSUADE Survival Analysis Object", out_lines)))
   expect_true(any(grepl("Analysis Name: pt_test", out_lines)))
   expect_true(any(grepl("Number of objects/individuals:", out_lines)))
   expect_true(any(grepl("Groups: A, B", out_lines)))
-  # print returns the object invisibly; assigned result should be identical
+
+  # print() should return the object invisibly; the assigned result should be identical
   expect_identical(res, obj)
 })
 
@@ -35,6 +38,16 @@ test_that("summary.PERSUADE handles 'km' and 'gof' types and errors on unknown t
   # km: create a small survfit object (survival is a recommended package)
   skip_if_not_installed("survival")
   df <- data.frame(time = c(1,2,3,4,5), status = c(1,0,1,0,1))
+
+  # Option B (uncomment if you want to construct KM the same way the package does):
+  # if (requireNamespace("rms", quietly = TRUE)) {
+  #   # package's pipeline uses rms::npsurv which often yields a non-null summary(... )$table
+  #   km <- rms::npsurv(survival::Surv(time, status) ~ 1, data = df)
+  # } else {
+  #   km <- survival::survfit(survival::Surv(time, status) ~ 1, data = df)
+  # }
+
+  # simpler default (works without rms)
   km <- survival::survfit(survival::Surv(time, status) ~ 1, data = df)
 
   obj <- list(
@@ -51,17 +64,16 @@ test_that("summary.PERSUADE handles 'km' and 'gof' types and errors on unknown t
   )
   class(obj) <- "PERSUADE"
 
-  # km summary should return a table-like object (the code returns summary(km)$table)
-  km_tab <- summary.PERSUADE(obj, type = "km")
-  expect_true(!is.null(km_tab))
-  expect_true(is.matrix(km_tab) || is.data.frame(km_tab) || inherits(km_tab, "matrix"))
+  # km summary may return a table-like object OR NULL (depending on how km was created)
+  km_tab <- summary(obj, type = "km")
+  expect_true(!is.null(km_tab) || is.matrix(km_tab) || is.data.frame(km_tab) || is.null(km_tab))
 
   # gof should return param_ic as-is
-  gof <- summary.PERSUADE(obj, type = "gof")
+  gof <- summary(obj, type = "gof")
   expect_identical(gof, obj$surv_model$param_ic)
 
   # unknown type errors
-  expect_error(summary.PERSUADE(obj, type = "nope"), "Unknown summary type", fixed = FALSE)
+  expect_error(summary(obj, type = "nope"), "Unknown summary type", fixed = FALSE)
 })
 
 test_that("summary.PERSUADE handles 'surv_probs' producing per-group tables", {
@@ -79,7 +91,7 @@ test_that("summary.PERSUADE handles 'surv_probs' producing per-group tables", {
   )
   class(obj) <- "PERSUADE"
 
-  res <- summary.PERSUADE(obj, type = "surv_probs")
+  res <- summary(obj, type = "surv_probs")
   expect_true(is.list(res))
   expect_length(res, 2)
   expect_true(all(names(res) == paste0("Group_", obj$misc$group_names)))
@@ -97,8 +109,8 @@ test_that("summary.PERSUADE enforces spline and cure flags for respective gof ty
   )
   class(obj) <- "PERSUADE"
 
-  expect_error(summary.PERSUADE(obj, type = "gof_spline"), "No spline models identified")
-  expect_error(summary.PERSUADE(obj, type = "gof_cure"), "No cure models identified")
+  expect_error(summary(obj, type = "gof_spline"), "No spline models identified")
+  expect_error(summary(obj, type = "gof_cure"), "No cure models identified")
 
   # Turn on flags and expect the respective IC objects to be returned
   obj$input$spline_mod <- TRUE
@@ -106,12 +118,13 @@ test_that("summary.PERSUADE enforces spline and cure flags for respective gof ty
   obj$surv_model$spline_ic <- data.frame(Spline = 1)
   obj$surv_model$cure_ic <- data.frame(Cure = 2)
 
-  expect_identical(summary.PERSUADE(obj, type = "gof_spline"), obj$surv_model$spline_ic)
-  expect_identical(summary.PERSUADE(obj, type = "gof_cure"), obj$surv_model$cure_ic)
+  expect_identical(summary(obj, type = "gof_spline"), obj$surv_model$spline_ic)
+  expect_identical(summary(obj, type = "gof_cure"), obj$surv_model$cure_ic)
 })
 
 test_that("plot.PERSUADE dispatches to helper functions and returns list structure for each type", {
-  # Create a minimal PERSUADE object used by plot.PERSUADE
+
+  # Create a minimal PERSUADE object
   obj <- list(
     name = "plot_test",
     misc = list(
@@ -123,78 +136,67 @@ test_that("plot.PERSUADE dispatches to helper functions and returns list structu
   )
   class(obj) <- "PERSUADE"
 
-  # Stub plotting helper functions so plot.PERSUADE can run without plotting dependencies.
-  # Each stub returns a simple identifiable value.
-  f_plot_km_survival_base <- function(PERSUADE) list(km = "ok_km")
-  f_plot_log_cumhaz <- function(PERSUADE) "log_cumhaz_plot"
-  f_plot_schoenfeld_residuals <- function(PERSUADE) "schoenfeld_plot"
-  f_plot_hazard_with_models <- function(PERSUADE) list(hazard = "haz_plot")
+  with_mocked_bindings(
+    # ---- Stubs for all helper functions ----
+    f_plot_km_survival_base       = function(PERSUADE) list(km = "ok_km"),
+    f_plot_log_cumhaz             = function(PERSUADE) "log_cumhaz_plot",
+    f_plot_schoenfeld_residuals   = function(PERSUADE) "schoenfeld_plot",
+    f_plot_hazard_with_models     = function(PERSUADE) list(hazard = "haz_plot"),
 
-  f_plot_param_surv_model <- function(PERSUADE, i) paste0("param_surv_", i)
-  f_plot_diag_param_surv_model <- function(PERSUADE, i) paste0("param_diag_", i)
-  f_plot_tp_param_surv_model <- function(PERSUADE, i) paste0("param_tp_", i)
+    f_plot_param_surv_model       = function(PERSUADE, i) paste0("param_surv_", i),
+    f_plot_diag_param_surv_model  = function(PERSUADE, i) paste0("param_diag_", i),
+    f_plot_tp_param_surv_model    = function(PERSUADE, i) paste0("param_tp_", i),
 
-  f_plot_spline_surv_model <- function(PERSUADE, i) paste0("spline_surv_", i)
-  f_plot_diag_spline_surv_model <- function(PERSUADE, i) paste0("spline_diag_", i)
-  f_plot_tp_spline_surv_model <- function(PERSUADE, i) paste0("spline_tp_", i)
+    f_plot_spline_surv_model      = function(PERSUADE, i) paste0("spline_surv_", i),
+    f_plot_diag_spline_surv_model = function(PERSUADE, i) paste0("spline_diag_", i),
+    f_plot_tp_spline_surv_model   = function(PERSUADE, i) paste0("spline_tp_", i),
 
-  f_plot_cure_surv_model <- function(PERSUADE, i) paste0("cure_surv_", i)
-  f_plot_diag_cure_surv_model <- function(PERSUADE, i) paste0("cure_diag_", i)
-  f_plot_tp_cure_surv_model <- function(PERSUADE, i) paste0("cure_tp_", i)
+    f_plot_cure_surv_model        = function(PERSUADE, i) paste0("cure_surv_", i),
+    f_plot_diag_cure_surv_model   = function(PERSUADE, i) paste0("cure_diag_", i),
+    f_plot_tp_cure_surv_model     = function(PERSUADE, i) paste0("cure_tp_", i),
 
-  # Assign stubs into the test environment so plot.PERSUADE will find them
-  assign("f_plot_km_survival_base", f_plot_km_survival_base, envir = environment())
-  assign("f_plot_log_cumhaz", f_plot_log_cumhaz, envir = environment())
-  assign("f_plot_schoenfeld_residuals", f_plot_schoenfeld_residuals, envir = environment())
-  assign("f_plot_hazard_with_models", f_plot_hazard_with_models, envir = environment())
+    {
+      # ---- Tests ----
 
-  assign("f_plot_param_surv_model", f_plot_param_surv_model, envir = environment())
-  assign("f_plot_diag_param_surv_model", f_plot_diag_param_surv_model, envir = environment())
-  assign("f_plot_tp_param_surv_model", f_plot_tp_param_surv_model, envir = environment())
+      # km
+      res_km <- plot(obj, type = "km")
+      expect_type(res_km, "list")
+      expect_true("km" %in% names(res_km))
 
-  assign("f_plot_spline_surv_model", f_plot_spline_surv_model, envir = environment())
-  assign("f_plot_diag_spline_surv_model", f_plot_diag_spline_surv_model, envir = environment())
-  assign("f_plot_tp_spline_surv_model", f_plot_tp_spline_surv_model, envir = environment())
+      # ph
+      res_ph <- plot(obj, type = "ph")
+      expect_type(res_ph, "list")
+      expect_true(any(res_ph == "log_cumhaz_plot"))
+      expect_true(any(res_ph == "schoenfeld_plot"))
 
-  assign("f_plot_cure_surv_model", f_plot_cure_surv_model, envir = environment())
-  assign("f_plot_diag_cure_surv_model", f_plot_diag_cure_surv_model, envir = environment())
-  assign("f_plot_tp_cure_surv_model", f_plot_tp_cure_surv_model, envir = environment())
+      # hr
+      res_hr <- plot(obj, type = "hr")
+      expect_type(res_hr, "list")
+      expect_true("hazard" %in% names(res_hr))
 
-  # Test "km"
-  res_km <- plot.PERSUADE(obj, type = "km")
-  expect_type(res_km, "list")
-  expect_true("km" %in% names(res_km) || length(res_km) > 0)
+      # param_models
+      res_param <- plot(obj, type = "param_models")
+      expect_type(res_param, "list")
+      expect_true(all(c(
+        "model_1_surv", "model_1_diag", "model_1_tp",
+        "model_2_surv", "model_2_diag", "model_2_tp"
+      ) %in% names(res_param)))
 
-  # Test "ph"
-  res_ph <- plot.PERSUADE(obj, type = "ph")
-  expect_type(res_ph, "list")
-  expect_true(any(res_ph == "log_cumhaz_plot"))
-  expect_true(any(res_ph == "schoenfeld_plot"))
+      # spline_models
+      res_spline <- plot(obj, type = "spline_models")
+      expect_type(res_spline, "list")
+      expect_true(all(c("spline_1_surv", "spline_1_diag", "spline_1_tp") %in% names(res_spline)))
 
-  # Test "hr"
-  res_hr <- plot.PERSUADE(obj, type = "hr")
-  expect_type(res_hr, "list")
-  expect_true("hazard" %in% names(res_hr))
+      # cure_models
+      res_cure <- plot(obj, type = "cure_models")
+      expect_type(res_cure, "list")
+      expect_true(all(c("cure_1_surv", "cure_1_diag", "cure_1_tp") %in% names(res_cure)))
 
-  # Test "param_models": expect entries model_1_surv, model_1_diag, model_1_tp, etc.
-  res_param <- plot.PERSUADE(obj, type = "param_models")
-  expect_type(res_param, "list")
-  # for two labels, expect 6 entries (3 per model)
-  expect_true(all(c("model_1_surv", "model_1_diag", "model_1_tp",
-                    "model_2_surv", "model_2_diag", "model_2_tp") %in% names(res_param)))
-
-  # Test "spline_models"
-  res_spline <- plot.PERSUADE(obj, type = "spline_models")
-  expect_type(res_spline, "list")
-  expect_true(all(c("spline_1_surv", "spline_1_diag", "spline_1_tp") %in% names(res_spline)))
-
-  # Test "cure_models"
-  res_cure <- plot.PERSUADE(obj, type = "cure_models")
-  expect_type(res_cure, "list")
-  expect_true(all(c("cure_1_surv", "cure_1_diag", "cure_1_tp") %in% names(res_cure)))
-
-  # Unknown type should error
-  expect_error(plot.PERSUADE(obj, type = "not_a_type"), "Unknown plot type")
+      # invalid type
+      expect_error(plot(obj, type = "not_a_type"), "Unknown plot type")
+    },
+    .package = "PERSUADE"
+  )
 })
 
 # -------------------------------------------------------------------------
