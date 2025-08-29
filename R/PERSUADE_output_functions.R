@@ -1113,7 +1113,7 @@ f_plot_tp_param_surv_model <- function(PERSUADE, model_index = 1) {
   )
   lines(
     x = input$time_pred[-1],
-    y = unlist(surv_pred$tp_gr$gr_1[, ..pred_col_index]),
+    y = unlist(surv_pred$tp_gr$gr_1[, pred_col_index, drop = TRUE]),
     col = as.character(col_index), lty = line_type[1], lwd = 2
   )
 
@@ -1129,7 +1129,7 @@ f_plot_tp_param_surv_model <- function(PERSUADE, model_index = 1) {
       )
       lines(
         x = input$time_pred[-1],
-        y = unlist(surv_pred$tp_gr[[gr_name]][, ..pred_col_index]),
+        y = unlist(surv_pred$tp_gr[[gr_name]][, pred_col_index, drop = TRUE]),
         col = as.character(col_index), lty = line_type[i], lwd = 2
       )
     }
@@ -1218,7 +1218,7 @@ f_plot_tp_spline_surv_model <- function(PERSUADE, model_index = 1) {
   )
   lines(
     x = input$time_pred[-1],
-    y = unlist(surv_pred$tp_gr$gr_1[, ..pred_col_index]),
+    y = unlist(surv_pred$tp_gr$gr_1[, pred_col_index, drop = TRUE]),
     col = as.character(col_index),
     lty = line_type[1], lwd = 2
   )
@@ -1235,7 +1235,7 @@ f_plot_tp_spline_surv_model <- function(PERSUADE, model_index = 1) {
       )
       lines(
         x = input$time_pred[-1],
-        y = unlist(surv_pred$tp_gr[[gr_name]][, ..pred_col_index]),
+        y = unlist(surv_pred$tp_gr[[gr_name]][, pred_col_index, drop = TRUE]),
         col = as.character(col_index),
         lty = line_type[i], lwd = 2
       )
@@ -1335,7 +1335,7 @@ f_plot_tp_cure_surv_model <- function(PERSUADE, model_index = 1) {
   )
   lines(
     x = input$time_pred[-1],
-    y = unlist(surv_pred$tp_gr$gr_1[, ..pred_col_index]),
+    y = unlist(surv_pred$tp_gr$gr_1[, pred_col_index, drop = TRUE]),
     col = as.character(col_index),
     lty = line_type[1], lwd = 2
   )
@@ -1352,7 +1352,7 @@ f_plot_tp_cure_surv_model <- function(PERSUADE, model_index = 1) {
       )
       lines(
         x = input$time_pred[-1],
-        y = unlist(surv_pred$tp_gr[[gr_name]][, ..pred_col_index]),
+        y = unlist(surv_pred$tp_gr[[gr_name]][, pred_col_index, drop = TRUE]),
         col = as.character(col_index),
         lty = line_type[i], lwd = 2
       )
@@ -1633,7 +1633,7 @@ f_plot_tp_param_surv_extrap <- function(PERSUADE) {
     )
 
     for (j in 2:8) {
-      lines(input$time_pred[-1], unlist(tp_pred[, ..j]), col = j - 1, lty = line_type[i], lwd = 1)
+      lines(input$time_pred[-1], unlist(tp_pred[, j, drop = TRUE]), col = j - 1, lty = line_type[i], lwd = 1)
     }
 
     legend("topleft", legend = misc$lbls, col = 1:7, lty = line_type[i], cex = 0.8)
@@ -1691,7 +1691,7 @@ f_plot_tp_spline_surv_extrap <- function(PERSUADE) {
     )
 
     for (j in 9:17) {
-      lines(input$time_pred[-1], unlist(tp_pred[, ..j]), col = j - 8, lty = line_type[i], lwd = 1)
+      lines(input$time_pred[-1], unlist(tp_pred[, j, drop = TRUE]), col = j - 8, lty = line_type[i], lwd = 1)
     }
 
     legend("topleft", legend = misc$lbls_spline, col = 1:9, lty = line_type[i], cex = 0.8)
@@ -1751,7 +1751,7 @@ f_plot_tp_cure_surv_extrap <- function(PERSUADE) {
 
     for (j in 18:23) {
       j_offset <- j + offset
-      lines(input$time_pred[-1], unlist(tp_pred[, ..j_offset]), col = j - 17, lty = line_type[i], lwd = 1)
+      lines(input$time_pred[-1], unlist(tp_pred[, j_offset, drop = TRUE]), col = j - 17, lty = line_type[i], lwd = 1)
     }
 
     legend("topleft", legend = misc$lbls_cure, col = 1:6, lty = line_type[i], cex = 0.8)
