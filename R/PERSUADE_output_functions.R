@@ -1611,6 +1611,7 @@ f_plot_tp_param_surv_extrap <- function(PERSUADE) {
   misc <- PERSUADE$misc
   surv_obs <- PERSUADE$surv_obs
   surv_pred <- PERSUADE$surv_pred
+  ngroups <- misc$ngroups
 
   line_color <- c("black", "lightgrey", "darkgrey")
   line_type <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
@@ -1669,6 +1670,7 @@ f_plot_tp_spline_surv_extrap <- function(PERSUADE) {
   misc <- PERSUADE$misc
   surv_obs <- PERSUADE$surv_obs
   surv_pred <- PERSUADE$surv_pred
+  ngroups <- misc$ngroups
 
   line_color <- c("black", "lightgrey", "darkgrey")
   line_type <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
@@ -1727,6 +1729,7 @@ f_plot_tp_cure_surv_extrap <- function(PERSUADE) {
   misc <- PERSUADE$misc
   surv_obs <- PERSUADE$surv_obs
   surv_pred <- PERSUADE$surv_pred
+  ngroups <- misc$ngroups
 
   line_color <- c("black", "lightgrey", "darkgrey")
   line_type <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
@@ -1782,6 +1785,7 @@ f_plot_tp_cure_surv_extrap <- function(PERSUADE) {
 f_plot_hazard_parametric_extrap <- function(PERSUADE) {
   models <- names(PERSUADE$surv_model$param_models)
   misc <- PERSUADE$misc
+  ngroups <- misc$ngroups
 
   cols <- seq_along(models)
   line_color <- c("black", "lightgrey", "darkgrey")
@@ -1829,6 +1833,7 @@ f_plot_hazard_spline_extrap <- function(PERSUADE) {
 
   models <- names(PERSUADE$surv_model$spline_models)
   misc <- PERSUADE$misc
+  ngroups <- misc$ngroups
 
   cols <- seq_along(models)
   line_color <- c("black", "lightgrey", "darkgrey")
@@ -1876,6 +1881,7 @@ f_plot_hazard_cure_extrap <- function(PERSUADE) {
 
   models <- names(PERSUADE$surv_model$cure_models)
   misc <- PERSUADE$misc
+  ngroups <- misc$ngroups
 
   cols <- seq_along(models)
   line_color <- c("black", "lightgrey", "darkgrey")

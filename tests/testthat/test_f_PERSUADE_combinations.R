@@ -116,6 +116,21 @@ test_that("f_PERSUADE works across 1-3 groups, strata/spline/cure options and in
   }
 
   # --- Report rendering for all fits ------------------------------------------
+  for (i in seq_along(all_fits)) {
+    fit <- all_fits[[i]]
+    out_path <- paste0(fit$name, "_output")
+
+    expect_silent({
+      suppressMessages(suppressWarnings(f_generate_report(fit)))
+      expect_true(file.exists(out_path))
+      expect_gt(file.info(out_path)$size, 1000)  # check file is not empty
+    })
+  }
+
+
+  paste0(all_fits[[48]]$name, "_output")
+  expect_true(file.exists(paste0(all_fits[[48]]$name, "_output")))
+  expect_gt(file.info(paste0(all_fits[[48]]$name, "_output"))$size, 1000)
   tmpdir <- tempfile("persuade_report_")
   dir.create(tmpdir, recursive = TRUE)
 
