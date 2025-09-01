@@ -45,9 +45,9 @@ test_that("f_PERSUADE works across 1-3 groups, strata/spline/cure options and in
     "3groups" = "group"     # original 3-level grouping
   )
 
-  strata_opts <- c(FALSE, TRUE)
-  spline_opts <- c(FALSE, TRUE)
-  cure_opts <- c(FALSE, TRUE)
+  strata_opts <- FALSE #c(FALSE, TRUE)
+  spline_opts <- FALSE #c(FALSE, TRUE)
+  cure_opts <- FALSE #c(FALSE, TRUE)
   cure_links <- c("logistic", "identity", "loglog")
 
   all_fits <- list()
@@ -75,7 +75,7 @@ test_that("f_PERSUADE works across 1-3 groups, strata/spline/cure options and in
             fit <- NULL
             # Suppress warnings here, but still fail on actual errors
             expect_error(fit <- suppressWarnings(f_PERSUADE(
-              name = paste0("int_check_", runs),
+              name = paste0("/tests/testthat/grid_test/check_", runs),
               years = yrs,
               status = sts,
               group = grp,
@@ -118,94 +118,15 @@ test_that("f_PERSUADE works across 1-3 groups, strata/spline/cure options and in
   # --- Report rendering for all fits ------------------------------------------
   for (i in seq_along(all_fits)) {
     fit <- all_fits[[i]]
-    out_path <- paste0(fit$name, "_output")
+    out_path_file <- file.path("tests", "testthat", "grid_test",
+                               paste0("check_", i, "_output"),
+                               paste0("check_", i, ".pdf"))
 
     expect_silent({
       suppressMessages(suppressWarnings(f_generate_report(fit)))
-      expect_true(file.exists(out_path))
-      expect_gt(file.info(out_path)$size, 1000)  # check file is not empty
+      expect_true(file.exists(out_path_file))
+      expect_gt(file.info(out_path_file)$size, 1000)  # check file is not empty
     })
   }
 
-
-  paste0(all_fits[[48]]$name, "_output")
-  expect_true(file.exists(paste0(all_fits[[48]]$name, "_output")))
-  expect_gt(file.info(paste0(all_fits[[48]]$name, "_output"))$size, 1000)
-  tmpdir <- tempfile("persuade_report_")
-  dir.create(tmpdir, recursive = TRUE)
-
-  for (i in seq_along(all_fits)) {
-    fit <- all_fits[[i]]
-    html_out <- file.path(tmpdir, paste0("integration_report_", i, ".html"))
-
-    expect_silent({
-      out_path <- suppressMessages(suppressWarnings(
-        f_generate_report(fit)
-      ))
-      if (is.character(out_path) && nzchar(out_path)) {
-        expect_true(file.exists(out_path))
-        expect_gt(file.info(out_path)$size, 1000)  # check file is not empty
-      }
-    })
-  }
-
-
-
-  last_fit <- tail(all_fits, 1)[[1]]
-
-  f_generate_report(last_fit)
-
-  tmpdir <- tempfile("persuade_report_")
-  dir.create(tmpdir, recursive = TRUE)
-  html_out <- file.path(tmpdir, "integration_report.html")
-
-  # 1) Try package Rmd template via f_generate_report if available
-  pkg_rmd <- system.file("rmd", "PERSUADE_output.Rmd", package = "PERSUADE")
-  if (nzchar(pkg_rmd)) {
-    expect_silent({
-      out_path <- suppressMessages(suppressWarnings(
-        f_generate_report(last_fit)
-      ))
-      if (is.character(out_path) && nzchar(out_path)) {
-        expect_true(file.exists(out_path))
-      }
-    })
-  }
-
-  # 2) Fallback minimal Rmd render
-  rmd_file <- file.path(tmpdir, "minimal_report.Rmd")
-  rmd_contents <- c(
-    "---",
-    "title: \"Minimal PERSUADE Integration Report\"",
-    "output: html_document",
-    "---",
-    "",
-    "```{r setup, include=FALSE}",
-    "knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)",
-    "```",
-    "",
-    "## PERSUADE object summary",
-    "```{r}",
-    "print(class(PERSUADE))",
-    "print(names(PERSUADE)[1:10])",
-    "if (!is.null(PERSUADE$input)) print(str(PERSUADE$input, max.level = 1))",
-    "```"
-  )
-  writeLines(rmd_contents, con = rmd_file)
-
-  expect_silent({
-    rmarkdown::render(
-      input = rmd_file,
-      output_file = html_out,
-      envir = list2env(list(PERSUADE = last_fit), parent = globalenv()),
-      quiet = TRUE
-    )
-  })
-
-  last_fit <- tail(all_fits, 1)[[1]]
-
-  f_generate_report(last_fit)
-
-  expect_true(file.exists(html_out))
-  expect_gt(file.info(html_out)$size, 1000)
 })

@@ -135,10 +135,13 @@ you can assess whether each model’s functional form provides a reasonable repr
 
 \clearpage
 
-# 4 Parametric survival models 
 ```{r plot_haz_pred, out.height="29%", fig.width=11, echo=FALSE}
 f_plot_hazard_with_models(PERSUADE)
 ```
+
+\clearpage
+
+# 4 Parametric survival models 
 
 ## 4.1 Standard parametric models
 The Table below displays the goodness-of-fit statistics for each parametric survival model, ordered from 'best' fitting to less well fitting based on the Akaike Information Criterion (AIC). The AIC and Bayesian Information Criterion (BIC) provide a measure of the relative fit of each model to the observed data, while penalising for the number of parameters included in the fitted models. The lower the AIC or BIC, the better the relative fit of a model compared to other fitted models.  

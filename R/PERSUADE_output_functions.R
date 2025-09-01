@@ -1999,6 +1999,7 @@ f_generate_report <- function(PERSUADE, template_path = NULL) {
     knit_root_dir = output_dir,
     params = list(fig_dir = fig_dir),   # full path!
     envir = list2env(list(PERSUADE = PERSUADE), parent = globalenv()),
+    quiet = TRUE,
     clean = TRUE
   )
 
