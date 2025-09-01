@@ -73,21 +73,20 @@ test_that("f_PERSUADE works across 1-3 groups, strata/spline/cure options and in
             if (!is.factor(grp)) grp <- factor(grp)
 
             fit <- NULL
-            expect_silent({
-              fit <- f_PERSUADE(
-                name = paste0("int_check_", runs),
-                years = yrs,
-                status = sts,
-                group = grp,
-                strata = strata,
-                spline_mod = spline,
-                cure_mod = cure,
-                cure_link = if (cure) link else NA,
-                time_unit = 1,
-                time_horizon = 100,
-                time_pred_surv_table = seq(0, 100, by = 10)
-              )
-            })
+            # Suppress warnings here, but still fail on actual errors
+            expect_error(fit <- suppressWarnings(f_PERSUADE(
+              name = paste0("int_check_", runs),
+              years = yrs,
+              status = sts,
+              group = grp,
+              strata = strata,
+              spline_mod = spline,
+              cure_mod = cure,
+              cure_link = if (cure) link else NA,
+              time_unit = 1,
+              time_horizon = 100,
+              time_pred_surv_table = seq(0, 100, by = 10)
+            )), NA)
 
             expect_s3_class(fit, "PERSUADE")
             expect_true(is.list(fit$input), info = msg)
@@ -116,8 +115,31 @@ test_that("f_PERSUADE works across 1-3 groups, strata/spline/cure options and in
     }
   }
 
-  # --- Report rendering -------------------------------------------------------
+  # --- Report rendering for all fits ------------------------------------------
+  tmpdir <- tempfile("persuade_report_")
+  dir.create(tmpdir, recursive = TRUE)
+
+  for (i in seq_along(all_fits)) {
+    fit <- all_fits[[i]]
+    html_out <- file.path(tmpdir, paste0("integration_report_", i, ".html"))
+
+    expect_silent({
+      out_path <- suppressMessages(suppressWarnings(
+        f_generate_report(fit)
+      ))
+      if (is.character(out_path) && nzchar(out_path)) {
+        expect_true(file.exists(out_path))
+        expect_gt(file.info(out_path)$size, 1000)  # check file is not empty
+      }
+    })
+  }
+
+
+
   last_fit <- tail(all_fits, 1)[[1]]
+
+  f_generate_report(last_fit)
+
   tmpdir <- tempfile("persuade_report_")
   dir.create(tmpdir, recursive = TRUE)
   html_out <- file.path(tmpdir, "integration_report.html")
@@ -126,7 +148,9 @@ test_that("f_PERSUADE works across 1-3 groups, strata/spline/cure options and in
   pkg_rmd <- system.file("rmd", "PERSUADE_output.Rmd", package = "PERSUADE")
   if (nzchar(pkg_rmd)) {
     expect_silent({
-      out_path <- tryCatch(f_generate_report(last_fit), error = function(e) e)
+      out_path <- suppressMessages(suppressWarnings(
+        f_generate_report(last_fit)
+      ))
       if (is.character(out_path) && nzchar(out_path)) {
         expect_true(file.exists(out_path))
       }
@@ -162,6 +186,10 @@ test_that("f_PERSUADE works across 1-3 groups, strata/spline/cure options and in
       quiet = TRUE
     )
   })
+
+  last_fit <- tail(all_fits, 1)[[1]]
+
+  f_generate_report(last_fit)
 
   expect_true(file.exists(html_out))
   expect_gt(file.info(html_out)$size, 1000)

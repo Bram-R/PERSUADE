@@ -1407,6 +1407,7 @@ f_plot_param_surv_extrap <- function(PERSUADE) {
   surv_obs <- PERSUADE$surv_obs
   surv_pred <- PERSUADE$surv_pred
   model_names <- names(PERSUADE$surv_model$param_models)
+  ngroups <- misc$ngroups
 
   line_type <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
   km_line_color <- c("black", "lightgrey", "darkgrey")
@@ -1475,6 +1476,7 @@ f_plot_spline_surv_extrap <- function(PERSUADE) {
   surv_obs <- PERSUADE$surv_obs
   surv_pred <- PERSUADE$surv_pred
   model_names <- names(PERSUADE$surv_model$spline_models)
+  ngroups <- misc$ngroups
 
   line_type <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
   km_line_color <- c("black", "lightgrey", "darkgrey")
@@ -1544,6 +1546,7 @@ f_plot_cure_surv_extrap <- function(PERSUADE) {
   surv_obs <- PERSUADE$surv_obs
   surv_pred <- PERSUADE$surv_pred
   model_names <- names(PERSUADE$surv_model$cure_models)
+  ngroups <- misc$ngroups
 
   line_type <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
   km_line_color <- c("black", "lightgrey", "darkgrey")
