@@ -26,6 +26,8 @@ f_surv_model(
 
 \item{strata}{Logical. Whether to stratify models by group.}
 
+\item{ngroups}{Integer. Number of groups.}
+
 \item{form}{A survival model formula (e.g., \code{Surv(years, status) ~ group}).}
 
 \item{spline_mod}{Logical. Whether spline models should be fitted.}

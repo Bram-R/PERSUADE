@@ -19,8 +19,6 @@ library(testthat)
 #     • Returned objects have the expected S3 class and internal structure.
 #     • Model predictions (survival probabilities) are always within [0, 1].
 #     • Reporting functionality integrates cleanly:
-#         – First via `f_generate_report()` if the package template is present.
-#         – Otherwise via a fallback minimal RMarkdown render to HTML.
 #
 # Scope:
 #   This test is *not* intended for CRAN or normal pull request CI runs because
@@ -33,21 +31,21 @@ skip_on_cran()
 skip_if_not_installed("flexsurv")
 skip_if_not_installed("rmarkdown")
 
-# --- Exhaustive grid test -----------------------------------------------------
 test_that("f_PERSUADE works across 1-3 groups, strata/spline/cure options and integrates with reporting", {
 
   bc_sample <- flexsurv::bc
   bc_sample$group2 <- factor(ifelse(bc_sample$group == "Good", "Good", "NotGood"))   # Create a 2-group variable
 
+  # --- Exhaustive grid test ---------------------------------------------------
   group_opts <- list(
     "1group" = NULL,
     "2groups" = "group2",   # new 2-level grouping
     "3groups" = "group"     # original 3-level grouping
   )
 
-  strata_opts <- FALSE #c(FALSE, TRUE)
-  spline_opts <- FALSE #c(FALSE, TRUE)
-  cure_opts <- FALSE #c(FALSE, TRUE)
+  strata_opts <- c(FALSE, TRUE)
+  spline_opts <- c(FALSE, TRUE)
+  cure_opts <- c(FALSE, TRUE)
   cure_links <- c("logistic", "identity", "loglog")
 
   all_fits <- list()
@@ -122,11 +120,9 @@ test_that("f_PERSUADE works across 1-3 groups, strata/spline/cure options and in
                                paste0("check_", i, "_output"),
                                paste0("check_", i, ".pdf"))
 
-    expect_silent({
-      suppressMessages(suppressWarnings(f_generate_report(fit)))
-      expect_true(file.exists(out_path_file))
-      expect_gt(file.info(out_path_file)$size, 1000)  # check file is not empty
-    })
+    suppressMessages(suppressWarnings(f_generate_report(fit)))
+    expect_true(file.exists(out_path_file))
+    expect_gt(file.info(out_path_file)$size, 1000)  # check file is not empty
   }
 
 })

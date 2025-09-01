@@ -19,7 +19,7 @@ f_surv_model_pred_tp_gr(
 
 \item{time_unit}{Numeric, time unit for transition probability calculation.}
 
-\item{surv_model_pred_gr}{List of group predictions; each element coercible to data.table.
+\item{surv_model_pred_gr}{List of group predictions.
 Each group's table should have a time column in column 1 and survival-related columns from 2:cols_tp.}
 
 \item{cols_tp}{Integer, index of the last survival-related column (i.e., use columns 2:cols_tp).}
@@ -55,7 +55,7 @@ surv_model_pred <- f_surv_model_pred(
   cure_mod = FALSE,
   group_names = levels(group)
 )
-f_surv_model_pred_gr(
+surv_model_pred_gr <- f_surv_model_pred_gr(
   ngroups = nlevels(group),
   surv_model = surv_model,
   surv_model_pred = surv_model_pred,

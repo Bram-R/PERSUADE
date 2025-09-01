@@ -69,20 +69,6 @@
 \usepackage{booktabs}
 \usepackage{longtable}
 \usepackage[table]{xcolor}
-\usepackage{booktabs}
-\usepackage{longtable}
-\usepackage{array}
-\usepackage{multirow}
-\usepackage{wrapfig}
-\usepackage{float}
-\usepackage{colortbl}
-\usepackage{pdflscape}
-\usepackage{tabu}
-\usepackage{threeparttable}
-\usepackage{threeparttablex}
-\usepackage[normalem]{ulem}
-\usepackage{makecell}
-\usepackage{xcolor}
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
@@ -100,7 +86,7 @@
 
 \title{PERSUADE BC\_OS}
 \author{}
-\date{\vspace{-2.5em}2025-08-29}
+\date{\vspace{-2.5em}2025-09-01}
 
 \begin{document}
 \maketitle
@@ -322,8 +308,6 @@ process.
 
 \clearpage
 
-\section{4 Parametric survival models}\label{parametric-survival-models}
-
 \begin{flushleft}\includegraphics[height=0.29\textheight]{C:/Users/g10028783/Downloads/R talks/PERSUADE/BC_OS_output/Images/Figure_plot_haz_pred-1} \end{flushleft}
 
 \begin{flushleft}\includegraphics[height=0.29\textheight]{C:/Users/g10028783/Downloads/R talks/PERSUADE/BC_OS_output/Images/Figure_plot_haz_pred-2} \end{flushleft}
@@ -341,6 +325,10 @@ process.
 \begin{flushleft}\includegraphics[height=0.29\textheight]{C:/Users/g10028783/Downloads/R talks/PERSUADE/BC_OS_output/Images/Figure_plot_haz_pred-8} \end{flushleft}
 
 \begin{flushleft}\includegraphics[height=0.29\textheight]{C:/Users/g10028783/Downloads/R talks/PERSUADE/BC_OS_output/Images/Figure_plot_haz_pred-9} \end{flushleft}
+
+\clearpage
+
+\section{4 Parametric survival models}\label{parametric-survival-models}
 
 \subsection{4.1 Standard parametric
 models}\label{standard-parametric-models}
@@ -1118,7 +1106,7 @@ Non-mixture cure Log-logistic & 1 & 0.989 & 0.933 & 0.846 & 0.767 & 0.712 & 0.62
 \midrule
 \cellcolor{gray!10}{Exponential} & \cellcolor{gray!10}{0.059} & \cellcolor{gray!10}{0.000} & \cellcolor{gray!10}{0.059} & \cellcolor{gray!10}{0.059} & \cellcolor{gray!10}{0.059} & \cellcolor{gray!10}{0.059} & \cellcolor{gray!10}{0.059} & \cellcolor{gray!10}{0.000}\\
 Weibull & 0.235 & 0.096 & 0.004 & 0.164 & 0.251 & 0.317 & 0.371 & 0.153\\
-\cellcolor{gray!10}{Gompertz} & \cellcolor{gray!10}{0.374} & \cellcolor{gray!10}{0.300} & \cellcolor{gray!10}{0.034} & \cellcolor{gray!10}{0.101} & \cellcolor{gray!10}{0.278} & \cellcolor{gray!10}{0.631} & \cellcolor{gray!10}{0.952} & \cellcolor{gray!10}{0.530}\\
+\cellcolor{gray!10}{Gompertz} & \cellcolor{gray!10}{0.371} & \cellcolor{gray!10}{0.298} & \cellcolor{gray!10}{0.034} & \cellcolor{gray!10}{0.101} & \cellcolor{gray!10}{0.276} & \cellcolor{gray!10}{0.626} & \cellcolor{gray!10}{0.950} & \cellcolor{gray!10}{0.525}\\
 Log-normal & 0.068 & 0.017 & 0.000 & 0.056 & 0.067 & 0.082 & 0.094 & 0.025\\
 \cellcolor{gray!10}{Log-logistic} & \cellcolor{gray!10}{0.073} & \cellcolor{gray!10}{0.023} & \cellcolor{gray!10}{0.002} & \cellcolor{gray!10}{0.053} & \cellcolor{gray!10}{0.070} & \cellcolor{gray!10}{0.094} & \cellcolor{gray!10}{0.109} & \cellcolor{gray!10}{0.040}\\
 Gamma & 0.149 & 0.038 & 0.001 & 0.139 & 0.164 & 0.175 & 0.181 & 0.036\\
@@ -1192,7 +1180,7 @@ Non-mixture cure Log-logistic & 1 & 0.931 & 0.793 & 0.659 & 0.554 & 0.479 & 0.32
 \midrule
 \cellcolor{gray!10}{Exponential} & \cellcolor{gray!10}{0.128} & \cellcolor{gray!10}{0.000} & \cellcolor{gray!10}{0.128} & \cellcolor{gray!10}{0.128} & \cellcolor{gray!10}{0.128} & \cellcolor{gray!10}{0.128} & \cellcolor{gray!10}{0.128} & \cellcolor{gray!10}{0.000}\\
 Weibull & 0.282 & 0.073 & 0.030 & 0.238 & 0.300 & 0.341 & 0.373 & 0.103\\
-\cellcolor{gray!10}{Gompertz} & \cellcolor{gray!10}{0.470} & \cellcolor{gray!10}{0.278} & \cellcolor{gray!10}{0.096} & \cellcolor{gray!10}{0.210} & \cellcolor{gray!10}{0.425} & \cellcolor{gray!10}{0.726} & \cellcolor{gray!10}{0.951} & \cellcolor{gray!10}{0.515}\\
+\cellcolor{gray!10}{Gompertz} & \cellcolor{gray!10}{0.469} & \cellcolor{gray!10}{0.277} & \cellcolor{gray!10}{0.096} & \cellcolor{gray!10}{0.210} & \cellcolor{gray!10}{0.423} & \cellcolor{gray!10}{0.723} & \cellcolor{gray!10}{0.950} & \cellcolor{gray!10}{0.513}\\
 Log-normal & 0.095 & 0.032 & 0.000 & 0.069 & 0.086 & 0.117 & 0.163 & 0.048\\
 \cellcolor{gray!10}{Log-logistic} & \cellcolor{gray!10}{0.085} & \cellcolor{gray!10}{0.040} & \cellcolor{gray!10}{0.015} & \cellcolor{gray!10}{0.051} & \cellcolor{gray!10}{0.072} & \cellcolor{gray!10}{0.115} & \cellcolor{gray!10}{0.167} & \cellcolor{gray!10}{0.063}\\
 Gamma & 0.214 & 0.034 & 0.016 & 0.211 & 0.227 & 0.234 & 0.237 & 0.023\\
@@ -1266,7 +1254,7 @@ Non-mixture cure Log-logistic & 1 & 0.823 & 0.549 & 0.380 & 0.293 & 0.246 & 0.17
 \midrule
 \cellcolor{gray!10}{Exponential} & \cellcolor{gray!10}{0.245} & \cellcolor{gray!10}{0.000} & \cellcolor{gray!10}{0.245} & \cellcolor{gray!10}{0.245} & \cellcolor{gray!10}{0.245} & \cellcolor{gray!10}{0.245} & \cellcolor{gray!10}{0.245} & \cellcolor{gray!10}{0.000}\\
 Weibull & 0.454 & 0.087 & 0.091 & 0.411 & 0.479 & 0.522 & 0.553 & 0.111\\
-\cellcolor{gray!10}{Gompertz} & \cellcolor{gray!10}{0.579} & \cellcolor{gray!10}{0.231} & \cellcolor{gray!10}{0.217} & \cellcolor{gray!10}{0.366} & \cellcolor{gray!10}{0.572} & \cellcolor{gray!10}{0.794} & \cellcolor{gray!10}{0.952} & \cellcolor{gray!10}{0.428}\\
+\cellcolor{gray!10}{Gompertz} & \cellcolor{gray!10}{0.578} & \cellcolor{gray!10}{0.230} & \cellcolor{gray!10}{0.217} & \cellcolor{gray!10}{0.365} & \cellcolor{gray!10}{0.571} & \cellcolor{gray!10}{0.792} & \cellcolor{gray!10}{0.949} & \cellcolor{gray!10}{0.427}\\
 Log-normal & 0.150 & 0.063 & 0.002 & 0.100 & 0.128 & 0.184 & 0.307 & 0.084\\
 \cellcolor{gray!10}{Log-logistic} & \cellcolor{gray!10}{0.116} & \cellcolor{gray!10}{0.078} & \cellcolor{gray!10}{0.031} & \cellcolor{gray!10}{0.057} & \cellcolor{gray!10}{0.083} & \cellcolor{gray!10}{0.149} & \cellcolor{gray!10}{0.321} & \cellcolor{gray!10}{0.092}\\
 Gamma & 0.370 & 0.042 & 0.047 & 0.370 & 0.385 & 0.391 & 0.394 & 0.020\\
@@ -1433,7 +1421,7 @@ information}\label{persuade-object-information}
 ##   .. [list output truncated]
 ##  $ misc            :List of 7
 ##   ..$ form       :Class 'formula'  language survival::Surv(years, status) ~ group
-##   .. .. ..- attr(*, ".Environment")=<environment: 0x000001c06d449bf8> 
+##   .. .. ..- attr(*, ".Environment")=<environment: 0x0000021a2c6fae08> 
 ##   ..$ group_names: chr [1:3] "Good" "Medium" "Poor"
 ##   ..$ ngroups    : int 3
 ##   ..$ lbls       : chr [1:7] "Exponential" "Weibull" "Gompertz" "Log-normal" ...
@@ -1465,33 +1453,34 @@ information}\label{persuade-object-information}
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] PERSUADE_0.0.0.9000
+## [1] testthat_3.2.3      PERSUADE_0.0.0.9000
 ## 
 ## loaded via a namespace (and not attached):
-##   [1] RColorBrewer_1.1-3  rstudioapi_0.17.1   jsonlite_2.0.0      magrittr_2.0.3      TH.data_1.1-3       rainbow_3.8        
-##   [7] SuppDists_1.1-9.9   farver_2.1.2        rmarkdown_2.29      fs_1.6.5            vctrs_0.6.5         memoise_2.0.1      
-##  [13] RCurl_1.98-1.17     base64enc_0.1-3     rstatix_0.7.2       htmltools_0.5.8.1   usethis_3.0.0       polspline_1.1.25   
-##  [19] curl_6.4.0          broom_1.0.9         deSolve_1.40        Formula_1.2-5       sass_0.4.10         hdrcde_3.4         
-##  [25] pracma_2.4.4        KernSmooth_2.23-24  bslib_0.9.0         htmlwidgets_1.6.4   desc_1.4.3          sandwich_3.1-1     
-##  [31] zoo_1.8-14          cachem_1.1.0        commonmark_2.0.0    mime_0.12           lifecycle_1.0.4     pkgconfig_2.0.3    
-##  [37] Matrix_1.7-1        R6_2.6.1            fastmap_1.2.0       shiny_1.10.0        digest_0.6.37       numDeriv_2016.8-1.1
-##  [43] colorspace_2.1-1    ps_1.8.1            pkgload_1.4.0       textshaping_1.0.1   Hmisc_5.2-3         ggpubr_0.6.1       
-##  [49] labeling_0.4.3      flexsurvcure_1.3.3  km.ci_0.5-6         abind_1.4-8         compiler_4.4.2      remotes_2.5.0      
-##  [55] withr_3.0.2         htmlTable_2.4.3     backports_1.5.0     carData_3.0-5       pkgbuild_1.4.5      ggsignif_0.6.4     
-##  [61] MASS_7.3-61         quantreg_6.1        sessioninfo_1.2.2   tools_4.4.2         foreign_0.8-87      mstate_0.3.3       
-##  [67] httpuv_1.6.15       nnet_7.3-19         glue_1.8.0          quadprog_1.5-8      callr_3.7.6         nlme_3.1-166       
-##  [73] promises_1.3.3      gridtext_0.1.5      grid_4.4.2          checkmate_2.3.3     cluster_2.1.6       generics_0.1.4     
-##  [79] gtable_0.3.6        fda_6.3.0           KMsurv_0.1-6        tidyr_1.3.1         survminer_0.5.0     data.table_1.16.4  
-##  [85] xml2_1.4.0          car_3.1-3           markdown_2.0        pillar_1.11.0       stringr_1.5.1       later_1.4.2        
-##  [91] splines_4.4.2       ggtext_0.1.2        dplyr_1.1.4         lattice_0.22-6      survival_3.7-0      SparseM_1.84-2     
-##  [97] ks_1.15.1           tidyselect_1.2.1    fds_1.8             rms_8.0-0           miniUI_0.1.1.1      muhaz_1.2.6.4      
-## [103] knitr_1.50          gridExtra_2.3       litedown_0.7        svglite_2.2.1       xfun_0.52           statmod_1.5.0      
-## [109] devtools_2.4.5      sft_2.4             stringi_1.8.7       yaml_2.3.10         boot_1.3-31         kableExtra_1.4.0   
-## [115] evaluate_1.0.5      codetools_0.2-20    tibble_3.2.1        cli_3.6.3           rpart_4.1.23        systemfonts_1.2.3  
-## [121] xtable_1.8-4        processx_3.8.4      jquerylib_0.1.4     survMisc_0.5.6      dichromat_2.0-0.1   Rcpp_1.0.13-1      
-## [127] MatrixModels_0.5-4  ellipsis_0.3.2      ggplot2_3.5.2       mclust_6.1.1        profvis_0.4.0       urlchecker_1.0.1   
-## [133] bitops_1.0-9        viridisLite_0.4.2   mvtnorm_1.3-3       flexsurv_2.3.2      scales_1.4.0        pcaPP_2.0-5        
-## [139] purrr_1.0.4         rlang_1.1.6         multcomp_1.4-28
+##   [1] splines_4.4.2       later_1.4.2         polspline_1.1.25    bitops_1.0-9        tibble_3.2.1        rpart_4.1.23       
+##   [7] deSolve_1.40        lifecycle_1.0.4     rstatix_0.7.2       rprojroot_2.0.4     processx_3.8.4      lattice_0.22-6     
+##  [13] MASS_7.3-61         backports_1.5.0     magrittr_2.0.3      Hmisc_5.2-3         sass_0.4.10         rmarkdown_2.29     
+##  [19] jquerylib_0.1.4     yaml_2.3.10         remotes_2.5.0       httpuv_1.6.15       flexsurvcure_1.3.3  sessioninfo_1.2.2  
+##  [25] pkgbuild_1.4.5      RColorBrewer_1.1-3  multcomp_1.4-28     abind_1.4-8         pkgload_1.4.0       quadprog_1.5-8     
+##  [31] purrr_1.0.4         RCurl_1.98-1.17     nnet_7.3-19         pracma_2.4.4        TH.data_1.1-3       sandwich_3.1-1     
+##  [37] KMsurv_0.1-6        MatrixModels_0.5-4  svglite_2.2.1       commonmark_2.0.0    codetools_0.2-20    ggtext_0.1.2       
+##  [43] xml2_1.4.0          tidyselect_1.2.1    SuppDists_1.1-9.9   farver_2.1.2        base64enc_0.1-3     jsonlite_2.0.0     
+##  [49] ks_1.15.1           ellipsis_0.3.2      Formula_1.2-5       survival_3.7-0      systemfonts_1.2.3   tools_4.4.2        
+##  [55] Rcpp_1.0.13-1       glue_1.8.0          gridExtra_2.3       xfun_0.52           usethis_3.0.0       dplyr_1.1.4        
+##  [61] withr_3.0.2         numDeriv_2016.8-1.1 muhaz_1.2.6.4       fastmap_1.2.0       boot_1.3-31         mstate_0.3.3       
+##  [67] SparseM_1.84-2      litedown_0.7        callr_3.7.6         digest_0.6.37       R6_2.6.1            mime_0.12          
+##  [73] textshaping_1.0.1   colorspace_2.1-1    dichromat_2.0-0.1   markdown_2.0        tidyr_1.3.1         generics_0.1.4     
+##  [79] data.table_1.16.4   htmlwidgets_1.6.4   pkgconfig_2.0.3     gtable_0.3.6        pcaPP_2.0-5         survMisc_0.5.6     
+##  [85] brio_1.1.5          htmltools_0.5.8.1   carData_3.0-5       profvis_0.4.0       scales_1.4.0        kableExtra_1.4.0   
+##  [91] knitr_1.50          km.ci_0.5-6         rstudioapi_0.17.1   checkmate_2.3.3     nlme_3.1-166        curl_6.4.0         
+##  [97] cachem_1.1.0        zoo_1.8-14          sft_2.4             stringr_1.5.1       KernSmooth_2.23-24  miniUI_0.1.1.1     
+## [103] fda_6.3.0           foreign_0.8-87      desc_1.4.3          pillar_1.11.0       grid_4.4.2          vctrs_0.6.5        
+## [109] urlchecker_1.0.1    promises_1.3.3      ggpubr_0.6.1        car_3.1-3           xtable_1.8-4        cluster_2.1.6      
+## [115] waldo_0.6.1         htmlTable_2.4.3     evaluate_1.0.5      tinytex_0.57        mvtnorm_1.3-3       cli_3.6.3          
+## [121] compiler_4.4.2      rlang_1.1.6         rms_8.0-0           ggsignif_0.6.4      survminer_0.5.0     labeling_0.4.3     
+## [127] mclust_6.1.1        fds_1.8             ps_1.8.1            fs_1.6.5            stringi_1.8.7       rainbow_3.8        
+## [133] viridisLite_0.4.2   hdrcde_3.4          devtools_2.4.5      quantreg_6.1        Matrix_1.7-1        ggplot2_3.5.2      
+## [139] statmod_1.5.0       shiny_1.10.0        flexsurv_2.3.2      gridtext_0.1.5      broom_1.0.9         memoise_2.0.1      
+## [145] bslib_0.9.0
 \end{verbatim}
 
 \end{document}
