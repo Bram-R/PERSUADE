@@ -437,6 +437,8 @@ f_surv_model <- function(years, status, group, strata, ngroups, form, spline_mod
     stop("`ngroups` must be a positive integer.")
   }
 
+  if (ngroups == 1) strata <- FALSE
+
   # Helper function to fit parametric models
   fit_parametric_model <- function(dist, anc = NULL) {
     flexsurv::flexsurvreg(form, dist = dist, anc = anc)
@@ -831,7 +833,7 @@ f_surv_model_pred_tp_gr <- function(ngroups, time_pred, time_unit, surv_model_pr
   })
 
   # truncate spikes (e.g., Gompertz)
-  groups_trunc <- truncate_after_threshold(groups, threshold = 0.95, include_exceed = FALSE)
+  groups_trunc <- truncate_after_threshold(groups, threshold = 0.95, include_exceed = TRUE)
 
   # Convert each group to data.frame for downstream compatibility
   groups_trunc_df <- lapply(groups_trunc, function(g) as.data.frame(g))

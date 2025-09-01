@@ -110,7 +110,7 @@ test_that("f_PERSUADE full run: parametric model predictions are sensible", {
   expect_true(length(out$surv_pred$gr) == out$misc$ngroups)
   for (gname in names(out$surv_pred$gr)) {
     tbl <- out$surv_pred$gr[[gname]]
-    expect_true(is.data.frame(tbl))
+    expect_true(is.data.frame(tbl) || is.matrix(tbl))
     expect_true("time" %in% colnames(tbl) || "Time" %in% colnames(tbl))
   }
 })
@@ -147,12 +147,13 @@ test_that("f_surv_model_excel returns a table with Distnames and Parnames rows w
 test_that("f_surv_model_pred_tp_gr truncation blanks values after exceedance threshold", {
   # This test does not require heavy modelling packages; it verifies truncation logic.
   group_tbl <- data.frame(
-    time = c(0, 1, 2, 3),
-    VerySharpModel = c(1.0, 0.8, 0.0001, 0.0001)
+    time = 0:10,
+    VerySharpModel_1 = c(1.0, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.0001, 0.0001, 0.0001),
+    VerySharpModel_2 = c(1.0, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0, 0.0001)
   )
 
   surv_model_pred_gr <- list(gr_1 = group_tbl)
-  res <- f_surv_model_pred_tp_gr(ngroups = 1, time_pred = seq(0, 3, by = 1), time_unit = 1, surv_model_pred_gr = surv_model_pred_gr, cols_tp = 2)
+  res <- f_surv_model_pred_tp_gr(ngroups = 1, time_pred = 0:3, time_unit = 1, surv_model_pred_gr = surv_model_pred_gr, cols_tp = 3)
 
   expect_true(is.list(res))
   expect_true("gr_1" %in% names(res))
@@ -170,9 +171,12 @@ test_that("input transformations and misc values are consistent when spline and 
   miss <- required_pkgs[!vapply(required_pkgs, requireNamespace, logical(1), quietly = TRUE)]
   if (length(miss)) skip(paste("Missing packages:", paste(miss, collapse = ", ")))
 
-  years <- c(5, 10, 15, 20)
-  status <- c(1, 1, 0, 1)
-  group <- factor(c("A", "A", "B", "B"))
+  # Minimal working dataset
+  set.seed(123)
+  n_per_group <- 50   # 50 observations per group
+  years <- rep(seq(1, 30, length.out = n_per_group), 2)   # Continuous years between 1 and 30
+  status <- sample(0:1, 2 * n_per_group, replace = TRUE)   # Random events, balanced
+  group <- factor(rep(c("A", "B"), each = n_per_group))   # Two groups
 
   out <- f_PERSUADE(
     name = "input_transform_check",

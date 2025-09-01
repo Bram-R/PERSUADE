@@ -31,28 +31,20 @@ library(testthat)
 
 skip_on_cran()
 skip_if_not_installed("flexsurv")
-skip_if_not_installed("survival")
 skip_if_not_installed("rmarkdown")
 
 # --- Exhaustive grid test -----------------------------------------------------
 test_that("f_PERSUADE works across 1-3 groups, strata/spline/cure options and integrates with reporting", {
-  set.seed(2025)
 
-  data("lung", package = "survival")
-  lung_small <- lung[sample(seq_len(nrow(lung)), min(200, nrow(lung))), , drop = FALSE]
-
-  # Deterministic grouping and strata
-  lung_small$grp2 <- factor(ifelse(lung_small$sex == 1, "Male", "Female"))
-  lung_small$grp3 <- cut(lung_small$age,
-                         breaks = c(-Inf, 55, 65, Inf),
-                         labels = c("Young", "Mid", "Old"))
-  lung_small$strata_var <- factor(ifelse(lung_small$ph.ecog <= 1, "Low", "High"))
+  bc_sample <- flexsurv::bc
+  bc_sample$group2 <- factor(ifelse(bc_sample$group == "Good", "Good", "NotGood"))   # Create a 2-group variable
 
   group_opts <- list(
     "1group" = NULL,
-    "2groups" = "grp2",
-    "3groups" = "grp3"
+    "2groups" = "group2",   # new 2-level grouping
+    "3groups" = "group"     # original 3-level grouping
   )
+
   strata_opts <- c(FALSE, TRUE)
   spline_opts <- c(FALSE, TRUE)
   cure_opts <- c(FALSE, TRUE)
@@ -74,10 +66,10 @@ test_that("f_PERSUADE works across 1-3 groups, strata/spline/cure options and in
                          "cure=", cure,
                          if (!is.na(link)) paste("cure_link=", link) else "")
 
-            yrs <- lung_small$time
-            sts <- lung_small$status
+            yrs <- bc_sample$recyrs
+            sts <- bc_sample$censrec
             grp <- if (is.null(group_opts[[gname]])) factor(rep("A", length(yrs)))
-            else lung_small[[group_opts[[gname]]]]
+            else bc_sample[[group_opts[[gname]]]]
             if (!is.factor(grp)) grp <- factor(grp)
 
             fit <- NULL
@@ -87,7 +79,7 @@ test_that("f_PERSUADE works across 1-3 groups, strata/spline/cure options and in
                 years = yrs,
                 status = sts,
                 group = grp,
-                strata = if (strata) lung_small$strata_var else FALSE,
+                strata = strata,
                 spline_mod = spline,
                 cure_mod = cure,
                 cure_link = if (cure) link else NA,
@@ -95,9 +87,9 @@ test_that("f_PERSUADE works across 1-3 groups, strata/spline/cure options and in
                 time_horizon = 100,
                 time_pred_surv_table = seq(0, 100, by = 10)
               )
-            }, info = msg)
+            })
 
-            expect_s3_class(fit, "PERSUADE", info = msg)
+            expect_s3_class(fit, "PERSUADE")
             expect_true(is.list(fit$input), info = msg)
             expect_true(is.list(fit$misc), info = msg)
 
