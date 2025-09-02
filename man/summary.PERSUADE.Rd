@@ -4,14 +4,15 @@
 \alias{summary.PERSUADE}
 \title{Summary Method for PERSUADE Objects}
 \usage{
-\method{summary}{PERSUADE}(x, type = "km", ...)
+\method{summary}{PERSUADE}(object, ..., type = "km")
 }
 \arguments{
-\item{x}{A PERSUADE object from \code{f_PERSUADE()}.}
+\item{object}{A PERSUADE object from \code{f_PERSUADE()}.}
 
-\item{type}{Character. Type of summary to return.}
+\item{...}{Additional arguments. Currently only \code{type} is used.}
 
-\item{...}{Additional arguments passed to methods (currently unused).}
+\item{type}{Character string, one of "km", "surv_probs", "gof",
+"gof_spline", "gof_cure". Controls the type of summary output.}
 }
 \value{
 A data frame or list of data frames depending on \code{type}.

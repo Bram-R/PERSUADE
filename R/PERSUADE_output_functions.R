@@ -115,7 +115,7 @@ f_plot_km_survival_base <- function(PERSUADE) {
         x = c(surv_obs$km$time[idx], rev(surv_obs$km$time[idx])),
         y = c(surv_obs$km$lower[idx], rev(surv_obs$km$upper[idx]))
       )),
-      col = adjustcolor(km_line_color[i], alpha.f = 0.3),
+      col = grDevices::adjustcolor(km_line_color[i], alpha.f = 0.3),
       border = NA
     )
   }
@@ -489,7 +489,7 @@ f_plot_param_surv_model <- function(PERSUADE, model_index = 1) {
         x = c(surv_obs$km$time[idx], rev(surv_obs$km$time[idx])),
         y = c(surv_obs$km$lower[idx], rev(surv_obs$km$upper[idx]))
       )),
-      col = adjustcolor(km_line_color[i], alpha.f = 0.3),
+      col = grDevices::adjustcolor(km_line_color[i], alpha.f = 0.3),
       border = NA
     )
   }
@@ -564,7 +564,7 @@ f_plot_spline_surv_model <- function(PERSUADE, model_index = 1) {
         x = c(surv_obs$km$time[idx], rev(surv_obs$km$time[idx])),
         y = c(surv_obs$km$lower[idx], rev(surv_obs$km$upper[idx]))
       )),
-      col = adjustcolor(km_line_color[i], alpha.f = 0.3),
+      col = grDevices::adjustcolor(km_line_color[i], alpha.f = 0.3),
       border = NA
     )
   }
@@ -648,7 +648,7 @@ f_plot_cure_surv_model <- function(PERSUADE, model_index = 1) {
         x = c(surv_obs$km$time[idx], rev(surv_obs$km$time[idx])),
         y = c(surv_obs$km$lower[idx], rev(surv_obs$km$upper[idx]))
       )),
-      col = adjustcolor(km_line_color[i], alpha.f = 0.3),
+      col = grDevices::adjustcolor(km_line_color[i], alpha.f = 0.3),
       border = NA
     )
   }
@@ -1142,7 +1142,7 @@ f_plot_tp_param_surv_model <- function(PERSUADE, model_index = 1) {
       x = c(surv_obs$tp[[gr_name]]$time, rev(surv_obs$tp[[gr_name]]$time)),
       y = c(surv_obs$tp[[gr_name]]$smooth_lower,
             rev(surv_obs$tp[[gr_name]]$smooth_upper)),
-      col = adjustcolor(km_line_color[i], alpha.f = 0.3),
+      col = grDevices::adjustcolor(km_line_color[i], alpha.f = 0.3),
       border = NA
     )
   }
@@ -1249,7 +1249,7 @@ f_plot_tp_spline_surv_model <- function(PERSUADE, model_index = 1) {
       x = c(surv_obs$tp[[gr_name]]$time, rev(surv_obs$tp[[gr_name]]$time)),
       y = c(surv_obs$tp[[gr_name]]$smooth_lower,
             rev(surv_obs$tp[[gr_name]]$smooth_upper)),
-      col = adjustcolor(km_line_color[i], alpha.f = 0.3),
+      col = grDevices::adjustcolor(km_line_color[i], alpha.f = 0.3),
       border = NA
     )
   }
@@ -1366,7 +1366,7 @@ f_plot_tp_cure_surv_model <- function(PERSUADE, model_index = 1) {
       x = c(surv_obs$tp[[gr_name]]$time, rev(surv_obs$tp[[gr_name]]$time)),
       y = c(surv_obs$tp[[gr_name]]$smooth_lower,
             rev(surv_obs$tp[[gr_name]]$smooth_upper)),
-      col = adjustcolor(km_line_color[i], alpha.f = 0.3),
+      col = grDevices::adjustcolor(km_line_color[i], alpha.f = 0.3),
       border = NA
     )
   }
@@ -1428,7 +1428,7 @@ f_plot_param_surv_extrap <- function(PERSUADE) {
         x = c(surv_obs$km$time[idx], rev(surv_obs$km$time[idx])),
         y = c(surv_obs$km$lower[idx], rev(surv_obs$km$upper[idx]))
       )),
-      col = adjustcolor(km_line_color[i], alpha.f = 0.3),
+      col = grDevices::adjustcolor(km_line_color[i], alpha.f = 0.3),
       border = NA
     )
 
@@ -1497,7 +1497,7 @@ f_plot_spline_surv_extrap <- function(PERSUADE) {
         x = c(surv_obs$km$time[idx], rev(surv_obs$km$time[idx])),
         y = c(surv_obs$km$lower[idx], rev(surv_obs$km$upper[idx]))
       )),
-      col = adjustcolor(km_line_color[i], alpha.f = 0.3),
+      col = grDevices::adjustcolor(km_line_color[i], alpha.f = 0.3),
       border = NA
     )
 
@@ -1567,7 +1567,7 @@ f_plot_cure_surv_extrap <- function(PERSUADE) {
         x = c(surv_obs$km$time[idx], rev(surv_obs$km$time[idx])),
         y = c(surv_obs$km$lower[idx], rev(surv_obs$km$upper[idx]))
       )),
-      col = adjustcolor(km_line_color[i], alpha.f = 0.3),
+      col = grDevices::adjustcolor(km_line_color[i], alpha.f = 0.3),
       border = NA
     )
 
@@ -1632,7 +1632,7 @@ f_plot_tp_param_surv_extrap <- function(PERSUADE) {
         x = c(tp_obs$time, rev(tp_obs$time)),
         y = c(tp_obs$smooth_upper, rev(tp_obs$smooth_lower))
       )),
-      col = adjustcolor(line_color[i], alpha.f = 0.3),
+      col = grDevices::adjustcolor(line_color[i], alpha.f = 0.3),
       border = NA
     )
 
@@ -1691,7 +1691,7 @@ f_plot_tp_spline_surv_extrap <- function(PERSUADE) {
         x = c(tp_obs$time, rev(tp_obs$time)),
         y = c(tp_obs$smooth_upper, rev(tp_obs$smooth_lower))
       )),
-      col = adjustcolor(line_color[i], alpha.f = 0.3),
+      col = grDevices::adjustcolor(line_color[i], alpha.f = 0.3),
       border = NA
     )
 
@@ -1751,7 +1751,7 @@ f_plot_tp_cure_surv_extrap <- function(PERSUADE) {
         x = c(tp_obs$time, rev(tp_obs$time)),
         y = c(tp_obs$smooth_upper, rev(tp_obs$smooth_lower))
       )),
-      col = adjustcolor(line_color[i], alpha.f = 0.3),
+      col = grDevices::adjustcolor(line_color[i], alpha.f = 0.3),
       border = NA
     )
 

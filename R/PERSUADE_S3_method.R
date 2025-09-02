@@ -33,6 +33,8 @@ print.PERSUADE <- function(x, ...) {
 #'
 #' @param object A PERSUADE object from `f_PERSUADE()`.
 #' @param ... Additional arguments. Currently only `type` is used.
+#' @param type Character string, one of "km", "surv_probs", "gof",
+#'   "gof_spline", "gof_cure". Controls the type of summary output.
 #'
 #' @return A data frame or list of data frames depending on `type`.
 #'

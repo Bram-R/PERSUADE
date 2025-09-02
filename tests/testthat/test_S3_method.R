@@ -35,6 +35,8 @@ test_that("print.PERSUADE prints expected lines and returns object invisibly", {
 })
 
 test_that("summary.PERSUADE handles 'km' and 'gof' types and errors on unknown types", {
+  skip_on_cran()
+
   # km: create a small survfit object (survival is a recommended package)
   skip_if_not_installed("survival")
   df <- data.frame(time = c(1,2,3,4,5), status = c(1,0,1,0,1))
@@ -73,7 +75,8 @@ test_that("summary.PERSUADE handles 'km' and 'gof' types and errors on unknown t
   expect_identical(gof, obj$surv_model$param_ic)
 
   # unknown type errors
-  expect_error(summary(obj, type = "nope"), "Unknown summary type", fixed = FALSE)
+  expect_error(summary(obj, type = "nope"), regexp = "'arg' should be one of")
+
 })
 
 test_that("summary.PERSUADE handles 'surv_probs' producing per-group tables", {
@@ -123,6 +126,7 @@ test_that("summary.PERSUADE enforces spline and cure flags for respective gof ty
 })
 
 test_that("plot.PERSUADE dispatches to helper functions and returns list structure for each type", {
+  skip_on_cran()
 
   # Create a minimal PERSUADE object
   obj <- list(

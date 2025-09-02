@@ -122,6 +122,8 @@ test_that("f_PERSUADE input validation errors for clearly bad inputs", {
 })
 
 test_that("f_PERSUADE returns expected structure for single-group minimal run", {
+  skip_on_cran()
+
   # Use a small synthetic dataset; avoid heavy modelling options
   years <- c(5, 10, 15, 20, 25, 30, 35, 40)
   status <- c(1, 1, 0, 1, 0, 1, 0, 1)

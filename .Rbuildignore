@@ -4,8 +4,8 @@
 ^doc$
 ^Meta$
 ^LICENSE\.md$
-^inst/extdata/PERSUADE\.enl$
-^inst/extdata/PERSUADE_figure_process\.png$
-^inst/extdata/PERSUADE_figure_process\.vsdx$
+^PERSUADE\.enl$
+^PERSUADE_figure_process\.png$
+^PERSUADE_figure_process\.vsdx$
 ^tests/testthat/grid_test/
 ^inst/example/
