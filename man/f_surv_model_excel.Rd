@@ -35,7 +35,7 @@ table suitable for export to Excel.
 years <- survival::lung$time
 status <-  survival::lung$status
 group <- factor(survival::lung$sex)
-form <- as.formula(survival::Surv(years, status) ~ group)
+form <- stats::as.formula(survival::Surv(years, status) ~ group)
 surv_model <- f_surv_model(
   years = years,
   status = status,

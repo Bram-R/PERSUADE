@@ -13,7 +13,7 @@ f_hazard(years, status, group, ngroups)
 
 \item{group}{Factor indicating group membership.}
 
-\item{ngroups}{Integer. Number of groups (1–3).}
+\item{ngroups}{Integer. Number of groups (1-3).}
 }
 \value{
 A list with elements:

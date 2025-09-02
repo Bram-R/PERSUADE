@@ -7,7 +7,7 @@
 f_tp(ngroups, cum_haz, time_unit)
 }
 \arguments{
-\item{ngroups}{Integer. Number of groups (1–3).}
+\item{ngroups}{Integer. Number of groups (1-3).}
 
 \item{cum_haz}{Data frame from \code{\link[=f_cum_hazard]{f_cum_hazard()}} with columns
 \code{group}, \code{time}, \code{H_delta}, \code{H_upper_delta}, \code{H_lower_delta}.}

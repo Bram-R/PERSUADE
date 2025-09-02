@@ -13,7 +13,7 @@ f_cum_hazard(years, status, group, ngroups, time_pred, time_unit)
 
 \item{group}{Factor indicating group membership.}
 
-\item{ngroups}{Integer. Number of groups (1–3).}
+\item{ngroups}{Integer. Number of groups (1-3).}
 
 \item{time_pred}{Numeric vector of prediction times.}
 

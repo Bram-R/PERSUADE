@@ -110,8 +110,8 @@ f_plot_km_survival_base <- function(PERSUADE) {
   # Add shaded CI per group
   for (i in seq_len(ngroups)) {
     idx <- surv_obs$km_names == i
-    polygon(
-      na.omit(data.frame(
+    graphics::polygon(
+      stats::na.omit(data.frame(
         x = c(surv_obs$km$time[idx], rev(surv_obs$km$time[idx])),
         y = c(surv_obs$km$lower[idx], rev(surv_obs$km$upper[idx]))
       )),
@@ -121,7 +121,7 @@ f_plot_km_survival_base <- function(PERSUADE) {
   }
 
   # Add legend with model and KM lines
-  legend(
+  graphics::legend(
     "bottomleft",
     legend = group_names,
     col = km_line_color[1:ngroups],
@@ -180,7 +180,7 @@ f_plot_log_cumhaz <- function(PERSUADE) {
   )
 
   if (misc$ngroups > 1) {
-    legend(
+    graphics::legend(
       "topleft",
       legend = misc$group_names,
       col = c("black", "lightgrey", "darkgrey")[unique(km_names)],
@@ -228,12 +228,12 @@ f_plot_schoenfeld_residuals <- function(PERSUADE) {
       ylab = paste("Beta(t) for", misc$group_names[i + 1], "vs", misc$group_names[1])
     )
 
-    abline(h = 0, lty = 3)
+    graphics::abline(h = 0, lty = 3)
 
-    lm_fit <- lm(zph_data[, i] ~ zph_time)
-    abline(lm_fit$coefficients, col = "7", lty = 1, lwd = 2)
+    lm_fit <- stats::lm(zph_data[, i] ~ zph_time)
+    graphics::abline(lm_fit$coefficients, col = "7", lty = 1, lwd = 2)
 
-    legend("bottomleft", legend = c(
+    graphics::legend("bottomleft", legend = c(
       "smoothed line (natural spline with df = 4)",
       "regression line"
     ),
@@ -295,7 +295,7 @@ f_plot_smoothed_hazard <- function(PERSUADE) {
     } else {
       # Add lines for remaining groups
       with(haz_data, {
-        lines(
+        graphics::lines(
           x = est.grid,
           y = haz.est,
           col = haz_line_color[(i - 1) %% length(haz_line_color) + 1],
@@ -307,7 +307,7 @@ f_plot_smoothed_hazard <- function(PERSUADE) {
   }
 
   # Add legend
-  legend(
+  graphics::legend(
     "topleft",
     legend = misc$group_names,
     col = haz_line_color[seq_len(ngroups)],
@@ -376,7 +376,7 @@ f_plot_hazard_with_models <- function(PERSUADE) {
 
     # ── Parametric Model Overlays ─────────────────────────────────────────────
     for (j in seq_along(model_types$base)) {
-      lines(
+      graphics::lines(
         surv_pred$model[[model_types$base[j]]]$hazard[,1],
         surv_pred$model[[model_types$base[j]]]$hazard[,i + 1],
         col = line_color[j],
@@ -384,7 +384,7 @@ f_plot_hazard_with_models <- function(PERSUADE) {
         lwd = 1
       )
     }
-    legend("topleft", legend = misc$lbls, col = line_color[1:7], lty = line_type[i], cex = 0.8, bty = "n")
+    graphics::legend("topleft", legend = misc$lbls, col = line_color[1:7], lty = line_type[i], cex = 0.8, bty = "n")
 
     # ── Spline Models ─────────────────────────────────────────────────────────
     if (isTRUE(input$spline_mod)) {
@@ -401,7 +401,7 @@ f_plot_hazard_with_models <- function(PERSUADE) {
         ylim = c(0, surv_obs$haz$max$smooth)
       )
       for (j in seq_along(model_types$spline)) {
-        lines(
+        graphics::lines(
           surv_pred$model$spline[[model_types$spline[j]]]$hazard[,1],
           surv_pred$model$spline[[model_types$spline[j]]]$hazard[,i + 1],
           col = line_color[j],
@@ -409,7 +409,7 @@ f_plot_hazard_with_models <- function(PERSUADE) {
           lwd = 1
         )
       }
-      legend("topleft", legend = misc$lbls_spline, col = line_color[1:9], lty = line_type[i], cex = 0.8, bty = "n")
+      graphics::legend("topleft", legend = misc$lbls_spline, col = line_color[1:9], lty = line_type[i], cex = 0.8, bty = "n")
     }
 
     # ── Cure Models ───────────────────────────────────────────────────────────
@@ -428,7 +428,7 @@ f_plot_hazard_with_models <- function(PERSUADE) {
       )
       for (j in seq_along(model_types$cure)) {
         col_idx <- if (length(cure_col_index) >= i) cure_col_index[i] else 2
-        lines(
+        graphics::lines(
           surv_pred$model$cure[[model_types$cure[j]]]$hazard[,1],
           surv_pred$model$cure[[model_types$cure[j]]]$hazard[,i + 1],
           col = line_color[j],
@@ -436,7 +436,7 @@ f_plot_hazard_with_models <- function(PERSUADE) {
           lwd = 1
         )
       }
-      legend("topleft", legend = misc$lbls_cure, col = line_color[1:6], lty = line_type[i], cex = 0.8, bty = "n")
+      graphics::legend("topleft", legend = misc$lbls_cure, col = line_color[1:6], lty = line_type[i], cex = 0.8, bty = "n")
     }
   }
 }
@@ -484,8 +484,8 @@ f_plot_param_surv_model <- function(PERSUADE, model_index = 1) {
   # Add shaded CI per group
   for (i in seq_len(ngroups)) {
     idx <- surv_obs$km_names == i
-    polygon(
-      na.omit(data.frame(
+    graphics::polygon(
+      stats::na.omit(data.frame(
         x = c(surv_obs$km$time[idx], rev(surv_obs$km$time[idx])),
         y = c(surv_obs$km$lower[idx], rev(surv_obs$km$upper[idx]))
       )),
@@ -496,7 +496,7 @@ f_plot_param_surv_model <- function(PERSUADE, model_index = 1) {
 
   # Overlay model predictions
   for (i in seq_len(ngroups)) {
-    lines(
+    graphics::lines(
       x = input$time_pred,
       y = surv_pred$model[[model_key]]$surv[, i + 1],
       col = as.character(col_index),
@@ -506,7 +506,7 @@ f_plot_param_surv_model <- function(PERSUADE, model_index = 1) {
   }
 
   # Add legend with model and KM lines
-  legend(
+  graphics::legend(
     "bottomleft",
     legend = c(group_names, rep("", ngroups)),
     col = c(rep(as.character(col_index), ngroups), km_line_color[1:ngroups]),
@@ -559,8 +559,8 @@ f_plot_spline_surv_model <- function(PERSUADE, model_index = 1) {
   # Add shaded CI per group
   for (i in seq_len(ngroups)) {
     idx <- surv_obs$km_names == i
-    polygon(
-      na.omit(data.frame(
+    graphics::polygon(
+      stats::na.omit(data.frame(
         x = c(surv_obs$km$time[idx], rev(surv_obs$km$time[idx])),
         y = c(surv_obs$km$lower[idx], rev(surv_obs$km$upper[idx]))
       )),
@@ -571,7 +571,7 @@ f_plot_spline_surv_model <- function(PERSUADE, model_index = 1) {
 
   # Overlay model predictions for each group
   for (i in seq_len(ngroups)) {
-    lines(
+    graphics::lines(
       x = input$time_pred,
       y = surv_pred$model$spline[[model_key]]$surv[, i + 1],
       col = as.character(col_index),
@@ -585,13 +585,13 @@ f_plot_spline_surv_model <- function(PERSUADE, model_index = 1) {
   if (length(knots) >= 2) {
     # Middle knots (internal): solid dashed line
     internal_knots <- knots[2:(length(knots) - 1)]
-    abline(v = internal_knots, lty = 2, lwd = 1.5)
+    graphics::abline(v = internal_knots, lty = 2, lwd = 1.5)
     # Boundary knots (first & last): lighter dashed line
-    abline(v = c(knots[1], knots[length(knots)]), lty = 3, lwd = 1)
+    graphics::abline(v = c(knots[1], knots[length(knots)]), lty = 3, lwd = 1)
   }
 
   # Add legend
-  legend(
+  graphics::legend(
     "bottomleft",
     legend = c(group_names, rep("", ngroups)),
     col = c(rep(as.character(col_index), ngroups), km_line_color[1:ngroups]),
@@ -643,8 +643,8 @@ f_plot_cure_surv_model <- function(PERSUADE, model_index = 1) {
   # Add shaded CI per group
   for (i in seq_len(ngroups)) {
     idx <- surv_obs$km_names == i
-    polygon(
-      na.omit(data.frame(
+    graphics::polygon(
+      stats::na.omit(data.frame(
         x = c(surv_obs$km$time[idx], rev(surv_obs$km$time[idx])),
         y = c(surv_obs$km$lower[idx], rev(surv_obs$km$upper[idx]))
       )),
@@ -655,7 +655,7 @@ f_plot_cure_surv_model <- function(PERSUADE, model_index = 1) {
 
   # Overlay cure model predictions
   for (i in seq_len(ngroups)) {
-    lines(
+    graphics::lines(
       x = input$time_pred,
       y = surv_pred$model$cure[[model_key]]$surv[, i + 1],
       col = as.character(col_index),
@@ -665,7 +665,7 @@ f_plot_cure_surv_model <- function(PERSUADE, model_index = 1) {
   }
 
   # Add legend
-  legend(
+  graphics::legend(
     "bottomleft",
     legend = c(group_names, rep("", ngroups)),
     col = c(rep(as.character(col_index), ngroups), km_line_color[1:ngroups]),
@@ -725,8 +725,8 @@ f_plot_diag_param_surv_model <- function(PERSUADE, model_index = 1) {
       pred = function(time, haz) cbind(time, log(haz))
     ),
     lnorm = list(
-      obs  = function(time, surv) cbind(log(time), -qnorm(surv)),
-      pred = function(time, surv) cbind(log(time), -qnorm(surv))
+      obs  = function(time, surv) cbind(log(time), -stats::qnorm(surv)),
+      pred = function(time, surv) cbind(log(time), -stats::qnorm(surv))
     ),
     llog  = list(
       obs  = function(time, surv) cbind(log(time), -log(surv / (1 - surv))),
@@ -804,11 +804,11 @@ f_plot_diag_param_surv_model <- function(PERSUADE, model_index = 1) {
         surv = surv_pred$model[[model_key]]$surv[, i + 1]
       )
     }
-    lines(pred_data, col = as.character(col_index), lty = line_type[i], lwd = 2)
+    graphics::lines(pred_data, col = as.character(col_index), lty = line_type[i], lwd = 2)
   }
 
   # Legend
-  legend(
+  graphics::legend(
     "topleft",
     legend = c(group_names, rep("", ngroups)),
     col = c(rep(as.character(col_index), ngroups), km_line_color[1:ngroups]),
@@ -881,8 +881,8 @@ f_plot_diag_spline_surv_model <- function(PERSUADE, model_index = 1) {
       ylab = "-LN(survival odds)"
     ),
     normal = list(
-      obs  = function(time, surv) cbind(log(time), -qnorm(surv)),
-      pred = function(time, surv) cbind(log(time), -qnorm(surv)),
+      obs  = function(time, surv) cbind(log(time), -stats::qnorm(surv)),
+      pred = function(time, surv) cbind(log(time), -stats::qnorm(surv)),
       xlab = "LN(time)",
       ylab = "- standard normal quartiles"
     )
@@ -917,7 +917,7 @@ f_plot_diag_spline_surv_model <- function(PERSUADE, model_index = 1) {
       time = input$time_pred,
       surv = surv_pred$model$spline[[model_key]]$surv[, i + 1]
     )
-    lines(pred_data, col = as.character(col_index), lty = line_type[i], lwd = 2)
+    graphics::lines(pred_data, col = as.character(col_index), lty = line_type[i], lwd = 2)
   }
 
   # Draw knots
@@ -925,16 +925,16 @@ f_plot_diag_spline_surv_model <- function(PERSUADE, model_index = 1) {
   if (!is.null(knots)) {
     if (length(knots) >= 2) {
       # boundary knots
-      abline(v = knots[c(1, length(knots))], lty = 3, lwd = 1)
+      graphics::abline(v = knots[c(1, length(knots))], lty = 3, lwd = 1)
       # internal knots
       if (length(knots) > 2) {
-        abline(v = knots[2:(length(knots) - 1)], lty = 2, lwd = 1.5)
+        graphics::abline(v = knots[2:(length(knots) - 1)], lty = 2, lwd = 1.5)
       }
     }
   }
 
   # Legend
-  legend(
+  graphics::legend(
     "topleft",
     legend = c(group_names, rep("", ngroups)),
     col = c(rep(as.character(col_index), ngroups), km_line_color[1:ngroups]),
@@ -1000,8 +1000,8 @@ f_plot_diag_cure_surv_model <- function(PERSUADE, model_index = 1) {
       ylab = "LN(cumulative hazard)"
     ),
     lognormal = list(
-      obs  = function(time, surv) cbind(log(time), -qnorm(surv)),
-      pred = function(time, surv) cbind(log(time), -qnorm(surv)),
+      obs  = function(time, surv) cbind(log(time), -stats::qnorm(surv)),
+      pred = function(time, surv) cbind(log(time), -stats::qnorm(surv)),
       xlab = "LN(time)",
       ylab = "- standard normal quartiles"
     ),
@@ -1042,11 +1042,11 @@ f_plot_diag_cure_surv_model <- function(PERSUADE, model_index = 1) {
       time = input$time_pred,
       surv = surv_pred$model$cure[[model_key]]$surv[, i + 1]
     )
-    lines(pred_data, col = as.character(col_index), lty = line_type[i], lwd = 2)
+    graphics::lines(pred_data, col = as.character(col_index), lty = line_type[i], lwd = 2)
   }
 
   # Legend
-  legend(
+  graphics::legend(
     "topleft",
     legend = c(group_names, rep("", ngroups)),
     col = c(rep(as.character(col_index), ngroups), km_line_color[1:ngroups]),
@@ -1094,7 +1094,7 @@ f_plot_tp_param_surv_model <- function(PERSUADE, model_index = 1) {
   km_line_color <- c("black", "lightgrey", "darkgrey")
 
   # Map model_key to column index in tp_gr predictions
-  model_map <- setNames(as.list(2:8), names(PERSUADE$surv_model$param_models))
+  model_map <- stats::setNames(as.list(2:8), names(PERSUADE$surv_model$param_models))
 
   if (!model_key %in% names(model_map)) {
     stop("Model key not recognized in model_map")
@@ -1111,7 +1111,7 @@ f_plot_tp_param_surv_model <- function(PERSUADE, model_index = 1) {
     ylim = c(0, ceiling(surv_obs$tp$max * 10) / 10),
     xlim = c(0, ceiling(surv_obs$km$maxtime * 10) / 10)
   )
-  lines(
+  graphics::lines(
     x = input$time_pred[-1],
     y = unlist(surv_pred$tp_gr$gr_1[, pred_col_index, drop = TRUE]),
     col = as.character(col_index), lty = line_type[1], lwd = 2
@@ -1121,13 +1121,13 @@ f_plot_tp_param_surv_model <- function(PERSUADE, model_index = 1) {
   if (ngroups > 1) {
     for (i in 2:ngroups) {
       gr_name <- paste0("gr_", i)
-      lines(
+      graphics::lines(
         x = surv_obs$tp[[gr_name]]$time,
         y = surv_obs$tp[[gr_name]]$smooth,
         col = km_line_color[i], type = "b", lwd = 1,
         cex = 0.6, pch = point_shape[i]
       )
-      lines(
+      graphics::lines(
         x = input$time_pred[-1],
         y = unlist(surv_pred$tp_gr[[gr_name]][, pred_col_index, drop = TRUE]),
         col = as.character(col_index), lty = line_type[i], lwd = 2
@@ -1138,7 +1138,7 @@ f_plot_tp_param_surv_model <- function(PERSUADE, model_index = 1) {
   # Shaded CIs
   for (i in seq_len(ngroups)) {
     gr_name <- paste0("gr_", i)
-    polygon(
+    graphics::polygon(
       x = c(surv_obs$tp[[gr_name]]$time, rev(surv_obs$tp[[gr_name]]$time)),
       y = c(surv_obs$tp[[gr_name]]$smooth_lower,
             rev(surv_obs$tp[[gr_name]]$smooth_upper)),
@@ -1148,7 +1148,7 @@ f_plot_tp_param_surv_model <- function(PERSUADE, model_index = 1) {
   }
 
   # Legend
-  legend(
+  graphics::legend(
     "topleft",
     legend = c(group_names, rep("", ngroups)),
     col = c(rep(as.character(col_index), ngroups), km_line_color[1:ngroups]),
@@ -1197,7 +1197,7 @@ f_plot_tp_spline_surv_model <- function(PERSUADE, model_index = 1) {
   km_line_color <- c("black", "lightgrey", "darkgrey")
 
   # Map model_key to column index in tp_gr predictions
-  model_map <- setNames(as.list(9:17), names(PERSUADE$surv_model$spline_models))
+  model_map <- stats::setNames(as.list(9:17), names(PERSUADE$surv_model$spline_models))
 
   if (!model_key %in% names(model_map)) {
     stop("Model key not recognized in model_map")
@@ -1216,7 +1216,7 @@ f_plot_tp_spline_surv_model <- function(PERSUADE, model_index = 1) {
     ylim = c(0, ceiling(surv_obs$tp$max * 10) / 10),
     xlim = c(0, ceiling(surv_obs$km$maxtime * 10) / 10)
   )
-  lines(
+  graphics::lines(
     x = input$time_pred[-1],
     y = unlist(surv_pred$tp_gr$gr_1[, pred_col_index, drop = TRUE]),
     col = as.character(col_index),
@@ -1227,13 +1227,13 @@ f_plot_tp_spline_surv_model <- function(PERSUADE, model_index = 1) {
   if (ngroups > 1) {
     for (i in 2:ngroups) {
       gr_name <- paste0("gr_", i)
-      lines(
+      graphics::lines(
         x = surv_obs$tp[[gr_name]]$time,
         y = surv_obs$tp[[gr_name]]$smooth,
         col = km_line_color[i], type = "b", lwd = 1,
         cex = 0.6, pch = point_shape[i]
       )
-      lines(
+      graphics::lines(
         x = input$time_pred[-1],
         y = unlist(surv_pred$tp_gr[[gr_name]][, pred_col_index, drop = TRUE]),
         col = as.character(col_index),
@@ -1245,7 +1245,7 @@ f_plot_tp_spline_surv_model <- function(PERSUADE, model_index = 1) {
   # Shaded CIs
   for (i in seq_len(ngroups)) {
     gr_name <- paste0("gr_", i)
-    polygon(
+    graphics::polygon(
       x = c(surv_obs$tp[[gr_name]]$time, rev(surv_obs$tp[[gr_name]]$time)),
       y = c(surv_obs$tp[[gr_name]]$smooth_lower,
             rev(surv_obs$tp[[gr_name]]$smooth_upper)),
@@ -1260,12 +1260,12 @@ f_plot_tp_spline_surv_model <- function(PERSUADE, model_index = 1) {
     # Internal knots (middle ones) get lty = 2, thicker
     internal <- knots[2:(length(knots) - 1)]
     boundary <- knots[c(1, length(knots))]
-    abline(v = internal, lty = 2, lwd = 1.5)
-    abline(v = boundary, lty = 3, lwd = 1)
+    graphics::abline(v = internal, lty = 2, lwd = 1.5)
+    graphics::abline(v = boundary, lty = 3, lwd = 1)
   }
 
   # Legend
-  legend(
+  graphics::legend(
     "topleft",
     legend = c(group_names, rep("", ngroups)),
     col = c(rep(as.character(col_index), ngroups), km_line_color[1:ngroups]),
@@ -1313,7 +1313,7 @@ f_plot_tp_cure_surv_model <- function(PERSUADE, model_index = 1) {
   km_line_color <- c("black", "lightgrey", "darkgrey")
 
   # Map model_key to column index in tp_gr predictions
-  model_map <- setNames(as.list(18:23), names(PERSUADE$surv_model$cure_models))
+  model_map <- stats::setNames(as.list(18:23), names(PERSUADE$surv_model$cure_models))
 
   if (!model_key %in% names(model_map)) {
     stop("Model key not recognized in model_map")
@@ -1333,7 +1333,7 @@ f_plot_tp_cure_surv_model <- function(PERSUADE, model_index = 1) {
     ylim = c(0, ceiling(surv_obs$tp$max * 10) / 10),
     xlim = c(0, ceiling(surv_obs$km$maxtime * 10) / 10)
   )
-  lines(
+  graphics::lines(
     x = input$time_pred[-1],
     y = unlist(surv_pred$tp_gr$gr_1[, pred_col_index, drop = TRUE]),
     col = as.character(col_index),
@@ -1344,13 +1344,13 @@ f_plot_tp_cure_surv_model <- function(PERSUADE, model_index = 1) {
   if (ngroups > 1) {
     for (i in 2:ngroups) {
       gr_name <- paste0("gr_", i)
-      lines(
+      graphics::lines(
         x = surv_obs$tp[[gr_name]]$time,
         y = surv_obs$tp[[gr_name]]$smooth,
         col = km_line_color[i], type = "b", lwd = 1,
         cex = 0.6, pch = point_shape[i]
       )
-      lines(
+      graphics::lines(
         x = input$time_pred[-1],
         y = unlist(surv_pred$tp_gr[[gr_name]][, pred_col_index, drop = TRUE]),
         col = as.character(col_index),
@@ -1362,7 +1362,7 @@ f_plot_tp_cure_surv_model <- function(PERSUADE, model_index = 1) {
   # Shaded CIs
   for (i in seq_len(ngroups)) {
     gr_name <- paste0("gr_", i)
-    polygon(
+    graphics::polygon(
       x = c(surv_obs$tp[[gr_name]]$time, rev(surv_obs$tp[[gr_name]]$time)),
       y = c(surv_obs$tp[[gr_name]]$smooth_lower,
             rev(surv_obs$tp[[gr_name]]$smooth_upper)),
@@ -1372,7 +1372,7 @@ f_plot_tp_cure_surv_model <- function(PERSUADE, model_index = 1) {
   }
 
   # Legend
-  legend(
+  graphics::legend(
     "topleft",
     legend = c(group_names, rep("", ngroups)),
     col = c(rep(as.character(col_index), ngroups), km_line_color[1:ngroups]),
@@ -1423,8 +1423,8 @@ f_plot_param_surv_extrap <- function(PERSUADE) {
 
     # Add shaded CI per group
     idx <- surv_obs$km_names == i
-    polygon(
-      na.omit(data.frame(
+    graphics::polygon(
+      stats::na.omit(data.frame(
         x = c(surv_obs$km$time[idx], rev(surv_obs$km$time[idx])),
         y = c(surv_obs$km$lower[idx], rev(surv_obs$km$upper[idx]))
       )),
@@ -1434,7 +1434,7 @@ f_plot_param_surv_extrap <- function(PERSUADE) {
 
     # Add parametric curves
     for (j in seq_along(model_names)) {
-      lines(
+      graphics::lines(
         x = input$time_pred,
         y = surv_pred$model[[model_names[j]]]$surv[, i + 1],
         col = j,
@@ -1444,8 +1444,8 @@ f_plot_param_surv_extrap <- function(PERSUADE) {
     }
 
     # Add legend
-    legend("topright", legend = misc$lbls, col = 1:length(model_names),
-           lty = line_type[i], cex = 0.8)
+    graphics::legend("topright", legend = misc$lbls, col = 1:length(model_names),
+                     lty = line_type[i], cex = 0.8)
   }
 }
 
@@ -1492,8 +1492,8 @@ f_plot_spline_surv_extrap <- function(PERSUADE) {
 
     # Add shaded CI per group
     idx <- surv_obs$km_names == i
-    polygon(
-      na.omit(data.frame(
+    graphics::polygon(
+      stats::na.omit(data.frame(
         x = c(surv_obs$km$time[idx], rev(surv_obs$km$time[idx])),
         y = c(surv_obs$km$lower[idx], rev(surv_obs$km$upper[idx]))
       )),
@@ -1503,7 +1503,7 @@ f_plot_spline_surv_extrap <- function(PERSUADE) {
 
     # Add parametric curves
     for (j in seq_along(model_names)) {
-      lines(
+      graphics::lines(
         x = input$time_pred,
         y = surv_pred$model$spline[[model_names[j]]]$surv[, i + 1],
         col = j,
@@ -1513,8 +1513,8 @@ f_plot_spline_surv_extrap <- function(PERSUADE) {
     }
 
     # Add legend
-    legend("topright", legend = misc$lbls_spline, col = 1:length(model_names),
-           lty = line_type[i], cex = 0.8)
+    graphics::legend("topright", legend = misc$lbls_spline, col = 1:length(model_names),
+                     lty = line_type[i], cex = 0.8)
   }
 }
 
@@ -1562,8 +1562,8 @@ f_plot_cure_surv_extrap <- function(PERSUADE) {
 
     # Add shaded CI per group
     idx <- surv_obs$km_names == i
-    polygon(
-      na.omit(data.frame(
+    graphics::polygon(
+      stats::na.omit(data.frame(
         x = c(surv_obs$km$time[idx], rev(surv_obs$km$time[idx])),
         y = c(surv_obs$km$lower[idx], rev(surv_obs$km$upper[idx]))
       )),
@@ -1573,7 +1573,7 @@ f_plot_cure_surv_extrap <- function(PERSUADE) {
 
     # Add parametric curves
     for (j in seq_along(model_names)) {
-      lines(
+      graphics::lines(
         x = input$time_pred,
         y = surv_pred$model$cure[[model_names[j]]]$surv[, i + 1],
         col = j,
@@ -1583,8 +1583,8 @@ f_plot_cure_surv_extrap <- function(PERSUADE) {
     }
 
     # Add legend
-    legend("topright", legend = misc$lbls_cure, col = 1:length(model_names),
-           lty = line_type[i], cex = 0.8)
+    graphics::legend("topright", legend = misc$lbls_cure, col = 1:length(model_names),
+                     lty = line_type[i], cex = 0.8)
   }
 }
 
@@ -1627,8 +1627,8 @@ f_plot_tp_param_surv_extrap <- function(PERSUADE) {
          lty = line_type[i], col = line_color[i], type = "l", lwd = 2)
 
     # Add shaded CI per group
-    polygon(
-      na.omit(data.frame(
+    graphics::polygon(
+      stats::na.omit(data.frame(
         x = c(tp_obs$time, rev(tp_obs$time)),
         y = c(tp_obs$smooth_upper, rev(tp_obs$smooth_lower))
       )),
@@ -1637,10 +1637,10 @@ f_plot_tp_param_surv_extrap <- function(PERSUADE) {
     )
 
     for (j in 2:8) {
-      lines(input$time_pred[-1], unlist(tp_pred[, j, drop = TRUE]), col = j - 1, lty = line_type[i], lwd = 1)
+      graphics::lines(input$time_pred[-1], unlist(tp_pred[, j, drop = TRUE]), col = j - 1, lty = line_type[i], lwd = 1)
     }
 
-    legend("topleft", legend = misc$lbls, col = 1:7, lty = line_type[i], cex = 0.8)
+    graphics::legend("topleft", legend = misc$lbls, col = 1:7, lty = line_type[i], cex = 0.8)
   }
 }
 
@@ -1686,8 +1686,8 @@ f_plot_tp_spline_surv_extrap <- function(PERSUADE) {
          lty = line_type[i], col = line_color[i], type = "l", lwd = 2)
 
     # Add shaded CI per group
-    polygon(
-      na.omit(data.frame(
+    graphics::polygon(
+      stats::na.omit(data.frame(
         x = c(tp_obs$time, rev(tp_obs$time)),
         y = c(tp_obs$smooth_upper, rev(tp_obs$smooth_lower))
       )),
@@ -1696,10 +1696,10 @@ f_plot_tp_spline_surv_extrap <- function(PERSUADE) {
     )
 
     for (j in 9:17) {
-      lines(input$time_pred[-1], unlist(tp_pred[, j, drop = TRUE]), col = j - 8, lty = line_type[i], lwd = 1)
+      graphics::lines(input$time_pred[-1], unlist(tp_pred[, j, drop = TRUE]), col = j - 8, lty = line_type[i], lwd = 1)
     }
 
-    legend("topleft", legend = misc$lbls_spline, col = 1:9, lty = line_type[i], cex = 0.8)
+    graphics::legend("topleft", legend = misc$lbls_spline, col = 1:9, lty = line_type[i], cex = 0.8)
   }
 }
 
@@ -1746,8 +1746,8 @@ f_plot_tp_cure_surv_extrap <- function(PERSUADE) {
          lty = line_type[i], col = line_color[i], type = "l", lwd = 2)
 
     # Add shaded CI per group
-    polygon(
-      na.omit(data.frame(
+    graphics::polygon(
+      stats::na.omit(data.frame(
         x = c(tp_obs$time, rev(tp_obs$time)),
         y = c(tp_obs$smooth_upper, rev(tp_obs$smooth_lower))
       )),
@@ -1757,10 +1757,10 @@ f_plot_tp_cure_surv_extrap <- function(PERSUADE) {
 
     for (j in 18:23) {
       j_offset <- j + offset
-      lines(input$time_pred[-1], unlist(tp_pred[, j_offset, drop = TRUE]), col = j - 17, lty = line_type[i], lwd = 1)
+      graphics::lines(input$time_pred[-1], unlist(tp_pred[, j_offset, drop = TRUE]), col = j - 17, lty = line_type[i], lwd = 1)
     }
 
-    legend("topleft", legend = misc$lbls_cure, col = 1:6, lty = line_type[i], cex = 0.8)
+    graphics::legend("topleft", legend = misc$lbls_cure, col = 1:6, lty = line_type[i], cex = 0.8)
   }
 }
 
@@ -1800,12 +1800,12 @@ f_plot_hazard_parametric_extrap <- function(PERSUADE) {
          xlim = c(0, PERSUADE$input$time_horizon),
          ylim = c(0, PERSUADE$surv_obs$haz$max$smooth))
     for (j in seq_along(models)) {
-      lines(cbind(PERSUADE$surv_pred$model[[models[j]]]$hazard[, 1],
+      graphics::lines(cbind(PERSUADE$surv_pred$model[[models[j]]]$hazard[, 1],
                   PERSUADE$surv_pred$model[[models[j]]]$hazard[, i + 1]),
             col = cols[j], lty = line_type[i], lwd = 1)
     }
-    legend("topleft", legend = PERSUADE$misc$lbls,
-           col = cols, lty = line_type[i], cex = 0.8)
+    graphics::legend("topleft", legend = PERSUADE$misc$lbls,
+                     col = cols, lty = line_type[i], cex = 0.8)
   }
 }
 
@@ -1848,12 +1848,12 @@ f_plot_hazard_spline_extrap <- function(PERSUADE) {
          xlim = c(0, PERSUADE$input$time_horizon),
          ylim = c(0, PERSUADE$surv_obs$haz$max$smooth))
     for (j in seq_along(models)) {
-      lines(cbind(PERSUADE$surv_pred$model$spline[[models[j]]]$hazard[, 1],
+      graphics::lines(cbind(PERSUADE$surv_pred$model$spline[[models[j]]]$hazard[, 1],
                   PERSUADE$surv_pred$model$spline[[models[j]]]$hazard[, i + 1]),
             col = cols[j], lty = line_type[i], lwd = 1)
     }
-    legend("topleft", legend = PERSUADE$misc$lbls_spline,
-           col = cols, lty = line_type[i], cex = 0.8)
+    graphics::legend("topleft", legend = PERSUADE$misc$lbls_spline,
+                     col = cols, lty = line_type[i], cex = 0.8)
   }
 }
 
@@ -1898,13 +1898,13 @@ f_plot_hazard_cure_extrap <- function(PERSUADE) {
          ylim = c(0, PERSUADE$surv_obs$haz$max$smooth))
 
     for (j in seq_along(models)) {
-      lines(cbind(PERSUADE$surv_pred$model$cure[[models[j]]]$hazard[, 1],
+      graphics::lines(cbind(PERSUADE$surv_pred$model$cure[[models[j]]]$hazard[, 1],
                   PERSUADE$surv_pred$model$cure[[models[j]]]$hazard[, i + 1]),
             col = cols[j], lty = line_type[i], lwd = 1)
     }
 
-    legend("topleft", legend = PERSUADE$misc$lbls_cure,
-           col = cols, lty = line_type[i], cex = 0.8)
+    graphics::legend("topleft", legend = PERSUADE$misc$lbls_cure,
+                     col = cols, lty = line_type[i], cex = 0.8)
   }
 }
 
@@ -1929,7 +1929,7 @@ f_summary <- function(df) {
     q <- stats::quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1), na.rm = TRUE, names = FALSE)
     round(c(
       Mean   = mean(x, na.rm = TRUE),
-      Std.Dev= sd(x, na.rm = TRUE),
+      Std.Dev= stats::sd(x, na.rm = TRUE),
       Min    = q[1],
       Q1     = q[2],
       Median = q[3],

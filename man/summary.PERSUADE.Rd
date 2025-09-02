@@ -4,10 +4,10 @@
 \alias{summary.PERSUADE}
 \title{Summary Method for PERSUADE Objects}
 \usage{
-\method{summary}{PERSUADE}(object, type = "km", ...)
+\method{summary}{PERSUADE}(x, type = "km", ...)
 }
 \arguments{
-\item{object}{A PERSUADE object from \code{f_PERSUADE()}.}
+\item{x}{A PERSUADE object from \code{f_PERSUADE()}.}
 
 \item{type}{Character. Type of summary to return.}
 
@@ -19,7 +19,7 @@ A data frame or list of data frames depending on \code{type}.
 \description{
 The \code{type} argument controls which summary is produced:
 \itemize{
-\item \code{"km"}: Kaplan–Meier estimates (default).
+\item \code{"km"}: Kaplan-Meier estimates (default).
 \item \code{"surv_probs"}: Survival probabilities at specified prediction times for each group.
 \item \code{"gof"}: Goodness-of-fit statistics for standard parametric models.
 \item \code{"gof_spline"}: Goodness-of-fit statistics for spline models.

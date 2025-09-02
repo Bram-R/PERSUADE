@@ -80,7 +80,7 @@ f_PERSUADE <- function(name = "no_name", years, status, group,
   time_pred <- seq(0, time_horizon, by = time_unit)
 
   # Define survival formula
-  form <- if (ngroups == 1) as.formula(survival::Surv(years, status) ~ 1) else as.formula(survival::Surv(years, status) ~ group)
+  form <- if (ngroups == 1) stats::as.formula(survival::Surv(years, status) ~ 1) else stats::as.formula(survival::Surv(years, status) ~ group)
 
   # Step 1: Observed data
   km <- rms::npsurv(form)
@@ -299,8 +299,8 @@ f_cum_hazard <- function(years, status, group, ngroups, time_pred, time_unit) {
   cumulative_data$group <- group_labels
 
   # Calculate confidence intervals and deltas
-  cumulative_data$H_upper <- pmax(0, cumulative_data$H + sqrt(cumulative_data$var) * qnorm(0.975))
-  cumulative_data$H_lower <- pmax(0, cumulative_data$H - sqrt(cumulative_data$var) * qnorm(0.975))
+  cumulative_data$H_upper <- pmax(0, cumulative_data$H + sqrt(cumulative_data$var) * stats::qnorm(0.975))
+  cumulative_data$H_lower <- pmax(0, cumulative_data$H - sqrt(cumulative_data$var) * stats::qnorm(0.975))
 
   calculate_deltas <- function(column, group_col) {
     unlist(lapply(split(column, group_col), function(x) c(NA, diff(x))), use.names = FALSE)
@@ -361,9 +361,9 @@ f_tp <- function(ngroups, cum_haz, time_unit) {
     tp_lower <- 1 - exp(group_data$H_lower_delta / time_unit)
 
     # Smooth probabilities using LOESS
-    smooth_tp <- loess(tp ~ group_data$time)$fitted
-    smooth_tp_upper <- loess(tp_upper ~ group_data$time)$fitted
-    smooth_tp_lower <- loess(tp_lower ~ group_data$time)$fitted
+    smooth_tp <- stats::loess(tp ~ group_data$time)$fitted
+    smooth_tp_upper <- stats::loess(tp_upper ~ group_data$time)$fitted
+    smooth_tp_lower <- stats::loess(tp_lower ~ group_data$time)$fitted
 
     data.frame(
       time = group_data$time,
@@ -411,7 +411,7 @@ f_tp <- function(ngroups, cum_haz, time_unit) {
 #' years <- survival::lung$time
 #' status <-  survival::lung$status
 #' group <- factor(survival::lung$sex)
-#' form <- as.formula(survival::Surv(years, status) ~ group)
+#' form <- stats::as.formula(survival::Surv(years, status) ~ group)
 #' f_surv_model(
 #'   years = years,
 #'   status = status,
@@ -460,7 +460,7 @@ f_surv_model <- function(years, status, group, strata, ngroups, form, spline_mod
   param_ic <- data.frame(
     Model = param_labels,
     AIC = sapply(param_models, function(model) model$AIC),
-    BIC = sapply(param_models, function(model) BIC(model))
+    BIC = sapply(param_models, function(model) stats::BIC(model))
   )
 
   # Fit spline models if requested
@@ -494,7 +494,7 @@ f_surv_model <- function(years, status, group, strata, ngroups, form, spline_mod
     spline_ic <- data.frame(
       Model = spline_labels,
       AIC = sapply(spline_models, function(model) model$AIC),
-      BIC = sapply(spline_models, function(model) BIC(model))
+      BIC = sapply(spline_models, function(model) stats::BIC(model))
     )
   }
 
@@ -568,7 +568,7 @@ f_surv_model <- function(years, status, group, strata, ngroups, form, spline_mod
 #' years <- survival::lung$time
 #' status <-  survival::lung$status
 #' group <- factor(survival::lung$sex)
-#' form <- as.formula(survival::Surv(years, status) ~ group)
+#' form <- stats::as.formula(survival::Surv(years, status) ~ group)
 #' surv_model <- f_surv_model(
 #'   years = years,
 #'   status = status,
@@ -668,7 +668,7 @@ f_surv_model_pred <- function(ngroups, time_pred, surv_model, spline_mod, cure_m
 #' years <- survival::lung$time
 #' status <-  survival::lung$status
 #' group <- factor(survival::lung$sex)
-#' form <- as.formula(survival::Surv(years, status) ~ group)
+#' form <- stats::as.formula(survival::Surv(years, status) ~ group)
 #' surv_model <- f_surv_model(
 #'   years = years,
 #'   status = status,
@@ -739,7 +739,7 @@ f_surv_model_pred_gr <- function(ngroups, surv_model, surv_model_pred, spline_mo
 #' years <- survival::lung$time
 #' status <-  survival::lung$status
 #' group <- factor(survival::lung$sex)
-#' form <- as.formula(survival::Surv(years, status) ~ group)
+#' form <- stats::as.formula(survival::Surv(years, status) ~ group)
 #' surv_model <- f_surv_model(
 #'   years = years,
 #'   status = status,
@@ -864,7 +864,7 @@ f_surv_model_pred_tp_gr <- function(ngroups, time_pred, time_unit, surv_model_pr
 #' years <- survival::lung$time
 #' status <-  survival::lung$status
 #' group <- factor(survival::lung$sex)
-#' form <- as.formula(survival::Surv(years, status) ~ group)
+#' form <- stats::as.formula(survival::Surv(years, status) ~ group)
 #' surv_model <- f_surv_model(
 #'   years = years,
 #'   status = status,

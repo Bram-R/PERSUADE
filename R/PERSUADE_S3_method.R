@@ -31,9 +31,8 @@ print.PERSUADE <- function(x, ...) {
 #'   - `"gof_spline"`: Goodness-of-fit statistics for spline models.
 #'   - `"gof_cure"`: Goodness-of-fit statistics for cure models (including cure fraction).
 #'
-#' @param x A PERSUADE object from `f_PERSUADE()`.
-#' @param type Character. Type of summary to return.
-#' @param ... Additional arguments passed to methods (currently unused).
+#' @param object A PERSUADE object from `f_PERSUADE()`.
+#' @param ... Additional arguments. Currently only `type` is used.
 #'
 #' @return A data frame or list of data frames depending on `type`.
 #'
@@ -43,33 +42,35 @@ print.PERSUADE <- function(x, ...) {
 #' }
 #'
 #' @export
-summary.PERSUADE <- function(x, type = "km", ...) {
+summary.PERSUADE <- function(object, ..., type = "km") {
+  type <- match.arg(type, c("km", "surv_probs", "gof", "gof_spline", "gof_cure"))
+
   if (type == "km") {
-    return(summary(x$surv_obs$km)$table)
+    return(summary(object$surv_obs$km)$table)
 
   } else if  (type == "surv_probs") {
-    n_groups <- x$misc$ngroups
+    n_groups <- object$misc$ngroups
     surv_tables <- vector("list", n_groups)
-    names(surv_tables) <- paste0("Group_", x$misc$group_names)
+    names(surv_tables) <- paste0("Group_", object$misc$group_names)
 
     for (i in seq_len(n_groups)) {
-      surv_mat <- x$surv_pred$gr[[i]][1 + x$input$time_pred_surv_table, ]
+      surv_mat <- object$surv_pred$gr[[i]][1 + object$input$time_pred_surv_table, ]
       surv_mat <- t(round(surv_mat, 3))[-1, ]
-      colnames(surv_mat) <- paste("T=", x$surv_pred$gr[[i]][1 + x$input$time_pred_surv_table, ][, 1])
+      colnames(surv_mat) <- paste("T=", object$surv_pred$gr[[i]][1 + object$input$time_pred_surv_table, ][, 1])
       surv_tables[[i]] <- as.data.frame(surv_mat)
     }
     return(surv_tables)
 
   } else if  (type == "gof") {
-    return(x$surv_model$param_ic)
+    return(object$surv_model$param_ic)
 
   } else if  (type == "gof_spline") {
-    if (!isTRUE(x$input$spline_mod)) stop("No spline models identified")
-    return(x$surv_model$spline_ic)
+    if (!isTRUE(object$input$spline_mod)) stop("No spline models identified")
+    return(object$surv_model$spline_ic)
 
   } else if  (type == "gof_cure") {
-    if (!isTRUE(x$input$cure_mod)) stop("No cure models identified")
-    return(x$surv_model$cure_ic)
+    if (!isTRUE(object$input$cure_mod)) stop("No cure models identified")
+    return(object$surv_model$cure_ic)
 
   } else {
     stop("Unknown summary type: ", type)

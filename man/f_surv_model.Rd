@@ -54,14 +54,14 @@ using the \pkg{flexsurv} package.
 \details{
 Models fitted include Exponential, Weibull, Gompertz, Log-normal,
 Log-logistic, Gamma, Generalised Gamma. Optional spline models
-(1–3 knots, scales: hazard, odds, normal) and cure models
+(1-3 knots, scales: hazard, odds, normal) and cure models
 (Weibull, Log-normal, Log-logistic with logistic/probit/etc. link).
 }
 \examples{
 years <- survival::lung$time
 status <-  survival::lung$status
 group <- factor(survival::lung$sex)
-form <- as.formula(survival::Surv(years, status) ~ group)
+form <- stats::as.formula(survival::Surv(years, status) ~ group)
 f_surv_model(
   years = years,
   status = status,

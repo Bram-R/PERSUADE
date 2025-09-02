@@ -171,9 +171,9 @@ test_that("model-overlay plot functions run with minimal model prediction object
   for (nm in cure_names) surv_pred$model$cure[[nm]] <- make_model_matrices(ngroups, time_pred)
 
   surv_model <- list(
-    param_models = setNames(vector("list", length(param_names)), param_names),
-    spline_models = setNames(vector("list", length(spline_names)), spline_names),
-    cure_models = setNames(vector("list", length(cure_names)), cure_names)
+    param_models = stats::setNames(vector("list", length(param_names)), param_names),
+    spline_models = stats::setNames(vector("list", length(spline_names)), spline_names),
+    cure_models = stats::setNames(vector("list", length(cure_names)), cure_names)
   )
   for (nm in spline_names) surv_model$spline_models[[nm]] <- list(knots = c(log(1), log(3), log(10)))
 

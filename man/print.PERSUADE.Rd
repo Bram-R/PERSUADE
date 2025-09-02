@@ -4,10 +4,10 @@
 \alias{print.PERSUADE}
 \title{Print Method for PERSUADE Objects}
 \usage{
-\method{print}{PERSUADE}(PERSUADE, ...)
+\method{print}{PERSUADE}(x, ...)
 }
 \arguments{
-\item{PERSUADE}{A PERSUADE object from \code{f_PERSUADE()}.}
+\item{x}{A PERSUADE object from \code{f_PERSUADE()}.}
 
 \item{...}{Additional arguments (currently unused).}
 }

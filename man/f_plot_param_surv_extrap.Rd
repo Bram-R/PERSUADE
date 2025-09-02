@@ -13,7 +13,7 @@ f_plot_param_surv_extrap(PERSUADE)
 Invisibly returns \code{NULL}. The function draws one or more base R plots as side effects.
 }
 \description{
-Plot Kaplan–Meier curves per group with shaded confidence bands and overlay
+Plot Kaplan-Meier curves per group with shaded confidence bands and overlay
 fitted parametric survival models (Exponential, Weibull, Gompertz, log-normal,
 log-logistic, Gamma, generalized Gamma) extrapolated to the analysis time horizon.
 }
