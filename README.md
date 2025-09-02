@@ -9,7 +9,7 @@ A standardized R tool to support the selection, comparison, and communication of
 
 PERSUADE guides analysts through a reproducible workflow for survival analysis and model selection. It provides:
 
-- Kaplan–Meier visualizations and diagnostics
+- Kaplan-Meier visualizations and diagnostics
 - Assessment of proportional hazards (PH) assumption
 - Observed and predicted hazard function plots
 - Fit comparisons of standard, spline-based, and cure models
@@ -74,7 +74,7 @@ Shows a high-level overview of the analysis: groups and number of objects/indivi
 
 ### 4. Summarize results
 ```r
-# Kaplan–Meier estimates
+# Kaplan-Meier estimates
 summary(PERSUADE, type = "km")
 
 # Survival probabilities at time points
@@ -93,7 +93,7 @@ Shows different summaries related to the Kaplan-Meier analyses, survival probabi
 
 ### 5. Visualize results
 ```r
-# Kaplan–Meier curves
+# Kaplan-Meier curves
 plot(PERSUADE, type = "km")
 
 # Proportional hazards diagnostics
