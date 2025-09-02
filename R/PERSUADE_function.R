@@ -1,7 +1,7 @@
 #### Main PERSUADE function ----
 #' Main PERSUADE Function
 #'
-#' Executes the PERSUADE workflow for parametric survival analysis, including Kaplan–Meier,
+#' Executes the PERSUADE workflow for parametric survival analysis, including Kaplan-Meier,
 #' parametric, spline, and cure models. Produces outputs for visualization, prediction,
 #' and Excel export.
 #'
@@ -20,14 +20,14 @@
 #'
 #' @return A list of class `"PERSUADE"` containing:
 #'   - `input`: Input arguments used in the analysis.
-#'   - `surv_obs`: Observed survival results (Kaplan–Meier, hazards, Cox model).
+#'   - `surv_obs`: Observed survival results (Kaplan-Meier, hazards, Cox model).
 #'   - `surv_model`: Fitted parametric/spline/cure models.
 #'   - `surv_pred`: Model predictions.
 #'   - `surv_model_excel`: Excel-ready parameter table.
 #'   - `misc`: Auxiliary results (labels, number of groups, etc.).
 #'
 #' @details The workflow proceeds in three main stages:
-#'   1. Observed data (Kaplan–Meier, hazards, Cox regression).
+#'   1. Observed data (Kaplan-Meier, hazards, Cox regression).
 #'   2. Parametric, spline, and cure model fitting.
 #'   3. Prediction and export of results.
 #'
@@ -173,7 +173,7 @@ f_PERSUADE <- function(name = "no_name", years, status, group,
 #' the \pkg{muhaz} package.
 #'
 #' @inheritParams f_PERSUADE
-#' @param ngroups Integer. Number of groups (1–3).
+#' @param ngroups Integer. Number of groups (1-3).
 #'
 #' @return A list with elements:
 #'   - `hazards`: List of hazard objects (one per group).
@@ -239,7 +239,7 @@ f_hazard <- function(years, status, group, ngroups) {
 #' variance and confidence intervals, using the \pkg{estimateNAH} package.
 #'
 #' @inheritParams f_PERSUADE
-#' @param ngroups Integer. Number of groups (1–3).
+#' @param ngroups Integer. Number of groups (1-3).
 #' @param time_pred Numeric vector of prediction times.
 #' @param time_unit Numeric. Time unit length for scaling.
 #'
@@ -318,7 +318,7 @@ f_cum_hazard <- function(years, status, group, ngroups, time_pred, time_unit) {
 #' Derives annualized transition probabilities (and confidence bounds)
 #' from cumulative hazard estimates, smoothed with LOESS.
 #'
-#' @param ngroups Integer. Number of groups (1–3).
+#' @param ngroups Integer. Number of groups (1-3).
 #' @param cum_haz Data frame from [f_cum_hazard()] with columns
 #'   `group`, `time`, `H_delta`, `H_upper_delta`, `H_lower_delta`.
 #' @param time_unit Numeric. Time unit for annualization.
@@ -404,7 +404,7 @@ f_tp <- function(ngroups, cum_haz, time_unit) {
 #' @details
 #' Models fitted include Exponential, Weibull, Gompertz, Log-normal,
 #' Log-logistic, Gamma, Generalised Gamma. Optional spline models
-#' (1–3 knots, scales: hazard, odds, normal) and cure models
+#' (1-3 knots, scales: hazard, odds, normal) and cure models
 #' (Weibull, Log-normal, Log-logistic with logistic/probit/etc. link).
 #'
 #' @examples
@@ -528,7 +528,7 @@ f_surv_model <- function(years, status, group, strata, ngroups, form, spline_mod
           est <- round(model$res[1, 1] * 100, 0)
           lci <- round(model$res[1, 2] * 100, 0)
           uci <- round(model$res[1, 3] * 100, 0)
-          paste0(est, "% (", lci, "%–", uci, "%)")
+          paste0(est, "% (", lci, "%-", uci, "%)")
         })
         paste(cf_strings, collapse = ", ")  # join if multiple per group
       })

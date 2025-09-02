@@ -1384,7 +1384,7 @@ f_plot_tp_cure_surv_model <- function(PERSUADE, model_index = 1) {
 
 #' Plot Extrapolated Parametric Survival Models per Group
 #'
-#' Plot Kaplan–Meier curves per group with shaded confidence bands and overlay
+#' Plot Kaplan-Meier curves per group with shaded confidence bands and overlay
 #' fitted parametric survival models (Exponential, Weibull, Gompertz, log-normal,
 #' log-logistic, Gamma, generalized Gamma) extrapolated to the analysis time horizon.
 #'
@@ -1451,7 +1451,7 @@ f_plot_param_surv_extrap <- function(PERSUADE) {
 
 #' Plot Extrapolated Spline Survival Models per Group
 #'
-#' Plot Kaplan–Meier curves per group with shaded confidence bands and overlay
+#' Plot Kaplan-Meier curves per group with shaded confidence bands and overlay
 #' fitted spline survival models (hazard, odds, normal scales) extrapolated to
 #' the analysis time horizon. Runs only when `PERSUADE$input$spline_mod` is `TRUE`.
 #'
@@ -1520,7 +1520,7 @@ f_plot_spline_surv_extrap <- function(PERSUADE) {
 
 #' Plot Extrapolated Cure Survival Models per Group
 #'
-#' Plot Kaplan–Meier curves per group with shaded confidence bands and overlay
+#' Plot Kaplan-Meier curves per group with shaded confidence bands and overlay
 #' fitted cure survival models (Weibull, log-normal, log-logistic; mixture and
 #' non-mixture forms) extrapolated to the analysis time horizon. Runs only when
 #' `PERSUADE$input$cure_mod` is `TRUE`.

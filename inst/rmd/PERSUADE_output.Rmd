@@ -41,7 +41,7 @@ palette(rainbow(n = n, s = 1, v = 1, start = 0, end = max(1, n - 1)/n, alpha = 1
 \clearpage
 
 # 1. Kaplan-Meier  
-The Kaplan–Meier (KM) curves provide a non-parametric estimate of the survival function, based solely on the observed data, without assuming any particular hazard shape or distribution. These plots allow visual comparison of survival experience between groups, highlighting differences in survival patterns and potential crossing of curves, which may later inform the choice of stratified vs. non-stratified models (see Section 2). The accompanying table summarises key KM estimates (e.g., median survival, survival probabilities at selected time points). These observed data serve as the benchmark against which all parametric, spline-based, and cure model fits will be assessed.
+The Kaplan-Meier (KM) curves provide a non-parametric estimate of the survival function, based solely on the observed data, without assuming any particular hazard shape or distribution. These plots allow visual comparison of survival experience between groups, highlighting differences in survival patterns and potential crossing of curves, which may later inform the choice of stratified vs. non-stratified models (see Section 2). The accompanying table summarises key KM estimates (e.g., median survival, survival probabilities at selected time points). These observed data serve as the benchmark against which all parametric, spline-based, and cure model fits will be assessed.
 
 \clearpage
 
@@ -73,7 +73,7 @@ This section presents plots for assessing the PH assumption **over the observed 
 
 - **Figure A** plots the log of time against the log of the cumulative hazard for each group. Parallel lines suggest that the PH assumption holds.  
 - **Figures B and C** show scaled Schoenfeld residuals over time, with a smoothed spline (cyan) overlaid. If the spline systematically deviates from a horizontal line, this suggests a time-varying covariate effect and a potential PH violation ([Grambsch & Therneau, 1994](https://doi.org/10.1093/biomet/81.3.515)).  
-- **Crossing survival curves** in the Kaplan–Meier plot (previous page) may also indicate that the PH assumption is not satisfied.  
+- **Crossing survival curves** in the Kaplan-Meier plot (previous page) may also indicate that the PH assumption is not satisfied.  
 
 **Caution:** These diagnostics only apply to the observed data period. Towards the end of follow-up, results may be unreliable due to sparse data, so the tail of curves should be interpreted with care.  
 
@@ -153,11 +153,11 @@ The Table below displays the goodness-of-fit statistics for each parametric surv
 
 In the following pages, three plots per fitted parametric survival model are displayed to support visual inspection of the fit of the models to the observed data:  
 
-- **Figure A**: Kaplan–Meier curves (black and grey) versus fitted parametric survival models (colour).  
+- **Figure A**: Kaplan-Meier curves (black and grey) versus fitted parametric survival models (colour).  
 - **Figure B**: Diagnostic plot specific to each fitted parametric survival model (see graphical test in Table 1 of [Ishak et al., 2013](https://doi.org/10.1007/s40273-013-0064-3)).
 - **Figure C**: Comparison of smoothed hazard rates based on empirical data (black and grey) versus estimated transition probabilities (colour). 
 
-In Figures A and C, the Kaplan–Meier curves and smoothed hazard rates are identical across models; only the coloured fitted curves change.  
+In Figures A and C, the Kaplan-Meier curves and smoothed hazard rates are identical across models; only the coloured fitted curves change.  
 The guiding rule is: the closer the coloured lines are to the black and grey lines, the better the fit.  
 
 Notably:  
@@ -230,7 +230,7 @@ The same goodness-of-fit statistics (AIC and BIC) used in Section 4.1 are presen
 **Plots**  
 As in Section 4.1, the following pages display three plots for each fitted spline-based survival model:  
 
-- **Figure A**: Kaplan–Meier curves (black and grey) versus the fitted spline model (colour).  
+- **Figure A**: Kaplan-Meier curves (black and grey) versus the fitted spline model (colour).  
 - **Figure B**: Model-specific diagnostic plots (see [Ishak et al., 2013](https://doi.org/10.1007/s40273-013-0064-3)).  
 - **Figure C**: Smoothed hazard rates from empirical data (black and grey) versus model-based estimates (colour).  
 
@@ -285,7 +285,7 @@ The *link function* relates the linear predictor to the estimated cure fraction.
 The most commonly used link function is the *logistic*, but others are available:
 
 - `"logistic"`: Ensures the cure fraction is between 0 and 1 via the logistic transformation.  
-- `"loglog"`: Uses the complementary log–log link, which can be more appropriate if cure proportions are very close to 0 or 1.  
+- `"loglog"`: Uses the complementary log-log link, which can be more appropriate if cure proportions are very close to 0 or 1.  
 - `"identity"`: Fits the cure fraction directly on the probability scale (must remain in [0,1]).  
 - `"probit"`: Uses the cumulative normal distribution as the link.  
 
@@ -301,7 +301,7 @@ The same goodness-of-fit statistics (AIC and BIC) used in Section 4.1 are presen
 **Plots**  
 As in Section 4.1, the following pages display three plots for each fitted spline-based survival model:  
 
-- **Figure A**: Kaplan–Meier curves (black and grey) versus the fitted spline model (colour).  
+- **Figure A**: Kaplan-Meier curves (black and grey) versus the fitted spline model (colour).  
 - **Figure B**: Model-specific diagnostic plots (see [Ishak et al., 2013](https://doi.org/10.1007/s40273-013-0064-3)).  
 - **Figure C**: Smoothed hazard rates from empirical data (black and grey) versus model-based estimates (colour).  
 
