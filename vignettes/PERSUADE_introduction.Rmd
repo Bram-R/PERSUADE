@@ -37,7 +37,7 @@ This vignette shows how to use PERSUADE with a step-by-step workflow.
 Install the latest version from GitHub:
 ```{r setup}
 # Install and load PERSUADE (requires devtools)
-devtools::install_github("Bram-R/PERSUADE", quiet = TRUE)
+# devtools::install_github("Bram-R/PERSUADE", quiet = TRUE) # To install the development version of PERSUADE:
 library(PERSUADE)
 ```
 
