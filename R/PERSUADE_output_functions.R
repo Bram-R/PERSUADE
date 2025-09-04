@@ -1959,7 +1959,9 @@ f_summary <- function(df) {
 #'   `Images/` inside the output folder, and the knit environment is
 #'   initialised with the supplied `PERSUADE` object. Supplying a custom
 #'   `template_path` allows alternative report formats to be used, and
-#'   simplifies testing.
+#'   simplifies testing. This function requires the following suggested packages:
+#'   \pkg{knitr}, \pkg{kableExtra}, and \pkg{rmarkdown}.
+#'   If not installed, the function will throw an error.
 #'
 #' @seealso [f_PERSUADE()]
 #' @examples
