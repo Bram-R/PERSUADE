@@ -1,43 +1,44 @@
 Package: PERSUADE
 Title: Parametric Survival Model Selection for Decision-Analytic Models
 Version: 0.0.0.9000
-Authors@R: 
-    c(
-      person("Bram", "R.", email = "bram.ramaekers@mumc.nl", role = c("aut", "cre"),
-             comment = c(ORCID = "https://orcid.org/0000-0001-5785-9228")),
-      person("Xa4P", role = "ctb",
-             comment = c(ORCID = "https://orcid.org/0000-0003-3563-0013"))
-    )
-Description: Provides a standardized framework to support the selection and 
-    evaluation of parametric survival models for time-to-event data. Includes 
-    tools for visualizing survival data, checking proportional hazards assumptions, 
-    comparing parametric and cure models, examining hazard functions, 
-    and evaluating model extrapolation. Results are structured to 
-    facilitate integration into decision-analytic models, and reports 
-    can be generated with R Markdown for reproducible workflows.
+Authors@R: c(
+    person("Bram", "R.", , "bram.ramaekers@mumc.nl", role = c("aut", "cre"),
+           comment = c(ORCID = "https://orcid.org/0000-0001-5785-9228")),
+    person("Xa4P", role = "ctb",
+           comment = c(ORCID = "https://orcid.org/0000-0003-3563-0013"))
+  )
+Description: Provides a standardized framework to support the selection
+    and evaluation of parametric survival models for time-to-event data.
+    Includes tools for visualizing survival data, checking proportional
+    hazards assumptions, comparing parametric and cure models, examining
+    hazard functions, and evaluating model extrapolation. Results are
+    structured to facilitate integration into decision-analytic models,
+    and reports can be generated with R Markdown for reproducible
+    workflows.
 License: GPL (>= 3)
-Encoding: UTF-8
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
 Depends: 
     R (>= 4.1.0)
 Imports: 
-    stats,
-    rms,
-    survival,
+    data.table,
     flexsurv,
     flexsurvcure,
-    muhaz,
-    sft,
-    data.table,
-    survminer,
     ggplot2,
-    rmarkdown
+    muhaz,
+    rmarkdown,
+    rms,
+    sft,
+    stats,
+    survival,
+    survminer
 Suggests: 
-    knitr,
-    kableExtra,
     devtools,
+    kableExtra,
+    knitr,
     testthat (>= 3.1.2)
+VignetteBuilder: 
+    knitr
 Config/testthat/edition: 3
+Encoding: UTF-8
 LazyData: true
-VignetteBuilder: knitr
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2

@@ -27,7 +27,9 @@ the package under \verb{inst/rmd/}. Figures are written to a subdirectory
 \verb{Images/} inside the output folder, and the knit environment is
 initialised with the supplied \code{PERSUADE} object. Supplying a custom
 \code{template_path} allows alternative report formats to be used, and
-simplifies testing.
+simplifies testing. This function requires the following suggested packages:
+\pkg{knitr}, \pkg{kableExtra}, and \pkg{rmarkdown}.
+If not installed, the function will throw an error.
 }
 \examples{
 \dontrun{
