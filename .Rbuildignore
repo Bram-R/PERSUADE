@@ -1,5 +1,6 @@
 ^PERSUADE\.Rproj$
 ^\.Rproj\.user$
+^\.github$
 ^README\.Rmd$
 ^doc$
 ^Meta$

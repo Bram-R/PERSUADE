@@ -33,6 +33,9 @@ test_that("f_summary computes descriptive stats for numeric data.frame", {
 })
 
 test_that("f_generate_report errors when Rmd template is missing", {
+  skip_if_not_installed("kableExtra")
+  skip_if_not_installed("knitr")
+
   # Minimal PERSUADE object
   PERS <- list(name = "tmp_report")
   class(PERS) <- "PERSUADE"
