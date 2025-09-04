@@ -1801,8 +1801,8 @@ f_plot_hazard_parametric_extrap <- function(PERSUADE) {
          ylim = c(0, PERSUADE$surv_obs$haz$max$smooth))
     for (j in seq_along(models)) {
       graphics::lines(cbind(PERSUADE$surv_pred$model[[models[j]]]$hazard[, 1],
-                  PERSUADE$surv_pred$model[[models[j]]]$hazard[, i + 1]),
-            col = cols[j], lty = line_type[i], lwd = 1)
+                            PERSUADE$surv_pred$model[[models[j]]]$hazard[, i + 1]),
+                      col = cols[j], lty = line_type[i], lwd = 1)
     }
     graphics::legend("topleft", legend = PERSUADE$misc$lbls,
                      col = cols, lty = line_type[i], cex = 0.8)
@@ -1849,8 +1849,8 @@ f_plot_hazard_spline_extrap <- function(PERSUADE) {
          ylim = c(0, PERSUADE$surv_obs$haz$max$smooth))
     for (j in seq_along(models)) {
       graphics::lines(cbind(PERSUADE$surv_pred$model$spline[[models[j]]]$hazard[, 1],
-                  PERSUADE$surv_pred$model$spline[[models[j]]]$hazard[, i + 1]),
-            col = cols[j], lty = line_type[i], lwd = 1)
+                            PERSUADE$surv_pred$model$spline[[models[j]]]$hazard[, i + 1]),
+                      col = cols[j], lty = line_type[i], lwd = 1)
     }
     graphics::legend("topleft", legend = PERSUADE$misc$lbls_spline,
                      col = cols, lty = line_type[i], cex = 0.8)
@@ -1899,8 +1899,8 @@ f_plot_hazard_cure_extrap <- function(PERSUADE) {
 
     for (j in seq_along(models)) {
       graphics::lines(cbind(PERSUADE$surv_pred$model$cure[[models[j]]]$hazard[, 1],
-                  PERSUADE$surv_pred$model$cure[[models[j]]]$hazard[, i + 1]),
-            col = cols[j], lty = line_type[i], lwd = 1)
+                            PERSUADE$surv_pred$model$cure[[models[j]]]$hazard[, i + 1]),
+                      col = cols[j], lty = line_type[i], lwd = 1)
     }
 
     graphics::legend("topleft", legend = PERSUADE$misc$lbls_cure,
@@ -1971,6 +1971,24 @@ f_summary <- function(df) {
 #' @export
 f_generate_report <- function(PERSUADE, template_path = NULL) {
   name <- PERSUADE$name
+
+  # list required suggested packages
+  required_pkgs <- c("rmarkdown", "knitr", "kableExtra")
+
+  # check which are missing
+  missing_pkgs <- required_pkgs[!vapply(required_pkgs,
+                                        requireNamespace,
+                                        quietly = TRUE,
+                                        FUN.VALUE = logical(1))]
+
+  if (length(missing_pkgs) > 0) {
+    stop(
+      "The following packages are required for f_generate_report() but are not installed: ",
+      paste(missing_pkgs, collapse = ", "),
+      ".\nPlease install them with:\n  install.packages(c(\"",
+      paste(missing_pkgs, collapse = "\", \""), "\"))"
+    )
+  }
 
   # Create output directories
   output_dir <- file.path(getwd(), paste0(name, "_output"))

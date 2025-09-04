@@ -29,9 +29,9 @@ Imports:
     flexsurvcure,
     muhaz,
     sft,
+    data.table,
     survminer,
     ggplot2,
-    data.table,
     rmarkdown
 Suggests: 
     knitr,
