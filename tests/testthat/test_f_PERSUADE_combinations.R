@@ -30,6 +30,8 @@ library(testthat)
 skip_on_cran()
 skip_if_not_installed("flexsurv")
 skip_if_not_installed("rmarkdown")
+skip_if_not_installed("knitr")
+skip_if_not_installed("kableExtra")
 
 test_that("f_PERSUADE works across 1-3 groups, strata/spline/cure options and integrates with reporting", {
 
