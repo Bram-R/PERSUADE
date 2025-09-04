@@ -2,10 +2,13 @@ Package: PERSUADE
 Title: Parametric Survival Model Selection for Decision-Analytic Models
 Version: 0.0.0.9000
 Authors@R: c(
-    person("Bram", "R.", , "bram.ramaekers@mumc.nl", role = c("aut", "cre"),
-           comment = c(ORCID = "https://orcid.org/0000-0001-5785-9228")),
-    person("Xa4P", role = "ctb",
-           comment = c(ORCID = "https://orcid.org/0000-0003-3563-0013"))
+    person(given = "Bram", family = "Ramaekers", 
+           email = "bram.ramaekers@mumc.nl",
+           role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-5785-9228")),
+    person(given = "Xavier", family = "Pouwels",
+           role = "ctb",
+           comment = c(ORCID = "0000-0003-3563-0013"))
   )
 Description: Provides a standardized framework to support the selection
     and evaluation of parametric survival models for time-to-event data.
@@ -31,7 +34,6 @@ Imports:
     survival,
     survminer
 Suggests: 
-    devtools,
     kableExtra,
     knitr,
     testthat (>= 3.1.2)

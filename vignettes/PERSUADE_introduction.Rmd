@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-ntroduction
+Introduction
 
 PERSUADE (ParamEtRic SUrvivAl moDel sElection) is a standardized tool in R to support the selection and communication of parametric survival models in health economic and decision-analytic modelling.
 
@@ -37,7 +37,7 @@ This vignette shows how to use PERSUADE with a step-by-step workflow.
 Install the latest version from GitHub:
 ```{r setup}
 # Install and load PERSUADE (requires devtools)
-# devtools::install_github("Bram-R/PERSUADE", quiet = TRUE) # To install the development version of PERSUADE:
+# devtools::install_github("Bram-R/PERSUADE", quiet = TRUE) # To install the development version of PERSUADE
 library(PERSUADE)
 ```
 
