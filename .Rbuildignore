@@ -11,3 +11,4 @@
 ^tests/testthat/grid_test/
 ^inst/example/
 ^inst/CITATION$
+^cran-comments\.md$

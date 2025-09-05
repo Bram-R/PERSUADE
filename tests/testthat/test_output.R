@@ -305,3 +305,24 @@ test_that("plot functions run without error (integration with f_PERSUADE and fle
   expect_silent(plot(PERSUADE, type = "ph"))
   expect_silent(plot(PERSUADE, type = "hr"))
 })
+
+test_that("f_get_excel_template copies the Excel template", {
+  # Create a temporary directory for the test
+  tmpdir <- tempdir()
+
+  # Run the function
+  result <- f_get_excel_template(path = tmpdir)
+
+  # Expected destination file path
+  expected <- file.path(tmpdir, "PERSUADE_Excel_template.xltx")
+
+  # Check that the function returns the expected path
+  expect_identical(result, expected)
+
+  # Check that the file exists at the destination
+  expect_true(file.exists(expected))
+
+  # Clean up
+  unlink(expected, force = TRUE)
+})
+

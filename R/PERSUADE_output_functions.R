@@ -2026,4 +2026,47 @@ f_generate_report <- function(PERSUADE, template_path = NULL) {
   invisible(file.path(output_dir, paste0(name, ".pdf")))
 }
 
+#' Copy Excel Template for Model Parameters
+#'
+#' Copy the bundled Excel template `PERSUADE_Excel_template.xltx` to a user-specified
+#' directory (by default, the current working directory). This template provides a
+#' convenient structure for transferring survival model outputs from \pkg{PERSUADE}
+#' into health economic models.
+#'
+#' @param path Character string giving the directory to copy the template to.
+#'   Defaults to the current working directory (`getwd()`).
+#'
+#' @return A length-1 character string giving the absolute path to the copied
+#'   template file, returned invisibly.
+#'
+#' @details The default Excel file `PERSUADE_Excel_template.xltx` is stored within
+#'   the package under `inst/excel_template/`. This function locates the installed
+#'   file via [system.file()] and copies it into the requested directory. If a file
+#'   with the same name already exists at the destination, it will be overwritten.
+#'
+#'   The Excel template provides a standardized format for entering parametric
+#'   survival model parameters, making it easier to use PERSUADE outputs in
+#'   downstream decision-analytic models. Users may adapt the template as needed
+#'   for their specific workflows.
+#'
+#' @seealso [f_generate_report()], [system.file()]
+#'
+#' @examples
+#' \dontrun{
+#' # Copy template to working directory
+#' f_get_excel_template()
+#'
+#' # Copy template to a custom folder
+#' f_get_excel_template(path = tempdir())
+#' }
+#'
+#' @export
+f_get_excel_template <- function(path = getwd()) {
+  src <- system.file("excel_template",
+                     "PERSUADE_Excel_template.xltx",
+                     package = "PERSUADE")
+  dest <- file.path(path, basename(src))
+  file.copy(src, dest, overwrite = TRUE)
+  invisible(dest)
+}
 

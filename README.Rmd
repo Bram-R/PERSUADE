@@ -1,18 +1,16 @@
+---
+output: github_document
+---
 
-# PERSUADE
-
+# PERSUADE  
 **ParamEtRic SUrvivAl moDel sElection**
 
-A standardized R tool to support the selection, comparison, and
-communication of parametric survival models, and their implementation in
-decision-analytic models.
+A standardized R tool to support the selection, comparison, and communication of parametric survival models, and their implementation in decision-analytic models.
 
-------------------------------------------------------------------------
+---
 
 ## Overview
-
-PERSUADE guides analysts through a reproducible workflow for survival
-analysis and model selection. It provides:
+PERSUADE guides analysts through a reproducible workflow for survival analysis and model selection. It provides:
 
 - Kaplan-Meier visualizations and diagnostics
 - Assessment of proportional hazards (PH) assumption
@@ -21,26 +19,20 @@ analysis and model selection. It provides:
 - Goodness-of-fit statistics (AIC/BIC)
 - Explore model extrapolation beyond observed data
 - Automated PDF reports for communication
-- Export the parametric survival model parameters for use in
-  decision-analytic models
+- Export the parametric survival model parameters for use in decision-analytic models
 
-The framework is designed for transparency and consistency when survival
-analysis feeds into decision-analytic models.
+The framework is designed for transparency and consistency when survival analysis feeds into decision-analytic models.
 
-------------------------------------------------------------------------
+---
 
-## Prerequisites
-
+## Prerequisites 
 - R (version compatible with survival and other dependencies)
 - Recommended: RStudio for better environment handling
-- Install PERSUADE package:
-  `devtools::install_github("Bram-R/PERSUADE", quiet = TRUE, upgrade = "never")`
+- Install PERSUADE package: `devtools::install_github("Bram-R/PERSUADE", quiet = TRUE, upgrade = "never")`
 - Load PERSUADE package: `library(PERSUADE)`
 
 ## Quick start
-
-The easiest way to get started is by running the included example
-workflow script: `PERSUADE_example_workflow.R`
+The easiest way to get started is by running the included example workflow script: `PERSUADE_example_workflow.R` 
 
 This script:
 
@@ -50,20 +42,18 @@ This script:
 - Generates a ready-to-share PDF report via `f_generate_report()`.
 - Exports fitted model parameters to .csv.
 
-------------------------------------------------------------------------
+---
 
 ## Step-by-step workflow
 
 ### 1. Install and load PERSUADE package
-
-``` r
+```{r, eval=FALSE}
 devtools::install_github("Bram-R/PERSUADE", quiet = TRUE, upgrade = "never")
 library(PERSUADE)
 ```
 
 ### 2. Run example analysis
-
-``` r
+```{r, eval=FALSE}
 PERSUADE <- f_PERSUADE(
   name = "BC_OS",
   years = flexsurv::bc$recyrs,   # time-to-event
@@ -79,14 +69,12 @@ PERSUADE <- f_PERSUADE(
 ```
 
 ### 3. Inspect the object
-
-``` r
+```{r, eval=FALSE}
 print(PERSUADE)
 ```
 
 ### 4. Summarize results
-
-``` r
+```{r, eval=FALSE}
 # Kaplan-Meier estimates
 summary(PERSUADE, type = "km")
 
@@ -104,8 +92,7 @@ summary(PERSUADE, type = "gof_cure")
 ```
 
 ### 5. Visualize results
-
-``` r
+```{r, eval=FALSE}
 # Kaplan-Meier curves
 plot(PERSUADE, type = "km")
 
@@ -126,14 +113,12 @@ plot(PERSUADE, type = "cure_models")
 ```
 
 ### 6. Generate the report
-
-``` r
+```{r, eval=FALSE}
 f_generate_report(PERSUADE)
 ```
 
 ### 7. Export model parameters
-
-``` r
+```{r, eval=FALSE}
 # Copy to clipboard (for copying in PERSUADE Excel template.xltx)
 write.table(PERSUADE$surv_model_excel, "clipboard-128", sep = "\t", col.names = FALSE)
 
@@ -143,65 +128,46 @@ write.csv2(PERSUADE$surv_model_excel, "BC_OS_output/PERSUADE_models_semicolon.cs
 ```
 
 ### 8. Obtain Excel template to incorporate model parameters in decision-analytic model
-
-``` r
+```{r, eval=FALSE}
 f_get_excel_template()
 ```
 
-------------------------------------------------------------------------
+---
 
 ## Workflow diagram
-
 Visualize the process via the included diagram:  
-![PERSUADE Workflow Overview](PERSUADE_figure_process.png)
+![PERSUADE Workflow Overview](PERSUADE_figure_process.png)  
 
 *(Alternatively, open the `.vsdx` version if preferred.)*
 
-------------------------------------------------------------------------
+---
 
 ### Tips for running your own analyses
+Start by running the example script to familiarize yourself with the workflow. For your own data: 
 
-Start by running the example script to familiarize yourself with the
-workflow. For your own data:
+- copy `PERSUADE_example_workflow.R` (see also vignette using: `browseVignettes("PERSUADE")`)
+- replace the input section with your dataset 
+- set the project name and outcome identifier using the `name` parameter  
+- within the call to `f_PERSUADE(...)`, toggle options (`TRUE`/`FALSE`) for the analyses you want to run  
 
-- copy `PERSUADE_example_workflow.R` (see also vignette using:
-  `browseVignettes("PERSUADE")`)
-- replace the input section with your dataset
-- set the project name and outcome identifier using the `name`
-  parameter  
-- within the call to `f_PERSUADE(...)`, toggle options (`TRUE`/`FALSE`)
-  for the analyses you want to run
-
-------------------------------------------------------------------------
+---
 
 ## Extending or customizing
 
-- Add new model types: incorporate additional parametric distributions
-  or non-parametric methods by extending `f_PERSUADE()`.  
-- Refine plots: customize visualizations in
-  `PERSUADE_output_functions.R` or adopt themes for publication-quality
-  graphics.  
-- Scale to new data formats: build data preprocessing modules for
-  commonly used formats (e.g., survival objects, breakpoints,
-  long-format datasets).  
-- Automate Reporting: enhance the R Markdown template for
-  production-ready reports with headers, metadata, or version control.
+- Add new model types: incorporate additional parametric distributions or non-parametric methods by extending `f_PERSUADE()`.  
+- Refine plots: customize visualizations in `PERSUADE_output_functions.R` or adopt themes for publication-quality graphics.  
+- Scale to new data formats: build data preprocessing modules for commonly used formats (e.g., survival objects, breakpoints, long-format datasets).  
+- Automate Reporting: enhance the R Markdown template for production-ready reports with headers, metadata, or version control.  
 
-------------------------------------------------------------------------
+---
 
 ## Acknowledgments & history
 
-- Origins: this repository represents an ongoing effort to standardize
-  survival model workflows in decision analysis.  
-- Contributors: developed by **Bram-R**
-  (<https://orcid.org/0000-0001-5785-9228>) and **Xa4P**
-  (<https://orcid.org/0000-0003-3563-0013>); contributions are welcome
-  via pull requests or issues.
+- Origins: this repository represents an ongoing effort to standardize survival model workflows in decision analysis.  
+- Contributors: developed by **Bram-R** (https://orcid.org/0000-0001-5785-9228) and **Xa4P** (https://orcid.org/0000-0003-3563-0013); contributions are welcome via pull requests or issues.  
 
-------------------------------------------------------------------------
+---
 
 ## License & contact
-
 Licensed under **GPL3**.  
-For questions, enhancements, or collaboration, reach out via GitHub
-discussions or issues.
+For questions, enhancements, or collaboration, reach out via GitHub discussions or issues.  
