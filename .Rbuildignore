@@ -10,3 +10,4 @@
 ^PERSUADE_figure_process\.vsdx$
 ^tests/testthat/grid_test/
 ^inst/example/
+^inst/CITATION$

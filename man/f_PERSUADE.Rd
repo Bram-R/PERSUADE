@@ -67,6 +67,7 @@ The workflow proceeds in three main stages:
 }
 }
 \examples{
+\dontrun{
 years <- survival::lung$time
 status <-  survival::lung$status
 group <- factor(survival::lung$sex)
@@ -82,6 +83,7 @@ f_PERSUADE(
   time_horizon = 5000,
   time_pred_surv_table = seq(0, 5000, 100)
 )
+}
 }
 \seealso{
 \code{\link[=f_hazard]{f_hazard()}}, \code{\link[=f_cum_hazard]{f_cum_hazard()}}, \code{\link[=f_surv_model]{f_surv_model()}}
