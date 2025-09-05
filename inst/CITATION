@@ -1,11 +1,5 @@
 bibentry(
   bibtype  = "Article",
   title    = "Improving the selection and implementation of parametric survival models in decision analytic models: the PERSUADE template",
-  author   = "Bram L.T. Ramaekers, Xavier G.L.V. Pouwels, Sabine E. Grimm, Manuela A. Joore",
-  journal  = "TBD",
-  year     = "TBD",
-  volume   = "TBD",
-  number   = "TBD",
-  pages    = "TBD",
-  doi      = "TBD"
+  author   = "Bram L.T. Ramaekers, Xavier G.L.V. Pouwels, Sabine E. Grimm, Manuela A. Joore"
 )

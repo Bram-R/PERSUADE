@@ -34,6 +34,7 @@
 #' @seealso [f_hazard()], [f_cum_hazard()], [f_surv_model()]
 #'
 #' @examples
+#' \dontrun{
 #' years <- survival::lung$time
 #' status <-  survival::lung$status
 #' group <- factor(survival::lung$sex)
@@ -49,6 +50,7 @@
 #'   time_horizon = 5000,
 #'   time_pred_surv_table = seq(0, 5000, 100)
 #' )
+#' }
 #' @export
 # Validate inputs
 f_PERSUADE <- function(name = "no_name", years, status, group,
