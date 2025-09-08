@@ -33,14 +33,16 @@ analysis feeds into decision-analytic models.
 
 - R (version compatible with survival and other dependencies)
 - Recommended: RStudio for better environment handling
-- Install PERSUADE package:
+- Install PERSUADE package, to install the development version of
+  PERSUADE:
   `devtools::install_github("Bram-R/PERSUADE", quiet = TRUE, upgrade = "never")`
 - Load PERSUADE package: `library(PERSUADE)`
 
 ## Quick start
 
-The easiest way to get started is by running the included example
-workflow script: `PERSUADE_example_workflow.R`
+The easiest way to get started is by running the example workflow
+script: `PERSUADE_example_workflow.R` using:
+`file.edit(system.file("example_workflow", "PERSUADE_example_workflow.R", package = "PERSUADE"))`
 
 This script:
 
@@ -57,7 +59,7 @@ This script:
 ### 1. Install and load PERSUADE package
 
 ``` r
-devtools::install_github("Bram-R/PERSUADE", quiet = TRUE, upgrade = "never")
+devtools::install_github("Bram-R/PERSUADE", quiet = TRUE, upgrade = "never") # To install the development version of PERSUADE
 library(PERSUADE)
 ```
 
@@ -164,8 +166,9 @@ Visualize the process via the included diagram:
 Start by running the example script to familiarize yourself with the
 workflow. For your own data:
 
-- copy `PERSUADE_example_workflow.R` (see also vignette using:
-  `browseVignettes("PERSUADE")`)
+- copy `PERSUADE_example_workflow.R` using:
+  `file.edit(system.file("example_workflow", "PERSUADE_example_workflow.R", package = "PERSUADE"))`;
+  see also vignette using: `browseVignettes("PERSUADE")`
 - replace the input section with your dataset
 - set the project name and outcome identifier using the `name`
   parameter  

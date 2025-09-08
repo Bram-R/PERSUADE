@@ -2,7 +2,7 @@
 title: "PERSUADE-intro"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{PERSUADE-intro}
+  %\VignetteIndexEntry{PERSUADE_introduction}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -42,7 +42,7 @@ library(PERSUADE)
 ```
 
 # Example workflow
-The following example reproduces the workflow in `PERSUADE_example_workflow.R`. We will use the `flexsurv::bc` dataset (time to recurrence for breast cancer patients):
+The following example reproduces the workflow in `PERSUADE_example_workflow.R` (can be obtained through: `file.edit(system.file("example_workflow", "PERSUADE_example_workflow.R", package = "PERSUADE"))`). We will use the `flexsurv::bc` dataset (time to recurrence for breast cancer patients):
 ```{r data}
 # Example dataset
 years  <- flexsurv::bc$recyrs   # time to event
@@ -111,6 +111,6 @@ write.csv2(PERSUADE$surv_model_excel, file.path(file.path(getwd(), paste0(name, 
 # Next steps
 
 - For technical details of each function, see the help pages, e.g. `?f_PERSUADE`.
-- For a full reproducible example, check: `PERSUADE_example_workflow.R`.
-- To list all objects in the PERSUADE package: `ls("package:PERSUADE")`.
+- For a full reproducible example, check: `PERSUADE_example_workflow.R` (`file.edit(system.file("example_workflow", "PERSUADE_example_workflow.R", package = "PERSUADE"))`).
 - To adapt PERSUADE to your data, replace the example inputs with your own time-to-event dataset.
+- To list all objects in the PERSUADE package: `ls("package:PERSUADE")`.
