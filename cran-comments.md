@@ -6,8 +6,9 @@
 
 ## Changes compared with PERSUADE v0.1.1
 
-- Added f_get_excel_template() to copy the Excel template `PERSUADE_Excel_template.xltx` This template provides a convenient structure for transferring survival model outputs into health economic models.
+- Added f_get_excel_template() to copy the Excel template `PERSUADE_Excel_template.xltx` to the current working directory, this template provides a convenient structure for transferring survival model outputs into health economic models.
 - Added example workflow `PERSUADE_example_workflow.R` that can be inspected by `file.edit(system.file("example_workflow", "PERSUADE_example_workflow.R", package = "PERSUADE"))`
+- Minor updates to vignette and README file
 
 
 

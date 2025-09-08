@@ -1,8 +1,9 @@
 ---
-title: "PERSUADE-intro"
+title: "Introduction to PERSUADE"
+author: "Bram Ramaekers"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{PERSUADE_introduction}
+  %\VignetteIndexEntry{Introduction to PERSUADE}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -15,7 +16,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-Introduction
+## Introduction
 
 PERSUADE (ParamEtRic SUrvivAl moDel sElection) is a standardized tool in R to support the selection and communication of parametric survival models in health economic and decision-analytic modelling.
 
@@ -32,16 +33,15 @@ It provides:
 
 This vignette shows how to use PERSUADE with a step-by-step workflow.
 
-
-# Install and loading the PERSUADE package
-Install the latest version from GitHub:
+## Install and load the PERSUADE package
 ```{r setup}
-# Install and load PERSUADE (requires devtools)
+# Install and load PERSUADE
 # devtools::install_github("Bram-R/PERSUADE", quiet = TRUE) # To install the development version of PERSUADE
+# install.packages("PERSUADE") # To install CRAN version of PERSUADE
 library(PERSUADE)
 ```
 
-# Example workflow
+## Example workflow
 The following example reproduces the workflow in `PERSUADE_example_workflow.R` (can be obtained through: `file.edit(system.file("example_workflow", "PERSUADE_example_workflow.R", package = "PERSUADE"))`). We will use the `flexsurv::bc` dataset (time to recurrence for breast cancer patients):
 ```{r data}
 # Example dataset
@@ -50,7 +50,7 @@ status <- flexsurv::bc$censrec  # event indicator
 group  <- flexsurv::bc$group    # grouping variable
 ```
 
-# Define analysis settings
+## Define analysis settings
 Define the analysis settings to run PERSUADE:
 ```{r settings}
 name <- "BC_OS"        # project name
@@ -59,7 +59,7 @@ time_unit    <- 1/12   # monthly data in years
 time_horizon <- 40     # analysis horizon (years)
 ```
 
-# Running PERSUADE
+## Running PERSUADE
 The main function is `f_PERSUADE()`, which generates the S3 object PERSUADE:
 ```{r f_PERSUADE, eval=FALSE}
 PERSUADE <- f_PERSUADE(
@@ -77,7 +77,7 @@ PERSUADE <- f_PERSUADE(
 )
 ```
 
-# Inspecting results
+## Inspecting results
 The output is a PERSUADE object. You can inspect it using:
 ```{r PERSUADE_res, eval=FALSE}
 print(PERSUADE)
@@ -85,7 +85,7 @@ summary(PERSUADE, type = "km")
 summary(PERSUADE, type = "gof")
 ```
 
-Generate diagnostic and model plots:
+## Generate diagnostic and model plots:
 ```{r PERSUADE_plot, eval=FALSE}
 plot(PERSUADE, type = "km")            # Kaplan-Meier
 plot(PERSUADE, type = "ph")            # Proportional hazards
@@ -95,22 +95,28 @@ plot(PERSUADE, type = "spline_models") # Spline-based fits
 plot(PERSUADE, type = "cure_models")   # Cure models
 ```
 
-# Reporting
+## Reporting
 To automatically generate a PDF report (R Markdown):
 ```{r PERSUADE_report, eval=FALSE}
 f_generate_report(PERSUADE)
 ```
 
-# Exporting model parameters
+## Exporting model parameters
 To automatically generate a PDF report (R Markdown):
 ```{r PERSUADE_export, eval=FALSE}
 write.csv(PERSUADE$surv_model_excel, file.path(file.path(getwd(), paste0(name, "_output")), "PERSUADE_Time-to-event_models_parameters_comma.csv"))
 write.csv2(PERSUADE$surv_model_excel, file.path(file.path(getwd(), paste0(name, "_output")), "PERSUADE_Time-to-event_models_parameters_semicolon.csv"))
 ```
 
-# Next steps
+## Obtain Excel template 
+The next step will copy the Excel template `PERSUADE_Excel_template.xltx` to the current working directory. This template provides a convenient structure for transferring survival model parameters into health economic models. 
+```{r, eval=FALSE}
+f_get_excel_template()
+```
 
-- For technical details of each function, see the help pages, e.g. `?f_PERSUADE`.
+## Next steps
+
 - For a full reproducible example, check: `PERSUADE_example_workflow.R` (`file.edit(system.file("example_workflow", "PERSUADE_example_workflow.R", package = "PERSUADE"))`).
 - To adapt PERSUADE to your data, replace the example inputs with your own time-to-event dataset.
+- For technical details of each function, see the help pages, e.g. `?f_PERSUADE`.
 - To list all objects in the PERSUADE package: `ls("package:PERSUADE")`.
