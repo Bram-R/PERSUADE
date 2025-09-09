@@ -205,6 +205,7 @@ workflow. For your own data:
 
 ## License & contact
 
-Licensed under **GPL3**.  
+Licensed under
+[**GPL3**](https://github.com/Bram-R/PERSUADE/tree/master?tab=GPL-3.0-1-ov-file#readme).  
 For questions, enhancements, or collaboration, reach out via GitHub
 discussions or issues.
