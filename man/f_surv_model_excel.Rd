@@ -32,13 +32,28 @@ Formats model parameters (including spline knots) into a
 table suitable for export to Excel.
 }
 \examples{
-\dontrun{
-df_excel <- f_surv_model_excel(
-  ngroups = 2,
+years <- survival::lung$time
+status <-  survival::lung$status
+group <- factor(survival::lung$sex)
+form <- stats::as.formula(survival::Surv(years, status) ~ group)
+surv_model <- f_surv_model(
+  years = years,
+  status = status,
+  group = group,
   strata = FALSE,
-  surv_model = my_models,
-  spline_mod = TRUE,
+  ngroups = nlevels(group),
+  form = form,
+  spline_mod = FALSE,
+  cure_mod = FALSE,
+  cure_link = "logistic",
+  group_names = levels(group)
+)
+f_surv_model_excel(
+  ngroups = nlevels(group),
+  strata = FALSE,
+  surv_model = surv_model,
+  spline_mod = FALSE,
   cure_mod = FALSE
 )
-}
+
 }

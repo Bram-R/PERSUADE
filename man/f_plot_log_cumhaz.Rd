@@ -19,4 +19,8 @@ Creates a log(-log(S(t))) vs log(time) plot to visually assess proportional haza
 \dontrun{
 f_plot_log_cumhaz(PERSUADE)
 }
+
+}
+\seealso{
+\code{\link[=f_PERSUADE]{f_PERSUADE()}}
 }

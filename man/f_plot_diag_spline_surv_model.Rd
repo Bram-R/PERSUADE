@@ -24,4 +24,8 @@ spline model type.
 \dontrun{
 f_plot_diag_spline_surv_model(PERSUADE, model_index = 1)
 }
+
+}
+\seealso{
+\code{\link[=f_PERSUADE]{f_PERSUADE()}}
 }

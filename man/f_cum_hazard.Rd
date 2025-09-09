@@ -13,7 +13,7 @@ f_cum_hazard(years, status, group, ngroups, time_pred, time_unit)
 
 \item{group}{Factor indicating group membership.}
 
-\item{ngroups}{Integer. Number of groups (1–3).}
+\item{ngroups}{Integer. Number of groups (1-3).}
 
 \item{time_pred}{Numeric vector of prediction times.}
 
@@ -35,14 +35,16 @@ Computes cumulative hazard estimates for up to three groups along with
 variance and confidence intervals, using the \pkg{estimateNAH} package.
 }
 \examples{
-\dontrun{
+years <- survival::lung$time
+status <-  survival::lung$status
+group <- factor(survival::lung$sex)
 f_cum_hazard(
-  years = survival::lung$time,
-  status = survival::lung$status,
-  group = factor(survival::lung$sex),
-  ngroups = 2,
-  time_pred = seq(0, 1000, by = 30),
+  years = years,
+  status = status,
+  group = group,
+  ngroups = nlevels(group),
+  time_pred = seq(0, 5000, 100),
   time_unit = 30
 )
-}
+
 }

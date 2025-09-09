@@ -20,7 +20,6 @@ quartile (Q3), maximum, and interquartile range (IQR). Results are rounded
 to three decimals.
 }
 \examples{
-\dontrun{
 f_summary(mtcars)
-}
+
 }

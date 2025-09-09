@@ -25,4 +25,8 @@ including shaded confidence intervals and vertical lines for spline knots.
 PERSUADE <- f_PERSUADE(...)
 f_plot_tp_spline_surv_model(PERSUADE, model_index = 1)
 }
+
+}
+\seealso{
+\code{\link[=f_PERSUADE]{f_PERSUADE()}}
 }

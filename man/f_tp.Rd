@@ -7,7 +7,7 @@
 f_tp(ngroups, cum_haz, time_unit)
 }
 \arguments{
-\item{ngroups}{Integer. Number of groups (1–3).}
+\item{ngroups}{Integer. Number of groups (1-3).}
 
 \item{cum_haz}{Data frame from \code{\link[=f_cum_hazard]{f_cum_hazard()}} with columns
 \code{group}, \code{time}, \code{H_delta}, \code{H_upper_delta}, \code{H_lower_delta}.}
@@ -26,15 +26,17 @@ Derives annualized transition probabilities (and confidence bounds)
 from cumulative hazard estimates, smoothed with LOESS.
 }
 \examples{
-\dontrun{
-cum <- f_cum_hazard(
-  years = survival::lung$time,
-  status = survival::lung$status,
-  group = factor(survival::lung$sex),
-  ngroups = 2,
-  time_pred = seq(0, 1000, by = 30),
+years <- survival::lung$time
+status <-  survival::lung$status
+group <- factor(survival::lung$sex)
+cum_haz <- f_cum_hazard(
+  years = years,
+  status = status,
+  group = group,
+  ngroups = nlevels(group),
+  time_pred = seq(0, 5000, 100),
   time_unit = 30
 )
-f_tp(ngroups = 2, cum_haz = cum, time_unit = 30)
-}
+f_tp(ngroups = nlevels(group), cum_haz = cum_haz, time_unit = 30)
+
 }

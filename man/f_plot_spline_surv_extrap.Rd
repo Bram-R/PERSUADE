@@ -13,7 +13,7 @@ f_plot_spline_surv_extrap(PERSUADE)
 Invisibly returns \code{NULL}. The function draws one or more base R plots as side effects.
 }
 \description{
-Plot Kaplan–Meier curves per group with shaded confidence bands and overlay
+Plot Kaplan-Meier curves per group with shaded confidence bands and overlay
 fitted spline survival models (hazard, odds, normal scales) extrapolated to
 the analysis time horizon. Runs only when \code{PERSUADE$input$spline_mod} is \code{TRUE}.
 }
@@ -22,4 +22,8 @@ the analysis time horizon. Runs only when \code{PERSUADE$input$spline_mod} is \c
 PERSUADE <- f_PERSUADE(...)
 f_plot_spline_surv_extrap(P)
 }
+
+}
+\seealso{
+\code{\link[=f_PERSUADE]{f_PERSUADE()}}
 }

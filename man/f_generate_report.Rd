@@ -4,31 +4,39 @@
 \alias{f_generate_report}
 \title{Generate PDF Report for a PERSUADE Analysis}
 \usage{
-f_generate_report(PERSUADE)
+f_generate_report(PERSUADE, template_path = NULL)
 }
 \arguments{
 \item{PERSUADE}{A PERSUADE object returned by \code{\link[=f_PERSUADE]{f_PERSUADE()}}.}
+
+\item{template_path}{Optional character string giving the full path to an Rmd
+template. If \code{NULL} (the default), the function looks for
+\code{PERSUADE_output.Rmd} within the package installation directory.}
 }
 \value{
 A length-1 character string giving the absolute path to the generated
 PDF, returned invisibly.
 }
 \description{
-Save the PERSUADE object and render a PDF report using \code{PERSUADE_output.Rmd}.
-The function creates an output directory \verb{<name>_output}, saves \code{PERSUADE.RData},
-and writes \verb{<name>.pdf} into that directory.
+Save the PERSUADE object and render a PDF report using the bundled
+\code{PERSUADE_output.Rmd} template, or a user-specified template.
 }
 \details{
-The R Markdown file \code{PERSUADE_output.Rmd} must be available in the
-working directory. Figures are written to a subdirectory \verb{Images/} and the
-knit environment is initialised with the supplied \code{PERSUADE} object.
+The default R Markdown file \code{PERSUADE_output.Rmd} is stored within
+the package under \verb{inst/rmd/}. Figures are written to a subdirectory
+\verb{Images/} inside the output folder, and the knit environment is
+initialised with the supplied \code{PERSUADE} object. Supplying a custom
+\code{template_path} allows alternative report formats to be used, and
+simplifies testing. This function requires the following suggested packages:
+\pkg{knitr}, \pkg{kableExtra}, and \pkg{rmarkdown}.
+If not installed, the function will throw an error.
 }
 \examples{
 \dontrun{
-PERSUADE <- f_PERSUADE(...)
-pdf_path <- f_generate_report(P)
-pdf_path
+f_generate_report(PERSUADE)
+f_generate_report(PERSUADE, template_path = "custom_template.Rmd")
 }
+
 }
 \seealso{
 \code{\link[=f_PERSUADE]{f_PERSUADE()}}

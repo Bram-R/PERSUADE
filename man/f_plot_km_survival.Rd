@@ -20,4 +20,8 @@ Generates Kaplan-Meier survival plots from a PERSUADE object using
 \dontrun{
 f_plot_km_survival(PERSUADE)
 }
+
+}
+\seealso{
+\code{\link[=f_PERSUADE]{f_PERSUADE()}}
 }

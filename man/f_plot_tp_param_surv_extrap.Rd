@@ -21,4 +21,8 @@ intervals and overlay predictions from all fitted parametric survival models.
 PERSUADE <- f_PERSUADE(...)
 f_plot_tp_param_surv_extrap(P)
 }
+
+}
+\seealso{
+\code{\link[=f_PERSUADE]{f_PERSUADE()}}
 }

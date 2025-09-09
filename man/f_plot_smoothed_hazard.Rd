@@ -19,4 +19,8 @@ Plots smoothed hazard estimates for each group in the PERSUADE object.
 \dontrun{
 f_plot_smoothed_hazard(PERSUADE)
 }
+
+}
+\seealso{
+\code{\link[=f_PERSUADE]{f_PERSUADE()}}
 }

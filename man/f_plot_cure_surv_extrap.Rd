@@ -13,7 +13,7 @@ f_plot_cure_surv_extrap(PERSUADE)
 Invisibly returns \code{NULL}. The function draws one or more base R plots as side effects.
 }
 \description{
-Plot Kaplan–Meier curves per group with shaded confidence bands and overlay
+Plot Kaplan-Meier curves per group with shaded confidence bands and overlay
 fitted cure survival models (Weibull, log-normal, log-logistic; mixture and
 non-mixture forms) extrapolated to the analysis time horizon. Runs only when
 \code{PERSUADE$input$cure_mod} is \code{TRUE}.
@@ -23,4 +23,8 @@ non-mixture forms) extrapolated to the analysis time horizon. Runs only when
 PERSUADE <- f_PERSUADE(...)
 f_plot_cure_surv_extrap(P)
 }
+
+}
+\seealso{
+\code{\link[=f_PERSUADE]{f_PERSUADE()}}
 }

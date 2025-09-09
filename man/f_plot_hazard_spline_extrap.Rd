@@ -22,4 +22,8 @@ hazard functions from all fitted spline survival models. Runs only when
 PERSUADE <- f_PERSUADE(...)
 f_plot_hazard_spline_extrap(P)
 }
+
+}
+\seealso{
+\code{\link[=f_PERSUADE]{f_PERSUADE()}}
 }

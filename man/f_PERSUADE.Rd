@@ -46,7 +46,7 @@ f_PERSUADE(
 A list of class \code{"PERSUADE"} containing:
 \itemize{
 \item \code{input}: Input arguments used in the analysis.
-\item \code{surv_obs}: Observed survival results (Kaplan–Meier, hazards, Cox model).
+\item \code{surv_obs}: Observed survival results (Kaplan-Meier, hazards, Cox model).
 \item \code{surv_model}: Fitted parametric/spline/cure models.
 \item \code{surv_pred}: Model predictions.
 \item \code{surv_model_excel}: Excel-ready parameter table.
@@ -54,31 +54,34 @@ A list of class \code{"PERSUADE"} containing:
 }
 }
 \description{
-Executes the PERSUADE workflow for parametric survival analysis, including Kaplan–Meier,
+Executes the PERSUADE workflow for parametric survival analysis, including Kaplan-Meier,
 parametric, spline, and cure models. Produces outputs for visualization, prediction,
 and Excel export.
 }
 \details{
 The workflow proceeds in three main stages:
 \enumerate{
-\item Observed data (Kaplan–Meier, hazards, Cox regression).
+\item Observed data (Kaplan-Meier, hazards, Cox regression).
 \item Parametric, spline, and cure model fitting.
 \item Prediction and export of results.
 }
 }
 \examples{
 \dontrun{
+years <- survival::lung$time
+status <-  survival::lung$status
+group <- factor(survival::lung$sex)
 f_PERSUADE(
   name = "Example",
-  years = survival::lung$time,
-  status = survival::lung$status,
-  group = factor(survival::lung$sex),
+  years = years,
+  status = status,
+  group = group,
   strata = FALSE,
-  spline_mod = TRUE,
+  spline_mod = FALSE,
   cure_mod = FALSE,
-  time_unit = 30,
-  time_horizon = 1000,
-  time_pred_surv_table = seq(30, 1000, 30)
+  time_unit = 365.25/12,
+  time_horizon = 5000,
+  time_pred_surv_table = seq(0, 5000, 100)
 )
 }
 }

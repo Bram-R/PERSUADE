@@ -1,0 +1,122 @@
+---
+title: "Introduction to PERSUADE"
+author: "Bram Ramaekers"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to PERSUADE}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.align = "center"
+)
+```
+
+## Introduction
+
+PERSUADE (ParamEtRic SUrvivAl moDel sElection) is a standardized tool in R to support the selection and communication of parametric survival models in health economic and decision-analytic modelling.
+
+It provides:
+
+- Kaplan–Meier visualizations and diagnostics
+- Assessment of proportional hazards (PH) assumption
+- Observed and predicted hazard function plots
+- Fit comparisons of standard, spline-based, and cure models
+- Goodness-of-fit statistics (AIC/BIC)
+- Explore model extrapolation beyond observed data
+- Automated PDF reports for communication
+- Export the parametric survival model parameters for use in decision-analytic models
+
+This vignette shows how to use PERSUADE with a step-by-step workflow.
+
+## Install and load the PERSUADE package
+```{r setup}
+# Install and load PERSUADE
+# devtools::install_github("Bram-R/PERSUADE", quiet = TRUE) # To install the development version of PERSUADE
+# install.packages("PERSUADE") # To install CRAN version of PERSUADE
+library(PERSUADE)
+```
+
+## Example workflow
+The following example reproduces the workflow in `PERSUADE_example_workflow.R` (can be obtained through: `file.edit(system.file("example_workflow", "PERSUADE_example_workflow.R", package = "PERSUADE"))`). We will use the `flexsurv::bc` dataset (time to recurrence for breast cancer patients):
+```{r data}
+# Example dataset
+years  <- flexsurv::bc$recyrs   # time to event
+status <- flexsurv::bc$censrec  # event indicator
+group  <- flexsurv::bc$group    # grouping variable
+```
+
+## Define analysis settings
+Define the analysis settings to run PERSUADE:
+```{r settings}
+name <- "BC_OS"        # project name
+time_pred_surv_table <- c(0, 1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 35)  # survival table times
+time_unit    <- 1/12   # monthly data in years
+time_horizon <- 40     # analysis horizon (years)
+```
+
+## Running PERSUADE
+The main function is `f_PERSUADE()`, which generates the S3 object PERSUADE:
+```{r f_PERSUADE, eval=FALSE}
+PERSUADE <- f_PERSUADE(
+  name = name,
+  years = years,
+  status = status,
+  group = group,
+  strata = FALSE,
+  spline_mod = TRUE,
+  cure_mod = TRUE,
+  cure_link = "logistic", # options: "logistic", "loglog", "identity", "probit"
+  time_unit = time_unit,
+  time_horizon = time_horizon,
+  time_pred_surv_table = time_pred_surv_table
+)
+```
+
+## Inspecting results
+The output is a PERSUADE object. You can inspect it using:
+```{r PERSUADE_res, eval=FALSE}
+print(PERSUADE)
+summary(PERSUADE, type = "km")
+summary(PERSUADE, type = "gof")
+```
+
+## Generate diagnostic and model plots:
+```{r PERSUADE_plot, eval=FALSE}
+plot(PERSUADE, type = "km")            # Kaplan-Meier
+plot(PERSUADE, type = "ph")            # Proportional hazards
+plot(PERSUADE, type = "hr")            # Hazard functions
+plot(PERSUADE, type = "param_models")  # Standard parametric fits
+plot(PERSUADE, type = "spline_models") # Spline-based fits
+plot(PERSUADE, type = "cure_models")   # Cure models
+```
+
+## Reporting
+To automatically generate a PDF report (R Markdown):
+```{r PERSUADE_report, eval=FALSE}
+f_generate_report(PERSUADE)
+```
+
+## Exporting model parameters
+To automatically generate a PDF report (R Markdown):
+```{r PERSUADE_export, eval=FALSE}
+write.csv(PERSUADE$surv_model_excel, file.path(file.path(getwd(), paste0(name, "_output")), "PERSUADE_Time-to-event_models_parameters_comma.csv"))
+write.csv2(PERSUADE$surv_model_excel, file.path(file.path(getwd(), paste0(name, "_output")), "PERSUADE_Time-to-event_models_parameters_semicolon.csv"))
+```
+
+## Obtain Excel template 
+The next step will copy the Excel template `PERSUADE_Excel_template.xltx` to the current working directory. This template provides a convenient structure for transferring survival model parameters into health economic models. 
+```{r, eval=FALSE}
+f_get_excel_template()
+```
+
+## Next steps
+
+- For a full reproducible example, check: `PERSUADE_example_workflow.R` (`file.edit(system.file("example_workflow", "PERSUADE_example_workflow.R", package = "PERSUADE"))`).
+- To adapt PERSUADE to your data, replace the example inputs with your own time-to-event dataset.
+- For technical details of each function, see the help pages, e.g. `?f_PERSUADE`.
+- To list all objects in the PERSUADE package: `ls("package:PERSUADE")`.

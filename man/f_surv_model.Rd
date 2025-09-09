@@ -26,6 +26,8 @@ f_surv_model(
 
 \item{strata}{Logical. Whether to stratify models by group.}
 
+\item{ngroups}{Integer. Number of groups.}
+
 \item{form}{A survival model formula (e.g., \code{Surv(years, status) ~ group}).}
 
 \item{spline_mod}{Logical. Whether spline models should be fitted.}
@@ -52,23 +54,25 @@ using the \pkg{flexsurv} package.
 \details{
 Models fitted include Exponential, Weibull, Gompertz, Log-normal,
 Log-logistic, Gamma, Generalised Gamma. Optional spline models
-(1–3 knots, scales: hazard, odds, normal) and cure models
+(1-3 knots, scales: hazard, odds, normal) and cure models
 (Weibull, Log-normal, Log-logistic with logistic/probit/etc. link).
 }
 \examples{
-\dontrun{
-form <- survival::Surv(survival::lung$time, survival::lung$status) ~ factor(survival::lung$sex)
+years <- survival::lung$time
+status <-  survival::lung$status
+group <- factor(survival::lung$sex)
+form <- stats::as.formula(survival::Surv(years, status) ~ group)
 f_surv_model(
-  years = survival::lung$time,
-  status = survival::lung$status,
-  group = factor(survival::lung$sex),
+  years = years,
+  status = status,
+  group = group,
   strata = FALSE,
-  ngroups = 2,
+  ngroups = nlevels(group),
   form = form,
-  spline_mod = TRUE,
+  spline_mod = FALSE,
   cure_mod = FALSE,
   cure_link = "logistic",
-  group_names = levels(factor(survival::lung$sex))
+  group_names = levels(group)
 )
-}
+
 }

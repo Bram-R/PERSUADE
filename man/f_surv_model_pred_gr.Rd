@@ -35,13 +35,36 @@ Consolidates predictions from \code{\link[=f_surv_model_pred]{f_surv_model_pred(
 group-specific data frames.
 }
 \examples{
-\dontrun{
-gr_preds <- f_surv_model_pred_gr(
-  ngroups = 2,
-  surv_model = my_models,
-  surv_model_pred = preds,
-  spline_mod = TRUE,
+years <- survival::lung$time
+status <-  survival::lung$status
+group <- factor(survival::lung$sex)
+form <- stats::as.formula(survival::Surv(years, status) ~ group)
+surv_model <- f_surv_model(
+  years = years,
+  status = status,
+  group = group,
+  strata = FALSE,
+  ngroups = nlevels(group),
+  form = form,
+  spline_mod = FALSE,
+  cure_mod = FALSE,
+  cure_link = "logistic",
+  group_names = levels(group)
+)
+surv_model_pred <- f_surv_model_pred(
+  ngroups = nlevels(group),
+  time_pred = seq(0, 5000, 100),
+  surv_model = surv_model,
+  spline_mod = FALSE,
+  cure_mod = FALSE,
+  group_names = levels(group)
+)
+f_surv_model_pred_gr(
+  ngroups = nlevels(group),
+  surv_model = surv_model,
+  surv_model_pred = surv_model_pred,
+  spline_mod = FALSE,
   cure_mod = FALSE
 )
-}
+
 }

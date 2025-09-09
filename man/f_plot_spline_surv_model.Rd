@@ -22,4 +22,8 @@ confidence bands and vertical lines for knot positions.
 \dontrun{
 f_plot_spline_surv_model(PERSUADE, model_index = 1)
 }
+
+}
+\seealso{
+\code{\link[=f_PERSUADE]{f_PERSUADE()}}
 }

@@ -24,4 +24,8 @@ using transformations depending on the underlying distribution
 \dontrun{
 f_plot_diag_cure_surv_model(PERSUADE, model_index = 1)
 }
+
+}
+\seealso{
+\code{\link[=f_PERSUADE]{f_PERSUADE()}}
 }

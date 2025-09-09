@@ -39,14 +39,28 @@ Generates predicted survival and hazard values from fitted parametric,
 spline, and cure models.
 }
 \examples{
-\dontrun{
-preds <- f_surv_model_pred(
-  ngroups = 2,
-  time_pred = seq(0, 1000, 30),
-  surv_model = my_models,
-  spline_mod = TRUE,
+years <- survival::lung$time
+status <-  survival::lung$status
+group <- factor(survival::lung$sex)
+form <- stats::as.formula(survival::Surv(years, status) ~ group)
+surv_model <- f_surv_model(
+  years = years,
+  status = status,
+  group = group,
+  strata = FALSE,
+  ngroups = nlevels(group),
+  form = form,
+  spline_mod = FALSE,
   cure_mod = FALSE,
-  group_names = c("Male", "Female")
+  cure_link = "logistic",
+  group_names = levels(group)
 )
-}
+f_surv_model_pred(
+  ngroups = nlevels(group),
+  time_pred = seq(0, 5000, 100),
+  surv_model = surv_model,
+  spline_mod = FALSE,
+  cure_mod = FALSE,
+  group_names = levels(group)
+)
 }

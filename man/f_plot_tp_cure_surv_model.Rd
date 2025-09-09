@@ -25,4 +25,8 @@ intervals, overlaid with predictions from a selected cure survival model
 PERSUADE <- f_PERSUADE(...)
 f_plot_tp_cure_surv_model(PERSUADE, model_index = 1)
 }
+
+}
+\seealso{
+\code{\link[=f_PERSUADE]{f_PERSUADE()}}
 }

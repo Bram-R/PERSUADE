@@ -1,3 +1,14 @@
 ^PERSUADE\.Rproj$
 ^\.Rproj\.user$
+^\.github$
 ^README\.Rmd$
+^doc$
+^Meta$
+^LICENSE\.md$
+^PERSUADE\.enl$
+^PERSUADE_figure_process\.png$
+^PERSUADE_figure_process\.vsdx$
+^tests/testthat/grid_test/
+^inst/example/
+^inst/CITATION$
+^cran-comments\.md$

@@ -22,4 +22,8 @@ Runs only when \code{PERSUADE$input$cure_mod} is \code{TRUE}.
 PERSUADE <- f_PERSUADE(...)
 f_plot_tp_cure_surv_extrap(P)
 }
+
+}
+\seealso{
+\code{\link[=f_PERSUADE]{f_PERSUADE()}}
 }

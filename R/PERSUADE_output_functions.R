@@ -12,6 +12,9 @@
 #' \dontrun{
 #' f_plot_km_survival(PERSUADE)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
 #' @export
 f_plot_km_survival <- function(PERSUADE) {
   input <- PERSUADE$input
@@ -19,6 +22,9 @@ f_plot_km_survival <- function(PERSUADE) {
   ngroups <- misc$ngroups
   form <- misc$form
   group_names <- misc$group_names
+
+  line_type <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
+  km_line_color <- c("black", "lightgrey", "darkgrey")
 
   # Build the data frame used for survival fit
   df_km <- if (ngroups > 1) {
@@ -38,23 +44,32 @@ f_plot_km_survival <- function(PERSUADE) {
   surv_object <- survminer::surv_fit(formula = form, data = df_km)
 
   # Plot
-  plot_obj <- survminer::ggsurvplot(
-    fit = surv_object,
-    data = df_km,
-    legend.labs = group_names,
-    risk.table = TRUE,
-    conf.int = TRUE,
-    surv.median.line = "hv",
-    ncensor.plot = ngroups > 1,
-    censor = ngroups == 1,
-    ggtheme = ggplot2::theme_light(),
-    color = if (ngroups > 1) "strata" else "black",
-    linetype = if (ngroups > 1) as.integer(c(1, "3333", "5212")),
-    size = 0.5,
-    legend = "top"
+  plot_obj <- suppressWarnings( # suppress warning related to risk.table = TRUE and surv.median.line = "hv"
+    survminer::ggsurvplot(
+      fit = surv_object,
+      data = df_km,
+      legend.labs = group_names,
+      risk.table = TRUE,
+      conf.int = TRUE,
+      surv.median.line = "hv",
+      ncensor.plot = ngroups > 1,
+      censor = ngroups == 1,
+      ggtheme = ggplot2::theme_light(),
+      color = if (ngroups > 1) "strata" else "black",
+      linetype = if (ngroups > 1) "strata" else "solid",
+      size = 0.5,
+      legend = "top"
+    )
   )
 
-  return(plot_obj)
+  # Override line types and colours manually
+  if (ngroups > 1) {
+    plot_obj$plot <- plot_obj$plot +
+      ggplot2::scale_linetype_manual(values = line_type) +
+      ggplot2::scale_color_manual(values = km_line_color)
+  }
+
+  return(suppressWarnings(print(plot_obj)))
 }
 
 #' Plot Kaplan-Meier Survival Curves (Base R)
@@ -70,6 +85,9 @@ f_plot_km_survival <- function(PERSUADE) {
 #' \dontrun{
 #' f_plot_km_survival_base(PERSUADE)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
 #' @export
 f_plot_km_survival_base <- function(PERSUADE) {
   input <- PERSUADE$input
@@ -79,7 +97,7 @@ f_plot_km_survival_base <- function(PERSUADE) {
 
   ngroups <- misc$ngroups
   group_names <- misc$group_names
-  line_type <- as.integer(c(1, "3333", "5212"))
+  line_type <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
   km_line_color <- c("black", "lightgrey", "darkgrey")
 
   # Base KM plot
@@ -92,22 +110,22 @@ f_plot_km_survival_base <- function(PERSUADE) {
   # Add shaded CI per group
   for (i in seq_len(ngroups)) {
     idx <- surv_obs$km_names == i
-    polygon(
-      na.omit(data.frame(
+    graphics::polygon(
+      stats::na.omit(data.frame(
         x = c(surv_obs$km$time[idx], rev(surv_obs$km$time[idx])),
         y = c(surv_obs$km$lower[idx], rev(surv_obs$km$upper[idx]))
       )),
-      col = adjustcolor(km_line_color[i], alpha.f = 0.3),
+      col = grDevices::adjustcolor(km_line_color[i], alpha.f = 0.3),
       border = NA
     )
   }
 
   # Add legend with model and KM lines
-  legend(
+  graphics::legend(
     "bottomleft",
     legend = group_names,
     col = km_line_color[1:ngroups],
-    lty = c(line_type[1:ngroups], rep(1, ngroups)),
+    lty = c(line_type[1:ngroups]),
     cex = 0.8, ncol = 2, bty = "n"
   )
 }
@@ -124,6 +142,9 @@ f_plot_km_survival_base <- function(PERSUADE) {
 #' \dontrun{
 #' f_plot_log_cumhaz(PERSUADE)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
 #' @export
 f_plot_log_cumhaz <- function(PERSUADE) {
   surv_obs <- PERSUADE$surv_obs
@@ -159,7 +180,7 @@ f_plot_log_cumhaz <- function(PERSUADE) {
   )
 
   if (misc$ngroups > 1) {
-    legend(
+    graphics::legend(
       "topleft",
       legend = misc$group_names,
       col = c("black", "lightgrey", "darkgrey")[unique(km_names)],
@@ -182,6 +203,9 @@ f_plot_log_cumhaz <- function(PERSUADE) {
 #' \dontrun{
 #' f_plot_schoenfeld_residuals(PERSUADE)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
 #' @export
 f_plot_schoenfeld_residuals <- function(PERSUADE) {
   if (PERSUADE$misc$ngroups < 2) {
@@ -204,12 +228,12 @@ f_plot_schoenfeld_residuals <- function(PERSUADE) {
       ylab = paste("Beta(t) for", misc$group_names[i + 1], "vs", misc$group_names[1])
     )
 
-    abline(h = 0, lty = 3)
+    graphics::abline(h = 0, lty = 3)
 
-    lm_fit <- lm(zph_data[, i] ~ zph_time)
-    abline(lm_fit$coefficients, col = "7", lty = 1, lwd = 2)
+    lm_fit <- stats::lm(zph_data[, i] ~ zph_time)
+    graphics::abline(lm_fit$coefficients, col = "7", lty = 1, lwd = 2)
 
-    legend("bottomleft", legend = c(
+    graphics::legend("bottomleft", legend = c(
       "smoothed line (natural spline with df = 4)",
       "regression line"
     ),
@@ -230,6 +254,9 @@ f_plot_schoenfeld_residuals <- function(PERSUADE) {
 #' \dontrun{
 #' f_plot_smoothed_hazard(PERSUADE)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
 #' @export
 f_plot_smoothed_hazard <- function(PERSUADE) {
   surv_obs <- PERSUADE$surv_obs
@@ -238,7 +265,7 @@ f_plot_smoothed_hazard <- function(PERSUADE) {
 
   # Define plotting colors and line types (extendable, will recycle if needed)
   haz_line_color <- c("black", "lightgrey", "darkgrey")
-  line_type <- as.integer(c(1, "3333", "5212", "3313", "1144", "42"))
+  line_type <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
 
   # Extract plot limits
   xlim_range <- c(0, surv_obs$haz$max$time)
@@ -268,7 +295,7 @@ f_plot_smoothed_hazard <- function(PERSUADE) {
     } else {
       # Add lines for remaining groups
       with(haz_data, {
-        lines(
+        graphics::lines(
           x = est.grid,
           y = haz.est,
           col = haz_line_color[(i - 1) %% length(haz_line_color) + 1],
@@ -280,7 +307,7 @@ f_plot_smoothed_hazard <- function(PERSUADE) {
   }
 
   # Add legend
-  legend(
+  graphics::legend(
     "topleft",
     legend = misc$group_names,
     col = haz_line_color[seq_len(ngroups)],
@@ -303,6 +330,9 @@ f_plot_smoothed_hazard <- function(PERSUADE) {
 #' \dontrun{
 #' f_plot_hazard_with_models(PERSUADE)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
 #' @export
 f_plot_hazard_with_models <- function(PERSUADE) {
   input <- PERSUADE$input
@@ -314,7 +344,7 @@ f_plot_hazard_with_models <- function(PERSUADE) {
   # Define base plot styles
   haz_line_color <- c("black", "lightgrey", "darkgrey")
   line_color <- 1:9
-  line_type <- c(1, 3333, 5212)
+  line_type <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
 
   # Define model groups to iterate over
   model_types <- list(
@@ -346,7 +376,7 @@ f_plot_hazard_with_models <- function(PERSUADE) {
 
     # ── Parametric Model Overlays ─────────────────────────────────────────────
     for (j in seq_along(model_types$base)) {
-      lines(
+      graphics::lines(
         surv_pred$model[[model_types$base[j]]]$hazard[,1],
         surv_pred$model[[model_types$base[j]]]$hazard[,i + 1],
         col = line_color[j],
@@ -354,7 +384,7 @@ f_plot_hazard_with_models <- function(PERSUADE) {
         lwd = 1
       )
     }
-    legend("topleft", legend = misc$lbls, col = line_color[1:7], lty = line_type[i], cex = 0.8, bty = "n")
+    graphics::legend("topleft", legend = misc$lbls, col = line_color[1:7], lty = line_type[i], cex = 0.8, bty = "n")
 
     # ── Spline Models ─────────────────────────────────────────────────────────
     if (isTRUE(input$spline_mod)) {
@@ -371,7 +401,7 @@ f_plot_hazard_with_models <- function(PERSUADE) {
         ylim = c(0, surv_obs$haz$max$smooth)
       )
       for (j in seq_along(model_types$spline)) {
-        lines(
+        graphics::lines(
           surv_pred$model$spline[[model_types$spline[j]]]$hazard[,1],
           surv_pred$model$spline[[model_types$spline[j]]]$hazard[,i + 1],
           col = line_color[j],
@@ -379,7 +409,7 @@ f_plot_hazard_with_models <- function(PERSUADE) {
           lwd = 1
         )
       }
-      legend("topleft", legend = misc$lbls_spline, col = line_color[1:9], lty = line_type[i], cex = 0.8, bty = "n")
+      graphics::legend("topleft", legend = misc$lbls_spline, col = line_color[1:9], lty = line_type[i], cex = 0.8, bty = "n")
     }
 
     # ── Cure Models ───────────────────────────────────────────────────────────
@@ -398,7 +428,7 @@ f_plot_hazard_with_models <- function(PERSUADE) {
       )
       for (j in seq_along(model_types$cure)) {
         col_idx <- if (length(cure_col_index) >= i) cure_col_index[i] else 2
-        lines(
+        graphics::lines(
           surv_pred$model$cure[[model_types$cure[j]]]$hazard[,1],
           surv_pred$model$cure[[model_types$cure[j]]]$hazard[,i + 1],
           col = line_color[j],
@@ -406,7 +436,7 @@ f_plot_hazard_with_models <- function(PERSUADE) {
           lwd = 1
         )
       }
-      legend("topleft", legend = misc$lbls_cure, col = line_color[1:6], lty = line_type[i], cex = 0.8, bty = "n")
+      graphics::legend("topleft", legend = misc$lbls_cure, col = line_color[1:6], lty = line_type[i], cex = 0.8, bty = "n")
     }
   }
 }
@@ -425,6 +455,9 @@ f_plot_hazard_with_models <- function(PERSUADE) {
 #' \dontrun{
 #' f_plot_param_surv_model(PERSUADE, model_index = 1)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
 #' @export
 f_plot_param_surv_model <- function(PERSUADE, model_index = 1) {
   input <- PERSUADE$input
@@ -438,7 +471,7 @@ f_plot_param_surv_model <- function(PERSUADE, model_index = 1) {
 
   ngroups <- misc$ngroups
   group_names <- misc$group_names
-  line_type <- as.integer(c(1, "3333", "5212"))
+  line_type <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
   km_line_color <- c("black", "lightgrey", "darkgrey")
 
   # Base KM plot
@@ -451,19 +484,19 @@ f_plot_param_surv_model <- function(PERSUADE, model_index = 1) {
   # Add shaded CI per group
   for (i in seq_len(ngroups)) {
     idx <- surv_obs$km_names == i
-    polygon(
-      na.omit(data.frame(
+    graphics::polygon(
+      stats::na.omit(data.frame(
         x = c(surv_obs$km$time[idx], rev(surv_obs$km$time[idx])),
         y = c(surv_obs$km$lower[idx], rev(surv_obs$km$upper[idx]))
       )),
-      col = adjustcolor(km_line_color[i], alpha.f = 0.3),
+      col = grDevices::adjustcolor(km_line_color[i], alpha.f = 0.3),
       border = NA
     )
   }
 
   # Overlay model predictions
   for (i in seq_len(ngroups)) {
-    lines(
+    graphics::lines(
       x = input$time_pred,
       y = surv_pred$model[[model_key]]$surv[, i + 1],
       col = as.character(col_index),
@@ -473,11 +506,11 @@ f_plot_param_surv_model <- function(PERSUADE, model_index = 1) {
   }
 
   # Add legend with model and KM lines
-  legend(
+  graphics::legend(
     "bottomleft",
     legend = c(group_names, rep("", ngroups)),
     col = c(rep(as.character(col_index), ngroups), km_line_color[1:ngroups]),
-    lty = c(line_type[1:ngroups], rep(1, ngroups)),
+    lty = c(line_type[1:ngroups]),
     cex = 0.8, ncol = 2, bty = "n"
   )
 }
@@ -496,6 +529,9 @@ f_plot_param_surv_model <- function(PERSUADE, model_index = 1) {
 #' \dontrun{
 #' f_plot_spline_surv_model(PERSUADE, model_index = 1)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
 #' @export
 f_plot_spline_surv_model <- function(PERSUADE, model_index = 1) {
   input <- PERSUADE$input
@@ -510,7 +546,7 @@ f_plot_spline_surv_model <- function(PERSUADE, model_index = 1) {
 
   ngroups <- misc$ngroups
   group_names <- misc$group_names
-  line_type <- as.integer(c(1, "3333", "5212"))
+  line_type <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
   km_line_color <- c("black", "lightgrey", "darkgrey")
 
   # Base KM plot
@@ -523,19 +559,19 @@ f_plot_spline_surv_model <- function(PERSUADE, model_index = 1) {
   # Add shaded CI per group
   for (i in seq_len(ngroups)) {
     idx <- surv_obs$km_names == i
-    polygon(
-      na.omit(data.frame(
+    graphics::polygon(
+      stats::na.omit(data.frame(
         x = c(surv_obs$km$time[idx], rev(surv_obs$km$time[idx])),
         y = c(surv_obs$km$lower[idx], rev(surv_obs$km$upper[idx]))
       )),
-      col = adjustcolor(km_line_color[i], alpha.f = 0.3),
+      col = grDevices::adjustcolor(km_line_color[i], alpha.f = 0.3),
       border = NA
     )
   }
 
   # Overlay model predictions for each group
   for (i in seq_len(ngroups)) {
-    lines(
+    graphics::lines(
       x = input$time_pred,
       y = surv_pred$model$spline[[model_key]]$surv[, i + 1],
       col = as.character(col_index),
@@ -549,17 +585,17 @@ f_plot_spline_surv_model <- function(PERSUADE, model_index = 1) {
   if (length(knots) >= 2) {
     # Middle knots (internal): solid dashed line
     internal_knots <- knots[2:(length(knots) - 1)]
-    abline(v = internal_knots, lty = 2, lwd = 1.5)
+    graphics::abline(v = internal_knots, lty = 2, lwd = 1.5)
     # Boundary knots (first & last): lighter dashed line
-    abline(v = c(knots[1], knots[length(knots)]), lty = 3, lwd = 1)
+    graphics::abline(v = c(knots[1], knots[length(knots)]), lty = 3, lwd = 1)
   }
 
   # Add legend
-  legend(
+  graphics::legend(
     "bottomleft",
     legend = c(group_names, rep("", ngroups)),
     col = c(rep(as.character(col_index), ngroups), km_line_color[1:ngroups]),
-    lty = c(line_type[1:ngroups], rep(1, ngroups)),
+    lty = c(line_type[1:ngroups]),
     cex = 0.8, ncol = 2, bty = "n"
   )
 }
@@ -578,6 +614,9 @@ f_plot_spline_surv_model <- function(PERSUADE, model_index = 1) {
 #' \dontrun{
 #' f_plot_cure_surv_model(PERSUADE, model_index = 1)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
 #' @export
 f_plot_cure_surv_model <- function(PERSUADE, model_index = 1) {
   input <- PERSUADE$input
@@ -591,7 +630,7 @@ f_plot_cure_surv_model <- function(PERSUADE, model_index = 1) {
 
   ngroups <- misc$ngroups
   group_names <- misc$group_names
-  line_type <- as.integer(c(1, "3333", "5212"))
+  line_type     <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
   km_line_color <- c("black", "lightgrey", "darkgrey")
 
   # Base KM plot
@@ -604,19 +643,19 @@ f_plot_cure_surv_model <- function(PERSUADE, model_index = 1) {
   # Add shaded CI per group
   for (i in seq_len(ngroups)) {
     idx <- surv_obs$km_names == i
-    polygon(
-      na.omit(data.frame(
+    graphics::polygon(
+      stats::na.omit(data.frame(
         x = c(surv_obs$km$time[idx], rev(surv_obs$km$time[idx])),
         y = c(surv_obs$km$lower[idx], rev(surv_obs$km$upper[idx]))
       )),
-      col = adjustcolor(km_line_color[i], alpha.f = 0.3),
+      col = grDevices::adjustcolor(km_line_color[i], alpha.f = 0.3),
       border = NA
     )
   }
 
   # Overlay cure model predictions
   for (i in seq_len(ngroups)) {
-    lines(
+    graphics::lines(
       x = input$time_pred,
       y = surv_pred$model$cure[[model_key]]$surv[, i + 1],
       col = as.character(col_index),
@@ -626,11 +665,11 @@ f_plot_cure_surv_model <- function(PERSUADE, model_index = 1) {
   }
 
   # Add legend
-  legend(
+  graphics::legend(
     "bottomleft",
     legend = c(group_names, rep("", ngroups)),
     col = c(rep(as.character(col_index), ngroups), km_line_color[1:ngroups]),
-    lty = c(line_type[1:ngroups], rep(1, ngroups)),
+    lty = c(line_type[1:ngroups]),
     cex = 0.8, ncol = 2, bty = "n"
   )
 }
@@ -651,6 +690,9 @@ f_plot_cure_surv_model <- function(PERSUADE, model_index = 1) {
 #' \dontrun{
 #' f_plot_diag_param_surv_model(PERSUADE, model_index = 1)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
 #' @export
 f_plot_diag_param_surv_model <- function(PERSUADE, model_index = 1) {
   input <- PERSUADE$input
@@ -664,7 +706,7 @@ f_plot_diag_param_surv_model <- function(PERSUADE, model_index = 1) {
 
   ngroups <- misc$ngroups
   group_names <- misc$group_names
-  line_type <- as.integer(c(1, "3333", "5212"))
+  line_type     <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
   point_shape <- c(1, 8, 9)
   km_line_color <- c("black", "lightgrey", "darkgrey")
 
@@ -683,8 +725,8 @@ f_plot_diag_param_surv_model <- function(PERSUADE, model_index = 1) {
       pred = function(time, haz) cbind(time, log(haz))
     ),
     lnorm = list(
-      obs  = function(time, surv) cbind(log(time), -qnorm(surv)),
-      pred = function(time, surv) cbind(log(time), -qnorm(surv))
+      obs  = function(time, surv) cbind(log(time), -stats::qnorm(surv)),
+      pred = function(time, surv) cbind(log(time), -stats::qnorm(surv))
     ),
     llog  = list(
       obs  = function(time, surv) cbind(log(time), -log(surv / (1 - surv))),
@@ -762,11 +804,11 @@ f_plot_diag_param_surv_model <- function(PERSUADE, model_index = 1) {
         surv = surv_pred$model[[model_key]]$surv[, i + 1]
       )
     }
-    lines(pred_data, col = as.character(col_index), lty = line_type[i], lwd = 2)
+    graphics::lines(pred_data, col = as.character(col_index), lty = line_type[i], lwd = 2)
   }
 
   # Legend
-  legend(
+  graphics::legend(
     "topleft",
     legend = c(group_names, rep("", ngroups)),
     col = c(rep(as.character(col_index), ngroups), km_line_color[1:ngroups]),
@@ -792,6 +834,9 @@ f_plot_diag_param_surv_model <- function(PERSUADE, model_index = 1) {
 #' \dontrun{
 #' f_plot_diag_spline_surv_model(PERSUADE, model_index = 1)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
 #' @export
 f_plot_diag_spline_surv_model <- function(PERSUADE, model_index = 1) {
   input <- PERSUADE$input
@@ -806,7 +851,7 @@ f_plot_diag_spline_surv_model <- function(PERSUADE, model_index = 1) {
 
   ngroups <- misc$ngroups
   group_names <- misc$group_names
-  line_type <- as.integer(c(1, "3333", "5212"))
+  line_type     <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
   point_shape <- c(1, 8, 9)
   km_line_color <- c("black", "lightgrey", "darkgrey")
 
@@ -836,8 +881,8 @@ f_plot_diag_spline_surv_model <- function(PERSUADE, model_index = 1) {
       ylab = "-LN(survival odds)"
     ),
     normal = list(
-      obs  = function(time, surv) cbind(log(time), -qnorm(surv)),
-      pred = function(time, surv) cbind(log(time), -qnorm(surv)),
+      obs  = function(time, surv) cbind(log(time), -stats::qnorm(surv)),
+      pred = function(time, surv) cbind(log(time), -stats::qnorm(surv)),
       xlab = "LN(time)",
       ylab = "- standard normal quartiles"
     )
@@ -872,7 +917,7 @@ f_plot_diag_spline_surv_model <- function(PERSUADE, model_index = 1) {
       time = input$time_pred,
       surv = surv_pred$model$spline[[model_key]]$surv[, i + 1]
     )
-    lines(pred_data, col = as.character(col_index), lty = line_type[i], lwd = 2)
+    graphics::lines(pred_data, col = as.character(col_index), lty = line_type[i], lwd = 2)
   }
 
   # Draw knots
@@ -880,16 +925,16 @@ f_plot_diag_spline_surv_model <- function(PERSUADE, model_index = 1) {
   if (!is.null(knots)) {
     if (length(knots) >= 2) {
       # boundary knots
-      abline(v = knots[c(1, length(knots))], lty = 3, lwd = 1)
+      graphics::abline(v = knots[c(1, length(knots))], lty = 3, lwd = 1)
       # internal knots
       if (length(knots) > 2) {
-        abline(v = knots[2:(length(knots) - 1)], lty = 2, lwd = 1.5)
+        graphics::abline(v = knots[2:(length(knots) - 1)], lty = 2, lwd = 1.5)
       }
     }
   }
 
   # Legend
-  legend(
+  graphics::legend(
     "topleft",
     legend = c(group_names, rep("", ngroups)),
     col = c(rep(as.character(col_index), ngroups), km_line_color[1:ngroups]),
@@ -915,6 +960,9 @@ f_plot_diag_spline_surv_model <- function(PERSUADE, model_index = 1) {
 #' \dontrun{
 #' f_plot_diag_cure_surv_model(PERSUADE, model_index = 1)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
 #' @export
 f_plot_diag_cure_surv_model <- function(PERSUADE, model_index = 1) {
   input <- PERSUADE$input
@@ -928,7 +976,7 @@ f_plot_diag_cure_surv_model <- function(PERSUADE, model_index = 1) {
 
   ngroups <- misc$ngroups
   group_names <- misc$group_names
-  line_type <- as.integer(c(1, "3333", "5212"))
+  line_type     <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
   point_shape <- c(1, 8, 9)
   km_line_color <- c("black", "lightgrey", "darkgrey")
 
@@ -952,8 +1000,8 @@ f_plot_diag_cure_surv_model <- function(PERSUADE, model_index = 1) {
       ylab = "LN(cumulative hazard)"
     ),
     lognormal = list(
-      obs  = function(time, surv) cbind(log(time), -qnorm(surv)),
-      pred = function(time, surv) cbind(log(time), -qnorm(surv)),
+      obs  = function(time, surv) cbind(log(time), -stats::qnorm(surv)),
+      pred = function(time, surv) cbind(log(time), -stats::qnorm(surv)),
       xlab = "LN(time)",
       ylab = "- standard normal quartiles"
     ),
@@ -994,11 +1042,11 @@ f_plot_diag_cure_surv_model <- function(PERSUADE, model_index = 1) {
       time = input$time_pred,
       surv = surv_pred$model$cure[[model_key]]$surv[, i + 1]
     )
-    lines(pred_data, col = as.character(col_index), lty = line_type[i], lwd = 2)
+    graphics::lines(pred_data, col = as.character(col_index), lty = line_type[i], lwd = 2)
   }
 
   # Legend
-  legend(
+  graphics::legend(
     "topleft",
     legend = c(group_names, rep("", ngroups)),
     col = c(rep(as.character(col_index), ngroups), km_line_color[1:ngroups]),
@@ -1019,13 +1067,16 @@ f_plot_diag_cure_surv_model <- function(PERSUADE, model_index = 1) {
 #'   `PERSUADE$surv_model$param_models` (1-based). Defaults to `1`.
 #'
 #' @return Invisibly returns `NULL`. The function draws a base R plot as a side effect.
-#' @export
-#'
+
 #' @examples
 #' \dontrun{
 #' PERSUADE <- f_PERSUADE(...)
 #' f_plot_tp_param_surv_model(PERSUADE, model_index = 1)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
+#' @export
 f_plot_tp_param_surv_model <- function(PERSUADE, model_index = 1) {
   input <- PERSUADE$input
   misc <- PERSUADE$misc
@@ -1038,12 +1089,12 @@ f_plot_tp_param_surv_model <- function(PERSUADE, model_index = 1) {
 
   ngroups <- misc$ngroups
   group_names <- misc$group_names
-  line_type <- as.integer(c(1, "3333", "5212"))
+  line_type     <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
   point_shape <- c(1, 8, 9)
   km_line_color <- c("black", "lightgrey", "darkgrey")
 
   # Map model_key to column index in tp_gr predictions
-  model_map <- setNames(as.list(2:8), names(PERSUADE$surv_model$param_models))
+  model_map <- stats::setNames(as.list(2:8), names(PERSUADE$surv_model$param_models))
 
   if (!model_key %in% names(model_map)) {
     stop("Model key not recognized in model_map")
@@ -1060,9 +1111,9 @@ f_plot_tp_param_surv_model <- function(PERSUADE, model_index = 1) {
     ylim = c(0, ceiling(surv_obs$tp$max * 10) / 10),
     xlim = c(0, ceiling(surv_obs$km$maxtime * 10) / 10)
   )
-  lines(
+  graphics::lines(
     x = input$time_pred[-1],
-    y = unlist(surv_pred$tp_gr$gr_1[, ..pred_col_index]),
+    y = unlist(surv_pred$tp_gr$gr_1[, pred_col_index, drop = TRUE]),
     col = as.character(col_index), lty = line_type[1], lwd = 2
   )
 
@@ -1070,15 +1121,15 @@ f_plot_tp_param_surv_model <- function(PERSUADE, model_index = 1) {
   if (ngroups > 1) {
     for (i in 2:ngroups) {
       gr_name <- paste0("gr_", i)
-      lines(
+      graphics::lines(
         x = surv_obs$tp[[gr_name]]$time,
         y = surv_obs$tp[[gr_name]]$smooth,
         col = km_line_color[i], type = "b", lwd = 1,
         cex = 0.6, pch = point_shape[i]
       )
-      lines(
+      graphics::lines(
         x = input$time_pred[-1],
-        y = unlist(surv_pred$tp_gr[[gr_name]][, ..pred_col_index]),
+        y = unlist(surv_pred$tp_gr[[gr_name]][, pred_col_index, drop = TRUE]),
         col = as.character(col_index), lty = line_type[i], lwd = 2
       )
     }
@@ -1087,17 +1138,17 @@ f_plot_tp_param_surv_model <- function(PERSUADE, model_index = 1) {
   # Shaded CIs
   for (i in seq_len(ngroups)) {
     gr_name <- paste0("gr_", i)
-    polygon(
+    graphics::polygon(
       x = c(surv_obs$tp[[gr_name]]$time, rev(surv_obs$tp[[gr_name]]$time)),
       y = c(surv_obs$tp[[gr_name]]$smooth_lower,
             rev(surv_obs$tp[[gr_name]]$smooth_upper)),
-      col = adjustcolor(km_line_color[i], alpha.f = 0.3),
+      col = grDevices::adjustcolor(km_line_color[i], alpha.f = 0.3),
       border = NA
     )
   }
 
   # Legend
-  legend(
+  graphics::legend(
     "topleft",
     legend = c(group_names, rep("", ngroups)),
     col = c(rep(as.character(col_index), ngroups), km_line_color[1:ngroups]),
@@ -1118,13 +1169,16 @@ f_plot_tp_param_surv_model <- function(PERSUADE, model_index = 1) {
 #'   `PERSUADE$surv_model$spline_models` (1-based). Defaults to `1`.
 #'
 #' @return Invisibly returns `NULL`. The function draws a base R plot as a side effect.
-#' @export
 #'
 #' @examples
 #' \dontrun{
 #' PERSUADE <- f_PERSUADE(...)
 #' f_plot_tp_spline_surv_model(PERSUADE, model_index = 1)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
+#' @export
 f_plot_tp_spline_surv_model <- function(PERSUADE, model_index = 1) {
   input      <- PERSUADE$input
   misc       <- PERSUADE$misc
@@ -1138,12 +1192,12 @@ f_plot_tp_spline_surv_model <- function(PERSUADE, model_index = 1) {
 
   ngroups       <- misc$ngroups
   group_names   <- misc$group_names
-  line_type     <- as.integer(c(1, "3333", "5212"))
+  line_type     <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
   point_shape   <- c(1, 8, 9)
   km_line_color <- c("black", "lightgrey", "darkgrey")
 
   # Map model_key to column index in tp_gr predictions
-  model_map <- setNames(as.list(9:17), names(PERSUADE$surv_model$spline_models))
+  model_map <- stats::setNames(as.list(9:17), names(PERSUADE$surv_model$spline_models))
 
   if (!model_key %in% names(model_map)) {
     stop("Model key not recognized in model_map")
@@ -1162,9 +1216,9 @@ f_plot_tp_spline_surv_model <- function(PERSUADE, model_index = 1) {
     ylim = c(0, ceiling(surv_obs$tp$max * 10) / 10),
     xlim = c(0, ceiling(surv_obs$km$maxtime * 10) / 10)
   )
-  lines(
+  graphics::lines(
     x = input$time_pred[-1],
-    y = unlist(surv_pred$tp_gr$gr_1[, ..pred_col_index]),
+    y = unlist(surv_pred$tp_gr$gr_1[, pred_col_index, drop = TRUE]),
     col = as.character(col_index),
     lty = line_type[1], lwd = 2
   )
@@ -1173,15 +1227,15 @@ f_plot_tp_spline_surv_model <- function(PERSUADE, model_index = 1) {
   if (ngroups > 1) {
     for (i in 2:ngroups) {
       gr_name <- paste0("gr_", i)
-      lines(
+      graphics::lines(
         x = surv_obs$tp[[gr_name]]$time,
         y = surv_obs$tp[[gr_name]]$smooth,
         col = km_line_color[i], type = "b", lwd = 1,
         cex = 0.6, pch = point_shape[i]
       )
-      lines(
+      graphics::lines(
         x = input$time_pred[-1],
-        y = unlist(surv_pred$tp_gr[[gr_name]][, ..pred_col_index]),
+        y = unlist(surv_pred$tp_gr[[gr_name]][, pred_col_index, drop = TRUE]),
         col = as.character(col_index),
         lty = line_type[i], lwd = 2
       )
@@ -1191,11 +1245,11 @@ f_plot_tp_spline_surv_model <- function(PERSUADE, model_index = 1) {
   # Shaded CIs
   for (i in seq_len(ngroups)) {
     gr_name <- paste0("gr_", i)
-    polygon(
+    graphics::polygon(
       x = c(surv_obs$tp[[gr_name]]$time, rev(surv_obs$tp[[gr_name]]$time)),
       y = c(surv_obs$tp[[gr_name]]$smooth_lower,
             rev(surv_obs$tp[[gr_name]]$smooth_upper)),
-      col = adjustcolor(km_line_color[i], alpha.f = 0.3),
+      col = grDevices::adjustcolor(km_line_color[i], alpha.f = 0.3),
       border = NA
     )
   }
@@ -1206,12 +1260,12 @@ f_plot_tp_spline_surv_model <- function(PERSUADE, model_index = 1) {
     # Internal knots (middle ones) get lty = 2, thicker
     internal <- knots[2:(length(knots) - 1)]
     boundary <- knots[c(1, length(knots))]
-    abline(v = internal, lty = 2, lwd = 1.5)
-    abline(v = boundary, lty = 3, lwd = 1)
+    graphics::abline(v = internal, lty = 2, lwd = 1.5)
+    graphics::abline(v = boundary, lty = 3, lwd = 1)
   }
 
   # Legend
-  legend(
+  graphics::legend(
     "topleft",
     legend = c(group_names, rep("", ngroups)),
     col = c(rep(as.character(col_index), ngroups), km_line_color[1:ngroups]),
@@ -1232,13 +1286,16 @@ f_plot_tp_spline_surv_model <- function(PERSUADE, model_index = 1) {
 #'   `PERSUADE$surv_model$cure_models` (1-based). Defaults to `1`.
 #'
 #' @return Invisibly returns `NULL`. The function draws a base R plot as a side effect.
-#' @export
 #'
 #' @examples
 #' \dontrun{
 #' PERSUADE <- f_PERSUADE(...)
 #' f_plot_tp_cure_surv_model(PERSUADE, model_index = 1)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
+#' @export
 f_plot_tp_cure_surv_model <- function(PERSUADE, model_index = 1) {
   input     <- PERSUADE$input
   misc      <- PERSUADE$misc
@@ -1251,12 +1308,12 @@ f_plot_tp_cure_surv_model <- function(PERSUADE, model_index = 1) {
 
   ngroups       <- misc$ngroups
   group_names   <- misc$group_names
-  line_type     <- as.integer(c(1, "3333", "5212"))
+  line_type     <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
   point_shape   <- c(1, 8, 9)
   km_line_color <- c("black", "lightgrey", "darkgrey")
 
   # Map model_key to column index in tp_gr predictions
-  model_map <- setNames(as.list(18:23), names(PERSUADE$surv_model$cure_models))
+  model_map <- stats::setNames(as.list(18:23), names(PERSUADE$surv_model$cure_models))
 
   if (!model_key %in% names(model_map)) {
     stop("Model key not recognized in model_map")
@@ -1276,9 +1333,9 @@ f_plot_tp_cure_surv_model <- function(PERSUADE, model_index = 1) {
     ylim = c(0, ceiling(surv_obs$tp$max * 10) / 10),
     xlim = c(0, ceiling(surv_obs$km$maxtime * 10) / 10)
   )
-  lines(
+  graphics::lines(
     x = input$time_pred[-1],
-    y = unlist(surv_pred$tp_gr$gr_1[, ..pred_col_index]),
+    y = unlist(surv_pred$tp_gr$gr_1[, pred_col_index, drop = TRUE]),
     col = as.character(col_index),
     lty = line_type[1], lwd = 2
   )
@@ -1287,15 +1344,15 @@ f_plot_tp_cure_surv_model <- function(PERSUADE, model_index = 1) {
   if (ngroups > 1) {
     for (i in 2:ngroups) {
       gr_name <- paste0("gr_", i)
-      lines(
+      graphics::lines(
         x = surv_obs$tp[[gr_name]]$time,
         y = surv_obs$tp[[gr_name]]$smooth,
         col = km_line_color[i], type = "b", lwd = 1,
         cex = 0.6, pch = point_shape[i]
       )
-      lines(
+      graphics::lines(
         x = input$time_pred[-1],
-        y = unlist(surv_pred$tp_gr[[gr_name]][, ..pred_col_index]),
+        y = unlist(surv_pred$tp_gr[[gr_name]][, pred_col_index, drop = TRUE]),
         col = as.character(col_index),
         lty = line_type[i], lwd = 2
       )
@@ -1305,17 +1362,17 @@ f_plot_tp_cure_surv_model <- function(PERSUADE, model_index = 1) {
   # Shaded CIs
   for (i in seq_len(ngroups)) {
     gr_name <- paste0("gr_", i)
-    polygon(
+    graphics::polygon(
       x = c(surv_obs$tp[[gr_name]]$time, rev(surv_obs$tp[[gr_name]]$time)),
       y = c(surv_obs$tp[[gr_name]]$smooth_lower,
             rev(surv_obs$tp[[gr_name]]$smooth_upper)),
-      col = adjustcolor(km_line_color[i], alpha.f = 0.3),
+      col = grDevices::adjustcolor(km_line_color[i], alpha.f = 0.3),
       border = NA
     )
   }
 
   # Legend
-  legend(
+  graphics::legend(
     "topleft",
     legend = c(group_names, rep("", ngroups)),
     col = c(rep(as.character(col_index), ngroups), km_line_color[1:ngroups]),
@@ -1327,28 +1384,32 @@ f_plot_tp_cure_surv_model <- function(PERSUADE, model_index = 1) {
 
 #' Plot Extrapolated Parametric Survival Models per Group
 #'
-#' Plot Kaplan–Meier curves per group with shaded confidence bands and overlay
+#' Plot Kaplan-Meier curves per group with shaded confidence bands and overlay
 #' fitted parametric survival models (Exponential, Weibull, Gompertz, log-normal,
 #' log-logistic, Gamma, generalized Gamma) extrapolated to the analysis time horizon.
 #'
 #' @param PERSUADE A PERSUADE object returned by [f_PERSUADE()].
 #'
 #' @return Invisibly returns `NULL`. The function draws one or more base R plots as side effects.
-#' @export
 #'
 #' @examples
 #' \dontrun{
 #' PERSUADE <- f_PERSUADE(...)
 #' f_plot_param_surv_extrap(P)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
+#' @export
 f_plot_param_surv_extrap <- function(PERSUADE) {
   input <- PERSUADE$input
   misc <- PERSUADE$misc
   surv_obs <- PERSUADE$surv_obs
   surv_pred <- PERSUADE$surv_pred
   model_names <- names(PERSUADE$surv_model$param_models)
+  ngroups <- misc$ngroups
 
-  line_type <- as.integer(c(1, "3333", "5212"))
+  line_type <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
   km_line_color <- c("black", "lightgrey", "darkgrey")
 
   for (i in seq_len(misc$ngroups)) {
@@ -1362,18 +1423,18 @@ f_plot_param_surv_extrap <- function(PERSUADE) {
 
     # Add shaded CI per group
     idx <- surv_obs$km_names == i
-    polygon(
-      na.omit(data.frame(
+    graphics::polygon(
+      stats::na.omit(data.frame(
         x = c(surv_obs$km$time[idx], rev(surv_obs$km$time[idx])),
         y = c(surv_obs$km$lower[idx], rev(surv_obs$km$upper[idx]))
       )),
-      col = adjustcolor(km_line_color[i], alpha.f = 0.3),
+      col = grDevices::adjustcolor(km_line_color[i], alpha.f = 0.3),
       border = NA
     )
 
     # Add parametric curves
     for (j in seq_along(model_names)) {
-      lines(
+      graphics::lines(
         x = input$time_pred,
         y = surv_pred$model[[model_names[j]]]$surv[, i + 1],
         col = j,
@@ -1383,27 +1444,30 @@ f_plot_param_surv_extrap <- function(PERSUADE) {
     }
 
     # Add legend
-    legend("topright", legend = misc$lbls, col = 1:length(model_names),
-           lty = line_type[i], cex = 0.8)
+    graphics::legend("topright", legend = misc$lbls, col = 1:length(model_names),
+                     lty = line_type[i], cex = 0.8)
   }
 }
 
 #' Plot Extrapolated Spline Survival Models per Group
 #'
-#' Plot Kaplan–Meier curves per group with shaded confidence bands and overlay
+#' Plot Kaplan-Meier curves per group with shaded confidence bands and overlay
 #' fitted spline survival models (hazard, odds, normal scales) extrapolated to
 #' the analysis time horizon. Runs only when `PERSUADE$input$spline_mod` is `TRUE`.
 #'
 #' @param PERSUADE A PERSUADE object returned by [f_PERSUADE()].
 #'
 #' @return Invisibly returns `NULL`. The function draws one or more base R plots as side effects.
-#' @export
 #'
 #' @examples
 #' \dontrun{
 #' PERSUADE <- f_PERSUADE(...)
 #' f_plot_spline_surv_extrap(P)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
+#' @export
 f_plot_spline_surv_extrap <- function(PERSUADE) {
   if (!isTRUE(PERSUADE$input$spline_mod)) return(invisible())
 
@@ -1412,8 +1476,9 @@ f_plot_spline_surv_extrap <- function(PERSUADE) {
   surv_obs <- PERSUADE$surv_obs
   surv_pred <- PERSUADE$surv_pred
   model_names <- names(PERSUADE$surv_model$spline_models)
+  ngroups <- misc$ngroups
 
-  line_type <- as.integer(c(1, "3333", "5212"))
+  line_type <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
   km_line_color <- c("black", "lightgrey", "darkgrey")
 
   for (i in seq_len(misc$ngroups)) {
@@ -1427,18 +1492,18 @@ f_plot_spline_surv_extrap <- function(PERSUADE) {
 
     # Add shaded CI per group
     idx <- surv_obs$km_names == i
-    polygon(
-      na.omit(data.frame(
+    graphics::polygon(
+      stats::na.omit(data.frame(
         x = c(surv_obs$km$time[idx], rev(surv_obs$km$time[idx])),
         y = c(surv_obs$km$lower[idx], rev(surv_obs$km$upper[idx]))
       )),
-      col = adjustcolor(km_line_color[i], alpha.f = 0.3),
+      col = grDevices::adjustcolor(km_line_color[i], alpha.f = 0.3),
       border = NA
     )
 
     # Add parametric curves
     for (j in seq_along(model_names)) {
-      lines(
+      graphics::lines(
         x = input$time_pred,
         y = surv_pred$model$spline[[model_names[j]]]$surv[, i + 1],
         col = j,
@@ -1448,14 +1513,14 @@ f_plot_spline_surv_extrap <- function(PERSUADE) {
     }
 
     # Add legend
-    legend("topright", legend = misc$lbls_spline, col = 1:length(model_names),
-           lty = line_type[i], cex = 0.8)
+    graphics::legend("topright", legend = misc$lbls_spline, col = 1:length(model_names),
+                     lty = line_type[i], cex = 0.8)
   }
 }
 
 #' Plot Extrapolated Cure Survival Models per Group
 #'
-#' Plot Kaplan–Meier curves per group with shaded confidence bands and overlay
+#' Plot Kaplan-Meier curves per group with shaded confidence bands and overlay
 #' fitted cure survival models (Weibull, log-normal, log-logistic; mixture and
 #' non-mixture forms) extrapolated to the analysis time horizon. Runs only when
 #' `PERSUADE$input$cure_mod` is `TRUE`.
@@ -1463,13 +1528,16 @@ f_plot_spline_surv_extrap <- function(PERSUADE) {
 #' @param PERSUADE A PERSUADE object returned by [f_PERSUADE()].
 #'
 #' @return Invisibly returns `NULL`. The function draws one or more base R plots as side effects.
-#' @export
 #'
 #' @examples
 #' \dontrun{
 #' PERSUADE <- f_PERSUADE(...)
 #' f_plot_cure_surv_extrap(P)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
+#' @export
 f_plot_cure_surv_extrap <- function(PERSUADE) {
   if (!isTRUE(PERSUADE$input$cure_mod)) return(invisible())
 
@@ -1478,8 +1546,9 @@ f_plot_cure_surv_extrap <- function(PERSUADE) {
   surv_obs <- PERSUADE$surv_obs
   surv_pred <- PERSUADE$surv_pred
   model_names <- names(PERSUADE$surv_model$cure_models)
+  ngroups <- misc$ngroups
 
-  line_type <- as.integer(c(1, "3333", "5212"))
+  line_type <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
   km_line_color <- c("black", "lightgrey", "darkgrey")
 
   for (i in seq_len(misc$ngroups)) {
@@ -1493,18 +1562,18 @@ f_plot_cure_surv_extrap <- function(PERSUADE) {
 
     # Add shaded CI per group
     idx <- surv_obs$km_names == i
-    polygon(
-      na.omit(data.frame(
+    graphics::polygon(
+      stats::na.omit(data.frame(
         x = c(surv_obs$km$time[idx], rev(surv_obs$km$time[idx])),
         y = c(surv_obs$km$lower[idx], rev(surv_obs$km$upper[idx]))
       )),
-      col = adjustcolor(km_line_color[i], alpha.f = 0.3),
+      col = grDevices::adjustcolor(km_line_color[i], alpha.f = 0.3),
       border = NA
     )
 
     # Add parametric curves
     for (j in seq_along(model_names)) {
-      lines(
+      graphics::lines(
         x = input$time_pred,
         y = surv_pred$model$cure[[model_names[j]]]$surv[, i + 1],
         col = j,
@@ -1514,8 +1583,8 @@ f_plot_cure_surv_extrap <- function(PERSUADE) {
     }
 
     # Add legend
-    legend("topright", legend = misc$lbls_cure, col = 1:length(model_names),
-           lty = line_type[i], cex = 0.8)
+    graphics::legend("topright", legend = misc$lbls_cure, col = 1:length(model_names),
+                     lty = line_type[i], cex = 0.8)
   }
 }
 
@@ -1527,21 +1596,25 @@ f_plot_cure_surv_extrap <- function(PERSUADE) {
 #' @param PERSUADE A PERSUADE object returned by [f_PERSUADE()].
 #'
 #' @return Invisibly returns `NULL`. The function draws one or more base R plots as side effects.
-#' @export
 #'
 #' @examples
 #' \dontrun{
 #' PERSUADE <- f_PERSUADE(...)
 #' f_plot_tp_param_surv_extrap(P)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
+#' @export
 f_plot_tp_param_surv_extrap <- function(PERSUADE) {
   input <- PERSUADE$input
   misc <- PERSUADE$misc
   surv_obs <- PERSUADE$surv_obs
   surv_pred <- PERSUADE$surv_pred
+  ngroups <- misc$ngroups
 
   line_color <- c("black", "lightgrey", "darkgrey")
-  line_type <- as.integer(c(1, "3333", "5212"))
+  line_type <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
 
   for (i in seq_len(misc$ngroups)) {
     tp_obs <- surv_obs$tp[[paste0("gr_", i)]]
@@ -1554,20 +1627,20 @@ f_plot_tp_param_surv_extrap <- function(PERSUADE) {
          lty = line_type[i], col = line_color[i], type = "l", lwd = 2)
 
     # Add shaded CI per group
-    polygon(
-      na.omit(data.frame(
+    graphics::polygon(
+      stats::na.omit(data.frame(
         x = c(tp_obs$time, rev(tp_obs$time)),
         y = c(tp_obs$smooth_upper, rev(tp_obs$smooth_lower))
       )),
-      col = adjustcolor(line_color[i], alpha.f = 0.3),
+      col = grDevices::adjustcolor(line_color[i], alpha.f = 0.3),
       border = NA
     )
 
     for (j in 2:8) {
-      lines(input$time_pred[-1], unlist(tp_pred[, ..j]), col = j - 1, lty = line_type[i], lwd = 1)
+      graphics::lines(input$time_pred[-1], unlist(tp_pred[, j, drop = TRUE]), col = j - 1, lty = line_type[i], lwd = 1)
     }
 
-    legend("topleft", legend = misc$lbls, col = 1:7, lty = line_type[i], cex = 0.8)
+    graphics::legend("topleft", legend = misc$lbls, col = 1:7, lty = line_type[i], cex = 0.8)
   }
 }
 
@@ -1580,13 +1653,16 @@ f_plot_tp_param_surv_extrap <- function(PERSUADE) {
 #' @param PERSUADE A PERSUADE object returned by [f_PERSUADE()].
 #'
 #' @return Invisibly returns `NULL`. The function draws one or more base R plots as side effects.
-#' @export
 #'
 #' @examples
 #' \dontrun{
 #' PERSUADE <- f_PERSUADE(...)
 #' f_plot_tp_spline_surv_extrap(P)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
+#' @export
 f_plot_tp_spline_surv_extrap <- function(PERSUADE) {
   if (!isTRUE(PERSUADE$input$spline_mod)) return(invisible())
 
@@ -1594,9 +1670,10 @@ f_plot_tp_spline_surv_extrap <- function(PERSUADE) {
   misc <- PERSUADE$misc
   surv_obs <- PERSUADE$surv_obs
   surv_pred <- PERSUADE$surv_pred
+  ngroups <- misc$ngroups
 
   line_color <- c("black", "lightgrey", "darkgrey")
-  line_type <- as.integer(c(1, "3333", "5212"))
+  line_type <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
 
   for (i in seq_len(misc$ngroups)) {
     tp_obs <- surv_obs$tp[[paste0("gr_", i)]]
@@ -1609,20 +1686,20 @@ f_plot_tp_spline_surv_extrap <- function(PERSUADE) {
          lty = line_type[i], col = line_color[i], type = "l", lwd = 2)
 
     # Add shaded CI per group
-    polygon(
-      na.omit(data.frame(
+    graphics::polygon(
+      stats::na.omit(data.frame(
         x = c(tp_obs$time, rev(tp_obs$time)),
         y = c(tp_obs$smooth_upper, rev(tp_obs$smooth_lower))
       )),
-      col = adjustcolor(line_color[i], alpha.f = 0.3),
+      col = grDevices::adjustcolor(line_color[i], alpha.f = 0.3),
       border = NA
     )
 
     for (j in 9:17) {
-      lines(input$time_pred[-1], unlist(tp_pred[, ..j]), col = j - 8, lty = line_type[i], lwd = 1)
+      graphics::lines(input$time_pred[-1], unlist(tp_pred[, j, drop = TRUE]), col = j - 8, lty = line_type[i], lwd = 1)
     }
 
-    legend("topleft", legend = misc$lbls_spline, col = 1:9, lty = line_type[i], cex = 0.8)
+    graphics::legend("topleft", legend = misc$lbls_spline, col = 1:9, lty = line_type[i], cex = 0.8)
   }
 }
 
@@ -1635,13 +1712,16 @@ f_plot_tp_spline_surv_extrap <- function(PERSUADE) {
 #' @param PERSUADE A PERSUADE object returned by [f_PERSUADE()].
 #'
 #' @return Invisibly returns `NULL`. The function draws one or more base R plots as side effects.
-#' @export
 #'
 #' @examples
 #' \dontrun{
 #' PERSUADE <- f_PERSUADE(...)
 #' f_plot_tp_cure_surv_extrap(P)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
+#' @export
 f_plot_tp_cure_surv_extrap <- function(PERSUADE) {
   if (!isTRUE(PERSUADE$input$cure_mod)) return(invisible())
 
@@ -1649,9 +1729,10 @@ f_plot_tp_cure_surv_extrap <- function(PERSUADE) {
   misc <- PERSUADE$misc
   surv_obs <- PERSUADE$surv_obs
   surv_pred <- PERSUADE$surv_pred
+  ngroups <- misc$ngroups
 
   line_color <- c("black", "lightgrey", "darkgrey")
-  line_type <- as.integer(c(1, "3333", "5212"))
+  line_type <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
   offset <- if (isTRUE(input$spline_mod)) 0 else -9
 
   for (i in seq_len(misc$ngroups)) {
@@ -1665,21 +1746,21 @@ f_plot_tp_cure_surv_extrap <- function(PERSUADE) {
          lty = line_type[i], col = line_color[i], type = "l", lwd = 2)
 
     # Add shaded CI per group
-    polygon(
-      na.omit(data.frame(
+    graphics::polygon(
+      stats::na.omit(data.frame(
         x = c(tp_obs$time, rev(tp_obs$time)),
         y = c(tp_obs$smooth_upper, rev(tp_obs$smooth_lower))
       )),
-      col = adjustcolor(line_color[i], alpha.f = 0.3),
+      col = grDevices::adjustcolor(line_color[i], alpha.f = 0.3),
       border = NA
     )
 
     for (j in 18:23) {
       j_offset <- j + offset
-      lines(input$time_pred[-1], unlist(tp_pred[, ..j_offset]), col = j - 17, lty = line_type[i], lwd = 1)
+      graphics::lines(input$time_pred[-1], unlist(tp_pred[, j_offset, drop = TRUE]), col = j - 17, lty = line_type[i], lwd = 1)
     }
 
-    legend("topleft", legend = misc$lbls_cure, col = 1:6, lty = line_type[i], cex = 0.8)
+    graphics::legend("topleft", legend = misc$lbls_cure, col = 1:6, lty = line_type[i], cex = 0.8)
   }
 }
 
@@ -1691,20 +1772,24 @@ f_plot_tp_cure_surv_extrap <- function(PERSUADE) {
 #' @param PERSUADE A PERSUADE object returned by [f_PERSUADE()].
 #'
 #' @return Invisibly returns `NULL`. The function draws one or more base R plots as side effects.
-#' @export
 #'
 #' @examples
 #' \dontrun{
 #' PERSUADE <- f_PERSUADE(...)
 #' f_plot_hazard_parametric_extrap(P)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
+#' @export
 f_plot_hazard_parametric_extrap <- function(PERSUADE) {
   models <- names(PERSUADE$surv_model$param_models)
   misc <- PERSUADE$misc
+  ngroups <- misc$ngroups
 
   cols <- seq_along(models)
   line_color <- c("black", "lightgrey", "darkgrey")
-  line_type <- as.integer(c(1, "3333", "5212"))
+  line_type <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
 
   for (i in seq_len(misc$ngroups)) {
     obs_data <- PERSUADE$surv_obs$haz$hazards[[paste0("smooth_gr", i)]]
@@ -1715,12 +1800,12 @@ f_plot_hazard_parametric_extrap <- function(PERSUADE) {
          xlim = c(0, PERSUADE$input$time_horizon),
          ylim = c(0, PERSUADE$surv_obs$haz$max$smooth))
     for (j in seq_along(models)) {
-      lines(cbind(PERSUADE$surv_pred$model[[models[j]]]$hazard[, 1],
-                  PERSUADE$surv_pred$model[[models[j]]]$hazard[, i + 1]),
-            col = cols[j], lty = line_type[i], lwd = 1)
+      graphics::lines(cbind(PERSUADE$surv_pred$model[[models[j]]]$hazard[, 1],
+                            PERSUADE$surv_pred$model[[models[j]]]$hazard[, i + 1]),
+                      col = cols[j], lty = line_type[i], lwd = 1)
     }
-    legend("topleft", legend = PERSUADE$misc$lbls,
-           col = cols, lty = line_type[i], cex = 0.8)
+    graphics::legend("topleft", legend = PERSUADE$misc$lbls,
+                     col = cols, lty = line_type[i], cex = 0.8)
   }
 }
 
@@ -1733,22 +1818,26 @@ f_plot_hazard_parametric_extrap <- function(PERSUADE) {
 #' @param PERSUADE A PERSUADE object returned by [f_PERSUADE()].
 #'
 #' @return Invisibly returns `NULL`. The function draws one or more base R plots as side effects.
-#' @export
 #'
 #' @examples
 #' \dontrun{
 #' PERSUADE <- f_PERSUADE(...)
 #' f_plot_hazard_spline_extrap(P)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
+#' @export
 f_plot_hazard_spline_extrap <- function(PERSUADE) {
   if (!isTRUE(PERSUADE$input$spline_mod)) return(invisible(NULL))
 
   models <- names(PERSUADE$surv_model$spline_models)
   misc <- PERSUADE$misc
+  ngroups <- misc$ngroups
 
   cols <- seq_along(models)
   line_color <- c("black", "lightgrey", "darkgrey")
-  line_type <- as.integer(c(1, "3333", "5212"))
+  line_type <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
 
   for (i in seq_len(misc$ngroups)) {
     obs_data <- PERSUADE$surv_obs$haz$hazards[[paste0("smooth_gr", i)]]
@@ -1759,12 +1848,12 @@ f_plot_hazard_spline_extrap <- function(PERSUADE) {
          xlim = c(0, PERSUADE$input$time_horizon),
          ylim = c(0, PERSUADE$surv_obs$haz$max$smooth))
     for (j in seq_along(models)) {
-      lines(cbind(PERSUADE$surv_pred$model$spline[[models[j]]]$hazard[, 1],
-                  PERSUADE$surv_pred$model$spline[[models[j]]]$hazard[, i + 1]),
-            col = cols[j], lty = line_type[i], lwd = 1)
+      graphics::lines(cbind(PERSUADE$surv_pred$model$spline[[models[j]]]$hazard[, 1],
+                            PERSUADE$surv_pred$model$spline[[models[j]]]$hazard[, i + 1]),
+                      col = cols[j], lty = line_type[i], lwd = 1)
     }
-    legend("topleft", legend = PERSUADE$misc$lbls_spline,
-           col = cols, lty = line_type[i], cex = 0.8)
+    graphics::legend("topleft", legend = PERSUADE$misc$lbls_spline,
+                     col = cols, lty = line_type[i], cex = 0.8)
   }
 }
 
@@ -1777,22 +1866,26 @@ f_plot_hazard_spline_extrap <- function(PERSUADE) {
 #' @param PERSUADE A PERSUADE object returned by [f_PERSUADE()].
 #'
 #' @return Invisibly returns `NULL`. The function draws one or more base R plots as side effects.
-#' @export
 #'
 #' @examples
 #' \dontrun{
 #' PERSUADE <- f_PERSUADE(...)
 #' f_plot_hazard_cure_extrap(P)
 #' }
+#'
+#' @seealso [f_PERSUADE()]
+#'
+#' @export
 f_plot_hazard_cure_extrap <- function(PERSUADE) {
   if (!isTRUE(PERSUADE$input$cure_mod)) return(invisible(NULL))
 
   models <- names(PERSUADE$surv_model$cure_models)
   misc <- PERSUADE$misc
+  ngroups <- misc$ngroups
 
   cols <- seq_along(models)
   line_color <- c("black", "lightgrey", "darkgrey")
-  line_type <- as.integer(c(1, "3333", "5212"))
+  line_type <- c("solid", "3333", "5212", "3313", "1144", "42")[seq_len(ngroups)]
 
   for (i in seq_len(misc$ngroups)) {
     obs_data <- PERSUADE$surv_obs$haz$hazards[[paste0("smooth_gr", i)]]
@@ -1805,13 +1898,13 @@ f_plot_hazard_cure_extrap <- function(PERSUADE) {
          ylim = c(0, PERSUADE$surv_obs$haz$max$smooth))
 
     for (j in seq_along(models)) {
-      lines(cbind(PERSUADE$surv_pred$model$cure[[models[j]]]$hazard[, 1],
-                  PERSUADE$surv_pred$model$cure[[models[j]]]$hazard[, i + 1]),
-            col = cols[j], lty = line_type[i], lwd = 1)
+      graphics::lines(cbind(PERSUADE$surv_pred$model$cure[[models[j]]]$hazard[, 1],
+                            PERSUADE$surv_pred$model$cure[[models[j]]]$hazard[, i + 1]),
+                      col = cols[j], lty = line_type[i], lwd = 1)
     }
 
-    legend("topleft", legend = PERSUADE$misc$lbls_cure,
-           col = cols, lty = line_type[i], cex = 0.8)
+    graphics::legend("topleft", legend = PERSUADE$misc$lbls_cure,
+                     col = cols, lty = line_type[i], cex = 0.8)
   }
 }
 
@@ -1826,18 +1919,17 @@ f_plot_hazard_cure_extrap <- function(PERSUADE) {
 #'
 #' @return A data frame (one row per variable) with columns:
 #'   `Mean`, `Std.Dev`, `Min`, `Q1`, `Median`, `Q3`, `Max`, `IQR`.
-#' @export
 #'
 #' @examples
-#' \dontrun{
 #' f_summary(mtcars)
-#' }
+#'
+#' @export
 f_summary <- function(df) {
   res <- t(sapply(df, function(x) {
-    q <- quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1), na.rm = TRUE, names = FALSE)
+    q <- stats::quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1), na.rm = TRUE, names = FALSE)
     round(c(
       Mean   = mean(x, na.rm = TRUE),
-      Std.Dev= sd(x, na.rm = TRUE),
+      Std.Dev= stats::sd(x, na.rm = TRUE),
       Min    = q[1],
       Q1     = q[2],
       Median = q[3],
@@ -1852,22 +1944,53 @@ f_summary <- function(df) {
 #' Generate PDF Report for a PERSUADE Analysis
 #'
 #' Save the PERSUADE object and render a PDF report using the bundled
-#' `PERSUADE_output.Rmd` template.
+#' `PERSUADE_output.Rmd` template, or a user-specified template.
 #'
 #' @param PERSUADE A PERSUADE object returned by [f_PERSUADE()].
+#' @param template_path Optional character string giving the full path to an Rmd
+#'   template. If `NULL` (the default), the function looks for
+#'   `PERSUADE_output.Rmd` within the package installation directory.
 #'
 #' @return A length-1 character string giving the absolute path to the generated
 #'   PDF, returned invisibly.
-#' @export
 #'
-#' @details The R Markdown file `PERSUADE_output.Rmd` is stored within the
-#'   package under `inst/rmd/`. Figures are written to a subdirectory `Images/`
-#'   inside the output folder, and the knit environment is initialised with the
-#'   supplied `PERSUADE` object.
+#' @details The default R Markdown file `PERSUADE_output.Rmd` is stored within
+#'   the package under `inst/rmd/`. Figures are written to a subdirectory
+#'   `Images/` inside the output folder, and the knit environment is
+#'   initialised with the supplied `PERSUADE` object. Supplying a custom
+#'   `template_path` allows alternative report formats to be used, and
+#'   simplifies testing. This function requires the following suggested packages:
+#'   \pkg{knitr}, \pkg{kableExtra}, and \pkg{rmarkdown}.
+#'   If not installed, the function will throw an error.
 #'
 #' @seealso [f_PERSUADE()]
-f_generate_report <- function(PERSUADE) {
+#' @examples
+#' \dontrun{
+#' f_generate_report(PERSUADE)
+#' f_generate_report(PERSUADE, template_path = "custom_template.Rmd")
+#' }
+#'
+#' @export
+f_generate_report <- function(PERSUADE, template_path = NULL) {
   name <- PERSUADE$name
+
+  # list required suggested packages
+  required_pkgs <- c("rmarkdown", "knitr", "kableExtra")
+
+  # check which are missing
+  missing_pkgs <- required_pkgs[!vapply(required_pkgs,
+                                        requireNamespace,
+                                        quietly = TRUE,
+                                        FUN.VALUE = logical(1))]
+
+  if (length(missing_pkgs) > 0) {
+    stop(
+      "The following packages are required for f_generate_report() but are not installed: ",
+      paste(missing_pkgs, collapse = ", "),
+      ".\nPlease install them with:\n  install.packages(c(\"",
+      paste(missing_pkgs, collapse = "\", \""), "\"))"
+    )
+  }
 
   # Create output directories
   output_dir <- file.path(getwd(), paste0(name, "_output"))
@@ -1878,23 +2001,72 @@ f_generate_report <- function(PERSUADE) {
   # Save PERSUADE object
   save(PERSUADE, file = file.path(output_dir, "PERSUADE.RData"))
 
-  # Locate Rmd template from package installation
-  rmd_file <- system.file("rmd", "PERSUADE_output.Rmd", package = "PERSUADE")
-  #rmd_file <- file.path(getwd(), paste0("inst/rmd/PERSUADE_output.Rmd")) # set locally for validation purposes
-  if (rmd_file == "") stop("The PERSUADE Rmd template was not found in the package.")
+  # Locate template
+  if (is.null(template_path)) {
+    template_path <- system.file("rmd", "PERSUADE_output.Rmd", package = "PERSUADE")
+  }
+
+  if (template_path == "") {
+    stop("The PERSUADE Rmd template was not found in the package.")
+  }
 
   # Render R Markdown into PDF
   rmarkdown::render(
-    input = rmd_file,
+    input = template_path,
     output_file = paste0(name, ".pdf"),
     output_dir = output_dir,
     intermediates_dir = output_dir,
     knit_root_dir = output_dir,
     params = list(fig_dir = fig_dir),   # full path!
     envir = list2env(list(PERSUADE = PERSUADE), parent = globalenv()),
+    quiet = TRUE,
     clean = TRUE
   )
 
   invisible(file.path(output_dir, paste0(name, ".pdf")))
+}
+
+#' Copy Excel Template for Model Parameters
+#'
+#' Copy the bundled Excel template `PERSUADE_Excel_template.xltx` to a user-specified
+#' directory (by default, the current working directory). This template provides a
+#' convenient structure for transferring survival model outputs from \pkg{PERSUADE}
+#' into health economic models.
+#'
+#' @param path Character string giving the directory to copy the template to.
+#'   Defaults to the current working directory (`getwd()`).
+#'
+#' @return A length-1 character string giving the absolute path to the copied
+#'   template file, returned invisibly.
+#'
+#' @details The default Excel file `PERSUADE_Excel_template.xltx` is stored within
+#'   the package under `inst/excel_template/`. This function locates the installed
+#'   file via [system.file()] and copies it into the requested directory. If a file
+#'   with the same name already exists at the destination, it will be overwritten.
+#'
+#'   The Excel template provides a standardized format for entering parametric
+#'   survival model parameters, making it easier to use PERSUADE outputs in
+#'   downstream decision-analytic models. Users may adapt the template as needed
+#'   for their specific workflows.
+#'
+#' @seealso [f_generate_report()], [system.file()]
+#'
+#' @examples
+#' \dontrun{
+#' # Copy template to working directory
+#' f_get_excel_template()
+#'
+#' # Copy template to a custom folder
+#' f_get_excel_template(path = tempdir())
+#' }
+#'
+#' @export
+f_get_excel_template <- function(path = getwd()) {
+  src <- system.file("excel_template",
+                     "PERSUADE_Excel_template.xltx",
+                     package = "PERSUADE")
+  dest <- file.path(path, basename(src))
+  file.copy(src, dest, overwrite = TRUE)
+  invisible(dest)
 }
 

@@ -22,4 +22,8 @@ Runs only when \code{PERSUADE$input$spline_mod} is \code{TRUE}.
 PERSUADE <- f_PERSUADE(...)
 f_plot_tp_spline_surv_extrap(P)
 }
+
+}
+\seealso{
+\code{\link[=f_PERSUADE]{f_PERSUADE()}}
 }
