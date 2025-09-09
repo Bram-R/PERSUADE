@@ -42,7 +42,7 @@ The framework supports the analyst in:
 
 ### **Setup Instructions**
 
-1. **Load PERSUADE pacakge:**  
+1. **Load PERSUADE package:**  
    devtools::install_github("Bram-R/PERSUADE")
 
 2. **Specify input see `PERSUADE_input.R` as example (https://github.com/Bram-R/PERSUADE/blob/master/PERSUADE_input.R):**  
