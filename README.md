@@ -40,14 +40,9 @@ analysis feeds into decision-analytic models.
 
 ## Quick start
 
-<<<<<<< HEAD
-1. **Load PERSUADE package:**  
-   devtools::install_github("Bram-R/PERSUADE")
-=======
 The easiest way to get started is by running the example workflow
 script: `PERSUADE_example_workflow.R` using:
 `file.edit(system.file("example_workflow", "PERSUADE_example_workflow.R", package = "PERSUADE"))`
->>>>>>> 7295ff4ce62a27633bfd4cb61e28a5be0e20f0d0
 
 This script:
 
