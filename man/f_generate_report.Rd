@@ -48,8 +48,7 @@ PERSUADE <- f_PERSUADE(
   time_horizon = 5000,
   time_pred_surv_table = seq(0, 5000, 100)
 )
-f_generate_report(PERSUADE)
-f_generate_report(PERSUADE, template_path = "custom_template.Rmd")
+f_generate_report(PERSUADE, template_path = NULL)
 }
 
 }

@@ -1,4 +1,4 @@
-#### Functions used to create Figures and other output (e.g. for use in a 'rmarkdown' file) ----
+#### Functions used to create Figures and other output (e.g. for use in an R markdown file) ----
 #' Plot Kaplan-Meier Survival Curves (ggsurvplot)
 #'
 #' Generates Kaplan-Meier survival plots from a PERSUADE object using
@@ -641,7 +641,7 @@ f_plot_param_surv_model <- function(PERSUADE, model_index = 1) {
 #'   status = status,
 #'   group = group,
 #'   strata = FALSE,
-#'   spline_mod = FALSE,
+#'   spline_mod = TRUE,
 #'   cure_mod = FALSE,
 #'   time_unit = 365.25/12,
 #'   time_horizon = 5000,
@@ -742,7 +742,7 @@ f_plot_spline_surv_model <- function(PERSUADE, model_index = 1) {
 #'   group = group,
 #'   strata = FALSE,
 #'   spline_mod = FALSE,
-#'   cure_mod = FALSE,
+#'   cure_mod = TRUE,
 #'   time_unit = 365.25/12,
 #'   time_horizon = 5000,
 #'   time_pred_surv_table = seq(0, 5000, 100)
@@ -991,7 +991,7 @@ f_plot_diag_param_surv_model <- function(PERSUADE, model_index = 1) {
 #'   status = status,
 #'   group = group,
 #'   strata = FALSE,
-#'   spline_mod = FALSE,
+#'   spline_mod = TRUE,
 #'   cure_mod = FALSE,
 #'   time_unit = 365.25/12,
 #'   time_horizon = 5000,
@@ -1133,7 +1133,7 @@ f_plot_diag_spline_surv_model <- function(PERSUADE, model_index = 1) {
 #'   group = group,
 #'   strata = FALSE,
 #'   spline_mod = FALSE,
-#'   cure_mod = FALSE,
+#'   cure_mod = TRUE,
 #'   time_unit = 365.25/12,
 #'   time_horizon = 5000,
 #'   time_pred_surv_table = seq(0, 5000, 100)
@@ -1375,7 +1375,7 @@ f_plot_tp_param_surv_model <- function(PERSUADE, model_index = 1) {
 #'   status = status,
 #'   group = group,
 #'   strata = FALSE,
-#'   spline_mod = FALSE,
+#'   spline_mod = TRUE,
 #'   cure_mod = FALSE,
 #'   time_unit = 365.25/12,
 #'   time_horizon = 5000,
@@ -1507,7 +1507,7 @@ f_plot_tp_spline_surv_model <- function(PERSUADE, model_index = 1) {
 #'   group = group,
 #'   strata = FALSE,
 #'   spline_mod = FALSE,
-#'   cure_mod = FALSE,
+#'   cure_mod = TRUE,
 #'   time_unit = 365.25/12,
 #'   time_horizon = 5000,
 #'   time_pred_surv_table = seq(0, 5000, 100)
@@ -1631,7 +1631,7 @@ f_plot_tp_cure_surv_model <- function(PERSUADE, model_index = 1) {
 #'   time_horizon = 5000,
 #'   time_pred_surv_table = seq(0, 5000, 100)
 #' )
-#' f_plot_param_surv_extrap(P)
+#' f_plot_param_surv_extrap(PERSUADE)
 #' }
 #'
 #' @seealso [f_PERSUADE()]
@@ -1706,7 +1706,7 @@ f_plot_param_surv_extrap <- function(PERSUADE) {
 #'   status = status,
 #'   group = group,
 #'   strata = FALSE,
-#'   spline_mod = FALSE,
+#'   spline_mod = TRUE,
 #'   cure_mod = FALSE,
 #'   time_unit = 365.25/12,
 #'   time_horizon = 5000,
@@ -1791,7 +1791,7 @@ f_plot_spline_surv_extrap <- function(PERSUADE) {
 #'   group = group,
 #'   strata = FALSE,
 #'   spline_mod = FALSE,
-#'   cure_mod = FALSE,
+#'   cure_mod = TRUE,
 #'   time_unit = 365.25/12,
 #'   time_horizon = 5000,
 #'   time_pred_surv_table = seq(0, 5000, 100)
@@ -1943,7 +1943,7 @@ f_plot_tp_param_surv_extrap <- function(PERSUADE) {
 #'   status = status,
 #'   group = group,
 #'   strata = FALSE,
-#'   spline_mod = FALSE,
+#'   spline_mod = TRUE,
 #'   cure_mod = FALSE,
 #'   time_unit = 365.25/12,
 #'   time_horizon = 5000,
@@ -2017,7 +2017,7 @@ f_plot_tp_spline_surv_extrap <- function(PERSUADE) {
 #'   group = group,
 #'   strata = FALSE,
 #'   spline_mod = FALSE,
-#'   cure_mod = FALSE,
+#'   cure_mod = TRUE,
 #'   time_unit = 365.25/12,
 #'   time_horizon = 5000,
 #'   time_pred_surv_table = seq(0, 5000, 100)
@@ -2150,7 +2150,7 @@ f_plot_hazard_parametric_extrap <- function(PERSUADE) {
 #'   status = status,
 #'   group = group,
 #'   strata = FALSE,
-#'   spline_mod = FALSE,
+#'   spline_mod = TRUE,
 #'   cure_mod = FALSE,
 #'   time_unit = 365.25/12,
 #'   time_horizon = 5000,
@@ -2213,7 +2213,7 @@ f_plot_hazard_spline_extrap <- function(PERSUADE) {
 #'   group = group,
 #'   strata = FALSE,
 #'   spline_mod = FALSE,
-#'   cure_mod = FALSE,
+#'   cure_mod = TRUE,
 #'   time_unit = 365.25/12,
 #'   time_horizon = 5000,
 #'   time_pred_surv_table = seq(0, 5000, 100)
@@ -2302,7 +2302,7 @@ f_summary <- function(df) {
 #' @return A length-1 character string giving the absolute path to the generated
 #'   PDF, returned invisibly.
 #'
-#' @details The default 'rmarkdown' file `PERSUADE_output.Rmd` is stored within
+#' @details The default R markdown file `PERSUADE_output.Rmd` is stored within
 #'   the package under `inst/rmd/`. Figures are written to a subdirectory
 #'   `Images/` inside the output folder, and the knit environment is
 #'   initialised with the supplied `PERSUADE` object. Supplying a custom
@@ -2328,8 +2328,7 @@ f_summary <- function(df) {
 #'   time_horizon = 5000,
 #'   time_pred_surv_table = seq(0, 5000, 100)
 #' )
-#' f_generate_report(PERSUADE)
-#' f_generate_report(PERSUADE, template_path = "custom_template.Rmd")
+#' f_generate_report(PERSUADE, template_path = NULL)
 #' }
 #'
 #' @seealso [f_PERSUADE()]
@@ -2374,7 +2373,7 @@ f_generate_report <- function(PERSUADE, template_path = NULL) {
     stop("The PERSUADE Rmd template was not found in the package.")
   }
 
-  # Render 'rmarkdown' into PDF
+  # Render PDF R markdown file
   rmarkdown::render(
     input = template_path,
     output_file = paste0(name, ".pdf"),

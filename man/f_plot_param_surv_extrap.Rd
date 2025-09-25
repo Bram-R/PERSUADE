@@ -34,7 +34,7 @@ PERSUADE <- f_PERSUADE(
   time_horizon = 5000,
   time_pred_surv_table = seq(0, 5000, 100)
 )
-f_plot_param_surv_extrap(P)
+f_plot_param_surv_extrap(PERSUADE)
 }
 
 }

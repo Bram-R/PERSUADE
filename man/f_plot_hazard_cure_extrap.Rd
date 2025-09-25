@@ -29,7 +29,7 @@ PERSUADE <- f_PERSUADE(
   group = group,
   strata = FALSE,
   spline_mod = FALSE,
-  cure_mod = FALSE,
+  cure_mod = TRUE,
   time_unit = 365.25/12,
   time_horizon = 5000,
   time_pred_surv_table = seq(0, 5000, 100)
