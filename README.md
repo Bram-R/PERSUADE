@@ -184,11 +184,8 @@ workflow. For your own data:
 - Refine plots: customize visualizations in
   `PERSUADE_output_functions.R` or adopt themes for publication-quality
   graphics.  
-- Scale to new data formats: build data preprocessing modules for
-  commonly used formats (e.g., survival objects, breakpoints,
-  long-format datasets).  
-- Automate Reporting: enhance the R Markdown template for
-  production-ready reports with headers, metadata, or version control.
+- Automate Reporting: enhance the ‘rmarkdown’ template for
+  production-ready reports.
 
 ------------------------------------------------------------------------
 

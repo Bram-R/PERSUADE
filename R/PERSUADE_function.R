@@ -34,7 +34,7 @@
 #' @seealso [f_hazard()], [f_cum_hazard()], [f_surv_model()]
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' years <- survival::lung$time
 #' status <-  survival::lung$status
 #' group <- factor(survival::lung$sex)

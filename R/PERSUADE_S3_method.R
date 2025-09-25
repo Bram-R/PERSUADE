@@ -9,7 +9,22 @@
 #' @return Invisibly returns the PERSUADE object.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' years <- survival::lung$time
+#' status <-  survival::lung$status
+#' group <- factor(survival::lung$sex)
+#' PERSUADE <- f_PERSUADE(
+#'   name = "Example",
+#'   years = years,
+#'   status = status,
+#'   group = group,
+#'   strata = FALSE,
+#'   spline_mod = FALSE,
+#'   cure_mod = FALSE,
+#'   time_unit = 365.25/12,
+#'   time_horizon = 5000,
+#'   time_pred_surv_table = seq(0, 5000, 100)
+#' )
 #' print(PERSUADE)
 #' }
 #'
@@ -39,7 +54,22 @@ print.PERSUADE <- function(x, ...) {
 #' @return A data frame or list of data frames depending on `type`.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' years <- survival::lung$time
+#' status <-  survival::lung$status
+#' group <- factor(survival::lung$sex)
+#' PERSUADE <- f_PERSUADE(
+#'   name = "Example",
+#'   years = years,
+#'   status = status,
+#'   group = group,
+#'   strata = FALSE,
+#'   spline_mod = FALSE,
+#'   cure_mod = FALSE,
+#'   time_unit = 365.25/12,
+#'   time_horizon = 5000,
+#'   time_pred_surv_table = seq(0, 5000, 100)
+#' )
 #' summary(PERSUADE, type = "surv_probs")
 #' }
 #'
@@ -98,7 +128,22 @@ summary.PERSUADE <- function(object, ..., type = "km") {
 #'   Also produces base R plots as side effects.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' years <- survival::lung$time
+#' status <-  survival::lung$status
+#' group <- factor(survival::lung$sex)
+#' PERSUADE <- f_PERSUADE(
+#'   name = "Example",
+#'   years = years,
+#'   status = status,
+#'   group = group,
+#'   strata = FALSE,
+#'   spline_mod = FALSE,
+#'   cure_mod = FALSE,
+#'   time_unit = 365.25/12,
+#'   time_horizon = 5000,
+#'   time_pred_surv_table = seq(0, 5000, 100)
+#' )
 #' plot(PERSUADE, "km")
 #' }
 #'

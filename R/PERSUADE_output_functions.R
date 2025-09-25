@@ -1,4 +1,4 @@
-#### Functions used to create Figures and other output (e.g. for use in an R Markdown file) ----
+#### Functions used to create Figures and other output (e.g. for use in a 'rmarkdown' file) ----
 #' Plot Kaplan-Meier Survival Curves (ggsurvplot)
 #'
 #' Generates Kaplan-Meier survival plots from a PERSUADE object using
@@ -9,7 +9,22 @@
 #' @return A `ggsurvplot` object with KM curves, risk table, CI bands, and optional censor marks.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' years <- survival::lung$time
+#' status <-  survival::lung$status
+#' group <- factor(survival::lung$sex)
+#' PERSUADE <- f_PERSUADE(
+#'   name = "Example",
+#'   years = years,
+#'   status = status,
+#'   group = group,
+#'   strata = FALSE,
+#'   spline_mod = FALSE,
+#'   cure_mod = FALSE,
+#'   time_unit = 365.25/12,
+#'   time_horizon = 5000,
+#'   time_pred_surv_table = seq(0, 5000, 100)
+#' )
 #' f_plot_km_survival(PERSUADE)
 #' }
 #'
@@ -82,7 +97,22 @@ f_plot_km_survival <- function(PERSUADE) {
 #' @return A base R plot.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' years <- survival::lung$time
+#' status <-  survival::lung$status
+#' group <- factor(survival::lung$sex)
+#' PERSUADE <- f_PERSUADE(
+#'   name = "Example",
+#'   years = years,
+#'   status = status,
+#'   group = group,
+#'   strata = FALSE,
+#'   spline_mod = FALSE,
+#'   cure_mod = FALSE,
+#'   time_unit = 365.25/12,
+#'   time_horizon = 5000,
+#'   time_pred_surv_table = seq(0, 5000, 100)
+#' )
 #' f_plot_km_survival_base(PERSUADE)
 #' }
 #'
@@ -139,7 +169,22 @@ f_plot_km_survival_base <- function(PERSUADE) {
 #' @return A base R plot showing ln(-ln(S(t))) against ln(time).
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' years <- survival::lung$time
+#' status <-  survival::lung$status
+#' group <- factor(survival::lung$sex)
+#' PERSUADE <- f_PERSUADE(
+#'   name = "Example",
+#'   years = years,
+#'   status = status,
+#'   group = group,
+#'   strata = FALSE,
+#'   spline_mod = FALSE,
+#'   cure_mod = FALSE,
+#'   time_unit = 365.25/12,
+#'   time_horizon = 5000,
+#'   time_pred_surv_table = seq(0, 5000, 100)
+#' )
 #' f_plot_log_cumhaz(PERSUADE)
 #' }
 #'
@@ -200,7 +245,22 @@ f_plot_log_cumhaz <- function(PERSUADE) {
 #' @return One or more base R plots, one per group comparison.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' years <- survival::lung$time
+#' status <-  survival::lung$status
+#' group <- factor(survival::lung$sex)
+#' PERSUADE <- f_PERSUADE(
+#'   name = "Example",
+#'   years = years,
+#'   status = status,
+#'   group = group,
+#'   strata = FALSE,
+#'   spline_mod = FALSE,
+#'   cure_mod = FALSE,
+#'   time_unit = 365.25/12,
+#'   time_horizon = 5000,
+#'   time_pred_surv_table = seq(0, 5000, 100)
+#' )
 #' f_plot_schoenfeld_residuals(PERSUADE)
 #' }
 #'
@@ -251,7 +311,22 @@ f_plot_schoenfeld_residuals <- function(PERSUADE) {
 #' @return A base R plot of smoothed hazards by group.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' years <- survival::lung$time
+#' status <-  survival::lung$status
+#' group <- factor(survival::lung$sex)
+#' PERSUADE <- f_PERSUADE(
+#'   name = "Example",
+#'   years = years,
+#'   status = status,
+#'   group = group,
+#'   strata = FALSE,
+#'   spline_mod = FALSE,
+#'   cure_mod = FALSE,
+#'   time_unit = 365.25/12,
+#'   time_horizon = 5000,
+#'   time_pred_surv_table = seq(0, 5000, 100)
+#' )
 #' f_plot_smoothed_hazard(PERSUADE)
 #' }
 #'
@@ -327,7 +402,22 @@ f_plot_smoothed_hazard <- function(PERSUADE) {
 #' @return A series of base R plots, one per group, with hazard overlays by model family.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' years <- survival::lung$time
+#' status <-  survival::lung$status
+#' group <- factor(survival::lung$sex)
+#' PERSUADE <- f_PERSUADE(
+#'   name = "Example",
+#'   years = years,
+#'   status = status,
+#'   group = group,
+#'   strata = FALSE,
+#'   spline_mod = FALSE,
+#'   cure_mod = FALSE,
+#'   time_unit = 365.25/12,
+#'   time_horizon = 5000,
+#'   time_pred_surv_table = seq(0, 5000, 100)
+#' )
 #' f_plot_hazard_with_models(PERSUADE)
 #' }
 #'
@@ -452,7 +542,22 @@ f_plot_hazard_with_models <- function(PERSUADE) {
 #' @return A base R plot of KM curves with parametric model overlays.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' years <- survival::lung$time
+#' status <-  survival::lung$status
+#' group <- factor(survival::lung$sex)
+#' PERSUADE <- f_PERSUADE(
+#'   name = "Example",
+#'   years = years,
+#'   status = status,
+#'   group = group,
+#'   strata = FALSE,
+#'   spline_mod = FALSE,
+#'   cure_mod = FALSE,
+#'   time_unit = 365.25/12,
+#'   time_horizon = 5000,
+#'   time_pred_surv_table = seq(0, 5000, 100)
+#' )
 #' f_plot_param_surv_model(PERSUADE, model_index = 1)
 #' }
 #'
@@ -526,7 +631,22 @@ f_plot_param_surv_model <- function(PERSUADE, model_index = 1) {
 #' @return A base R plot of KM curves with spline model overlays and knots.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' years <- survival::lung$time
+#' status <-  survival::lung$status
+#' group <- factor(survival::lung$sex)
+#' PERSUADE <- f_PERSUADE(
+#'   name = "Example",
+#'   years = years,
+#'   status = status,
+#'   group = group,
+#'   strata = FALSE,
+#'   spline_mod = FALSE,
+#'   cure_mod = FALSE,
+#'   time_unit = 365.25/12,
+#'   time_horizon = 5000,
+#'   time_pred_surv_table = seq(0, 5000, 100)
+#' )
 #' f_plot_spline_surv_model(PERSUADE, model_index = 1)
 #' }
 #'
@@ -611,7 +731,22 @@ f_plot_spline_surv_model <- function(PERSUADE, model_index = 1) {
 #' @return A base R plot of KM curves with cure model overlays.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' years <- survival::lung$time
+#' status <-  survival::lung$status
+#' group <- factor(survival::lung$sex)
+#' PERSUADE <- f_PERSUADE(
+#'   name = "Example",
+#'   years = years,
+#'   status = status,
+#'   group = group,
+#'   strata = FALSE,
+#'   spline_mod = FALSE,
+#'   cure_mod = FALSE,
+#'   time_unit = 365.25/12,
+#'   time_horizon = 5000,
+#'   time_pred_surv_table = seq(0, 5000, 100)
+#' )
 #' f_plot_cure_surv_model(PERSUADE, model_index = 1)
 #' }
 #'
@@ -687,7 +822,22 @@ f_plot_cure_surv_model <- function(PERSUADE, model_index = 1) {
 #' @return A base R diagnostic plot for the selected parametric survival model.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' years <- survival::lung$time
+#' status <-  survival::lung$status
+#' group <- factor(survival::lung$sex)
+#' PERSUADE <- f_PERSUADE(
+#'   name = "Example",
+#'   years = years,
+#'   status = status,
+#'   group = group,
+#'   strata = FALSE,
+#'   spline_mod = FALSE,
+#'   cure_mod = FALSE,
+#'   time_unit = 365.25/12,
+#'   time_horizon = 5000,
+#'   time_pred_surv_table = seq(0, 5000, 100)
+#' )
 #' f_plot_diag_param_surv_model(PERSUADE, model_index = 1)
 #' }
 #'
@@ -831,7 +981,22 @@ f_plot_diag_param_surv_model <- function(PERSUADE, model_index = 1) {
 #' @return A base R diagnostic plot for the selected spline-based survival model.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' years <- survival::lung$time
+#' status <-  survival::lung$status
+#' group <- factor(survival::lung$sex)
+#' PERSUADE <- f_PERSUADE(
+#'   name = "Example",
+#'   years = years,
+#'   status = status,
+#'   group = group,
+#'   strata = FALSE,
+#'   spline_mod = FALSE,
+#'   cure_mod = FALSE,
+#'   time_unit = 365.25/12,
+#'   time_horizon = 5000,
+#'   time_pred_surv_table = seq(0, 5000, 100)
+#' )
 #' f_plot_diag_spline_surv_model(PERSUADE, model_index = 1)
 #' }
 #'
@@ -957,7 +1122,22 @@ f_plot_diag_spline_surv_model <- function(PERSUADE, model_index = 1) {
 #' @return A base R diagnostic plot for the selected cure survival model.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' years <- survival::lung$time
+#' status <-  survival::lung$status
+#' group <- factor(survival::lung$sex)
+#' PERSUADE <- f_PERSUADE(
+#'   name = "Example",
+#'   years = years,
+#'   status = status,
+#'   group = group,
+#'   strata = FALSE,
+#'   spline_mod = FALSE,
+#'   cure_mod = FALSE,
+#'   time_unit = 365.25/12,
+#'   time_horizon = 5000,
+#'   time_pred_surv_table = seq(0, 5000, 100)
+#' )
 #' f_plot_diag_cure_surv_model(PERSUADE, model_index = 1)
 #' }
 #'
@@ -1069,8 +1249,22 @@ f_plot_diag_cure_surv_model <- function(PERSUADE, model_index = 1) {
 #' @return Invisibly returns `NULL`. The function draws a base R plot as a side effect.
 
 #' @examples
-#' \dontrun{
-#' PERSUADE <- f_PERSUADE(...)
+#' \donttest{
+#' years <- survival::lung$time
+#' status <-  survival::lung$status
+#' group <- factor(survival::lung$sex)
+#' PERSUADE <- f_PERSUADE(
+#'   name = "Example",
+#'   years = years,
+#'   status = status,
+#'   group = group,
+#'   strata = FALSE,
+#'   spline_mod = FALSE,
+#'   cure_mod = FALSE,
+#'   time_unit = 365.25/12,
+#'   time_horizon = 5000,
+#'   time_pred_surv_table = seq(0, 5000, 100)
+#' )
 #' f_plot_tp_param_surv_model(PERSUADE, model_index = 1)
 #' }
 #'
@@ -1171,8 +1365,22 @@ f_plot_tp_param_surv_model <- function(PERSUADE, model_index = 1) {
 #' @return Invisibly returns `NULL`. The function draws a base R plot as a side effect.
 #'
 #' @examples
-#' \dontrun{
-#' PERSUADE <- f_PERSUADE(...)
+#' \donttest{
+#' years <- survival::lung$time
+#' status <-  survival::lung$status
+#' group <- factor(survival::lung$sex)
+#' PERSUADE <- f_PERSUADE(
+#'   name = "Example",
+#'   years = years,
+#'   status = status,
+#'   group = group,
+#'   strata = FALSE,
+#'   spline_mod = FALSE,
+#'   cure_mod = FALSE,
+#'   time_unit = 365.25/12,
+#'   time_horizon = 5000,
+#'   time_pred_surv_table = seq(0, 5000, 100)
+#' )
 #' f_plot_tp_spline_surv_model(PERSUADE, model_index = 1)
 #' }
 #'
@@ -1288,8 +1496,22 @@ f_plot_tp_spline_surv_model <- function(PERSUADE, model_index = 1) {
 #' @return Invisibly returns `NULL`. The function draws a base R plot as a side effect.
 #'
 #' @examples
-#' \dontrun{
-#' PERSUADE <- f_PERSUADE(...)
+#' \donttest{
+#' years <- survival::lung$time
+#' status <-  survival::lung$status
+#' group <- factor(survival::lung$sex)
+#' PERSUADE <- f_PERSUADE(
+#'   name = "Example",
+#'   years = years,
+#'   status = status,
+#'   group = group,
+#'   strata = FALSE,
+#'   spline_mod = FALSE,
+#'   cure_mod = FALSE,
+#'   time_unit = 365.25/12,
+#'   time_horizon = 5000,
+#'   time_pred_surv_table = seq(0, 5000, 100)
+#' )
 #' f_plot_tp_cure_surv_model(PERSUADE, model_index = 1)
 #' }
 #'
@@ -1393,8 +1615,22 @@ f_plot_tp_cure_surv_model <- function(PERSUADE, model_index = 1) {
 #' @return Invisibly returns `NULL`. The function draws one or more base R plots as side effects.
 #'
 #' @examples
-#' \dontrun{
-#' PERSUADE <- f_PERSUADE(...)
+#' \donttest{
+#' years <- survival::lung$time
+#' status <-  survival::lung$status
+#' group <- factor(survival::lung$sex)
+#' PERSUADE <- f_PERSUADE(
+#'   name = "Example",
+#'   years = years,
+#'   status = status,
+#'   group = group,
+#'   strata = FALSE,
+#'   spline_mod = FALSE,
+#'   cure_mod = FALSE,
+#'   time_unit = 365.25/12,
+#'   time_horizon = 5000,
+#'   time_pred_surv_table = seq(0, 5000, 100)
+#' )
 #' f_plot_param_surv_extrap(P)
 #' }
 #'
@@ -1460,9 +1696,23 @@ f_plot_param_surv_extrap <- function(PERSUADE) {
 #' @return Invisibly returns `NULL`. The function draws one or more base R plots as side effects.
 #'
 #' @examples
-#' \dontrun{
-#' PERSUADE <- f_PERSUADE(...)
-#' f_plot_spline_surv_extrap(P)
+#' \donttest{
+#' years <- survival::lung$time
+#' status <-  survival::lung$status
+#' group <- factor(survival::lung$sex)
+#' PERSUADE <- f_PERSUADE(
+#'   name = "Example",
+#'   years = years,
+#'   status = status,
+#'   group = group,
+#'   strata = FALSE,
+#'   spline_mod = FALSE,
+#'   cure_mod = FALSE,
+#'   time_unit = 365.25/12,
+#'   time_horizon = 5000,
+#'   time_pred_surv_table = seq(0, 5000, 100)
+#' )
+#' f_plot_spline_surv_extrap(PERSUADE)
 #' }
 #'
 #' @seealso [f_PERSUADE()]
@@ -1530,9 +1780,23 @@ f_plot_spline_surv_extrap <- function(PERSUADE) {
 #' @return Invisibly returns `NULL`. The function draws one or more base R plots as side effects.
 #'
 #' @examples
-#' \dontrun{
-#' PERSUADE <- f_PERSUADE(...)
-#' f_plot_cure_surv_extrap(P)
+#' \donttest{
+#' years <- survival::lung$time
+#' status <-  survival::lung$status
+#' group <- factor(survival::lung$sex)
+#' PERSUADE <- f_PERSUADE(
+#'   name = "Example",
+#'   years = years,
+#'   status = status,
+#'   group = group,
+#'   strata = FALSE,
+#'   spline_mod = FALSE,
+#'   cure_mod = FALSE,
+#'   time_unit = 365.25/12,
+#'   time_horizon = 5000,
+#'   time_pred_surv_table = seq(0, 5000, 100)
+#' )
+#' f_plot_cure_surv_extrap(PERSUADE)
 #' }
 #'
 #' @seealso [f_PERSUADE()]
@@ -1598,9 +1862,23 @@ f_plot_cure_surv_extrap <- function(PERSUADE) {
 #' @return Invisibly returns `NULL`. The function draws one or more base R plots as side effects.
 #'
 #' @examples
-#' \dontrun{
-#' PERSUADE <- f_PERSUADE(...)
-#' f_plot_tp_param_surv_extrap(P)
+#' \donttest{
+#' years <- survival::lung$time
+#' status <-  survival::lung$status
+#' group <- factor(survival::lung$sex)
+#' PERSUADE <- f_PERSUADE(
+#'   name = "Example",
+#'   years = years,
+#'   status = status,
+#'   group = group,
+#'   strata = FALSE,
+#'   spline_mod = FALSE,
+#'   cure_mod = FALSE,
+#'   time_unit = 365.25/12,
+#'   time_horizon = 5000,
+#'   time_pred_surv_table = seq(0, 5000, 100)
+#' )
+#' f_plot_tp_param_surv_extrap(PERSUADE)
 #' }
 #'
 #' @seealso [f_PERSUADE()]
@@ -1655,9 +1933,23 @@ f_plot_tp_param_surv_extrap <- function(PERSUADE) {
 #' @return Invisibly returns `NULL`. The function draws one or more base R plots as side effects.
 #'
 #' @examples
-#' \dontrun{
-#' PERSUADE <- f_PERSUADE(...)
-#' f_plot_tp_spline_surv_extrap(P)
+#' \donttest{
+#' years <- survival::lung$time
+#' status <-  survival::lung$status
+#' group <- factor(survival::lung$sex)
+#' PERSUADE <- f_PERSUADE(
+#'   name = "Example",
+#'   years = years,
+#'   status = status,
+#'   group = group,
+#'   strata = FALSE,
+#'   spline_mod = FALSE,
+#'   cure_mod = FALSE,
+#'   time_unit = 365.25/12,
+#'   time_horizon = 5000,
+#'   time_pred_surv_table = seq(0, 5000, 100)
+#' )
+#' f_plot_tp_spline_surv_extrap(PERSUADE)
 #' }
 #'
 #' @seealso [f_PERSUADE()]
@@ -1714,9 +2006,23 @@ f_plot_tp_spline_surv_extrap <- function(PERSUADE) {
 #' @return Invisibly returns `NULL`. The function draws one or more base R plots as side effects.
 #'
 #' @examples
-#' \dontrun{
-#' PERSUADE <- f_PERSUADE(...)
-#' f_plot_tp_cure_surv_extrap(P)
+#' \donttest{
+#' years <- survival::lung$time
+#' status <-  survival::lung$status
+#' group <- factor(survival::lung$sex)
+#' PERSUADE <- f_PERSUADE(
+#'   name = "Example",
+#'   years = years,
+#'   status = status,
+#'   group = group,
+#'   strata = FALSE,
+#'   spline_mod = FALSE,
+#'   cure_mod = FALSE,
+#'   time_unit = 365.25/12,
+#'   time_horizon = 5000,
+#'   time_pred_surv_table = seq(0, 5000, 100)
+#' )
+#' f_plot_tp_cure_surv_extrap(PERSUADE)
 #' }
 #'
 #' @seealso [f_PERSUADE()]
@@ -1774,9 +2080,23 @@ f_plot_tp_cure_surv_extrap <- function(PERSUADE) {
 #' @return Invisibly returns `NULL`. The function draws one or more base R plots as side effects.
 #'
 #' @examples
-#' \dontrun{
-#' PERSUADE <- f_PERSUADE(...)
-#' f_plot_hazard_parametric_extrap(P)
+#' \donttest{
+#' years <- survival::lung$time
+#' status <-  survival::lung$status
+#' group <- factor(survival::lung$sex)
+#' PERSUADE <- f_PERSUADE(
+#'   name = "Example",
+#'   years = years,
+#'   status = status,
+#'   group = group,
+#'   strata = FALSE,
+#'   spline_mod = FALSE,
+#'   cure_mod = FALSE,
+#'   time_unit = 365.25/12,
+#'   time_horizon = 5000,
+#'   time_pred_surv_table = seq(0, 5000, 100)
+#' )
+#' f_plot_hazard_parametric_extrap(PERSUADE)
 #' }
 #'
 #' @seealso [f_PERSUADE()]
@@ -1820,9 +2140,23 @@ f_plot_hazard_parametric_extrap <- function(PERSUADE) {
 #' @return Invisibly returns `NULL`. The function draws one or more base R plots as side effects.
 #'
 #' @examples
-#' \dontrun{
-#' PERSUADE <- f_PERSUADE(...)
-#' f_plot_hazard_spline_extrap(P)
+#' \donttest{
+#' years <- survival::lung$time
+#' status <-  survival::lung$status
+#' group <- factor(survival::lung$sex)
+#' PERSUADE <- f_PERSUADE(
+#'   name = "Example",
+#'   years = years,
+#'   status = status,
+#'   group = group,
+#'   strata = FALSE,
+#'   spline_mod = FALSE,
+#'   cure_mod = FALSE,
+#'   time_unit = 365.25/12,
+#'   time_horizon = 5000,
+#'   time_pred_surv_table = seq(0, 5000, 100)
+#' )
+#' f_plot_hazard_spline_extrap(PERSUADE)
 #' }
 #'
 #' @seealso [f_PERSUADE()]
@@ -1868,9 +2202,23 @@ f_plot_hazard_spline_extrap <- function(PERSUADE) {
 #' @return Invisibly returns `NULL`. The function draws one or more base R plots as side effects.
 #'
 #' @examples
-#' \dontrun{
-#' PERSUADE <- f_PERSUADE(...)
-#' f_plot_hazard_cure_extrap(P)
+#' \donttest{
+#' years <- survival::lung$time
+#' status <-  survival::lung$status
+#' group <- factor(survival::lung$sex)
+#' PERSUADE <- f_PERSUADE(
+#'   name = "Example",
+#'   years = years,
+#'   status = status,
+#'   group = group,
+#'   strata = FALSE,
+#'   spline_mod = FALSE,
+#'   cure_mod = FALSE,
+#'   time_unit = 365.25/12,
+#'   time_horizon = 5000,
+#'   time_pred_surv_table = seq(0, 5000, 100)
+#' )
+#' f_plot_hazard_cure_extrap(PERSUADE)
 #' }
 #'
 #' @seealso [f_PERSUADE()]
@@ -1954,7 +2302,7 @@ f_summary <- function(df) {
 #' @return A length-1 character string giving the absolute path to the generated
 #'   PDF, returned invisibly.
 #'
-#' @details The default R Markdown file `PERSUADE_output.Rmd` is stored within
+#' @details The default 'rmarkdown' file `PERSUADE_output.Rmd` is stored within
 #'   the package under `inst/rmd/`. Figures are written to a subdirectory
 #'   `Images/` inside the output folder, and the knit environment is
 #'   initialised with the supplied `PERSUADE` object. Supplying a custom
@@ -1963,12 +2311,28 @@ f_summary <- function(df) {
 #'   \pkg{knitr}, \pkg{kableExtra}, and \pkg{rmarkdown}.
 #'   If not installed, the function will throw an error.
 #'
-#' @seealso [f_PERSUADE()]
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' years <- survival::lung$time
+#' status <-  survival::lung$status
+#' group <- factor(survival::lung$sex)
+#' PERSUADE <- f_PERSUADE(
+#'   name = "Example",
+#'   years = years,
+#'   status = status,
+#'   group = group,
+#'   strata = FALSE,
+#'   spline_mod = FALSE,
+#'   cure_mod = FALSE,
+#'   time_unit = 365.25/12,
+#'   time_horizon = 5000,
+#'   time_pred_surv_table = seq(0, 5000, 100)
+#' )
 #' f_generate_report(PERSUADE)
 #' f_generate_report(PERSUADE, template_path = "custom_template.Rmd")
 #' }
+#'
+#' @seealso [f_PERSUADE()]
 #'
 #' @export
 f_generate_report <- function(PERSUADE, template_path = NULL) {
@@ -2010,7 +2374,7 @@ f_generate_report <- function(PERSUADE, template_path = NULL) {
     stop("The PERSUADE Rmd template was not found in the package.")
   }
 
-  # Render R Markdown into PDF
+  # Render 'rmarkdown' into PDF
   rmarkdown::render(
     input = template_path,
     output_file = paste0(name, ".pdf"),
@@ -2052,7 +2416,7 @@ f_generate_report <- function(PERSUADE, template_path = NULL) {
 #' @seealso [f_generate_report()], [system.file()]
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Copy template to working directory
 #' f_get_excel_template()
 #'

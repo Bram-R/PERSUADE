@@ -96,13 +96,13 @@ plot(PERSUADE, type = "cure_models")   # Cure models
 ```
 
 ## Reporting
-To automatically generate a PDF report (R Markdown):
+To automatically generate a PDF report ('rmarkdown'):
 ```{r PERSUADE_report, eval=FALSE}
 f_generate_report(PERSUADE)
 ```
 
 ## Exporting model parameters
-To automatically generate a PDF report (R Markdown):
+To automatically generate a PDF report ('rmarkdown'):
 ```{r PERSUADE_export, eval=FALSE}
 write.csv(PERSUADE$surv_model_excel, file.path(file.path(getwd(), paste0(name, "_output")), "PERSUADE_Time-to-event_models_parameters_comma.csv"))
 write.csv2(PERSUADE$surv_model_excel, file.path(file.path(getwd(), paste0(name, "_output")), "PERSUADE_Time-to-event_models_parameters_semicolon.csv"))
