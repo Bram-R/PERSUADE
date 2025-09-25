@@ -22,7 +22,7 @@ Save the PERSUADE object and render a PDF report using the bundled
 \code{PERSUADE_output.Rmd} template, or a user-specified template.
 }
 \details{
-The default R Markdown file \code{PERSUADE_output.Rmd} is stored within
+The default 'rmarkdown' file \code{PERSUADE_output.Rmd} is stored within
 the package under \verb{inst/rmd/}. Figures are written to a subdirectory
 \verb{Images/} inside the output folder, and the knit environment is
 initialised with the supplied \code{PERSUADE} object. Supplying a custom
@@ -32,7 +32,22 @@ simplifies testing. This function requires the following suggested packages:
 If not installed, the function will throw an error.
 }
 \examples{
-\dontrun{
+\donttest{
+years <- survival::lung$time
+status <-  survival::lung$status
+group <- factor(survival::lung$sex)
+PERSUADE <- f_PERSUADE(
+  name = "Example",
+  years = years,
+  status = status,
+  group = group,
+  strata = FALSE,
+  spline_mod = FALSE,
+  cure_mod = FALSE,
+  time_unit = 365.25/12,
+  time_horizon = 5000,
+  time_pred_surv_table = seq(0, 5000, 100)
+)
 f_generate_report(PERSUADE)
 f_generate_report(PERSUADE, template_path = "custom_template.Rmd")
 }

@@ -67,7 +67,7 @@ The workflow proceeds in three main stages:
 }
 }
 \examples{
-\dontrun{
+\donttest{
 years <- survival::lung$time
 status <-  survival::lung$status
 group <- factor(survival::lung$sex)

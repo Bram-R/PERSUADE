@@ -16,7 +16,22 @@ A base R plot of smoothed hazards by group.
 Plots smoothed hazard estimates for each group in the PERSUADE object.
 }
 \examples{
-\dontrun{
+\donttest{
+years <- survival::lung$time
+status <-  survival::lung$status
+group <- factor(survival::lung$sex)
+PERSUADE <- f_PERSUADE(
+  name = "Example",
+  years = years,
+  status = status,
+  group = group,
+  strata = FALSE,
+  spline_mod = FALSE,
+  cure_mod = FALSE,
+  time_unit = 365.25/12,
+  time_horizon = 5000,
+  time_pred_surv_table = seq(0, 5000, 100)
+)
 f_plot_smoothed_hazard(PERSUADE)
 }
 

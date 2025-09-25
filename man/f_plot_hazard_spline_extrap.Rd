@@ -18,9 +18,23 @@ hazard functions from all fitted spline survival models. Runs only when
 \code{PERSUADE$input$spline_mod} is \code{TRUE}.
 }
 \examples{
-\dontrun{
-PERSUADE <- f_PERSUADE(...)
-f_plot_hazard_spline_extrap(P)
+\donttest{
+years <- survival::lung$time
+status <-  survival::lung$status
+group <- factor(survival::lung$sex)
+PERSUADE <- f_PERSUADE(
+  name = "Example",
+  years = years,
+  status = status,
+  group = group,
+  strata = FALSE,
+  spline_mod = FALSE,
+  cure_mod = FALSE,
+  time_unit = 365.25/12,
+  time_horizon = 5000,
+  time_pred_surv_table = seq(0, 5000, 100)
+)
+f_plot_hazard_spline_extrap(PERSUADE)
 }
 
 }

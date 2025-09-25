@@ -21,8 +21,22 @@ intervals, overlaid with predictions from a selected cure survival model
 (mixture or non-mixture; Weibull, log-normal, or log-logistic).
 }
 \examples{
-\dontrun{
-PERSUADE <- f_PERSUADE(...)
+\donttest{
+years <- survival::lung$time
+status <-  survival::lung$status
+group <- factor(survival::lung$sex)
+PERSUADE <- f_PERSUADE(
+  name = "Example",
+  years = years,
+  status = status,
+  group = group,
+  strata = FALSE,
+  spline_mod = FALSE,
+  cure_mod = FALSE,
+  time_unit = 365.25/12,
+  time_horizon = 5000,
+  time_pred_surv_table = seq(0, 5000, 100)
+)
 f_plot_tp_cure_surv_model(PERSUADE, model_index = 1)
 }
 

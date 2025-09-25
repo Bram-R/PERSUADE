@@ -2418,10 +2418,7 @@ f_generate_report <- function(PERSUADE, template_path = NULL) {
 #' @examples
 #' \donttest{
 #' # Copy template to working directory
-#' f_get_excel_template()
-#'
-#' # Copy template to a custom folder
-#' f_get_excel_template(path = tempdir())
+#' f_get_excel_template(path = getwd())
 #' }
 #'
 #' @export

@@ -17,7 +17,22 @@ Generates Kaplan-Meier survival plots from a PERSUADE object using base R graphi
 with shaded confidence intervals and group-specific legends.
 }
 \examples{
-\dontrun{
+\donttest{
+years <- survival::lung$time
+status <-  survival::lung$status
+group <- factor(survival::lung$sex)
+PERSUADE <- f_PERSUADE(
+  name = "Example",
+  years = years,
+  status = status,
+  group = group,
+  strata = FALSE,
+  spline_mod = FALSE,
+  cure_mod = FALSE,
+  time_unit = 365.25/12,
+  time_horizon = 5000,
+  time_pred_surv_table = seq(0, 5000, 100)
+)
 f_plot_km_survival_base(PERSUADE)
 }
 

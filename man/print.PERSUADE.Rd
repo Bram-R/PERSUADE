@@ -18,7 +18,22 @@ Invisibly returns the PERSUADE object.
 Displays a brief summary of the PERSUADE object in the console.
 }
 \examples{
-\dontrun{
+\donttest{
+years <- survival::lung$time
+status <-  survival::lung$status
+group <- factor(survival::lung$sex)
+PERSUADE <- f_PERSUADE(
+  name = "Example",
+  years = years,
+  status = status,
+  group = group,
+  strata = FALSE,
+  spline_mod = FALSE,
+  cure_mod = FALSE,
+  time_unit = 365.25/12,
+  time_horizon = 5000,
+  time_pred_surv_table = seq(0, 5000, 100)
+)
 print(PERSUADE)
 }
 

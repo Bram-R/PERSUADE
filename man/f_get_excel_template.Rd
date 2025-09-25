@@ -32,12 +32,9 @@ downstream decision-analytic models. Users may adapt the template as needed
 for their specific workflows.
 }
 \examples{
-\dontrun{
+\donttest{
 # Copy template to working directory
-f_get_excel_template()
-
-# Copy template to a custom folder
-f_get_excel_template(path = tempdir())
+f_get_excel_template(path = getwd())
 }
 
 }

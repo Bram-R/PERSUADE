@@ -17,9 +17,23 @@ Plot smoothed observed annual transition probabilities with shaded confidence
 intervals and overlay predictions from all fitted parametric survival models.
 }
 \examples{
-\dontrun{
-PERSUADE <- f_PERSUADE(...)
-f_plot_tp_param_surv_extrap(P)
+\donttest{
+years <- survival::lung$time
+status <-  survival::lung$status
+group <- factor(survival::lung$sex)
+PERSUADE <- f_PERSUADE(
+  name = "Example",
+  years = years,
+  status = status,
+  group = group,
+  strata = FALSE,
+  spline_mod = FALSE,
+  cure_mod = FALSE,
+  time_unit = 365.25/12,
+  time_horizon = 5000,
+  time_pred_surv_table = seq(0, 5000, 100)
+)
+f_plot_tp_param_surv_extrap(PERSUADE)
 }
 
 }

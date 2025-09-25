@@ -11,7 +11,8 @@
 - Minor updates to vignette and README file
 - Added single quotes for software names and API (e.g. 'rmarkdown')
 - Added references to DESCRIPTION file
-- Replaced \dontrun with \donttest
+- Replaced \dontrun with \donttest (and tested by `devtools::check(args = c("--run-donttest"))`)
+- 
 
 
 
