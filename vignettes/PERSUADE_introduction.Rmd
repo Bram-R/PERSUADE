@@ -87,12 +87,14 @@ summary(PERSUADE, type = "gof")
 
 ## Generate diagnostic and model plots:
 ```{r PERSUADE_plot, eval=FALSE}
+palette(rainbow(n = 9, s = 1, v = 1, start = 0, end = max(1, 9 - 1)/9, alpha = 1)) # Set colour palette for Figures
 plot(PERSUADE, type = "km")            # Kaplan-Meier
 plot(PERSUADE, type = "ph")            # Proportional hazards
 plot(PERSUADE, type = "hr")            # Hazard functions
 plot(PERSUADE, type = "param_models")  # Standard parametric fits
 plot(PERSUADE, type = "spline_models") # Spline-based fits
 plot(PERSUADE, type = "cure_models")   # Cure models
+palette("default") # Set colour palette to default
 ```
 
 ## Reporting
@@ -105,10 +107,10 @@ f_generate_report(PERSUADE)
 Change `tempdir()` into `getwd()` for copying to working directory.
 ```{r PERSUADE_export, eval=FALSE}
 write.csv(PERSUADE$surv_model_excel, 
-          file.path(file.path(tempdir(), paste0(name, "_output")),
+          file.path(tempdir(), paste0(name, "_output"), 
                     "PERSUADE_Time-to-event_models_parameters_comma.csv"))
 write.csv2(PERSUADE$surv_model_excel, 
-           file.path(file.path(tempdir(), paste0(name, "_output")),
+           file.path(tempdir(), paste0(name, "_output"), 
                      "PERSUADE_Time-to-event_models_parameters_semicolon.csv"))
 ```
 

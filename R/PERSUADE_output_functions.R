@@ -2378,12 +2378,12 @@ f_generate_report <- function(PERSUADE, output_dir = NULL, template_dir = NULL, 
   save(PERSUADE, file = file.path(output_dir, "PERSUADE.RData"))
 
   # Locate template
-  if (missing(template_dir)) {
-    stop("The PERSUADE Rmd template was not found in the package.")
-  }
-
   if (is.null(template_dir)) {
     template_dir <- system.file("rmd", "PERSUADE_output.Rmd", package = "PERSUADE")
+  }
+
+  if (template_dir == "" || !file.exists(template_dir)) {
+    stop("The PERSUADE Rmd template was not found in the package.")
   }
 
   # Render PDF R markdown file
@@ -2449,4 +2449,3 @@ f_get_excel_template <- function(output_dir = NULL) {
   file.copy(src, dest, overwrite = TRUE)
   invisible(dest)
 }
-

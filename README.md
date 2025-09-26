@@ -107,6 +107,9 @@ summary(PERSUADE, type = "gof_cure")
 ### 5. Visualize results
 
 ``` r
+# Set colour palette for Figures
+palette(rainbow(n = 9, s = 1, v = 1, start = 0, end = max(1, 9 - 1)/9, alpha = 1)) 
+
 # Kaplan-Meier curves
 plot(PERSUADE, type = "km")
 
@@ -124,6 +127,9 @@ plot(PERSUADE, type = "spline_models")
 
 # Cure models
 plot(PERSUADE, type = "cure_models")
+
+# Set colour palette to default
+palette("default") 
 ```
 
 ### 6. Generate the report
@@ -140,10 +146,10 @@ write.table(PERSUADE$surv_model_excel, "clipboard-128", sep = "\t", col.names = 
 
 # Export to CSV (change `tempdir()` into `getwd()` for copying to working directory)
 write.csv(PERSUADE$surv_model_excel, 
-          file.path(file.path(tempdir(), paste0(name, "_output")),
+          file.path(tempdir(), paste0(name, "_output"),
                     "PERSUADE_Time-to-event_models_parameters_comma.csv"))
 write.csv2(PERSUADE$surv_model_excel, 
-           file.path(file.path(tempdir(), paste0(name, "_output")),
+           file.path(tempdir(), paste0(name, "_output"),
                      "PERSUADE_Time-to-event_models_parameters_semicolon.csv"))
 ```
 

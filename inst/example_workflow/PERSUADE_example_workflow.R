@@ -4,13 +4,9 @@
 #### LOAD PERSUADE ----
 library("PERSUADE")
 
-# Colour palette for Figures
-n <- 9  #number of different colors (to be used for palette)
-palette(rainbow(n = n, s = 1, v = 1, start = 0, end = max(1, n - 1)/n, alpha = 1))
-
 #### INPUT DATA ----
 name <- "BC_OS" # Analysis name
-name <- file.path("inst", "example", name) # Analysis name including path
+#name <- file.path("inst", "example", name) # Analysis name including path
 
 # bc1 <- bc[bc$group=="Medium",] # 1 group data set (for testing purposes)
 # bc2 <- bc[bc$group!="Medium",] # 2 group data set (for testing purposes)
@@ -41,7 +37,6 @@ PERSUADE <- f_PERSUADE(
 )
 
 #### RESULTS ----
-# S3 functionality
 print(PERSUADE)
 
 summary(PERSUADE,type = "km")
@@ -50,21 +45,22 @@ summary(PERSUADE,type = "gof")
 summary(PERSUADE,type = "gof_spline")
 summary(PERSUADE,type = "gof_cure")
 
+palette(rainbow(n = 9, s = 1, v = 1, start = 0, end = max(1, 9 - 1)/9, alpha = 1)) # Set colour palette for Figures
 plot(PERSUADE, type = "km")
 plot(PERSUADE, type = "ph")
 plot(PERSUADE, type = "hr")
 plot(PERSUADE, type = "param_models")
 plot(PERSUADE, type = "spline_models")
 plot(PERSUADE, type = "cure_models")
+palette("default") # Set colour palette to default
 
 # Create report
-f_generate_report(PERSUADE) # check RMD file: system.file("rmd", "PERSUADE_output.Rmd", package = "PERSUADE")
+f_generate_report(PERSUADE, open = TRUE) # check RMD file: system.file("rmd", "PERSUADE_output.Rmd", package = "PERSUADE")
 
 # Export parametric survival models to clipboard and CSV files (change `tempdir()` into `getwd()` for copying to working directory)
 write.table(PERSUADE$surv_model_excel, "clipboard-128", sep = "\t", col.names = FALSE)
-write.csv(PERSUADE$surv_model_excel, file.path(file.path(tempdir(), paste0(name, "_output")), "PERSUADE_Time-to-event_models_parameters_comma.csv"))
-write.csv2(PERSUADE$surv_model_excel, file.path(file.path(tempdir(), paste0(name, "_output")), "PERSUADE_Time-to-event_models_parameters_semicolon.csv"))
+write.csv(PERSUADE$surv_model_excel, file.path(tempdir(), paste0(name, "_output"), "PERSUADE_Time-to-event_models_parameters_comma.csv"))
+write.csv2(PERSUADE$surv_model_excel, file.path(tempdir(), paste0(name, "_output"), "PERSUADE_Time-to-event_models_parameters_semicolon.csv"))
 
 # Obtain Excel template to incorporate model parameters in decision-analytic model
 f_get_excel_template()
-
