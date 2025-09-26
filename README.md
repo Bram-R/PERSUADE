@@ -56,10 +56,9 @@ This script:
 
 ## Step-by-step workflow
 
-### 1. Install and load PERSUADE package
+### 1. Load PERSUADE package
 
 ``` r
-devtools::install_github("Bram-R/PERSUADE", quiet = TRUE, upgrade = "never") # To install the development version of PERSUADE
 library(PERSUADE)
 ```
 
