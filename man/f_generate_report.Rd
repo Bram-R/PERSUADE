@@ -4,14 +4,26 @@
 \alias{f_generate_report}
 \title{Generate PDF Report for a PERSUADE Analysis}
 \usage{
-f_generate_report(PERSUADE, template_path = NULL)
+f_generate_report(
+  PERSUADE,
+  output_dir = NULL,
+  template_dir = NULL,
+  open = FALSE
+)
 }
 \arguments{
 \item{PERSUADE}{A PERSUADE object returned by \code{\link[=f_PERSUADE]{f_PERSUADE()}}.}
 
-\item{template_path}{Optional character string giving the full path to an Rmd
+\item{output_dir}{Character string giving the directory to copy the function
+output to. If \code{NULL} (the default), the function uses:
+\code{file.path(tempdir(), paste0(PERSUADE$name, "_output"))}. Change \code{tempdir()}
+into \code{getwd()} for copying to working directory.}
+
+\item{template_dir}{Optional character string giving the full path to an Rmd
 template. If \code{NULL} (the default), the function looks for
 \code{PERSUADE_output.Rmd} within the package installation directory.}
+
+\item{open}{Logical. Whether to browse the generated file.}
 }
 \value{
 A length-1 character string giving the absolute path to the generated
@@ -22,11 +34,11 @@ Save the PERSUADE object and render a PDF report using the bundled
 \code{PERSUADE_output.Rmd} template, or a user-specified template.
 }
 \details{
-The default 'rmarkdown' file \code{PERSUADE_output.Rmd} is stored within
+The default R markdown file \code{PERSUADE_output.Rmd} is stored within
 the package under \verb{inst/rmd/}. Figures are written to a subdirectory
 \verb{Images/} inside the output folder, and the knit environment is
 initialised with the supplied \code{PERSUADE} object. Supplying a custom
-\code{template_path} allows alternative report formats to be used, and
+\code{template_dir} allows alternative report formats to be used, and
 simplifies testing. This function requires the following suggested packages:
 \pkg{knitr}, \pkg{kableExtra}, and \pkg{rmarkdown}.
 If not installed, the function will throw an error.
@@ -48,7 +60,12 @@ PERSUADE <- f_PERSUADE(
   time_horizon = 5000,
   time_pred_surv_table = seq(0, 5000, 100)
 )
-f_generate_report(PERSUADE, template_path = NULL)
+# Copy output to temporary directory (change `tempdir()` into `getwd()` for copying to working directory)
+f_generate_report(
+  PERSUADE,
+  output_dir = file.path(tempdir(), paste0(PERSUADE$name, "_output")),
+  template_dir = NULL
+)
 }
 
 }

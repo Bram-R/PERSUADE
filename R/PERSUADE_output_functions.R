@@ -22,8 +22,8 @@
 #'   spline_mod = FALSE,
 #'   cure_mod = FALSE,
 #'   time_unit = 365.25/12,
-#'   time_horizon = 5000,
-#'   time_pred_surv_table = seq(0, 5000, 100)
+#'   time_horizon = 2000,
+#'   time_pred_surv_table = seq(0, 2000, 365.25)
 #' )
 #' f_plot_km_survival(PERSUADE)
 #' }
@@ -110,8 +110,8 @@ f_plot_km_survival <- function(PERSUADE) {
 #'   spline_mod = FALSE,
 #'   cure_mod = FALSE,
 #'   time_unit = 365.25/12,
-#'   time_horizon = 5000,
-#'   time_pred_surv_table = seq(0, 5000, 100)
+#'   time_horizon = 2000,
+#'   time_pred_surv_table = seq(0, 2000, 365.25)
 #' )
 #' f_plot_km_survival_base(PERSUADE)
 #' }
@@ -182,8 +182,8 @@ f_plot_km_survival_base <- function(PERSUADE) {
 #'   spline_mod = FALSE,
 #'   cure_mod = FALSE,
 #'   time_unit = 365.25/12,
-#'   time_horizon = 5000,
-#'   time_pred_surv_table = seq(0, 5000, 100)
+#'   time_horizon = 2000,
+#'   time_pred_surv_table = seq(0, 2000, 365.25)
 #' )
 #' f_plot_log_cumhaz(PERSUADE)
 #' }
@@ -258,8 +258,8 @@ f_plot_log_cumhaz <- function(PERSUADE) {
 #'   spline_mod = FALSE,
 #'   cure_mod = FALSE,
 #'   time_unit = 365.25/12,
-#'   time_horizon = 5000,
-#'   time_pred_surv_table = seq(0, 5000, 100)
+#'   time_horizon = 2000,
+#'   time_pred_surv_table = seq(0, 2000, 365.25)
 #' )
 #' f_plot_schoenfeld_residuals(PERSUADE)
 #' }
@@ -324,8 +324,8 @@ f_plot_schoenfeld_residuals <- function(PERSUADE) {
 #'   spline_mod = FALSE,
 #'   cure_mod = FALSE,
 #'   time_unit = 365.25/12,
-#'   time_horizon = 5000,
-#'   time_pred_surv_table = seq(0, 5000, 100)
+#'   time_horizon = 2000,
+#'   time_pred_surv_table = seq(0, 2000, 365.25)
 #' )
 #' f_plot_smoothed_hazard(PERSUADE)
 #' }
@@ -415,8 +415,8 @@ f_plot_smoothed_hazard <- function(PERSUADE) {
 #'   spline_mod = FALSE,
 #'   cure_mod = FALSE,
 #'   time_unit = 365.25/12,
-#'   time_horizon = 5000,
-#'   time_pred_surv_table = seq(0, 5000, 100)
+#'   time_horizon = 2000,
+#'   time_pred_surv_table = seq(0, 2000, 365.25)
 #' )
 #' f_plot_hazard_with_models(PERSUADE)
 #' }
@@ -555,8 +555,8 @@ f_plot_hazard_with_models <- function(PERSUADE) {
 #'   spline_mod = FALSE,
 #'   cure_mod = FALSE,
 #'   time_unit = 365.25/12,
-#'   time_horizon = 5000,
-#'   time_pred_surv_table = seq(0, 5000, 100)
+#'   time_horizon = 2000,
+#'   time_pred_surv_table = seq(0, 2000, 365.25)
 #' )
 #' f_plot_param_surv_model(PERSUADE, model_index = 1)
 #' }
@@ -644,8 +644,8 @@ f_plot_param_surv_model <- function(PERSUADE, model_index = 1) {
 #'   spline_mod = TRUE,
 #'   cure_mod = FALSE,
 #'   time_unit = 365.25/12,
-#'   time_horizon = 5000,
-#'   time_pred_surv_table = seq(0, 5000, 100)
+#'   time_horizon = 2000,
+#'   time_pred_surv_table = seq(0, 2000, 365.25)
 #' )
 #' f_plot_spline_surv_model(PERSUADE, model_index = 1)
 #' }
@@ -744,8 +744,8 @@ f_plot_spline_surv_model <- function(PERSUADE, model_index = 1) {
 #'   spline_mod = FALSE,
 #'   cure_mod = TRUE,
 #'   time_unit = 365.25/12,
-#'   time_horizon = 5000,
-#'   time_pred_surv_table = seq(0, 5000, 100)
+#'   time_horizon = 2000,
+#'   time_pred_surv_table = seq(0, 2000, 365.25)
 #' )
 #' f_plot_cure_surv_model(PERSUADE, model_index = 1)
 #' }
@@ -835,8 +835,8 @@ f_plot_cure_surv_model <- function(PERSUADE, model_index = 1) {
 #'   spline_mod = FALSE,
 #'   cure_mod = FALSE,
 #'   time_unit = 365.25/12,
-#'   time_horizon = 5000,
-#'   time_pred_surv_table = seq(0, 5000, 100)
+#'   time_horizon = 2000,
+#'   time_pred_surv_table = seq(0, 2000, 365.25)
 #' )
 #' f_plot_diag_param_surv_model(PERSUADE, model_index = 1)
 #' }
@@ -994,8 +994,8 @@ f_plot_diag_param_surv_model <- function(PERSUADE, model_index = 1) {
 #'   spline_mod = TRUE,
 #'   cure_mod = FALSE,
 #'   time_unit = 365.25/12,
-#'   time_horizon = 5000,
-#'   time_pred_surv_table = seq(0, 5000, 100)
+#'   time_horizon = 2000,
+#'   time_pred_surv_table = seq(0, 2000, 365.25)
 #' )
 #' f_plot_diag_spline_surv_model(PERSUADE, model_index = 1)
 #' }
@@ -1135,8 +1135,8 @@ f_plot_diag_spline_surv_model <- function(PERSUADE, model_index = 1) {
 #'   spline_mod = FALSE,
 #'   cure_mod = TRUE,
 #'   time_unit = 365.25/12,
-#'   time_horizon = 5000,
-#'   time_pred_surv_table = seq(0, 5000, 100)
+#'   time_horizon = 2000,
+#'   time_pred_surv_table = seq(0, 2000, 365.25)
 #' )
 #' f_plot_diag_cure_surv_model(PERSUADE, model_index = 1)
 #' }
@@ -1262,8 +1262,8 @@ f_plot_diag_cure_surv_model <- function(PERSUADE, model_index = 1) {
 #'   spline_mod = FALSE,
 #'   cure_mod = FALSE,
 #'   time_unit = 365.25/12,
-#'   time_horizon = 5000,
-#'   time_pred_surv_table = seq(0, 5000, 100)
+#'   time_horizon = 2000,
+#'   time_pred_surv_table = seq(0, 2000, 365.25)
 #' )
 #' f_plot_tp_param_surv_model(PERSUADE, model_index = 1)
 #' }
@@ -1378,8 +1378,8 @@ f_plot_tp_param_surv_model <- function(PERSUADE, model_index = 1) {
 #'   spline_mod = TRUE,
 #'   cure_mod = FALSE,
 #'   time_unit = 365.25/12,
-#'   time_horizon = 5000,
-#'   time_pred_surv_table = seq(0, 5000, 100)
+#'   time_horizon = 2000,
+#'   time_pred_surv_table = seq(0, 2000, 365.25)
 #' )
 #' f_plot_tp_spline_surv_model(PERSUADE, model_index = 1)
 #' }
@@ -1509,8 +1509,8 @@ f_plot_tp_spline_surv_model <- function(PERSUADE, model_index = 1) {
 #'   spline_mod = FALSE,
 #'   cure_mod = TRUE,
 #'   time_unit = 365.25/12,
-#'   time_horizon = 5000,
-#'   time_pred_surv_table = seq(0, 5000, 100)
+#'   time_horizon = 2000,
+#'   time_pred_surv_table = seq(0, 2000, 365.25)
 #' )
 #' f_plot_tp_cure_surv_model(PERSUADE, model_index = 1)
 #' }
@@ -1628,8 +1628,8 @@ f_plot_tp_cure_surv_model <- function(PERSUADE, model_index = 1) {
 #'   spline_mod = FALSE,
 #'   cure_mod = FALSE,
 #'   time_unit = 365.25/12,
-#'   time_horizon = 5000,
-#'   time_pred_surv_table = seq(0, 5000, 100)
+#'   time_horizon = 2000,
+#'   time_pred_surv_table = seq(0, 2000, 365.25)
 #' )
 #' f_plot_param_surv_extrap(PERSUADE)
 #' }
@@ -1709,8 +1709,8 @@ f_plot_param_surv_extrap <- function(PERSUADE) {
 #'   spline_mod = TRUE,
 #'   cure_mod = FALSE,
 #'   time_unit = 365.25/12,
-#'   time_horizon = 5000,
-#'   time_pred_surv_table = seq(0, 5000, 100)
+#'   time_horizon = 2000,
+#'   time_pred_surv_table = seq(0, 2000, 365.25)
 #' )
 #' f_plot_spline_surv_extrap(PERSUADE)
 #' }
@@ -1793,8 +1793,8 @@ f_plot_spline_surv_extrap <- function(PERSUADE) {
 #'   spline_mod = FALSE,
 #'   cure_mod = TRUE,
 #'   time_unit = 365.25/12,
-#'   time_horizon = 5000,
-#'   time_pred_surv_table = seq(0, 5000, 100)
+#'   time_horizon = 2000,
+#'   time_pred_surv_table = seq(0, 2000, 365.25)
 #' )
 #' f_plot_cure_surv_extrap(PERSUADE)
 #' }
@@ -1875,8 +1875,8 @@ f_plot_cure_surv_extrap <- function(PERSUADE) {
 #'   spline_mod = FALSE,
 #'   cure_mod = FALSE,
 #'   time_unit = 365.25/12,
-#'   time_horizon = 5000,
-#'   time_pred_surv_table = seq(0, 5000, 100)
+#'   time_horizon = 2000,
+#'   time_pred_surv_table = seq(0, 2000, 365.25)
 #' )
 #' f_plot_tp_param_surv_extrap(PERSUADE)
 #' }
@@ -1946,8 +1946,8 @@ f_plot_tp_param_surv_extrap <- function(PERSUADE) {
 #'   spline_mod = TRUE,
 #'   cure_mod = FALSE,
 #'   time_unit = 365.25/12,
-#'   time_horizon = 5000,
-#'   time_pred_surv_table = seq(0, 5000, 100)
+#'   time_horizon = 2000,
+#'   time_pred_surv_table = seq(0, 2000, 365.25)
 #' )
 #' f_plot_tp_spline_surv_extrap(PERSUADE)
 #' }
@@ -2019,8 +2019,8 @@ f_plot_tp_spline_surv_extrap <- function(PERSUADE) {
 #'   spline_mod = FALSE,
 #'   cure_mod = TRUE,
 #'   time_unit = 365.25/12,
-#'   time_horizon = 5000,
-#'   time_pred_surv_table = seq(0, 5000, 100)
+#'   time_horizon = 2000,
+#'   time_pred_surv_table = seq(0, 2000, 365.25)
 #' )
 #' f_plot_tp_cure_surv_extrap(PERSUADE)
 #' }
@@ -2093,8 +2093,8 @@ f_plot_tp_cure_surv_extrap <- function(PERSUADE) {
 #'   spline_mod = FALSE,
 #'   cure_mod = FALSE,
 #'   time_unit = 365.25/12,
-#'   time_horizon = 5000,
-#'   time_pred_surv_table = seq(0, 5000, 100)
+#'   time_horizon = 2000,
+#'   time_pred_surv_table = seq(0, 2000, 365.25)
 #' )
 #' f_plot_hazard_parametric_extrap(PERSUADE)
 #' }
@@ -2153,8 +2153,8 @@ f_plot_hazard_parametric_extrap <- function(PERSUADE) {
 #'   spline_mod = TRUE,
 #'   cure_mod = FALSE,
 #'   time_unit = 365.25/12,
-#'   time_horizon = 5000,
-#'   time_pred_surv_table = seq(0, 5000, 100)
+#'   time_horizon = 2000,
+#'   time_pred_surv_table = seq(0, 2000, 365.25)
 #' )
 #' f_plot_hazard_spline_extrap(PERSUADE)
 #' }
@@ -2215,8 +2215,8 @@ f_plot_hazard_spline_extrap <- function(PERSUADE) {
 #'   spline_mod = FALSE,
 #'   cure_mod = TRUE,
 #'   time_unit = 365.25/12,
-#'   time_horizon = 5000,
-#'   time_pred_surv_table = seq(0, 5000, 100)
+#'   time_horizon = 2000,
+#'   time_pred_surv_table = seq(0, 2000, 365.25)
 #' )
 #' f_plot_hazard_cure_extrap(PERSUADE)
 #' }
@@ -2330,8 +2330,8 @@ f_summary <- function(df) {
 #'   spline_mod = FALSE,
 #'   cure_mod = FALSE,
 #'   time_unit = 365.25/12,
-#'   time_horizon = 5000,
-#'   time_pred_surv_table = seq(0, 5000, 100)
+#'   time_horizon = 2000,
+#'   time_pred_surv_table = seq(0, 2000, 365.25)
 #' )
 #' # Copy output to temporary directory (change `tempdir()` into `getwd()` for copying to working directory)
 #' f_generate_report(
@@ -2390,10 +2390,10 @@ f_generate_report <- function(PERSUADE, output_dir = NULL, template_dir = NULL, 
   rmarkdown::render(
     input = template_dir,
     output_file = paste0(name, ".pdf"),
-    output_dir = output_dir,
-    intermediates_dir = output_dir,
-    knit_root_dir = output_dir,
-    params = list(fig_dir = fig_dir),   # full path!
+    output_dir = normalizePath(output_dir, winslash = "/", mustWork = TRUE),
+    intermediates_dir = normalizePath(output_dir, winslash = "/", mustWork = TRUE),
+    knit_root_dir = normalizePath(output_dir, winslash = "/", mustWork = TRUE),
+    params = list(fig_dir = normalizePath(fig_dir, winslash = "/", mustWork = TRUE)),
     envir = list2env(list(PERSUADE = PERSUADE), parent = globalenv()),
     quiet = TRUE,
     clean = TRUE

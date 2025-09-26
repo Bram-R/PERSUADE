@@ -47,8 +47,8 @@
 #'   spline_mod = FALSE,
 #'   cure_mod = FALSE,
 #'   time_unit = 365.25/12,
-#'   time_horizon = 5000,
-#'   time_pred_surv_table = seq(0, 5000, 100)
+#'   time_horizon = 2000,
+#'   time_pred_surv_table = seq(0, 2000, 365.25)
 #' )
 #' }
 #' @export
@@ -262,7 +262,7 @@ f_hazard <- function(years, status, group, ngroups) {
 #'   status = status,
 #'   group = group,
 #'   ngroups = nlevels(group),
-#'   time_pred = seq(0, 5000, 100),
+#'   time_pred = seq(0, 5000, 365.25),
 #'   time_unit = 30
 #' )
 #'
@@ -338,7 +338,7 @@ f_cum_hazard <- function(years, status, group, ngroups, time_pred, time_unit) {
 #'   status = status,
 #'   group = group,
 #'   ngroups = nlevels(group),
-#'   time_pred = seq(0, 5000, 100),
+#'   time_pred = seq(0, 5000, 365.25),
 #'   time_unit = 30
 #' )
 #' f_tp(ngroups = nlevels(group), cum_haz = cum_haz, time_unit = 30)
@@ -585,7 +585,7 @@ f_surv_model <- function(years, status, group, strata, ngroups, form, spline_mod
 #' )
 #' f_surv_model_pred(
 #'   ngroups = nlevels(group),
-#'   time_pred = seq(0, 5000, 100),
+#'   time_pred = seq(0, 5000, 365.25),
 #'   surv_model = surv_model,
 #'   spline_mod = FALSE,
 #'   cure_mod = FALSE,
@@ -685,7 +685,7 @@ f_surv_model_pred <- function(ngroups, time_pred, surv_model, spline_mod, cure_m
 #' )
 #' surv_model_pred <- f_surv_model_pred(
 #'   ngroups = nlevels(group),
-#'   time_pred = seq(0, 5000, 100),
+#'   time_pred = seq(0, 5000, 365.25),
 #'   surv_model = surv_model,
 #'   spline_mod = FALSE,
 #'   cure_mod = FALSE,
@@ -756,7 +756,7 @@ f_surv_model_pred_gr <- function(ngroups, surv_model, surv_model_pred, spline_mo
 #' )
 #' surv_model_pred <- f_surv_model_pred(
 #'   ngroups = nlevels(group),
-#'   time_pred = seq(0, 5000, 100),
+#'   time_pred = seq(0, 5000, 365.25),
 #'   surv_model = surv_model,
 #'   spline_mod = FALSE,
 #'   cure_mod = FALSE,
@@ -771,7 +771,7 @@ f_surv_model_pred_gr <- function(ngroups, surv_model, surv_model_pred, spline_mo
 #' )
 #' f_surv_model_pred_tp_gr(
 #'   ngroups = nlevels(group),
-#'   time_pred = seq(0, 5000, 100),
+#'   time_pred = seq(0, 5000, 365.25),
 #'   time_unit = 365.25/12,
 #'   surv_model_pred_gr = surv_model_pred_gr,
 #'   cols_tp = 8

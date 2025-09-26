@@ -76,8 +76,8 @@ test_that("f_PERSUADE full run: parametric model predictions are sensible", {
     spline_mod = FALSE,   # parametric models only to keep runtime reasonable
     cure_mod = FALSE,
     time_unit = 365.25 / 12,
-    time_horizon = 5000,
-    time_pred_surv_table = seq(0, 5000, by = 100)
+    time_horizon = 2000,
+    time_pred_surv_table = seq(0, 2000, by = 365.25)
   )
 
   expect_s3_class(out, "PERSUADE")
@@ -134,7 +134,7 @@ test_that("f_surv_model_excel returns a table with Distnames and Parnames rows w
     cure_mod = FALSE,
     time_unit = 365.25 / 12,
     time_horizon = 2000,
-    time_pred_surv_table = seq(0, 2000, by = 100)
+    time_pred_surv_table = seq(0, 2000, by = 365.25)
   )
 
   excel_df <- out$surv_model_excel

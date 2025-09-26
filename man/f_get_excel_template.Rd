@@ -4,11 +4,12 @@
 \alias{f_get_excel_template}
 \title{Copy Excel Template for Model Parameters}
 \usage{
-f_get_excel_template(path = getwd())
+f_get_excel_template(output_dir = NULL)
 }
 \arguments{
-\item{path}{Character string giving the directory to copy the template to.
-Defaults to the current working directory (\code{getwd()}).}
+\item{output_dir}{Character string giving the directory to copy the template to.
+If \code{NULL} (the default), the function uses: \code{tempdir()}. Change \code{tempdir()} into
+\code{getwd()} for copying to working directory.}
 }
 \value{
 A length-1 character string giving the absolute path to the copied
@@ -16,9 +17,8 @@ template file, returned invisibly.
 }
 \description{
 Copy the bundled Excel template \code{PERSUADE_Excel_template.xltx} to a user-specified
-directory (by default, the current working directory). This template provides a
-convenient structure for transferring survival model outputs from \pkg{PERSUADE}
-into health economic models.
+directory. This template provides a convenient structure for transferring survival
+model outputs from \pkg{PERSUADE} into health economic models.
 }
 \details{
 The default Excel file \code{PERSUADE_Excel_template.xltx} is stored within
@@ -33,8 +33,8 @@ for their specific workflows.
 }
 \examples{
 \donttest{
-# Copy template to working directory
-f_get_excel_template(path = getwd())
+# Copy template to temporary directory (change `tempdir()` into `getwd()` for copying to working directory)
+f_get_excel_template(output_dir = tempdir())
 }
 
 }

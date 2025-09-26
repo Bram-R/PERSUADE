@@ -22,8 +22,8 @@
 #'   spline_mod = FALSE,
 #'   cure_mod = FALSE,
 #'   time_unit = 365.25/12,
-#'   time_horizon = 5000,
-#'   time_pred_surv_table = seq(0, 5000, 100)
+#'   time_horizon = 2000,
+#'   time_pred_surv_table = seq(0, 2000, 365.25)
 #' )
 #' print(PERSUADE)
 #' }
@@ -67,8 +67,8 @@ print.PERSUADE <- function(x, ...) {
 #'   spline_mod = FALSE,
 #'   cure_mod = FALSE,
 #'   time_unit = 365.25/12,
-#'   time_horizon = 5000,
-#'   time_pred_surv_table = seq(0, 5000, 100)
+#'   time_horizon = 2000,
+#'   time_pred_surv_table = seq(0, 2000, 365.25)
 #' )
 #' summary(PERSUADE, type = "surv_probs")
 #' }
@@ -141,8 +141,8 @@ summary.PERSUADE <- function(object, ..., type = "km") {
 #'   spline_mod = FALSE,
 #'   cure_mod = FALSE,
 #'   time_unit = 365.25/12,
-#'   time_horizon = 5000,
-#'   time_pred_surv_table = seq(0, 5000, 100)
+#'   time_horizon = 2000,
+#'   time_pred_surv_table = seq(0, 2000, 365.25)
 #' )
 #' plot(PERSUADE, "km")
 #' }
