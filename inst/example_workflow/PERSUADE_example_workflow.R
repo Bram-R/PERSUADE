@@ -1,12 +1,11 @@
 #### Description: Example workflow for the ParamEtRic SUrvivAl moDel sElection (PERSUADE) communication tool ####
 #### This is a standardised survival analysis tool to support the selection and communication of parametric survival models and their implementation in decision analytic models. ####
 
-#### LOAD PERSUADE ----
+#### LOAD PERSUADE ---- (development version can be installed by: devtools::install_github("Bram-R/PERSUADE", quiet = TRUE, upgrade = "never"))
 library("PERSUADE")
 
 #### INPUT DATA ----
 name <- "BC_OS" # Analysis name
-#name <- file.path("inst", "example", name) # Analysis name including path
 
 # bc1 <- bc[bc$group=="Medium",] # 1 group data set (for testing purposes)
 # bc2 <- bc[bc$group!="Medium",] # 2 group data set (for testing purposes)

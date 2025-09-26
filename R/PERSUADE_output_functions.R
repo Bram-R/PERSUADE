@@ -2437,15 +2437,15 @@ f_generate_report <- function(PERSUADE, output_dir = NULL, template_dir = NULL, 
 #'
 #' @export
 f_get_excel_template <- function(output_dir = NULL) {
+  excel_template <- system.file("excel_template",
+                                "PERSUADE_Excel_template.xltx",
+                                package = "PERSUADE")
 
   if (is.null(output_dir)) {
-    output_dir <- tempdir()
+    output_dir <- file.path(tempdir(), paste0(PERSUADE$name, "_output"))
   }
 
-  src <- system.file("excel_template",
-                     "PERSUADE_Excel_template.xltx",
-                     package = "PERSUADE")
-  dest <- file.path(output_dir, basename(src))
-  file.copy(src, dest, overwrite = TRUE)
-  invisible(dest)
+  file.copy(excel_template, output_dir, overwrite = TRUE)
+  message("Output written to: ", output_dir)
+  invisible(output_dir)
 }
