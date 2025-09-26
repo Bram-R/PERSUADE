@@ -49,7 +49,7 @@ surv_model <- f_surv_model(
 )
 surv_model_pred <- f_surv_model_pred(
   ngroups = nlevels(group),
-  time_pred = seq(0, 5000, 100),
+  time_pred = seq(0, 5000, 365.25),
   surv_model = surv_model,
   spline_mod = FALSE,
   cure_mod = FALSE,
@@ -64,7 +64,7 @@ surv_model_pred_gr <- f_surv_model_pred_gr(
 )
 f_surv_model_pred_tp_gr(
   ngroups = nlevels(group),
-  time_pred = seq(0, 5000, 100),
+  time_pred = seq(0, 5000, 365.25),
   time_unit = 365.25/12,
   surv_model_pred_gr = surv_model_pred_gr,
   cols_tp = 8

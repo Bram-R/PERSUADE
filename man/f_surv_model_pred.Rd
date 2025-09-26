@@ -57,7 +57,7 @@ surv_model <- f_surv_model(
 )
 f_surv_model_pred(
   ngroups = nlevels(group),
-  time_pred = seq(0, 5000, 100),
+  time_pred = seq(0, 5000, 365.25),
   surv_model = surv_model,
   spline_mod = FALSE,
   cure_mod = FALSE,

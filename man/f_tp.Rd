@@ -34,7 +34,7 @@ cum_haz <- f_cum_hazard(
   status = status,
   group = group,
   ngroups = nlevels(group),
-  time_pred = seq(0, 5000, 100),
+  time_pred = seq(0, 5000, 365.25),
   time_unit = 30
 )
 f_tp(ngroups = nlevels(group), cum_haz = cum_haz, time_unit = 30)

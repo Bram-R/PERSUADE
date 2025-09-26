@@ -1,7 +1,7 @@
 #### Description: Example workflow for the ParamEtRic SUrvivAl moDel sElection (PERSUADE) communication tool ####
 #### This is a standardised survival analysis tool to support the selection and communication of parametric survival models and their implementation in decision analytic models. ####
 
-#### LOAD PERSUADE ---- (development version can be installed by: devtools::install_github("Bram-R/PERSUADE", quiet = TRUE, upgrade = "never"))
+#### LOAD PERSUADE ---- (development version can be installed by: devtools::install_github("Bram-R/PERSUADE", quiet = TRUE, upgrade = "never")
 library("PERSUADE")
 
 #### INPUT DATA ----

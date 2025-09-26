@@ -40,9 +40,9 @@ test_that("f_generate_report errors when Rmd template is missing", {
   PERS <- list(name = "tmp_report")
   class(PERS) <- "PERSUADE"
 
-  # The function checks template_path and stops with a specific message
+  # The function checks template_dir and stops with a specific message
   expect_error(
-    f_generate_report(PERS, template_path = "nonexistent_file.Rmd"),
+    f_generate_report(PERS, template_dir = "nonexistent_file.Rmd"),
     "The PERSUADE Rmd template was not found in the package."
   )
 })

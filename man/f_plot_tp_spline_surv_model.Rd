@@ -34,8 +34,8 @@ PERSUADE <- f_PERSUADE(
   spline_mod = TRUE,
   cure_mod = FALSE,
   time_unit = 365.25/12,
-  time_horizon = 5000,
-  time_pred_surv_table = seq(0, 5000, 100)
+  time_horizon = 2000,
+  time_pred_surv_table = seq(0, 2000, 365.25)
 )
 f_plot_tp_spline_surv_model(PERSUADE, model_index = 1)
 }

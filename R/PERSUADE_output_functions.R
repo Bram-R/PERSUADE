@@ -2399,7 +2399,7 @@ f_generate_report <- function(PERSUADE, output_dir = NULL, template_dir = NULL, 
     clean = TRUE
   )
 
-  if (open) browseURL(file.path(output_dir, paste0(name, ".pdf")))
+  if (open) utils::browseURL(file.path(output_dir, paste0(name, ".pdf")))
   message("Output written to: ", output_dir)
   return(invisible(file.path(output_dir, paste0(name, ".pdf"))))
 }
@@ -2431,7 +2431,8 @@ f_generate_report <- function(PERSUADE, output_dir = NULL, template_dir = NULL, 
 #'
 #' @examples
 #' \donttest{
-#' # Copy template to temporary directory (change `tempdir()` into `getwd()` for copying to working directory)
+#' # Copy output to temporary directory
+#' # (change `tempdir()` into `getwd()` for copying to working directory)
 #' f_get_excel_template(output_dir = tempdir())
 #' }
 #'
@@ -2447,5 +2448,5 @@ f_get_excel_template <- function(output_dir = NULL) {
 
   file.copy(excel_template, output_dir, overwrite = TRUE)
   message("Output written to: ", output_dir)
-  invisible(output_dir)
+  invisible(file.path(output_dir, basename(excel_template)))
 }

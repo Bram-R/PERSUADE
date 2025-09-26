@@ -4,11 +4,17 @@ Version: 0.1.2
 Authors@R: c(
     person(given = "Bram", family = "Ramaekers", 
            email = "bram.ramaekers@mumc.nl",
-           role = c("aut", "cre"),
+           role = c("aut", "cre", "ths"),
            comment = c(ORCID = "0000-0001-5785-9228")),
     person(given = "Xavier", family = "Pouwels",
            role = "ctb",
-           comment = c(ORCID = "0000-0003-3563-0013"))
+           comment = c(ORCID = "0000-0003-3563-0013")),
+    person(given = "Sabine", family = "Grimm",
+           role = "ths",
+           comment = c(ORCID = "0000-0002-2175-7999")),
+    person(given = "Manuela", family = "Joore",
+           role = "ths",
+           comment = c(ORCID = "0000-0002-5649-6768"))
   )
 Description: Provides a standardized framework to support the selection
     and evaluation of parametric survival models for time-to-event data. 
@@ -42,7 +48,8 @@ Imports:
 Suggests: 
     kableExtra,
     knitr,
-    testthat (>= 3.1.2)
+    testthat (>= 3.1.2),
+    utils
 VignetteBuilder: 
     knitr
 Config/testthat/edition: 3

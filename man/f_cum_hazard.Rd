@@ -43,7 +43,7 @@ f_cum_hazard(
   status = status,
   group = group,
   ngroups = nlevels(group),
-  time_pred = seq(0, 5000, 100),
+  time_pred = seq(0, 5000, 365.25),
   time_unit = 30
 )
 
