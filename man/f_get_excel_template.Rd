@@ -33,7 +33,8 @@ for their specific workflows.
 }
 \examples{
 \donttest{
-# Copy template to temporary directory (change `tempdir()` into `getwd()` for copying to working directory)
+# Copy output to temporary directory
+# (change `tempdir()` into `getwd()` for copying to working directory)
 f_get_excel_template(output_dir = tempdir())
 }
 

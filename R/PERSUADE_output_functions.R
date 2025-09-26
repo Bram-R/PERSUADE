@@ -2433,20 +2433,27 @@ f_generate_report <- function(PERSUADE, output_dir = NULL, template_dir = NULL, 
 #' \donttest{
 #' # Copy output to temporary directory
 #' # (change `tempdir()` into `getwd()` for copying to working directory)
-#' f_get_excel_template(output_dir = tempdir())
+#' f_get_excel_template(output_dir = file.path(tempdir(), paste0("BC_OS", "_output")))
 #' }
 #'
 #' @export
 f_get_excel_template <- function(output_dir = NULL) {
-  excel_template <- system.file("excel_template",
+  excel_template_dir <- system.file("excel_template",
                                 "PERSUADE_Excel_template.xltx",
                                 package = "PERSUADE")
 
   if (is.null(output_dir)) {
-    output_dir <- file.path(tempdir(), paste0(PERSUADE$name, "_output"))
+    output_dir <- tempdir()
   }
 
-  file.copy(excel_template, output_dir, overwrite = TRUE)
-  message("Output written to: ", output_dir)
-  invisible(file.path(output_dir, basename(excel_template)))
+  dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
+
+  dest_file <- file.path(output_dir, basename(excel_template_dir)) # full destination file path inside output_dir
+
+  if (!file.copy(excel_template_dir, dest_file, overwrite = TRUE)) {
+    stop("Failed to copy template to ", dest_file)
+  }
+
+  message("Template copied to: ", dest_file)
+  invisible(dest_file)
 }
