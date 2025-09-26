@@ -2295,9 +2295,14 @@ f_summary <- function(df) {
 #' `PERSUADE_output.Rmd` template, or a user-specified template.
 #'
 #' @param PERSUADE A PERSUADE object returned by [f_PERSUADE()].
-#' @param template_path Optional character string giving the full path to an Rmd
+#' @param output_dir Character string giving the directory to copy the function
+#'   output to. If `NULL` (the default), the function uses:
+#'   `file.path(tempdir(), paste0(PERSUADE$name, "_output"))`. Change `tempdir()`
+#'   into `getwd()` for copying to working directory.
+#' @param template_dir Optional character string giving the full path to an Rmd
 #'   template. If `NULL` (the default), the function looks for
 #'   `PERSUADE_output.Rmd` within the package installation directory.
+#' @param open Logical. Whether to browse the generated file.
 #'
 #' @return A length-1 character string giving the absolute path to the generated
 #'   PDF, returned invisibly.
@@ -2306,7 +2311,7 @@ f_summary <- function(df) {
 #'   the package under `inst/rmd/`. Figures are written to a subdirectory
 #'   `Images/` inside the output folder, and the knit environment is
 #'   initialised with the supplied `PERSUADE` object. Supplying a custom
-#'   `template_path` allows alternative report formats to be used, and
+#'   `template_dir` allows alternative report formats to be used, and
 #'   simplifies testing. This function requires the following suggested packages:
 #'   \pkg{knitr}, \pkg{kableExtra}, and \pkg{rmarkdown}.
 #'   If not installed, the function will throw an error.
@@ -2328,13 +2333,18 @@ f_summary <- function(df) {
 #'   time_horizon = 5000,
 #'   time_pred_surv_table = seq(0, 5000, 100)
 #' )
-#' f_generate_report(PERSUADE, template_path = NULL)
+#' # Copy output to temporary directory (change `tempdir()` into `getwd()` for copying to working directory)
+#' f_generate_report(
+#'   PERSUADE,
+#'   output_dir = file.path(tempdir(), paste0(PERSUADE$name, "_output")),
+#'   template_dir = NULL
+#' )
 #' }
 #'
 #' @seealso [f_PERSUADE()]
 #'
 #' @export
-f_generate_report <- function(PERSUADE, template_path = NULL) {
+f_generate_report <- function(PERSUADE, output_dir = NULL, template_dir = NULL, open = FALSE) {
   name <- PERSUADE$name
 
   # list required suggested packages
@@ -2356,7 +2366,10 @@ f_generate_report <- function(PERSUADE, template_path = NULL) {
   }
 
   # Create output directories
-  output_dir <- file.path(getwd(), paste0(name, "_output"))
+  if (is.null(output_dir)) {
+    output_dir <- file.path(tempdir(), paste0(PERSUADE$name, "_output"))
+  }
+
   fig_dir    <- file.path(output_dir, "Images")
   dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
   dir.create(fig_dir, showWarnings = FALSE)
@@ -2365,17 +2378,17 @@ f_generate_report <- function(PERSUADE, template_path = NULL) {
   save(PERSUADE, file = file.path(output_dir, "PERSUADE.RData"))
 
   # Locate template
-  if (is.null(template_path)) {
-    template_path <- system.file("rmd", "PERSUADE_output.Rmd", package = "PERSUADE")
+  if (missing(template_dir)) {
+    stop("The PERSUADE Rmd template was not found in the package.")
   }
 
-  if (template_path == "") {
-    stop("The PERSUADE Rmd template was not found in the package.")
+  if (is.null(template_dir)) {
+    template_dir <- system.file("rmd", "PERSUADE_output.Rmd", package = "PERSUADE")
   }
 
   # Render PDF R markdown file
   rmarkdown::render(
-    input = template_path,
+    input = template_dir,
     output_file = paste0(name, ".pdf"),
     output_dir = output_dir,
     intermediates_dir = output_dir,
@@ -2386,18 +2399,20 @@ f_generate_report <- function(PERSUADE, template_path = NULL) {
     clean = TRUE
   )
 
-  invisible(file.path(output_dir, paste0(name, ".pdf")))
+  if (open) browseURL(file.path(output_dir, paste0(name, ".pdf")))
+  message("Output written to: ", output_dir)
+  return(invisible(file.path(output_dir, paste0(name, ".pdf"))))
 }
 
 #' Copy Excel Template for Model Parameters
 #'
 #' Copy the bundled Excel template `PERSUADE_Excel_template.xltx` to a user-specified
-#' directory (by default, the current working directory). This template provides a
-#' convenient structure for transferring survival model outputs from \pkg{PERSUADE}
-#' into health economic models.
+#' directory. This template provides a convenient structure for transferring survival
+#' model outputs from \pkg{PERSUADE} into health economic models.
 #'
-#' @param path Character string giving the directory to copy the template to.
-#'   Defaults to the current working directory (`getwd()`).
+#' @param output_dir Character string giving the directory to copy the template to.
+#'   If `NULL` (the default), the function uses: `tempdir()`. Change `tempdir()` into
+#'   `getwd()` for copying to working directory.
 #'
 #' @return A length-1 character string giving the absolute path to the copied
 #'   template file, returned invisibly.
@@ -2416,16 +2431,21 @@ f_generate_report <- function(PERSUADE, template_path = NULL) {
 #'
 #' @examples
 #' \donttest{
-#' # Copy template to working directory
-#' f_get_excel_template(path = getwd())
+#' # Copy template to temporary directory (change `tempdir()` into `getwd()` for copying to working directory)
+#' f_get_excel_template(output_dir = tempdir())
 #' }
 #'
 #' @export
-f_get_excel_template <- function(path = getwd()) {
+f_get_excel_template <- function(output_dir = NULL) {
+
+  if (is.null(output_dir)) {
+    output_dir <- tempdir()
+  }
+
   src <- system.file("excel_template",
                      "PERSUADE_Excel_template.xltx",
                      package = "PERSUADE")
-  dest <- file.path(path, basename(src))
+  dest <- file.path(output_dir, basename(src))
   file.copy(src, dest, overwrite = TRUE)
   invisible(dest)
 }

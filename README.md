@@ -33,8 +33,8 @@ analysis feeds into decision-analytic models.
 
 - R (version compatible with survival and other dependencies)
 - Recommended: RStudio for better environment handling
-- Install PERSUADE package, to install the development version of
-  PERSUADE:
+- Install PERSUADE package using `install.packages("PERSUADE")`
+- Alternatively: to install the development version of PERSUADE:
   `devtools::install_github("Bram-R/PERSUADE", quiet = TRUE, upgrade = "never")`
 - Load PERSUADE package: `library(PERSUADE)`
 
@@ -139,9 +139,13 @@ f_generate_report(PERSUADE)
 # Copy to clipboard (for copying in PERSUADE Excel template.xltx)
 write.table(PERSUADE$surv_model_excel, "clipboard-128", sep = "\t", col.names = FALSE)
 
-# Export to CSV
-write.csv(PERSUADE$surv_model_excel, "BC_OS_output/PERSUADE_models_comma.csv")
-write.csv2(PERSUADE$surv_model_excel, "BC_OS_output/PERSUADE_models_semicolon.csv")
+# Export to CSV (change `tempdir()` into `getwd()` for copying to working directory)
+write.csv(PERSUADE$surv_model_excel, 
+          file.path(file.path(tempdir(), paste0(name, "_output")),
+                    "PERSUADE_Time-to-event_models_parameters_comma.csv"))
+write.csv2(PERSUADE$surv_model_excel, 
+           file.path(file.path(tempdir(), paste0(name, "_output")),
+                     "PERSUADE_Time-to-event_models_parameters_semicolon.csv"))
 ```
 
 ### 8. Obtain Excel template to incorporate model parameters in decision-analytic model

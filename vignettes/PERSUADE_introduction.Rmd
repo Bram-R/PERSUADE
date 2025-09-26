@@ -102,14 +102,18 @@ f_generate_report(PERSUADE)
 ```
 
 ## Exporting model parameters
-To automatically generate a PDF report ('rmarkdown'):
+Change `tempdir()` into `getwd()` for copying to working directory.
 ```{r PERSUADE_export, eval=FALSE}
-write.csv(PERSUADE$surv_model_excel, file.path(file.path(getwd(), paste0(name, "_output")), "PERSUADE_Time-to-event_models_parameters_comma.csv"))
-write.csv2(PERSUADE$surv_model_excel, file.path(file.path(getwd(), paste0(name, "_output")), "PERSUADE_Time-to-event_models_parameters_semicolon.csv"))
+write.csv(PERSUADE$surv_model_excel, 
+          file.path(file.path(tempdir(), paste0(name, "_output")),
+                    "PERSUADE_Time-to-event_models_parameters_comma.csv"))
+write.csv2(PERSUADE$surv_model_excel, 
+           file.path(file.path(tempdir(), paste0(name, "_output")),
+                     "PERSUADE_Time-to-event_models_parameters_semicolon.csv"))
 ```
 
 ## Obtain Excel template 
-The next step will copy the Excel template `PERSUADE_Excel_template.xltx` to the current working directory. This template provides a convenient structure for transferring survival model parameters into health economic models. 
+The next step will copy the Excel template `PERSUADE_Excel_template.xltx` to a user specified directory (default = `tempdir()`). This template provides a convenient structure for transferring survival model parameters into health economic models. 
 ```{r, eval=FALSE}
 f_get_excel_template()
 ```

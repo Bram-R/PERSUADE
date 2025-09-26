@@ -40,8 +40,11 @@ test_that("f_generate_report errors when Rmd template is missing", {
   PERS <- list(name = "tmp_report")
   class(PERS) <- "PERSUADE"
 
-  # The function checks system.file(...) == "" and stops with a specific message
-  expect_error(f_generate_report(PERS, template_path = ""), "The PERSUADE Rmd template was not found in the package")
+  # The function checks template_path and stops with a specific message
+  expect_error(
+    f_generate_report(PERS, template_path = "nonexistent_file.Rmd"),
+    "The PERSUADE Rmd template was not found in the package."
+  )
 })
 
 test_that("f_plot_km_survival_base and f_plot_log_cumhaz run with a simple survfit object", {
@@ -307,11 +310,12 @@ test_that("plot functions run without error (integration with f_PERSUADE and fle
 })
 
 test_that("f_get_excel_template copies the Excel template", {
-  # Create a temporary directory for the test
-  tmpdir <- tempdir()
+  # Create a dedicated temporary directory for the test
+  tmpdir <- file.path(tempdir(), "test_excel_template")
+  dir.create(tmpdir, showWarnings = FALSE)
 
   # Run the function
-  result <- f_get_excel_template(path = tmpdir)
+  result <- f_get_excel_template(output_dir = tmpdir)
 
   # Expected destination file path
   expected <- file.path(tmpdir, "PERSUADE_Excel_template.xltx")
@@ -322,7 +326,8 @@ test_that("f_get_excel_template copies the Excel template", {
   # Check that the file exists at the destination
   expect_true(file.exists(expected))
 
-  # Clean up
-  unlink(expected, force = TRUE)
+  # Clean up: remove the test directory and its contents
+  unlink(tmpdir, recursive = TRUE, force = TRUE)
 })
+
 
