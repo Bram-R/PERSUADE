@@ -35,7 +35,7 @@ for their specific workflows.
 \donttest{
 # Copy output to temporary directory
 # (change `tempdir()` into `getwd()` for copying to working directory)
-f_get_excel_template(output_dir = tempdir())
+f_get_excel_template(output_dir = file.path(tempdir(), paste0("BC_OS", "_output")))
 }
 
 }
