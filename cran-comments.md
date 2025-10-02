@@ -15,6 +15,7 @@
 - Removed `options(scipen = 999, max.print = 10000, digits = 4)` from "R/examples/PERSUADE_example_workflow.R"
 - Removed `rm(list = ls())` from "R/examples/PERSUADE_example_workflow.R"
 - Removed `devtools::install_github("Bram-R/PERSUADE", quiet = TRUE, upgrade = "never")` from "R/examples/PERSUADE_example_workflow.R"
+- Removed `options(warn = -1)` from `PERSUADE_output.Rmd`
 - The example workflow `PERSUADE_example_workflow.R` can be inspected by `file.edit(system.file("example_workflow", "PERSUADE_example_workflow.R", package = "PERSUADE"))`
 
 

@@ -25,7 +25,8 @@ knitr::opts_chunk$set(
   dev = c("pdf", "png"),
   dpi = 300
 )
-options(warn=-1) # prevent warnings from being printed (options(warn=0) to turn warning back on)
+def_options_warn <- options()$warn
+options(warn = -1) # prevent warnings from being printed (options(warn=0) to turn warning back on)
 ```
 
 ```{r preparation, echo=FALSE, warning = FALSE, message = FALSE, results = "hide"}
