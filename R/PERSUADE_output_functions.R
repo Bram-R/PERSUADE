@@ -2433,14 +2433,16 @@ f_generate_report <- function(PERSUADE, output_dir = NULL, template_dir = NULL, 
 #' \donttest{
 #' # Copy output to temporary directory
 #' # (change `tempdir()` into `getwd()` for copying to working directory)
-#' f_get_excel_template(output_dir = file.path(tempdir(), paste0("BC_OS", "_output")))
+#' f_get_excel_template(
+#' output_dir = file.path(tempdir(), paste0("BC_OS", "_output"))
+#' )
 #' }
 #'
 #' @export
 f_get_excel_template <- function(output_dir = NULL) {
   excel_template_dir <- system.file("excel_template",
-                                "PERSUADE_Excel_template.xltx",
-                                package = "PERSUADE")
+                                    "PERSUADE_Excel_template.xltx",
+                                    package = "PERSUADE")
 
   if (is.null(output_dir)) {
     output_dir <- tempdir()
