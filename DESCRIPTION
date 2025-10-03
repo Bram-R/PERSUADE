@@ -2,34 +2,31 @@ Package: PERSUADE
 Title: Parametric Survival Model Selection for Decision-Analytic Models
 Version: 0.1.2
 Authors@R: c(
-    person(given = "Bram", family = "Ramaekers", 
-           email = "bram.ramaekers@mumc.nl",
-           role = c("aut", "cre", "ths"),
+    person("Bram", "Ramaekers", , "bram.ramaekers@mumc.nl", role = c("aut", "cre", "ths"),
            comment = c(ORCID = "0000-0001-5785-9228")),
-    person(given = "Xavier", family = "Pouwels",
-           role = "ctb",
+    person("Xavier", "Pouwels", role = "ctb",
            comment = c(ORCID = "0000-0003-3563-0013")),
-    person(given = "Sabine", family = "Grimm",
-           role = "ths",
+    person("Sabine", "Grimm", role = "ths",
            comment = c(ORCID = "0000-0002-2175-7999")),
-    person(given = "Manuela", family = "Joore",
-           role = "ths",
+    person("Manuela", "Joore", role = "ths",
            comment = c(ORCID = "0000-0002-5649-6768"))
   )
 Description: Provides a standardized framework to support the selection
-    and evaluation of parametric survival models for time-to-event data. 
-    Includes tools for visualizing survival data, checking proportional 
-    hazards assumptions (Grambsch and Therneau (1994) <doi:10.1093/biomet/81.3.515>), 
-    comparing parametric (Ishak et al. (2013) <doi:10.1007/s40273-013-0064-3>), 
-    spline (Royston and Parmar (2002) <doi:10.1002/sim.1203>) and cure models, 
-    examining hazard functions, and evaluating model extrapolation. 
-    Methods are consistent with recommendations in the NICE DSU Technical Support 
-    Documents 14 <https://www.ncbi.nlm.nih.gov/books/NBK395885/> 
-    and 21 <https://www.sheffield.ac.uk/media/34188/download?attachment>. 
-    Results are structured to facilitate integration into decision-analytic models, 
-    and reports can be generated with 'rmarkdown'. The package builds on existing 
-    tools including 'flexsurv' (Jackson (2016) <doi:10.18637/jss.v070.i08>) 
-    and 'flexsurvcure' for estimating cure models.
+    and evaluation of parametric survival models for time-to-event data.
+    Includes tools for visualizing survival data, checking proportional
+    hazards assumptions (Grambsch and Therneau (1994)
+    <doi:10.1093/biomet/81.3.515>), comparing parametric (Ishak et al.
+    (2013) <doi:10.1007/s40273-013-0064-3>), spline (Royston and Parmar
+    (2002) <doi:10.1002/sim.1203>) and cure models, examining hazard
+    functions, and evaluating model extrapolation.  Methods are consistent
+    with recommendations in the NICE DSU Technical Support Documents 14
+    <https://www.ncbi.nlm.nih.gov/books/NBK395885/> and 21
+    <https://www.sheffield.ac.uk/media/34188/download?attachment>.
+    Results are structured to facilitate integration into
+    decision-analytic models, and reports can be generated with
+    'rmarkdown'. The package builds on existing tools including 'flexsurv'
+    (Jackson (2016) <doi:10.18637/jss.v070.i08>) and 'flexsurvcure' for
+    estimating cure models.
 License: GPL (>= 3)
 Depends: 
     R (>= 4.1.0)

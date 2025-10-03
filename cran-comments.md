@@ -1,8 +1,10 @@
 ## R CMD check results
 
-0 errors | 0 warnings | 1 note
+0 errors | 0 warnings | 1 note (unable to verify current time)
 
 - This is a new release.
+- This NOTE is caused by running on Windows where R CMD check sometimes cannot verify file timestamps. 
+  It is unrelated to package functionality and can be safely ignored.
 
 ## Main changes compared with PERSUADE v0.1.1
 
@@ -11,7 +13,7 @@
 - Minor updates to vignette and README files
 - Added single quotes for software names and API (e.g. `rmarkdown`)
 - Added references to DESCRIPTION file
-- Replaced \dontrun with \donttest (and tested by `devtools::check(args = c("--run-donttest"))`)
+- Replaced \dontrun with \donttest (and tested by `devtools::check(args = c("--run-donttest"))`), `except for f_generate_report()` as it requires LaTeX to be installed
 - Set default output directories in `f_generate_report()` and `f_get_excel_template()` (and examples and unit tests) to `tempdir()` to avoid writing to the user’s working directory.
 - Removed `options(scipen = 999, max.print = 10000, digits = 4)` from "R/examples/PERSUADE_example_workflow.R"
 - Removed `rm(list = ls())` from "R/examples/PERSUADE_example_workflow.R"

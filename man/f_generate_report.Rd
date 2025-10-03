@@ -44,7 +44,7 @@ simplifies testing. This function requires the following suggested packages:
 If not installed, the function will throw an error.
 }
 \examples{
-\donttest{
+\dontrun{ # Requires LaTeX to be installed
 years <- survival::lung$time
 status <-  survival::lung$status
 group <- factor(survival::lung$sex)
@@ -60,10 +60,14 @@ PERSUADE <- f_PERSUADE(
   time_horizon = 2000,
   time_pred_surv_table = seq(0, 2000, 365.25)
 )
-# Copy output to temporary directory (change `tempdir()` into `getwd()` for copying to working directory)
+# Copy output to temporary directory
+# (change `tempdir()` into `getwd()`
+# for copying to working directory)
 f_generate_report(
   PERSUADE,
-  output_dir = file.path(tempdir(), paste0(PERSUADE$name, "_output")),
+  output_dir = file.path(
+  tempdir(), paste0(PERSUADE$name, "_output")
+  ),
   template_dir = NULL
 )
 }
