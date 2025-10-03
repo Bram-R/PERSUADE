@@ -1,4 +1,4 @@
-## R CMD check results
+## Check results
 
 0 errors | 0 warnings | 1 note (unable to verify current time)
 
