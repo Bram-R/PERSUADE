@@ -1,10 +1,10 @@
-## Check results
+## Check results using `devtools::check(args = "--as-cran")`
 
 0 errors | 0 warnings | 1 note (unable to verify current time)
 
 - This is a new release.
-- This NOTE is caused by running on Windows where R CMD check sometimes cannot verify file timestamps. 
-  It is unrelated to package functionality and can be safely ignored.
+- This NOTE is caused by running on Windows where R CMD check sometimes cannot verify file timestamps. It is unrelated to package functionality and can be safely ignored.
+- Please note that `devtools::check_win_devel()` (and CRAN’s automated checks) results in a note about possibly misspelled words in DESCRIPTION. These are proper names or standard abbreviations (e.g., NICE DSU, Grambsch & Therneau).
 
 ## Main changes compared with PERSUADE v0.1.1
 
