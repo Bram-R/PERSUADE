@@ -14,20 +14,23 @@ Authors@R: c(
 Description: Provides a standardized framework to support the selection
     and evaluation of parametric survival models for time-to-event data.
     Includes tools for visualizing survival data, checking proportional
-    hazards assumptions ("Grambsch" and "Therneau" (1994)
-    <doi:10.1093/biomet/81.3.515>), comparing parametric ("Ishak" and
-    colleagues (2013) <doi:10.1007/s40273-013-0064-3>), spline ("Royston"
-    and "Parmar" (2002) <doi:10.1002/sim.1203>) and cure models, examining
-    hazard functions, and evaluating model extrapolation.  Methods are
+    hazards assumptions (Grambsch and Therneau, 1994,
+    <doi:10.1093/biomet/81.3.515>), comparing parametric (Ishak and
+    colleagues, 2013, <doi:10.1007/s40273-013-0064-3>), spline (Royston
+    and Parmar, 2002, <doi:10.1002/sim.1203>) and cure models, examining
+    hazard functions, and evaluating model extrapolation. Methods are
     consistent with recommendations in the NICE Decision Support Unit
-    Technical Support Documents 14 and 21
-    <https://sheffield.ac.uk/nice-dsu/tsds/survival-analysis>.  Results
+    Technical Support Documents (14 and 21
+    <https://sheffield.ac.uk/nice-dsu/tsds/survival-analysis>). Results
     are structured to facilitate integration into decision-analytic
     models, and reports can be generated with 'rmarkdown'. The package
-    builds on existing tools including 'flexsurv' ("Jackson" (2016)
-    <doi:10.18637/jss.v070.i08>) and 'flexsurvcure' for estimating cure
+    builds on existing tools including 'flexsurv' (Jackson, 2016,
+    <doi:10.18637/jss.v070.i08>)) and 'flexsurvcure' for estimating cure
     models.
 License: GPL (>= 3)
+URL: https://github.com/<yourusername>/PERSUADE,
+    https://<yourusername>.github.io/PERSUADE/
+BugReports: https://github.com/<yourusername>/PERSUADE/issues
 Depends: 
     R (>= 4.1.0)
 Imports: 
