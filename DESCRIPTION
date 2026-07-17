@@ -1,6 +1,6 @@
 Package: PERSUADE
 Title: Parametric Survival Model Selection for Decision-Analytic Models
-Version: 0.1.2
+Version: 0.1.2.9000
 Authors@R: c(
     person("Bram", "Ramaekers", , "bram.ramaekers@mumc.nl", role = c("aut", "cre", "ths"),
            comment = c(ORCID = "0000-0001-5785-9228")),
@@ -44,9 +44,14 @@ Imports:
     stats,
     survival,
     survminer
-Suggests: 
+Suggests:
+    bslib,
+    DT,
     kableExtra,
     knitr,
+    shiny,
+    shinycssloaders,
+    shinydashboard,
     testthat (>= 3.1.2),
     utils
 VignetteBuilder: 

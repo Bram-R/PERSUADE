@@ -40,8 +40,21 @@ analysis feeds into decision-analytic models.
 
 ## Quick start
 
-The easiest way to get started is by running the example workflow
-script: `PERSUADE_example_workflow.R` using:
+The fastest way to explore PERSUADE is the interactive dashboard:
+
+``` r
+PERSUADE::f_run_dashboard()
+```
+
+It launches a Shiny app with a bundled example dataset (`persuade_trial_data`,
+a simulated 3-arm trial) already loaded, so you can run a full analysis and
+click through Kaplan-Meier, PH diagnostics, hazard, parametric/spline/cure
+model fits, GOF tables, and exports without writing any R code. Requires the
+Suggested packages `shiny`, `shinydashboard`, `DT`, `bslib`, and
+`shinycssloaders` (`install.packages(c("shiny", "shinydashboard", "DT", "bslib", "shinycssloaders"))`).
+
+Alternatively, the classic scripted workflow is available via the example
+workflow script: `PERSUADE_example_workflow.R` using:
 `file.edit(system.file("example_workflow", "PERSUADE_example_workflow.R", package = "PERSUADE"))`
 
 This script:
