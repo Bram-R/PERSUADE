@@ -12,3 +12,4 @@
 ^inst/example/
 ^inst/CITATION$
 ^cran-comments\.md$
+^data-raw$

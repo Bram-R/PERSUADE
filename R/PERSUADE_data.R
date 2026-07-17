@@ -1,0 +1,48 @@
+#### Bundled example data ----
+#' Simulated Three-Arm Trial Survival Data
+#'
+#' A simulated time-to-event dataset (e.g. representing overall survival in a
+#' 3-arm oncology trial) bundled with PERSUADE so the package - and the
+#' interactive dashboard launched via [f_run_dashboard()] - can be explored
+#' without requiring the user's own data. Generated as a mixture-cure
+#' process: each arm has a genuine long-term-survivor ("cured") fraction
+#' (10%/20%/32% for Control/Low dose/High dose) that never experiences the
+#' event, plus a susceptible fraction with Weibull-distributed event times
+#' that differ by arm. Enrollment is staggered over a 2-year accrual window
+#' against a 5-year calendar cutoff (so administrative censoring time varies
+#' continuously per subject rather than a single shared cutoff), with random
+#' dropout layered on top. Every arm contains both events and censored
+#' observations, and the Kaplan-Meier curve for each arm plateaus well clear
+#' of 0 - suitable for fitting PERSUADE's cure models, not just its
+#' standard/spline models.
+#'
+#' @format A data frame with 600 rows and 3 columns:
+#' \describe{
+#'   \item{years}{Numeric. Time to event or censoring, in years.}
+#'   \item{status}{Numeric. Event indicator (`1` = event, `0` = censored).}
+#'   \item{group}{Factor with 3 levels, `"Control"`, `"Low dose"`,
+#'     `"High dose"`, identifying the trial arm.}
+#' }
+#'
+#' @source Simulated data; see `data-raw/create_persuade_trial_data.R` for
+#'   the generating code.
+#'
+#' @examples
+#' data(persuade_trial_data)
+#' head(persuade_trial_data)
+#'
+#' \donttest{
+#' f_PERSUADE(
+#'   name = "dashboard_example",
+#'   years = persuade_trial_data$years,
+#'   status = persuade_trial_data$status,
+#'   group = persuade_trial_data$group,
+#'   strata = TRUE,
+#'   spline_mod = FALSE,
+#'   cure_mod = TRUE,
+#'   time_unit = 1 / 12,
+#'   time_horizon = 10,
+#'   time_pred_surv_table = c(0, 1, 5, 10)
+#' )
+#' }
+"persuade_trial_data"
