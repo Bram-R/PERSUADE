@@ -401,6 +401,87 @@ self-evident. Prefer "reproduce and isolate" over "reason from first
 principles" whenever a live tester is available, even at the cost of a
 few extra round-trips.
 
+## 9b. §9a's staggered-enrollment fix didn't work either — pivoted to hardening the fitting pipeline
+
+The user reran §9a's exact 9-variant probe script against the regenerated
+(staggered-enrollment) data. Identical result: `k = 1, scale = "normal"`
+still failed, byte-for-byte the same error, while the other 8 succeeded.
+
+Two independent, substantial changes to the data-generating process (§9:
+adding a genuine cure fraction; §9a: removing the tied-censoring spike)
+both failed to move this one specific, narrow failure at all. That
+consistency is itself the useful signal: it argues against "some detail of
+this synthetic dataset happens to be pathological" and for "this
+model/data-shape combination — grouped covariate on the baseline term of a
+1-knot probit-scale Royston-Parmar spline — is just not reliably
+identifiable here, and no small tweak to the simulation was going to change
+that." Continuing to guess a third data variant had a poor expected payoff
+given the first two both missed.
+
+Pivoted strategy: instead of chasing the data, made `f_surv_model()` (in
+`R/PERSUADE_function.R`, the core fitting pipeline used by every
+`f_PERSUADE()` call, not just the dashboard) tolerate one spline variant
+failing to fit, rather than letting it abort the entire analysis. This is
+also a more generally valuable fix — a real user's real data could hit an
+analogous fragile fit for any one of the 28 models PERSUADE attempts, and
+"one bad fit kills the whole run" was already a latent robustness gap
+independent of this specific bundled-dataset investigation.
+
+Scope of the change, kept deliberately narrow given this is core,
+untestable-here statistical code:
+
+- Each of the 9 `flexsurv::flexsurvspline()` calls in `f_surv_model()` is
+  now wrapped in its own `tryCatch`; a failure is caught, turned into a
+  `warning()` naming the specific variant, and stored as `NULL` instead of
+  propagating and aborting the other 8 (and every other model type).
+- `spline_ic`'s `AIC`/`BIC` columns are now `NA` for a `NULL` model instead
+  of erroring on `NULL$AIC`.
+- `f_surv_model_pred()`'s spline-prediction loop returns a correctly-shaped
+  all-`NA` matrix for a `NULL` model instead of calling `summary()` on it.
+  This was verified to cascade cleanly through `f_surv_model_pred_gr()`
+  (plain column indexing — an NA column indexes fine) and
+  `f_surv_model_pred_tp_gr()` (NA propagates through the transition-
+  probability arithmetic and the truncation step's `which(NA > x)` returns
+  `NA_integer_`, which its existing `if (!is.na(idx))` guard already
+  handles) without needing changes to either.
+- `f_surv_model_excel()` needed **no changes** — it already null-checks
+  every model at every point it touches one (apparently anticipating
+  partial failures already, even though nothing upstream previously
+  allowed a `NULL` to reach it).
+- Deliberately **not** touched: the ~25 `f_plot_*()` functions and the
+  `plot.PERSUADE()`/`summary.PERSUADE()` S3 methods. Calling one of these
+  directly for a model index that failed to fit will still error - that
+  surface area was too large to make safely correct without being able to
+  test any of it against real `flexsurv`. Mitigated at the dashboard layer
+  instead (see below), which covers the actual reported use case.
+- Dashboard (`app.R`): the spline-model dropdown now only lists variants
+  that actually fit (filtered by checking `surv_model$spline_models[[key]]`
+  for `NULL`, while preserving each model's original 1-9 index so the
+  existing `f_plot_*_spline_surv_model(x, i)` calls still index correctly);
+  a run that completes with one or more spline variants skipped now shows
+  a non-blocking warning notification naming which ones.
+- Added `tests/testthat/test_f_surv_model_robustness.R`: mocks
+  `flexsurv::flexsurvspline()` (via `local_mocked_bindings(..., .package =
+  "flexsurv")`) to fail exactly for `k=1, scale="normal"` while delegating
+  everything else to the real function, and asserts `f_surv_model()`
+  returns a `NULL` for that one variant, `NA` IC for it, and real fitted
+  models for the other 8 - plus a second test asserting a `warning()` (not
+  an error) is raised. Like every `flexsurv`-touching test in this
+  project, this cannot run in this sandbox (§3) and needs confirmation on
+  a machine with `flexsurv` installed.
+
+**This is the most invasive change made in this session** - it touches the
+core model-fitting function, not dashboard-only code, so it affects every
+caller of `f_PERSUADE()`/`f_surv_model()`, not just the dashboard. It was
+made narrow (spline models only, since that's the only category with
+demonstrated failures for this data) rather than extending the same
+pattern to the 7 standard models or 12 cure models, which have shown no
+evidence of needing it. If the same class of issue turns up in a standard
+or cure model for some other dataset in the future, the identical pattern
+(`tryCatch` around the individual fit, `NULL`-safe IC/prediction handling)
+would apply there too, but wasn't preemptively added given the added
+surface area and zero ability to test it here.
+
 ## 10. What to verify next (on a machine with CRAN access)
 
 - `R CMD check` end-to-end (impossible here per §3).
@@ -415,8 +496,12 @@ few extra round-trips.
 - Try `f_generate_report()`'s PDF download from the dashboard on a machine
   with pandoc + a LaTeX distribution installed (untestable here).
 - Run the bundled example through the dashboard with default settings
-  (all three model-type checkboxes on) and confirm the §9a fix resolves
-  `flexsurvspline(..., k = 1, scale = "normal")`'s
-  "non-finite finite-difference value" error - or, if it doesn't,
-  re-run the same 9-variant loop script from §9a against the regenerated
-  data to see whether it's still exactly that one variant or has moved.
+  (all three model-type checkboxes on) and confirm the §9b fix makes the
+  analysis complete successfully (with a warning notification about the
+  one skipped spline variant) instead of failing outright.
+- Confirm `tests/testthat/test_f_surv_model_robustness.R` (§9b) actually
+  passes - it mocks `flexsurv::flexsurvspline()`, which needed `flexsurv`
+  to be installed to even attempt running here.
+- Confirm the dashboard's spline model dropdown (Spline models tab)
+  correctly excludes the skipped `k=1, scale="normal"` variant and that
+  selecting any of the other 8 still plots correctly.

@@ -407,6 +407,22 @@ server <- function(input, output, session) {
 
     if (isTRUE(out$ok)) {
       showNotification("Analysis complete.", type = "message")
+
+      if (isTRUE(out$value$input$spline_mod)) {
+        failed <- out$value$misc$lbls_spline[
+          vapply(out$value$surv_model$spline_models, is.null, logical(1))
+        ]
+        if (length(failed) > 0) {
+          showNotification(
+            paste0(
+              "Note: ", length(failed), " spline model(s) failed to fit and were skipped: ",
+              paste(failed, collapse = ", ")
+            ),
+            type = "warning", duration = NULL
+          )
+        }
+      }
+
       updateTabItems(session, "tabs", "overview")
     } else {
       showNotification(paste("Analysis failed:", out$error), type = "error", duration = NULL)
@@ -530,7 +546,11 @@ server <- function(input, output, session) {
     obj <- persuade_obj()
     if (isTRUE(obj$input$spline_mod)) {
       lbls <- obj$misc$lbls_spline
-      updateSelectInput(session, "spline_model_choice", choices = stats::setNames(seq_along(lbls), lbls))
+      # Only offer models that actually fit; a variant can fail and be
+      # skipped (see f_surv_model()) without aborting the whole analysis.
+      fitted <- !vapply(obj$surv_model$spline_models, is.null, logical(1))
+      idx <- which(fitted)
+      updateSelectInput(session, "spline_model_choice", choices = stats::setNames(idx, lbls[idx]))
     }
   })
 

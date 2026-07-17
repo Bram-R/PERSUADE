@@ -482,8 +482,17 @@ f_surv_model <- function(years, status, group, strata, ngroups, form, spline_mod
         NULL
       }
       for (scale in c("hazard", "odds", "normal")) {
-        spline_models[[paste0("spl_", scale, "_", k)]] <- flexsurv::flexsurvspline(
-          form, k = k, scale = scale, anc = anc_list
+        key <- paste0("spl_", scale, "_", k)
+        spline_models[[key]] <- tryCatch(
+          flexsurv::flexsurvspline(form, k = k, scale = scale, anc = anc_list),
+          error = function(e) {
+            warning(
+              "Spline model '", key, "' (k = ", k, ", scale = \"", scale,
+              "\") failed to fit and was skipped: ", conditionMessage(e),
+              call. = FALSE
+            )
+            NULL
+          }
         )
       }
     }
@@ -495,8 +504,8 @@ f_surv_model <- function(years, status, group, strata, ngroups, form, spline_mod
     spline_labels <- apply(spline_labels, 1, function(x) paste(x[2], x[1], "knots"))
     spline_ic <- data.frame(
       Model = spline_labels,
-      AIC = sapply(spline_models, function(model) model$AIC),
-      BIC = sapply(spline_models, function(model) stats::BIC(model))
+      AIC = sapply(spline_models, function(model) if (is.null(model)) NA_real_ else model$AIC),
+      BIC = sapply(spline_models, function(model) if (is.null(model)) NA_real_ else stats::BIC(model))
     )
   }
 
@@ -623,9 +632,17 @@ f_surv_model_pred <- function(ngroups, time_pred, surv_model, spline_mod, cure_m
                        "spl_odds_1", "spl_odds_2", "spl_odds_3",
                        "spl_normal_1", "spl_normal_2", "spl_normal_3")
     predictions$spline <- lapply(spline_models, function(model) {
+      fit <- surv_model$spline_models[[model]]
+      if (is.null(fit)) {
+        # This variant failed to fit (see f_surv_model()); fill with NA so
+        # downstream consumers see a well-formed but missing prediction
+        # instead of erroring on a NULL model.
+        na_mat <- cbind(time_pred, matrix(NA_real_, nrow = length(time_pred), ncol = ngroups))
+        return(list(surv = na_mat, hazard = na_mat))
+      }
       list(
-        surv = extract_predictions(surv_model$spline_models[[model]], time_pred, ngroups),
-        hazard = extract_predictions(surv_model$spline_models[[model]], time_pred, ngroups, type = "hazard")
+        surv = extract_predictions(fit, time_pred, ngroups),
+        hazard = extract_predictions(fit, time_pred, ngroups, type = "hazard")
       )
     })
     names(predictions$spline) <- spline_models
