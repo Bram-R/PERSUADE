@@ -203,7 +203,72 @@ to exercise meaningfully; a `shiny::runApp()`-based integration check
 against an actually-installed PERSUADE is the right place to catch this
 class of bug going forward, ideally in CI once dependencies are available.
 
-## 7. What to verify next (on a machine with CRAN access)
+## 7. Hardening: qualify every internal call with `PERSUADE::`
+
+The user reported the identical error again after the §6 fix was already
+merged. The most likely explanation is environmental: `f_run_dashboard()`
+resolves `app.R` via `system.file(..., package = "PERSUADE")`, i.e. the
+*installed* copy of the package, not the git checkout — `git pull` alone
+does not update it; the package must be reinstalled afterwards. That fix
+was correct and stays in place.
+
+As a second, independent layer of defense — and to match this codebase's
+own existing convention of never relying on implicit namespace imports,
+always calling other packages' functions as `pkg::fun()` — every internal
+call from `app.R` to a PERSUADE function was made explicit:
+`f_dashboard_example_datasets()` → `PERSUADE::f_dashboard_example_datasets()`,
+and likewise for `f_dashboard_validate_data()`, `f_dashboard_time_grid()`,
+`f_dashboard_run_persuade()`, `f_dashboard_best_model()`, every `f_plot_*()`,
+`f_get_excel_template()`, and `f_generate_report()`. Two mentions inside
+UI description text (`code("f_generate_report()")` etc., on the "About"
+tab) were deliberately left unqualified since they're display strings, not
+calls.
+
+This is more robust than `library(PERSUADE)` alone: it resolves via
+`getNamespace("PERSUADE")` regardless of whether the package ended up
+attached to the search path, and fails with a clearer "no package called
+PERSUADE" error rather than a confusing "could not find function" if the
+package genuinely isn't installed at all.
+
+**Verification**: `PERSUADE::x()` requires a real registered R namespace —
+attaching a same-named environment to the search path (the §4c workaround)
+is not sufficient to make `::` resolve. Since the real package can't be
+installed in this sandbox (§3), a minimal stand-in package - also named
+`PERSUADE`, containing the real `R/PERSUADE_dashboard.R` verbatim plus the
+real bundled `data/persuade_trial_data.rda` plus no-op stubs for the
+`f_plot_*()`/`f_generate_report()`/`f_get_excel_template()` exports (not
+exercised by this test) and a stub `f_PERSUADE()` that errors (standing in
+for the real one, which needs flexsurv) - was built and `R CMD INSTALL`'d
+into a throwaway library path. Running the actual, unmodified `app.R`
+against it (`.libPaths()` pointed at that throwaway library) and
+re-running the same Playwright flow as §4c confirmed: data loads and
+validates through the real `utils::data("persuade_trial_data", package =
+"PERSUADE")` path (no shim needed this time), and "Run" fails gracefully
+with the stub's message instead of "could not find function" - i.e. the
+exact reported symptom is resolved, verified against real namespace
+resolution rather than a mocked one.
+
+**If this error still persists after both fixes**, the remaining likely
+cause is the same as §6's: the installed package is stale. Reinstall from
+the pulled checkout (`R CMD INSTALL .` or `devtools::install()`) — pulling
+alone does not update `system.file(..., package = "PERSUADE")`.
+
+## 8. Photo request: sandbox network policy
+
+The user asked to add their photo (initially pasted inline in chat, then a
+`mumc.nl` URL) to the top-left of the dashboard header. Neither path was
+usable directly:
+
+- Chat-pasted images are not exposed on this sandbox's filesystem — there
+  is no path to `Read`/copy from.
+- The `mumc.nl` URL is blocked by the sandbox's outbound network policy
+  (`curl`/`WebFetch` both got a 403 at the CONNECT-tunnel level — a sandbox
+  policy denial, not a site-side failure). `github.com`/
+  `raw.githubusercontent.com` **are** reachable from this sandbox, so that
+  was offered as an alternative delivery path (push the file to the repo,
+  or share a GitHub-hosted URL). Awaiting the user's follow-up.
+
+## 9. What to verify next (on a machine with CRAN access)
 
 - `R CMD check` end-to-end (impossible here per §3).
 - Run the full `testthat` suite via `library(PERSUADE); testthat::test_check("PERSUADE")`

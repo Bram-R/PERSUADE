@@ -297,11 +297,11 @@ server <- function(input, output, session) {
     switch(
       input$data_source,
       persuade_trial_data = {
-        reg <- f_dashboard_example_datasets()
+        reg <- PERSUADE::f_dashboard_example_datasets()
         reg$persuade_trial_data$loader()
       },
       flexsurv_bc = {
-        reg <- f_dashboard_example_datasets()
+        reg <- PERSUADE::f_dashboard_example_datasets()
         if (is.null(reg$flexsurv_bc)) {
           validate("The 'flexsurv' package is not installed, so flexsurv::bc is unavailable.")
         }
@@ -329,7 +329,7 @@ server <- function(input, output, session) {
       req(input$years_col, input$status_col, input$group_col)
       list(years = input$years_col, status = input$status_col, group = input$group_col)
     } else {
-      reg <- f_dashboard_example_datasets()
+      reg <- PERSUADE::f_dashboard_example_datasets()
       entry <- reg[[input$data_source]]
       list(years = entry$years_col, status = entry$status_col, group = entry$group_col)
     }
@@ -339,7 +339,7 @@ server <- function(input, output, session) {
     df <- raw_data()
     map <- col_mapping()
     tryCatch(
-      f_dashboard_validate_data(df, map$years, map$status, map$group),
+      PERSUADE::f_dashboard_validate_data(df, map$years, map$status, map$group),
       error = function(e) {
         showNotification(paste("Data validation failed:", conditionMessage(e)), type = "error", duration = 10)
         NULL
@@ -352,7 +352,7 @@ server <- function(input, output, session) {
     req(v)
     horizon <- signif(max(v$data$years) * 1.2, 2)
     updateNumericInput(session, "time_horizon", value = horizon)
-    updateTextInput(session, "time_grid", value = paste(round(f_dashboard_time_grid(horizon), 2), collapse = ", "))
+    updateTextInput(session, "time_grid", value = paste(round(PERSUADE::f_dashboard_time_grid(horizon), 2), collapse = ", "))
   })
 
   output$data_summary_boxes <- renderUI({
@@ -384,10 +384,10 @@ server <- function(input, output, session) {
 
     time_pred_surv_table <- suppressWarnings(as.numeric(trimws(strsplit(input$time_grid, ",")[[1]])))
     time_pred_surv_table <- time_pred_surv_table[!is.na(time_pred_surv_table)]
-    if (length(time_pred_surv_table) == 0) time_pred_surv_table <- f_dashboard_time_grid(input$time_horizon)
+    if (length(time_pred_surv_table) == 0) time_pred_surv_table <- PERSUADE::f_dashboard_time_grid(input$time_horizon)
 
     withProgress(message = "Fitting PERSUADE models...", value = 0.3, {
-      out <- f_dashboard_run_persuade(
+      out <- PERSUADE::f_dashboard_run_persuade(
         name = "dashboard_analysis",
         years = v$data$years,
         status = v$data$status,
@@ -438,7 +438,7 @@ server <- function(input, output, session) {
   })
 
   output$box_best_param <- renderValueBox({
-    best <- f_dashboard_best_model(persuade_obj()$surv_model$param_ic)
+    best <- PERSUADE::f_dashboard_best_model(persuade_obj()$surv_model$param_ic)
     valueBox(best$Model, "Best standard model (lowest AIC)", icon = icon("trophy"), color = "purple")
   })
   output$box_best_overall <- renderValueBox({
@@ -446,7 +446,7 @@ server <- function(input, output, session) {
     tables <- list(obj$surv_model$param_ic)
     if (isTRUE(obj$input$spline_mod)) tables <- c(tables, list(obj$surv_model$spline_ic))
     all_gof <- do.call(rbind, lapply(tables, function(t) t[, c("Model", "AIC")]))
-    best <- f_dashboard_best_model(all_gof)
+    best <- PERSUADE::f_dashboard_best_model(all_gof)
     valueBox(best$Model, "Best overall (standard + spline)", icon = icon("crown"), color = "olive")
   })
 
@@ -467,28 +467,28 @@ server <- function(input, output, session) {
 
   ## -- Kaplan-Meier --
   output$km_plot <- renderPlot({
-    f_plot_km_survival_base(persuade_obj())
+    PERSUADE::f_plot_km_survival_base(persuade_obj())
   })
 
   ## -- PH diagnostics --
   output$ph_loglog_plot <- renderPlot({
-    f_plot_log_cumhaz(persuade_obj())
+    PERSUADE::f_plot_log_cumhaz(persuade_obj())
   })
   output$ph_schoenfeld_plot <- renderPlot({
     obj <- persuade_obj()
     if (obj$misc$ngroups < 2) {
       plot.new(); text(0.5, 0.5, "Requires 2 or more groups.")
     } else {
-      f_plot_schoenfeld_residuals(obj)
+      PERSUADE::f_plot_schoenfeld_residuals(obj)
     }
   })
 
   ## -- Hazard --
   output$hazard_smooth_plot <- renderPlot({
-    f_plot_smoothed_hazard(persuade_obj())
+    PERSUADE::f_plot_smoothed_hazard(persuade_obj())
   })
   output$hazard_models_plot <- renderPlot({
-    f_plot_hazard_with_models(persuade_obj())
+    PERSUADE::f_plot_hazard_with_models(persuade_obj())
   })
 
   ## -- Parametric models --
@@ -499,7 +499,7 @@ server <- function(input, output, session) {
 
   output$gof_param_table <- renderDT({
     obj <- persuade_obj()
-    best_model <- f_dashboard_best_model(obj$surv_model$param_ic)$Model
+    best_model <- PERSUADE::f_dashboard_best_model(obj$surv_model$param_ic)$Model
     dt <- datatable(obj$surv_model$param_ic, options = list(scrollX = TRUE, dom = "t")) |>
       formatStyle("Model", target = "row",
                   backgroundColor = styleEqual(best_model, "#e6f4ea"))
@@ -507,9 +507,9 @@ server <- function(input, output, session) {
   })
 
   param_idx <- reactive({ req(input$param_model_choice); as.integer(input$param_model_choice) })
-  output$param_surv_plot <- renderPlot(f_plot_param_surv_model(persuade_obj(), param_idx()))
-  output$param_diag_plot <- renderPlot(f_plot_diag_param_surv_model(persuade_obj(), param_idx()))
-  output$param_tp_plot   <- renderPlot(f_plot_tp_param_surv_model(persuade_obj(), param_idx()))
+  output$param_surv_plot <- renderPlot(PERSUADE::f_plot_param_surv_model(persuade_obj(), param_idx()))
+  output$param_diag_plot <- renderPlot(PERSUADE::f_plot_diag_param_surv_model(persuade_obj(), param_idx()))
+  output$param_tp_plot   <- renderPlot(PERSUADE::f_plot_tp_param_surv_model(persuade_obj(), param_idx()))
 
   ## -- Spline models --
   spline_available <- reactive({
@@ -537,15 +537,15 @@ server <- function(input, output, session) {
   output$gof_spline_table <- renderDT({
     obj <- persuade_obj()
     req(isTRUE(obj$input$spline_mod))
-    best_model <- f_dashboard_best_model(obj$surv_model$spline_ic)$Model
+    best_model <- PERSUADE::f_dashboard_best_model(obj$surv_model$spline_ic)$Model
     datatable(obj$surv_model$spline_ic, options = list(scrollX = TRUE, dom = "t")) |>
       formatStyle("Model", target = "row", backgroundColor = styleEqual(best_model, "#e6f4ea"))
   })
 
   spline_idx <- reactive({ req(input$spline_model_choice); as.integer(input$spline_model_choice) })
-  output$spline_surv_plot <- renderPlot(f_plot_spline_surv_model(persuade_obj(), spline_idx()))
-  output$spline_diag_plot <- renderPlot(f_plot_diag_spline_surv_model(persuade_obj(), spline_idx()))
-  output$spline_tp_plot   <- renderPlot(f_plot_tp_spline_surv_model(persuade_obj(), spline_idx()))
+  output$spline_surv_plot <- renderPlot(PERSUADE::f_plot_spline_surv_model(persuade_obj(), spline_idx()))
+  output$spline_diag_plot <- renderPlot(PERSUADE::f_plot_diag_spline_surv_model(persuade_obj(), spline_idx()))
+  output$spline_tp_plot   <- renderPlot(PERSUADE::f_plot_tp_spline_surv_model(persuade_obj(), spline_idx()))
 
   ## -- Cure models --
   cure_available <- reactive({
@@ -577,9 +577,9 @@ server <- function(input, output, session) {
   })
 
   cure_idx <- reactive({ req(input$cure_model_choice); as.integer(input$cure_model_choice) })
-  output$cure_surv_plot <- renderPlot(f_plot_cure_surv_model(persuade_obj(), cure_idx()))
-  output$cure_diag_plot <- renderPlot(f_plot_diag_cure_surv_model(persuade_obj(), cure_idx()))
-  output$cure_tp_plot   <- renderPlot(f_plot_tp_cure_surv_model(persuade_obj(), cure_idx()))
+  output$cure_surv_plot <- renderPlot(PERSUADE::f_plot_cure_surv_model(persuade_obj(), cure_idx()))
+  output$cure_diag_plot <- renderPlot(PERSUADE::f_plot_diag_cure_surv_model(persuade_obj(), cure_idx()))
+  output$cure_tp_plot   <- renderPlot(PERSUADE::f_plot_tp_cure_surv_model(persuade_obj(), cure_idx()))
 
   ## -- Export & report --
 
@@ -594,7 +594,7 @@ server <- function(input, output, session) {
   output$download_excel_template <- downloadHandler(
     filename = function() "PERSUADE_Excel_template.xltx",
     content = function(file) {
-      dest <- f_get_excel_template(output_dir = tempfile("persuade_template"))
+      dest <- PERSUADE::f_get_excel_template(output_dir = tempfile("persuade_template"))
       file.copy(dest, file)
     }
   )
@@ -604,7 +604,7 @@ server <- function(input, output, session) {
     content = function(file) {
       out_dir <- tempfile("persuade_report")
       result <- tryCatch({
-        f_generate_report(persuade_obj(), output_dir = out_dir, open = FALSE)
+        PERSUADE::f_generate_report(persuade_obj(), output_dir = out_dir, open = FALSE)
         pdf_path <- file.path(out_dir, paste0(persuade_obj()$name, ".pdf"))
         if (!file.exists(pdf_path)) stop("Report rendering did not produce a PDF file.")
         file.copy(pdf_path, file)
