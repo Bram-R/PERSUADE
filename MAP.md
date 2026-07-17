@@ -329,25 +329,77 @@ row count (600, was 450), and changed their `f_PERSUADE()` example to
 `cure_mod = TRUE` so the documentation actually demonstrates the scenario
 the dataset was redesigned for.
 
-**Caveat, stated plainly**: this diagnosis is well-grounded (a 0%-true-cure
+**Caveat, stated plainly**: this diagnosis was well-grounded (a 0%-true-cure
 dataset is a documented, common cause of exactly this failure mode in cure
 models generally) but could not be *confirmed* by actually reproducing the
 original error and re-running the fit — `flexsurvcure` is one of the
-packages unavailable in this sandbox (§3). If the same "non-finite
-finite-difference" error recurs after this fix (with the `[N]` index
-possibly pointing at a different parameter), the next things to check
-would be: whether it's now coming from a *spline* model instead (3-knot
-spline models with per-group ancillary parameters are also numerically
-demanding relative to ~200 obs/group) or from a specific cure
-distribution/link combination that's still poorly identified even with a
-genuine cure fraction present — and, separately, whether `f_surv_model()`
-in `R/PERSUADE_function.R` (core package, not dashboard code) should wrap
-each individual model fit in its own `tryCatch` so one failing model
-degrades gracefully instead of aborting the entire `f_PERSUADE()` call.
-That would be a more invasive change to the core fitting pipeline, useful
-for real user data too (not just this bundled example), but wasn't made
-here since it's untestable in this sandbox and arguably outside what was
-asked for.
+packages unavailable in this sandbox (§3). It turned out to be necessary
+but not sufficient — see §9a.
+
+## 9a. Same error persisted — root-caused with the user's help, via bisection
+
+After §9's fix, the user reported the *exact same* error
+(`non-finite finite-difference value [2]`) running the bundled example with
+default settings. Rather than keep guessing from a sandbox that can't run
+`flexsurv`, the user was walked through isolating it directly, since none
+of it required them to write code — only toggle the dashboard's existing
+checkboxes and read back the result:
+
+1. Standard models only (spline + cure off) → **succeeded**. Rules out the
+   7 standard parametric models and rules out `strata` in isolation.
+2. `+ spline models` (cure still off) → **failed**, same error. Narrows it
+   to spline models (cure models were not even being fitted in this run,
+   which also retroactively confirms §9's cure-fraction fix, whatever its
+   other merits, was never the actual cause of *this* error).
+3. Spline models with `strata` off too → **still failed**. Rules out the
+   per-group ancillary-parameter theory floated in §9's caveat.
+
+At that point checkbox-level bisection couldn't go further (9 spline
+variants: 3 knot counts × 3 scales, fit together as a block), so the user
+ran a small loop script directly in their R console — the one place in
+this whole exchange with the real `flexsurv` installed — fitting each of
+the 9 `flexsurvspline()` variants individually against
+`persuade_trial_data`. Result: **8 of 9 succeeded; only `k = 1, scale =
+"normal"` failed**, with the identical error message.
+
+Root cause, once isolated to one specific fit: `data-raw/create_persuade_trial_data.R`
+used a single fixed administrative-censoring cutoff (`admin_censor_time <-
+5`) shared by every subject, producing a large mass of subjects tied at
+exactly `years = 5.000` (everyone still at risk at study end). Heavy exact
+ties at a boundary time are a known destabilizer for spline-based hazard
+models — apparently enough to push the `k=1`/`normal` parameterization
+specifically into a bad region, even though the other 8 variants tolerated
+it fine.
+
+Fix: replaced the fixed cutoff with **staggered enrollment** - each subject
+gets a random enrollment time over a 2-year accrual window against a fixed
+5-year calendar cutoff, so administrative censoring time varies
+continuously per subject (`study_duration - enroll_time`, `enroll_time ~
+Uniform(0, 2)`) instead of everyone sharing one identical value. This is
+also more realistic (real trials enroll patients over time, not all on the
+same day). Verified directly: max ties at any single `years` value dropped
+from a large spike to 3; the per-arm plateau is still present and, if
+anything, slightly more pronounced now that not everyone gets the full
+5 years of follow-up (15.9%/30.8%/51.1% at 5 years vs. the §9 fixed-cutoff
+version's 13%/33%/56%). Re-ran the dataset's structural tests — still
+green. Updated `R/PERSUADE_data.R` / `man/persuade_trial_data.Rd` to
+describe staggered enrollment.
+
+**This fix is submitted un-confirmed** — same sandbox limitation as
+before, `flexsurvspline()` can't be run here. Asked the user to re-run the
+exact same 9-variant loop script against the regenerated data to confirm
+`k=1, scale="normal"` now succeeds too, before considering this closed.
+
+This exchange is a good illustration of the sandbox's core constraint in
+practice: two rounds of reasoning about *why* a flexsurv fit might be
+numerically unstable (§9's cure-fraction theory, §9a's initial
+strata-parameter-count theory) were plausible but wrong or incomplete;
+what actually worked was getting a live tester to bisect with the real
+package installed down to one reproducible, isolated failing call, at
+which point the true cause (tied censoring times) became close to
+self-evident. Prefer "reproduce and isolate" over "reason from first
+principles" whenever a live tester is available, even at the cost of a
+few extra round-trips.
 
 ## 10. What to verify next (on a machine with CRAN access)
 
@@ -363,6 +415,8 @@ asked for.
 - Try `f_generate_report()`'s PDF download from the dashboard on a machine
   with pandoc + a LaTeX distribution installed (untestable here).
 - Run the bundled example through the dashboard with default settings
-  (all three model-type checkboxes on) and confirm the §9 fix actually
-  resolves the "non-finite finite-difference value" error, since it could
-  not be reproduced/confirmed in this sandbox.
+  (all three model-type checkboxes on) and confirm the §9a fix resolves
+  `flexsurvspline(..., k = 1, scale = "normal")`'s
+  "non-finite finite-difference value" error - or, if it doesn't,
+  re-run the same 9-variant loop script from §9a against the regenerated
+  data to see whether it's still exactly that one variant or has moved.

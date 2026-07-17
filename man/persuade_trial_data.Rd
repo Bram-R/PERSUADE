@@ -22,11 +22,13 @@ without requiring the user's own data. Generated as a mixture-cure
 process: each arm has a genuine long-term-survivor ("cured") fraction
 (10\%/20\%/32\% for Control/Low dose/High dose) that never experiences the
 event, plus a susceptible fraction with Weibull-distributed event times
-that differ by arm. Administrative censoring at 5 years of follow-up and
-random dropout are layered on top, so every arm contains both events and
-censored observations, and the Kaplan-Meier curve for each arm plateaus
-well clear of 0 - suitable for fitting PERSUADE's cure models, not just
-its standard/spline models.
+that differ by arm. Enrollment is staggered over a 2-year accrual window
+against a 5-year calendar cutoff (so administrative censoring time varies
+continuously per subject rather than a single shared cutoff), with random
+dropout layered on top. Every arm contains both events and censored
+observations, and the Kaplan-Meier curve for each arm plateaus well clear
+of 0 - suitable for fitting PERSUADE's cure models, not just its
+standard/spline models.
 }
 \details{
 The data frame has the following columns:
