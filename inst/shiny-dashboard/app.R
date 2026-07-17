@@ -26,17 +26,7 @@ time_unit_choices <- c(
 ui <- dashboardPage(
   skin = "purple",
 
-  dashboardHeader(
-    title = tags$span(
-      style = "white-space: nowrap; overflow: hidden; text-overflow: ellipsis;",
-      tags$img(
-        src = "bram_ramaekers.jpg", height = "30px",
-        style = "border-radius: 50%; margin-right: 8px; vertical-align: middle;"
-      ),
-      tags$span("PERSUADE", style = "vertical-align: middle;")
-    ),
-    titleWidth = 280
-  ),
+  dashboardHeader(title = "PERSUADE Dashboard", titleWidth = 280),
 
   dashboardSidebar(
     width = 280,

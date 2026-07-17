@@ -253,11 +253,11 @@ cause is the same as §6's: the installed package is stale. Reinstall from
 the pulled checkout (`R CMD INSTALL .` or `devtools::install()`) — pulling
 alone does not update `system.file(..., package = "PERSUADE")`.
 
-## 8. Photo request: sandbox network policy
+## 8. Photo request: added, then removed
 
 The user asked to add their photo (initially pasted inline in chat, then a
-`mumc.nl` URL) to the top-left of the dashboard header. Neither path was
-usable directly:
+`mumc.nl` URL, both blocked — see below) to the top-left of the dashboard
+header:
 
 - Chat-pasted images are not exposed on this sandbox's filesystem — there
   is no path to `Read`/copy from.
@@ -265,10 +265,91 @@ usable directly:
   (`curl`/`WebFetch` both got a 403 at the CONNECT-tunnel level — a sandbox
   policy denial, not a site-side failure). `github.com`/
   `raw.githubusercontent.com` **are** reachable from this sandbox, so that
-  was offered as an alternative delivery path (push the file to the repo,
-  or share a GitHub-hosted URL). Awaiting the user's follow-up.
+  was offered as an alternative delivery path.
+- The user pushed the file to the repo root directly (`Bram ramaekers.jpg`,
+  via `git push` outside this session). It was moved to
+  `inst/shiny-dashboard/www/bram_ramaekers.jpg` (clean filename, no spaces)
+  and wired into `dashboardHeader(title = ...)` as a small circular avatar
+  next to the title text. First attempt wrapped the image + text in a plain
+  `tagList()`; verified in a real browser (same stand-in-package technique
+  as §6a/§7) and found the title text wrapped onto a second line and got
+  clipped by the header's fixed-height `overflow: hidden` — fixed with
+  `white-space: nowrap` on a wrapping `tags$span`, reverified, confirmed
+  rendering correctly on one line.
+- The user then reported the photo still not loading after reinstalling.
+  Diagnosis was in progress (confirmed the file and reference were correct
+  in the repo at the branch tip; was narrowing down between "still on a
+  stale install" vs. a genuine asset-serving issue) when the user asked to
+  **remove the photo entirely** instead of continuing to debug it. Reverted
+  `dashboardHeader` to the plain-text title and `git rm`'d the image file.
 
-## 9. What to verify next (on a machine with CRAN access)
+## 9. Fix: bundled dataset had no real cure fraction
+
+The user reported, running the bundled example dataset through the
+dashboard with default settings (`strata`/`spline_mod`/`cure_mod` all
+`TRUE`, matching the dashboard's default checkboxes): `Analysis failed:
+non-finite finite-difference value [2]`.
+
+This error text is a known signature from the numerical Hessian computation
+(`optimHess`-style finite differences) that `flexsurv`/`flexsurvcure` run
+after optimization to get standard errors — it fires when perturbing a
+parameter lands the log-likelihood somewhere non-finite, which classically
+happens when a parameter's MLE sits at or near a boundary of its feasible
+region.
+
+Diagnosis: `data-raw/create_persuade_trial_data.R` (§4a) simulated **plain
+Weibull event times with no cured/long-term-survivor fraction at all** —
+every simulated subject would eventually have the event given enough
+follow-up (median event times ~1.6-3 years against Weibull shapes near 1,
+well inside the 5-year admin-censoring window). The dashboard's "Fit cure
+models" checkbox defaults to `TRUE` and the bundled dataset is the default
+selection, so the very first thing a new user does — accept the defaults
+and click Run — fits 12 `flexsurvcure` models (3 distributions × mixture/
+non-mixture × up to 3 groups) to data where the true cure fraction is 0%.
+That pushes the cure-fraction parameter toward a boundary (0 on the
+logistic/probit/etc. link scale corresponds to ±Inf), which is a textbook
+cause of exactly this class of optimizer/Hessian failure.
+
+Fix: rewrote the generator to simulate a genuine mixture-cure process —
+each arm gets an explicit cured fraction (10%/20%/32% for Control/Low
+dose/High dose, `stats::rbinom` per subject) whose members never
+experience the event (`event_time <- Inf` for those subjects, so they're
+governed entirely by administrative/dropout censoring), plus a susceptible
+fraction with the original per-arm Weibull event times. Bumped
+`n_per_group` from 150 to 200 (600 total) for extra fitting stability.
+Verified with `survival::survfit()` (available in this sandbox) that the
+resulting Kaplan-Meier curves plateau well clear of 0 in every arm (13%,
+33%, 56% at 5 years) — i.e. there is now a real, well-separated plateau for
+a cure model to identify, not a boundary case. Re-ran the dataset's
+structural tests (§4a) — still green (row/column shape, status ∈ {0,1},
+group cardinality, no `NA`s, every group has both events and censoring are
+all unaffected by this change). Updated `R/PERSUADE_data.R` and
+`man/persuade_trial_data.Rd` to describe the new generating process and
+row count (600, was 450), and changed their `f_PERSUADE()` example to
+`cure_mod = TRUE` so the documentation actually demonstrates the scenario
+the dataset was redesigned for.
+
+**Caveat, stated plainly**: this diagnosis is well-grounded (a 0%-true-cure
+dataset is a documented, common cause of exactly this failure mode in cure
+models generally) but could not be *confirmed* by actually reproducing the
+original error and re-running the fit — `flexsurvcure` is one of the
+packages unavailable in this sandbox (§3). If the same "non-finite
+finite-difference" error recurs after this fix (with the `[N]` index
+possibly pointing at a different parameter), the next things to check
+would be: whether it's now coming from a *spline* model instead (3-knot
+spline models with per-group ancillary parameters are also numerically
+demanding relative to ~200 obs/group) or from a specific cure
+distribution/link combination that's still poorly identified even with a
+genuine cure fraction present — and, separately, whether `f_surv_model()`
+in `R/PERSUADE_function.R` (core package, not dashboard code) should wrap
+each individual model fit in its own `tryCatch` so one failing model
+degrades gracefully instead of aborting the entire `f_PERSUADE()` call.
+That would be a more invasive change to the core fitting pipeline, useful
+for real user data too (not just this bundled example), but wasn't made
+here since it's untestable in this sandbox and arguably outside what was
+asked for.
+
+## 10. What to verify next (on a machine with CRAN access)
 
 - `R CMD check` end-to-end (impossible here per §3).
 - Run the full `testthat` suite via `library(PERSUADE); testthat::test_check("PERSUADE")`
@@ -281,3 +362,7 @@ usable directly:
   affordance beyond the current `withProgress()` spinner).
 - Try `f_generate_report()`'s PDF download from the dashboard on a machine
   with pandoc + a LaTeX distribution installed (untestable here).
+- Run the bundled example through the dashboard with default settings
+  (all three model-type checkboxes on) and confirm the §9 fix actually
+  resolves the "non-finite finite-difference value" error, since it could
+  not be reproduced/confirmed in this sandbox.

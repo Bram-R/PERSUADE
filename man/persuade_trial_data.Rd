@@ -5,7 +5,7 @@
 \alias{persuade_trial_data}
 \title{Simulated Three-Arm Trial Survival Data}
 \format{
-An object of class \code{data.frame} with 450 rows and 3 columns.
+An object of class \code{data.frame} with 600 rows and 3 columns.
 }
 \source{
 Simulated data; see \code{data-raw/create_persuade_trial_data.R} for
@@ -18,10 +18,15 @@ persuade_trial_data
 A simulated time-to-event dataset (e.g. representing overall survival in a
 3-arm oncology trial) bundled with PERSUADE so the package - and the
 interactive dashboard launched via \code{\link[=f_run_dashboard]{f_run_dashboard()}} - can be explored
-without requiring the user's own data. Event times are Weibull-distributed
-and differ by arm; censoring combines administrative censoring at 5 years
-of follow-up with random dropout, so every arm contains both events and
-censored observations.
+without requiring the user's own data. Generated as a mixture-cure
+process: each arm has a genuine long-term-survivor ("cured") fraction
+(10\%/20\%/32\% for Control/Low dose/High dose) that never experiences the
+event, plus a susceptible fraction with Weibull-distributed event times
+that differ by arm. Administrative censoring at 5 years of follow-up and
+random dropout are layered on top, so every arm contains both events and
+censored observations, and the Kaplan-Meier curve for each arm plateaus
+well clear of 0 - suitable for fitting PERSUADE's cure models, not just
+its standard/spline models.
 }
 \details{
 The data frame has the following columns:
@@ -44,7 +49,7 @@ f_PERSUADE(
   group = persuade_trial_data$group,
   strata = TRUE,
   spline_mod = FALSE,
-  cure_mod = FALSE,
+  cure_mod = TRUE,
   time_unit = 1 / 12,
   time_horizon = 10,
   time_pred_surv_table = c(0, 1, 5, 10)

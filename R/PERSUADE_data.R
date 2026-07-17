@@ -4,12 +4,17 @@
 #' A simulated time-to-event dataset (e.g. representing overall survival in a
 #' 3-arm oncology trial) bundled with PERSUADE so the package - and the
 #' interactive dashboard launched via [f_run_dashboard()] - can be explored
-#' without requiring the user's own data. Event times are Weibull-distributed
-#' and differ by arm; censoring combines administrative censoring at 5 years
-#' of follow-up with random dropout, so every arm contains both events and
-#' censored observations.
+#' without requiring the user's own data. Generated as a mixture-cure
+#' process: each arm has a genuine long-term-survivor ("cured") fraction
+#' (10%/20%/32% for Control/Low dose/High dose) that never experiences the
+#' event, plus a susceptible fraction with Weibull-distributed event times
+#' that differ by arm. Administrative censoring at 5 years of follow-up and
+#' random dropout are layered on top, so every arm contains both events and
+#' censored observations, and the Kaplan-Meier curve for each arm plateaus
+#' well clear of 0 - suitable for fitting PERSUADE's cure models, not just
+#' its standard/spline models.
 #'
-#' @format A data frame with 450 rows and 3 columns:
+#' @format A data frame with 600 rows and 3 columns:
 #' \describe{
 #'   \item{years}{Numeric. Time to event or censoring, in years.}
 #'   \item{status}{Numeric. Event indicator (`1` = event, `0` = censored).}
@@ -32,7 +37,7 @@
 #'   group = persuade_trial_data$group,
 #'   strata = TRUE,
 #'   spline_mod = FALSE,
-#'   cure_mod = FALSE,
+#'   cure_mod = TRUE,
 #'   time_unit = 1 / 12,
 #'   time_horizon = 10,
 #'   time_pred_surv_table = c(0, 1, 5, 10)
