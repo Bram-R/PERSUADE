@@ -163,7 +163,47 @@ already used by `f_generate_report()` for its own Suggested packages).
 `README.Rmd`/`README.md` and `NEWS.md` were updated to document
 `f_run_dashboard()`.
 
-## 6. What to verify next (on a machine with CRAN access)
+## 6. Post-review fix: `library(PERSUADE)` missing from `app.R`
+
+After the initial push, the user ran `f_run_dashboard()` for real (on a
+machine with the full dependency stack) and hit:
+
+```
+Warning: Error in f_dashboard_example_datasets: could not find function "f_dashboard_example_datasets"
+```
+
+Root cause: `shiny::runApp()` sources `app.R` into a **new environment
+whose parent is `globalenv()`**, not the PERSUADE package namespace. `app.R`
+attached `shiny`/`shinydashboard`/`DT`/`shinycssloaders` via `library()` but
+never attached PERSUADE itself, so every unqualified call to a PERSUADE
+function (`f_PERSUADE()`, all `f_dashboard_*()`, all `f_plot_*()`,
+`f_generate_report()`, `f_get_excel_template()`) was unresolvable.
+
+This slipped through local verification (§4c) because the sandbox
+verification harness called `source("R/PERSUADE_dashboard.R")` *before*
+`shiny::runApp(...)` in the same R session — which defines those functions
+directly in `.GlobalEnv`, and since `app.R`'s sourcing environment's parent
+*is* `.GlobalEnv`, they resolved by accident. That path only exists in the
+sandbox harness; a real user calling `f_run_dashboard()` never sources
+`PERSUADE_dashboard.R` directly, so the functions were never actually
+reachable. Lesson: a "does it run" check that pre-populates the global
+environment with the code under test isn't a substitute for reproducing the
+real call path.
+
+Fix: added `library(PERSUADE)` to the top of `inst/shiny-dashboard/app.R`,
+alongside the UI-library `library()` calls. Verified the mechanism (not
+just patched blindly) with a minimal reproduction: sourcing a stand-in
+"app.R" that calls an unqualified function defined only in a detached
+environment reproduces the exact `could not find function` error; attaching
+that environment to the search path first (what `library()` does) resolves
+it. See `tests/` — no new automated test was added for this specific
+regression because it is purely about *environment attachment*, which
+requires the real installed package (unavailable in this sandbox, see §3)
+to exercise meaningfully; a `shiny::runApp()`-based integration check
+against an actually-installed PERSUADE is the right place to catch this
+class of bug going forward, ideally in CI once dependencies are available.
+
+## 7. What to verify next (on a machine with CRAN access)
 
 - `R CMD check` end-to-end (impossible here per §3).
 - Run the full `testthat` suite via `library(PERSUADE); testthat::test_check("PERSUADE")`

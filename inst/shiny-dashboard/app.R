@@ -8,7 +8,11 @@ library(shinydashboard)
 library(DT)
 library(shinycssloaders)
 
-pkg <- "PERSUADE"
+# shiny::runApp() sources this file into a fresh environment that is not a
+# child of the PERSUADE namespace, so PERSUADE's own functions (f_PERSUADE(),
+# f_dashboard_*(), f_plot_*(), ...) are not visible here unless the package
+# is explicitly attached.
+library(PERSUADE)
 
 time_unit_choices <- c(
   "Years" = "1",
