@@ -15,6 +15,8 @@ PERSUADE guides analysts through a reproducible workflow for survival
 analysis and model selection. It provides:
 
 - Kaplan-Meier visualizations and diagnostics
+- 33 reviewed NSCLC pseudo-IPD datasets (see [example
+  datasets](#nsclc-example-survival-datasets))
 - Assessment of proportional hazards (PH) assumption
 - Observed and predicted hazard function plots
 - Fit comparisons of standard, spline-based, and cure models
@@ -40,8 +42,8 @@ analysis feeds into decision-analytic models.
 
 ## Quick start
 
-The easiest way to get started is by running the example workflow
-script: `PERSUADE_example_workflow.R` using:
+To get started, open `PERSUADE_example_workflow.R` and run its contents
+in R:
 `file.edit(system.file("example_workflow", "PERSUADE_example_workflow.R", package = "PERSUADE"))`
 
 This script:
@@ -51,6 +53,88 @@ This script:
 - Summarizes results with `print()`, `summary()`, and `plot()`.
 - Generates a ready-to-share PDF report via `f_generate_report()`.
 - Exports fitted model parameters to .csv.
+
+------------------------------------------------------------------------
+
+## NSCLC example survival datasets
+
+PERSUADE includes **33 reviewed trial-population datasets** of
+reconstructed pseudo-individual patient data (pseudo-IPD) for overall
+survival in advanced non-small cell lung cancer (NSCLC), covering
+EGFR-targeted therapies, ALK-targeted therapies, and immunotherapies.
+The collection contains 11,572 reconstructed records across 66 treatment
+arms.
+
+- [`?nsclc_ipd`](man/nsclc_ipd.Rd): survival records, PICO descriptions,
+  reconstructed sample sizes and event proportions, and trial-specific
+  validation notes and limitations.
+- [`?nsclc_trials`](man/nsclc_trials.Rd): trial and population metadata,
+  treatment comparisons, references, and original publication links.
+
+If your installed release does not include these datasets, install the
+development version shown above.
+
+``` r
+library(PERSUADE)
+data("nsclc_ipd", package = "PERSUADE")
+data("nsclc_trials", package = "PERSUADE")
+
+# Discover comparisons and select one by its stable identifier
+nsclc_trials[, c("dataset_id", "trial_id", "population")]
+example_id <- "EGFR_Lux-Lung3"
+example_ipd <- subset(nsclc_ipd, dataset_id == example_id)
+example_trial <- subset(nsclc_trials, dataset_id == example_id)
+example_trial[, c("population", "intervention_treatment", "control_treatment")]
+```
+
+Estimate and plot Kaplan-Meier survival by treatment arm (times are in
+months):
+
+``` r
+km <- survival::survfit(
+  survival::Surv(time_months, event) ~ arm,
+  data = example_ipd
+)
+plot(km, col = c("#0072B2", "#D55E00"), lty = 1:2,
+     xlab = "Time (months)", ylab = "Overall survival probability")
+legend("topright", legend = sub("^arm=", "", names(km$strata)),
+       col = c("#0072B2", "#D55E00"), lty = 1:2, bty = "n")
+
+# Reconstructed sample sizes, deaths, and event fractions by arm
+arm_summary <- aggregate(
+  cbind(n = rep(1L, nrow(example_ipd)), events = example_ipd$event),
+  by = list(arm = example_ipd$arm),
+  FUN = sum
+)
+arm_summary$event_fraction <- with(arm_summary, events / n)
+arm_summary
+```
+
+Use `dataset_id` to find the source publication without relying on row
+order:
+
+``` r
+example_trial[, c("trial_publication", "trial_url")]
+trial_url <- example_trial$trial_url[1L]
+if (interactive() && !is.na(trial_url) && nzchar(trial_url)) {
+  utils::browseURL(trial_url)
+}
+```
+
+To use this example in the workflow below, supply
+`years = example_ipd$time_months / 12`, `status = example_ipd$event`,
+and `group = example_ipd$arm`; keep the prediction horizon and time
+points in years.
+
+These are reconstructed observations, not original patient records. All
+33 datasets were reviewed against published aggregate survival results;
+see `?nsclc_ipd` for known discrepancies. Event fractions describe
+reconstructed deaths and do not directly measure follow-up maturity or
+tail precision. Some trial populations overlap and must not be pooled as
+independent cohorts. When reusing the data, cite the original trial
+publications, Simons et al. (2020), and Guyot et al. (2012), as listed
+in the help pages. The digitized source archive is available on
+[Zenodo](https://doi.org/10.5281/zenodo.4288605) under CC BY 4.0.
 
 ------------------------------------------------------------------------
 
@@ -141,15 +225,20 @@ f_generate_report(PERSUADE)
 ### 7. Export model parameters
 
 ``` r
-# Copy to clipboard (for copying in PERSUADE Excel template.xltx)
-write.table(PERSUADE$surv_model_excel, "clipboard-128", sep = "\t", col.names = FALSE)
+# Copy to the Windows clipboard (for the PERSUADE Excel template)
+if (.Platform$OS.type == "windows") {
+  write.table(PERSUADE$surv_model_excel, "clipboard-128",
+              sep = "\t", col.names = FALSE)
+}
 
-# Export to CSV (change `tempdir()` into `getwd()` for copying to working directory)
-write.csv(PERSUADE$surv_model_excel, 
-          file.path(tempdir(), paste0(name, "_output"),
+# Export to CSV (use getwd() instead of tempdir() for persistent files)
+output_dir <- file.path(tempdir(), paste0(PERSUADE$name, "_output"))
+dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
+write.csv(PERSUADE$surv_model_excel,
+          file.path(output_dir,
                     "PERSUADE_Time-to-event_models_parameters_comma.csv"))
-write.csv2(PERSUADE$surv_model_excel, 
-           file.path(tempdir(), paste0(name, "_output"),
+write.csv2(PERSUADE$surv_model_excel,
+           file.path(output_dir,
                      "PERSUADE_Time-to-event_models_parameters_semicolon.csv"))
 ```
 
@@ -163,7 +252,7 @@ f_get_excel_template()
 
 ## Workflow diagram
 
-Visualize the process via the included diagram:  
+Visualize the process via the included diagram:\
 ![PERSUADE Workflow Overview](PERSUADE_figure_process.png)
 
 *(Alternatively, open the `.vsdx` version if preferred.)*
@@ -175,12 +264,13 @@ Visualize the process via the included diagram:
 Start by running the example script to familiarize yourself with the
 workflow. For your own data:
 
-- copy `PERSUADE_example_workflow.R` using:
+- open `PERSUADE_example_workflow.R` using:
   `file.edit(system.file("example_workflow", "PERSUADE_example_workflow.R", package = "PERSUADE"))`;
-  see also vignette using: `browseVignettes("PERSUADE")`
+  save a copy in a writable working folder before editing it; see also
+  vignette using: `browseVignettes("PERSUADE")`
 - replace the input section with your dataset
 - set the project name and outcome identifier using the `name`
-  parameter  
+  parameter\
 - within the call to `f_PERSUADE(...)`, toggle options (`TRUE`/`FALSE`)
   for the analyses you want to run
 
@@ -189,10 +279,10 @@ workflow. For your own data:
 ## Extending or customizing
 
 - Add new model types: incorporate additional parametric distributions
-  or non-parametric methods by extending `f_PERSUADE()`.  
+  or non-parametric methods by extending `f_PERSUADE()`.\
 - Refine plots: customize visualizations in
   `PERSUADE_output_functions.R` or adopt themes for publication-quality
-  graphics.  
+  graphics.\
 - Automate Reporting: enhance the ‘rmarkdown’ template for
   production-ready reports.
 
@@ -201,7 +291,7 @@ workflow. For your own data:
 ## Acknowledgments & history
 
 - Origins: this repository represents an ongoing effort to standardize
-  survival model workflows in decision analysis.  
+  survival model workflows in decision analysis.\
 - Contributors: developed by **Bram-R**
   (<https://orcid.org/0000-0001-5785-9228>) and **Xa4P**
   (<https://orcid.org/0000-0003-3563-0013>); contributions are welcome
@@ -212,6 +302,6 @@ workflow. For your own data:
 ## License & contact
 
 Licensed under
-[**GPL3**](https://github.com/Bram-R/PERSUADE/tree/master?tab=GPL-3.0-1-ov-file#readme).  
+[**GPL3**](https://github.com/Bram-R/PERSUADE/tree/master?tab=GPL-3.0-1-ov-file#readme).\
 For questions, enhancements, or collaboration, reach out via GitHub
 discussions or issues.
