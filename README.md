@@ -56,88 +56,6 @@ This script:
 
 ------------------------------------------------------------------------
 
-## NSCLC example survival datasets
-
-PERSUADE includes **33 reviewed trial-population datasets** of
-reconstructed pseudo-individual patient data (pseudo-IPD) for overall
-survival in advanced non-small cell lung cancer (NSCLC), covering
-EGFR-targeted therapies, ALK-targeted therapies, and immunotherapies.
-The collection contains 11,572 reconstructed records across 66 treatment
-arms.
-
-- [`?nsclc_ipd`](man/nsclc_ipd.Rd): survival records, PICO descriptions,
-  reconstructed sample sizes and event proportions, and trial-specific
-  validation notes and limitations.
-- [`?nsclc_trials`](man/nsclc_trials.Rd): trial and population metadata,
-  treatment comparisons, references, and original publication links.
-
-If your installed release does not include these datasets, install the
-development version shown above.
-
-``` r
-library(PERSUADE)
-data("nsclc_ipd", package = "PERSUADE")
-data("nsclc_trials", package = "PERSUADE")
-
-# Discover comparisons and select one by its stable identifier
-nsclc_trials[, c("dataset_id", "trial_id", "population")]
-example_id <- "EGFR_Lux-Lung3"
-example_ipd <- subset(nsclc_ipd, dataset_id == example_id)
-example_trial <- subset(nsclc_trials, dataset_id == example_id)
-example_trial[, c("population", "intervention_treatment", "control_treatment")]
-```
-
-Estimate and plot Kaplan-Meier survival by treatment arm (times are in
-months):
-
-``` r
-km <- survival::survfit(
-  survival::Surv(time_months, event) ~ arm,
-  data = example_ipd
-)
-plot(km, col = c("#0072B2", "#D55E00"), lty = 1:2,
-     xlab = "Time (months)", ylab = "Overall survival probability")
-legend("topright", legend = sub("^arm=", "", names(km$strata)),
-       col = c("#0072B2", "#D55E00"), lty = 1:2, bty = "n")
-
-# Reconstructed sample sizes, deaths, and event fractions by arm
-arm_summary <- aggregate(
-  cbind(n = rep(1L, nrow(example_ipd)), events = example_ipd$event),
-  by = list(arm = example_ipd$arm),
-  FUN = sum
-)
-arm_summary$event_fraction <- with(arm_summary, events / n)
-arm_summary
-```
-
-Use `dataset_id` to find the source publication without relying on row
-order:
-
-``` r
-example_trial[, c("trial_publication", "trial_url")]
-trial_url <- example_trial$trial_url[1L]
-if (interactive() && !is.na(trial_url) && nzchar(trial_url)) {
-  utils::browseURL(trial_url)
-}
-```
-
-To use this example in the workflow below, supply
-`years = example_ipd$time_months / 12`, `status = example_ipd$event`,
-and `group = example_ipd$arm`; keep the prediction horizon and time
-points in years.
-
-These are reconstructed observations, not original patient records. All
-33 datasets were reviewed against published aggregate survival results;
-see `?nsclc_ipd` for known discrepancies. Event fractions describe
-reconstructed deaths and do not directly measure follow-up maturity or
-tail precision. Some trial populations overlap and must not be pooled as
-independent cohorts. When reusing the data, cite the original trial
-publications, Simons et al. (2020), and Guyot et al. (2012), as listed
-in the help pages. The digitized source archive is available on
-[Zenodo](https://doi.org/10.5281/zenodo.4288605) under CC BY 4.0.
-
-------------------------------------------------------------------------
-
 ## Step-by-step workflow
 
 ### 1. Load PERSUADE package
@@ -149,17 +67,23 @@ library(PERSUADE)
 ### 2. Run example analysis
 
 ``` r
+dat <- subset(PERSUADE::nsclc_ipd, dataset_id == "Immunotherapy_OAK_PDL1_unselected")
+years  <- dat$time_months / 12  # time to event
+status <- dat$event             # event indicator
+group  <- dat$arm               # grouping variable
+
+
 PERSUADE <- f_PERSUADE(
-  name = "BC_OS",
-  years = flexsurv::bc$recyrs,   # time-to-event
-  status = flexsurv::bc$censrec, # event indicator
-  group = flexsurv::bc$group,    # grouping variable
+  name = "NSCLC_OS",
+  years = years,   # time-to-event
+  status = status, # event indicator
+  group = group,    # grouping variable
   strata = TRUE,
   spline_mod = TRUE,
   cure_mod = TRUE,
   time_unit = 1/12,              # months in years
-  time_horizon = 40,
-  time_pred_surv_table = c(0, 1, 2, 5, 10, 20, 30, 40)
+  time_horizon = 20,
+  time_pred_surv_table = c(0, 1, 2, 5, 10, 20)
 )
 ```
 
@@ -273,6 +197,79 @@ workflow. For your own data:
   parameter\
 - within the call to `f_PERSUADE(...)`, toggle options (`TRUE`/`FALSE`)
   for the analyses you want to run
+
+------------------------------------------------------------------------
+
+## NSCLC example survival datasets
+
+PERSUADE includes **33 reviewed trial-population datasets** of
+reconstructed pseudo-individual patient data (pseudo-IPD) for overall
+survival in advanced non-small cell lung cancer (NSCLC), covering
+EGFR-targeted therapies, ALK-targeted therapies, and immunotherapies.
+The collection contains 11,572 reconstructed records across 66 treatment
+arms.
+
+- [`?nsclc_ipd`](man/nsclc_ipd.Rd): survival records, PICO descriptions,
+  reconstructed sample sizes and event proportions, and trial-specific
+  validation notes and limitations.
+- [`?nsclc_trials`](man/nsclc_trials.Rd): trial and population metadata,
+  treatment comparisons, references, and original publication links.
+
+If your installed release does not include these datasets, install the
+development version shown above.
+
+``` r
+library(PERSUADE)
+data("nsclc_ipd", package = "PERSUADE")
+data("nsclc_trials", package = "PERSUADE")
+
+# Discover comparisons and select one by its stable identifier
+nsclc_trials[, c("dataset_id", "trial_id", "population")]
+example_id <- "EGFR_Lux-Lung3"
+example_ipd <- subset(nsclc_ipd, dataset_id == example_id)
+example_trial <- subset(nsclc_trials, dataset_id == example_id)
+example_trial[, c("population", "intervention_treatment", "control_treatment")]
+```
+
+Estimate and plot Kaplan-Meier survival by treatment arm (times are in
+months):
+
+``` r
+km <- survival::survfit(
+  survival::Surv(time_months, event) ~ arm,
+  data = example_ipd
+)
+plot(km, col = c("#0072B2", "#D55E00"), lty = 1:2,
+     xlab = "Time (months)", ylab = "Overall survival probability")
+legend("topright", col = c("#0072B2", "#D55E00"), lty = 1:2, bty = "n",
+       legend = example_trial[, c("control_treatment", "intervention_treatment")])
+```
+
+Use `dataset_id` to find the source publication without relying on row
+order:
+
+``` r
+example_trial[, c("trial_publication", "trial_url")]
+trial_url <- example_trial$trial_url[1L]
+if (interactive() && !is.na(trial_url) && nzchar(trial_url)) {
+  utils::browseURL(trial_url)
+}
+```
+
+To use this example in the workflow below, supply
+`years = example_ipd$time_months / 12`, `status = example_ipd$event`,
+and `group = example_ipd$arm`; keep the prediction horizon and time
+points in years.
+
+These are reconstructed observations, not original patient records. All
+33 datasets were reviewed against published aggregate survival results;
+see `?nsclc_ipd` for known discrepancies. Event fractions describe
+reconstructed deaths and do not directly measure follow-up maturity or
+tail precision. Some trial populations overlap and must not be pooled as
+independent cohorts. When reusing the data, cite the original trial
+publications, Simons et al. (2020), and Guyot et al. (2012), as listed
+in the help pages. The digitized source archive is available on
+[Zenodo](https://doi.org/10.5281/zenodo.4288605) under CC BY 4.0.
 
 ------------------------------------------------------------------------
 

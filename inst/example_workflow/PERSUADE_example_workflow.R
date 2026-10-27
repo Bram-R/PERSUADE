@@ -5,20 +5,17 @@
 library("PERSUADE")
 
 #### INPUT DATA ----
-name <- "BC_OS" # Analysis name
+# Example dataset
+dat <- subset(PERSUADE::nsclc_ipd, dataset_id == "Immunotherapy_OAK_PDL1_unselected")
 
-# bc1 <- bc[bc$group=="Medium",] # 1 group data set (for testing purposes)
-# bc2 <- bc[bc$group!="Medium",] # 2 group data set (for testing purposes)
+years  <- dat$time_months / 12  # time to event
+status <- dat$event             # event indicator
+group  <- dat$arm               # grouping variable
 
-# Input variables
-years <- flexsurv::bc$recyrs  # Time to event (alternative example: factor(survival::lung$time))
-status <- flexsurv::bc$censrec  # Event status (alternative example: factor(survival::lung$status))
-group <- flexsurv::bc$group  # Grouping variable (alternative example: factor(survival::lung$sex))
-
-# Predicted survival table times (in years)
-time_pred_surv_table <- c(0, 1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 35)
-time_unit <- 1 / 12  # Time unit in years (monthly), e.g. use 365.25/12 when time unit is days
-time_horizon <- 40  # Time horizon in years
+name <- "NSCLC_OS"        # project name
+time_pred_surv_table <- c(0, 1, 2, 3, 4, 5, 10, 15, 20)  # survival table times
+time_unit    <- 1/12   # monthly data in years
+time_horizon <- 20     # analysis horizon (years)
 
 #### RUN PERSUADE ----
 PERSUADE <- f_PERSUADE(
