@@ -17,7 +17,7 @@ library(testthat)
 #    synthetic PERSUADE objects containing parametric, spline, and cure models,
 #    ensuring all plotting helpers run without error.
 # 7) Integration-style checks of plot(PERSUADE, type=...) on a full
-#    f_PERSUADE run (flexsurv::bc), confirming end-to-end compatibility.
+#    f_PERSUADE run, confirming end-to-end compatibility.
 #
 # Heavy/integration tests are guarded with skip_on_cran()/skip_if_not_installed().
 
@@ -286,16 +286,19 @@ test_that("model-overlay plot functions run with minimal model prediction object
   expect_silent(f_plot_hazard_cure_extrap(PERS))
 })
 
-test_that("plot functions run without error (integration with f_PERSUADE and flexsurv::bc)", {
+test_that("plot functions run without error (integration with f_PERSUADE and PERSUADE::nsclc_ipd)", {
   skip_on_cran()
-  skip_if_not_installed("flexsurv")
 
-  data <- flexsurv::bc
+  dat <- subset(PERSUADE::nsclc_ipd, dataset_id == "Immunotherapy_OAK_PDL1_unselected")
+  years  <- dat$time_months / 12  # time to event
+  status <- dat$event             # event indicator
+  group  <- dat$arm               # grouping variable
+
   PERSUADE <- f_PERSUADE(
     name = "test_plots",
-    years = data$recyrs,
-    status = data$censrec,
-    group = data$group,
+    years = years,
+    status = status,
+    group = group,
     strata = TRUE,
     spline_mod = FALSE,
     cure_mod = FALSE,

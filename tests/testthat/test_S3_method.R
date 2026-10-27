@@ -8,7 +8,7 @@ library(testthat)
 # These tests include:
 # 1) Lightweight unit tests using minimal PERSUADE-like objects and stubs,
 #    which do not require heavy modeling dependencies.
-# 2) Integration-style tests that call f_PERSUADE on flexsurv::bc and exercise
+# 2) Integration-style tests that call f_PERSUADE on PERSUADE::nsclc_ipd and exercise
 #    print/summary/plot with appropriate skips (skip_on_cran / skip_if_not_installed).
 
 test_that("print.PERSUADE prints expected lines and returns object invisibly", {
@@ -204,21 +204,24 @@ test_that("plot.PERSUADE dispatches to helper functions and returns list structu
 })
 
 # -------------------------------------------------------------------------
-# Integration-style tests that call f_PERSUADE on flexsurv::bc dataset.
+# Integration-style tests that call f_PERSUADE on PERSUADE::nsclc_ipd dataset.
 # These are similar to existing tests in the suite and exercise the S3 methods
 # on actual PERSUADE objects created by the package function.
 # -------------------------------------------------------------------------
 
-test_that("print.PERSUADE works (integration with f_PERSUADE and flexsurv::bc)", {
+test_that("print.PERSUADE works (integration with f_PERSUADE and PERSUADE::nsclc_ipd)", {
   skip_on_cran()
-  skip_if_not_installed("flexsurv")
 
-  data <- flexsurv::bc
+  dat <- subset(PERSUADE::nsclc_ipd, dataset_id == "Immunotherapy_OAK_PDL1_unselected")
+  years  <- dat$time_months / 12  # time to event
+  status <- dat$event             # event indicator
+  group  <- dat$arm               # grouping variable
+
   PERSUADE <- f_PERSUADE(
     name = "test_print",
-    years = data$recyrs,
-    status = data$censrec,
-    group = data$group,
+    years = years,
+    status = status,
+    group = group,
     strata = TRUE,
     spline_mod = FALSE,
     cure_mod = FALSE,
@@ -230,16 +233,19 @@ test_that("print.PERSUADE works (integration with f_PERSUADE and flexsurv::bc)",
   expect_output(print(PERSUADE), "test_print")
 })
 
-test_that("summary.PERSUADE returns expected types (integration with f_PERSUADE and flexsurv::bc)", {
+test_that("summary.PERSUADE returns expected types (integration with f_PERSUADE and PERSUADE::nsclc_ipd)", {
   skip_on_cran()
-  skip_if_not_installed("flexsurv")
 
-  data <- flexsurv::bc
+  dat <- subset(PERSUADE::nsclc_ipd, dataset_id == "Immunotherapy_OAK_PDL1_unselected")
+  years  <- dat$time_months / 12  # time to event
+  status <- dat$event             # event indicator
+  group  <- dat$arm               # grouping variable
+
   PERSUADE <- f_PERSUADE(
     name = "test_summary",
-    years = data$recyrs,
-    status = data$censrec,
-    group = data$group,
+    years = years,
+    status = status,
+    group = group,
     strata = TRUE,
     spline_mod = FALSE,
     cure_mod = FALSE,
@@ -251,16 +257,19 @@ test_that("summary.PERSUADE returns expected types (integration with f_PERSUADE 
   expect_error(summary(PERSUADE, type = "notatype"))
 })
 
-test_that("plot.PERSUADE runs without error (integration with f_PERSUADE and flexsurv::bc)", {
+test_that("plot.PERSUADE runs without error (integration with f_PERSUADE and PERSUADE::nsclc_ipd)", {
   skip_on_cran()
-  skip_if_not_installed("flexsurv")
 
-  data <- flexsurv::bc
+  dat <- subset(PERSUADE::nsclc_ipd, dataset_id == "Immunotherapy_OAK_PDL1_unselected")
+  years  <- dat$time_months / 12  # time to event
+  status <- dat$event             # event indicator
+  group  <- dat$arm               # grouping variable
+
   PERSUADE <- f_PERSUADE(
     name = "test_plot",
-    years = data$recyrs,
-    status = data$censrec,
-    group = data$group,
+    years = years,
+    status = status,
+    group = group,
     strata = TRUE,
     spline_mod = FALSE,
     cure_mod = FALSE,

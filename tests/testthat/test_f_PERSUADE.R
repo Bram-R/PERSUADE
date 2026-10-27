@@ -4,8 +4,8 @@ library(testthat)
 #
 # These tests include:
 # 1) Core functionality checks of f_PERSUADE to ensure it runs successfully
-#    on flexsurv::bc and returns a valid PERSUADE S3 object with the expected
-#    structure and elements.
+#    on PERSUADE::nsclc_ipd and returns a valid PERSUADE S3 object with the
+#    expected structure and elements.
 # 2) Input validation tests that confirm informative errors are raised when
 #    arguments of the wrong type, class, or value are supplied.
 # 3) Lightweight runs on small synthetic datasets to verify output consistency
@@ -18,13 +18,16 @@ library(testthat)
 test_that("f_PERSUADE runs and returns expected structure", {
   skip_on_cran()
 
-  data <- flexsurv::bc
+  dat <- subset(PERSUADE::nsclc_ipd, dataset_id == "Immunotherapy_OAK_PDL1_unselected")
+  years  <- dat$time_months / 12  # time to event
+  status <- dat$event             # event indicator
+  group  <- dat$arm               # grouping variable
 
   PERSUADE <- f_PERSUADE(
     name = "test_run",
-    years = data$recyrs,
-    status = data$censrec,
-    group = data$group,
+    years = years,
+    status = status,
+    group = group,
     strata = TRUE,
     spline_mod = FALSE,
     cure_mod = FALSE,
@@ -48,8 +51,6 @@ test_that("f_PERSUADE runs and returns expected structure", {
 })
 
 test_that("f_PERSUADE errors with wrong input types", {
-  data <- flexsurv::bc
-
   expect_error(f_PERSUADE("bad", "not numeric", "wrong", "oops"))
 })
 
